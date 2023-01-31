@@ -19,7 +19,7 @@
             <v-icon>{{ item.icon }}</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title>{{ item.title }}</v-list-item-title>
+            <v-list-item-title v-text="item.title" />
           </v-list-item-content>
         </v-list-item>
       </v-list>
@@ -48,7 +48,7 @@
       >
         <v-icon>mdi-minus</v-icon>
       </v-btn>
-      <v-toolbar-title>{{ title }}</v-toolbar-title>
+      <v-toolbar-title v-text="title" />
       <v-spacer />
       <v-btn
         icon
@@ -90,7 +90,6 @@
 
 <script>
 export default {
-  name: 'DefaultLayout',
   data () {
     return {
       clipped: false,

@@ -10,14 +10,11 @@
   },
   "dependencies": {
     "@nuxtjs/axios": "^5.13.6",
-    "core-js": "^3.25.3",
-    "nuxt": "^2.15.8",
-    "vue": "^2.7.10",
-    "vue-server-renderer": "^2.7.10",
-    "vue-template-compiler": "^2.7.10",
-    "vuetify": "^2.6.10"
+    "core-js": "^3.15.1",
+    "nuxt": "^2.15.7",
+    "vuetify": "^2.5.5"
   },
   "devDependencies": {
-    "@nuxtjs/vuetify": "^1.12.3"
+    "@nuxtjs/vuetify": "^1.12.1"
   }
 }
