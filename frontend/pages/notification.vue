@@ -78,6 +78,7 @@
 
 <script>
 export default {
+  layout: "Nav",
   data() {
     return {
       query: "",
