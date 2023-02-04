@@ -2,7 +2,6 @@
   <v-app dark>
     <v-navigation-drawer
       v-model="drawer"
-      :mini-variant="miniVariant"
       :clipped="clipped"
       fixed
       app
@@ -116,7 +115,7 @@ export default {
         {
           icon: "mdi-bell-badge",
           title: "Notification",
-          to: "/",
+          to: "/notification",
         },
       ],
       items3: [
