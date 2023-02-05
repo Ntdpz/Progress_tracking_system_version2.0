@@ -32,14 +32,14 @@
       </v-col>
       <v-col class="mt-6 mx-auto align-self-center" col="7" sm="7">
         <v-btn icon to="/profile">
-          <v-icon class="mb-1" color="success" style="font-size: 47px">mdi-pencil-circle</v-icon>
+          <v-icon class="mb-1" color="black" style="font-size: 47px">mdi-pencil-circle-outline</v-icon>
         </v-btn>
       </v-col>
     </v-row>
     <v-divider></v-divider>
 
-    <v-container class="mt-4 grey lighten-5" height="400px">
-      <v-card class="pa-2" tile outlined style="border: none; height: 350px">
+    <v-container class="mt-4 grey lighten-5" height="100%">
+      <v-card class="pa-2" tile outlined style="border: none; height: 100%">
         <v-row class="mb-0">
           <v-col col="12">
             <v-text class="font-weight-bold" style="font-size: 24px">Your Project</v-text>
@@ -74,7 +74,7 @@
         <!-- persistent คือ การที่คลิกนอก dialog แล้ว dialog จะไม่ปิด -->
         <v-dialog v-model="dialog_newproject"  max-width="500px">
           <template v-slot:activator="{ on, attrs }">
-            <v-btn @click="(dialog_newproject = true)" class="mr-2" elevation="2" color="purple" top right absolute
+            <v-btn @click="(dialog_newproject = true)" class="mr-2" elevation="2" color="primary" top right absolute
               v-bind="attrs" v-on="on" style="color: white; border-radius: 10px">
               <v-icon left> mdi-plus-circle-outline </v-icon>New Project
             </v-btn>
@@ -105,7 +105,7 @@
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="purple" style="color: white; border-radius: 10px" @click="dialog_newproject = false">
+              <v-btn color="primary" style="color: white; border-radius: 10px" @click="dialog_newproject = false">
                 Create Project
               </v-btn>
             </v-card-actions>
