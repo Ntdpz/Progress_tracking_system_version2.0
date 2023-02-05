@@ -27,6 +27,7 @@
           :to="item.to"
           router
           exact
+          color="primary"
         >
           <v-list-item-action>
             <v-icon>{{ item.icon }}</v-icon>
@@ -51,9 +52,23 @@
             </v-list-item-content>
           </template>
 
-          <v-list-item v-for="child in item.items" :key="child.title">
+          <v-list-item
+            v-for="child in item.items"
+            :key="child.title"
+            @click="goToPage(child.route)"
+          >
             <v-list-item-content>
-              <v-list-item-title v-text="child.title"></v-list-item-title>
+              <v-row class="ma-0 pa-0">
+                <v-col class="ma-0 pa-0" style="flex-grow: 0.2 !important">
+                  <v-icon class="ma-0 pa-0">mdi-view-list</v-icon>
+                </v-col>
+                <v-col class="ma-0 pa-0">
+                  <v-list-item-title
+                    v-text="child.title"
+                    class="ma-0 mt-1 pa-0"
+                  ></v-list-item-title>
+                </v-col>
+              </v-row>
             </v-list-item-content>
           </v-list-item>
         </v-list-group>
@@ -116,7 +131,7 @@ export default {
         {
           icon: "mdi-bell-badge",
           title: "Notification",
-          to: "/",
+          to: "/notification",
         },
       ],
       items3: [
@@ -124,9 +139,9 @@ export default {
           action: "mdi-view-list",
           active: true,
           items: [
-            { title: "Project1" },
-            { title: "Project2" },
-            { title: "Project3" },
+            { title: "Project1", route: "/issueList" },
+            { title: "Project2", route: "/issueList"},
+            { title: "Project3", route: "/issueList" },
           ],
           title: "Project",
         },
@@ -135,13 +150,18 @@ export default {
         {
           icon: "mdi-calendar-month",
           title: "Schedule",
-          to: "/",
+          to: "/schedule",
         },
       ],
       right: true,
       rightDrawer: false,
       title: "Note Management",
     };
+  },
+  methods: {
+    goToPage(route) {
+      this.$router.push(route);
+    },
   },
 };
 </script>
