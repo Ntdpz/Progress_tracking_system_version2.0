@@ -134,7 +134,7 @@ export default {
         {
           icon: "mdi-calendar-month",
           title: "Schedule",
-          to: "/",
+          to: "/schedule",
         },
       ],
       right: true,

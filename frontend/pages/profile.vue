@@ -9,7 +9,7 @@
                             <v-avatar class="mt-6 mx-auto" style="width: 150px; height: 150px">
                                 <img src="https://cdn.vuetifyjs.com/images/john.jpg" alt="John" />
                             </v-avatar>
-                            <v-btn icon style="color: white; background-color: purple; float: right;
+                            <v-btn icon style="color: white; background-color: #423bf9; float: right;
                                 margin-left: -42px; margin-top: 131px; position: absolute;">
                                 <v-icon>mdi-pencil</v-icon>
                             </v-btn>
@@ -111,7 +111,7 @@
                             </div>
                             <!--  -->
                         </div>
-                        <v-btn to="/home" class="mr-2" elevation="2" color="purple" bottom right absolute
+                        <v-btn to="/home" class="mr-2" elevation="2" color="primary" bottom right absolute
                             style="color: white; border-radius: 10px">Update
                         </v-btn>
                         
