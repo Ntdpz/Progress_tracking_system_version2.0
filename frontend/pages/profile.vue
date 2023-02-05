@@ -4,7 +4,7 @@
             <v-row class="mb-6" no-gutters>
                 <v-col cols="3">
                     <!-- เอาเส้นออกใส่ border: none; -->
-                    <v-card class="pa-2" tile outlined style=" border: none; height: 620px; display: flex; justify-content: center">
+                    <v-card class="pa-2" tile outlined style=" border: none; height: 650px; display: flex; justify-content: center">
                         <div>
                             <v-avatar class="mt-6 mx-auto" style="width: 150px; height: 150px">
                                 <img src="https://cdn.vuetifyjs.com/images/john.jpg" alt="John" />
@@ -18,7 +18,7 @@
                 </v-col>
                 <v-col cols="9">
                     <!-- เอาเส้นออกใส่ border: none; -->
-                    <v-card class="pa-2" tile outlined style="border: none; height: 620px">
+                    <v-card class="pa-2" tile outlined style="border: none; height: 650px">
                         <div class="mt-6 ml-2">
                             <!-- form -->
                             <div>
@@ -114,6 +114,8 @@
                         <v-btn to="/home" class="mr-2" elevation="2" color="purple" bottom right absolute
                             style="color: white; border-radius: 10px">Update
                         </v-btn>
+                        
+    
                     </v-card>
                 </v-col>
             </v-row>

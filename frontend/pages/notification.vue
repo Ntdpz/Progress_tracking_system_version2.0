@@ -1,21 +1,21 @@
 <template>
   <div>
-    <v-row class="mb-3">
+    <v-row class="mb-3 ml-4">
       <v-text-title
-        class="center ml-4 mr-4 mt-3 mb-1"
+        class="center ml-4 mr-4 mt-0 mb-1"
         style="font-weight: bold; font-size: 20px"
       >
         Notifications
       </v-text-title>
       <v-divider
-        class="mt-3 mb-1"
+        class="mt-0 mb-1"
         inset
         vertical
         style="background-color: black"
       ></v-divider>
       <template>
         <v-banner
-          class="mt-3 ml-4"
+          class="mt-0 ml-4"
           style="
             display: flex;
             align-items: center;
