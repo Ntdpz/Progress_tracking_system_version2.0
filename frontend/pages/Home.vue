@@ -5,21 +5,10 @@
         Home
       </v-text-title>
       <v-divider class="mt-0 mb-1" inset vertical style="background-color: black"></v-divider>
-      <template>
-        <v-banner class="mt-0 ml-4" style="
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 30px;
-            border-radius: 30px;
-            padding: 0 0px;
-          " outlined elevation="2">
-          <form class="center" @submit.prevent="search">
-            <v-icon color="purple">mdi-magnify</v-icon>
-            <input class="mr-3" type="text" v-model="query" placeholder="Search some ..." />
-          </form>
-        </v-banner>
-      </template>
+      <div>
+        <v-text-field v-model="query" class="ml-3 mb-5 ml-2" style="height: 20px;" rounded dense outlined label="Search some project"
+          prepend-inner-icon="mdi-magnify"></v-text-field>
+      </div>
     </v-row>
     <v-divider></v-divider>
 
@@ -123,12 +112,7 @@
           </v-card>
           <!--  -->
         </v-dialog>
-
-
-
       </v-card>
-
-
     </v-container>
   </div>
 </template>
@@ -143,10 +127,7 @@ export default {
     };
   },
   methods: {
-    search() {
-      // Perform your search logic here
-      console.log(`Searching for ${this.query}`);
-    },
+    
   },
 };
 </script>
@@ -159,7 +140,7 @@ export default {
 }
 
 input[type="text"] {
-  border: black;
+  
   font-size: 16px;
   padding-left: 10px;
   outline: black;
