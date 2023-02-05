@@ -912,6 +912,9 @@ export default {
         },
       ];
     },
+    showDialog() {
+      console.log("SHow");
+    },
   },
 };
 </script>

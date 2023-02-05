@@ -1,43 +1,22 @@
 <template>
   <div>
-    <v-row class="mb-3">
+    <v-row class="mb-3 ml-4">
       <v-text-title
-        class="center ml-4 mr-4 mt-3 mb-1"
+        class="center ml-4 mr-4 mt-0 mb-1"
         style="font-weight: bold; font-size: 20px"
       >
         Notifications
       </v-text-title>
       <v-divider
-        class="mt-3 mb-1"
+        class="mt-0 mb-1"
         inset
         vertical
         style="background-color: black"
       ></v-divider>
-      <template>
-        <v-banner
-          class="mt-3 ml-4"
-          style="
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 30px;
-            border-radius: 30px;
-            padding: 0 0px;
-          "
-          outlined
-          elevation="2"
-        >
-          <form class="center" @submit.prevent="search">
-            <v-icon color="purple">mdi-magnify</v-icon>
-            <input
-              class="mr-3"
-              type="text"
-              v-model="query"
-              placeholder="Search some notification"
-            />
-          </form>
-        </v-banner>
-      </template>
+      <div>
+        <v-text-field class="ml-3 mb-5 ml-2" style="height: 20px;" rounded dense outlined label="Search some project"
+          prepend-inner-icon="mdi-magnify"></v-text-field>
+      </div>
     </v-row>
     <v-divider></v-divider>
     <div>
@@ -78,6 +57,7 @@
 
 <script>
 export default {
+  
   layout: "Nav",
   data() {
     return {
@@ -85,10 +65,7 @@ export default {
     };
   },
   methods: {
-    search() {
-      // Perform your search logic here
-      console.log(`Searching for ${this.query}`);
-    },
+   
   },
 };
 </script>
