@@ -38,7 +38,7 @@
                                             solo></v-select>
                                     </v-col>
                                     <v-col class="" cols="5" sm="5">
-                                        <v-text-field v-model="firstname" label="First Name" solo></v-text-field>
+                                        <v-text-field  v-model="firstname" label="First Name" solo></v-text-field>
                                     </v-col>
                                     <v-col class="" cols="5" sm="5">
                                         <v-text-field v-model="lastname" label="Last Name" solo></v-text-field>
@@ -97,7 +97,7 @@
                                 </v-row>
                                 <v-row class="mr-2 mt-0" style="margin-bottom:-4%;">
                                     <v-col class="" cols="6" sm="6">
-                                        <v-text-field v-model="status" label="Status" solo readonly>
+                                        <v-text-field  v-model="status" label="Status" solo readonly>
                                             <template v-slot:prepend-inner>
                                                 <v-icon v-if="online === true" color="green">mdi-circle</v-icon>
                                                 <v-icon v-else color="red">mdi-circle</v-icon>

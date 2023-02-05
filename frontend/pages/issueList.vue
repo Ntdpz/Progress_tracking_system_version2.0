@@ -923,4 +923,11 @@ export default {
   border: 2px dotted #333;
   padding: 8px 16px;
 }
+
+input[type="text"] {
+  border: black;
+  font-size: 16px;
+  padding-left: 10px;
+  outline: black;
+}
 </style>

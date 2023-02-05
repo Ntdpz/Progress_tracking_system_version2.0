@@ -5,10 +5,21 @@
         Home
       </v-text-title>
       <v-divider class="mt-0 mb-1" inset vertical style="background-color: black"></v-divider>
-      <div>
-        <v-text-field v-model="query" class="ml-3 mb-5 ml-2" style="height: 20px;" rounded dense outlined label="Search some project"
-          prepend-inner-icon="mdi-magnify"></v-text-field>
-      </div>
+      <template>
+        <v-banner class="mt-0 ml-4" style="
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  height: 30px;
+                  border-radius: 30px;
+                  padding: 0 0px;
+                " outlined elevation="2">
+          <form class="center" @submit.prevent="search">
+            <v-icon color="purple">mdi-magnify</v-icon>
+            <input class="mr-3" type="text" v-model="query" placeholder="Search some ..." />
+          </form>
+        </v-banner>
+      </template>
     </v-row>
     <v-divider></v-divider>
 

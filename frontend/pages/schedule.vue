@@ -1,13 +1,25 @@
 <template>
     <v-row class="fill-height">
-        <v-col>
+        <v-col class="mt-0 pt-0">
             <v-sheet height="64">
                 <v-toolbar flat>
-                    <div>
-                        <v-text-field class="search-field mb-5 ml-2" style="height: 20px;" rounded dense outlined
-                            label="Search some task" prepend-inner-icon="mdi-magnify"></v-text-field>
-                    </div>
-                    <v-divider class="mr-4 ml-4" vertical></v-divider>
+                    <template>
+                        <v-banner class="mt-0 ml-4" style="
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                height: 30px;
+                                border-radius: 30px;
+                                padding: 0 0px;
+                              " outlined elevation="2">
+                            <form class="center" @submit.prevent="search">
+                                <v-icon color="purple">mdi-magnify</v-icon>
+                                <input class="mr-3" type="text" v-model="query" placeholder="Search some task" />
+                            </form>
+                        </v-banner>
+                    </template>
+
+                    <v-divider class="mr-4 ml-4" inset vertical style="background-color:black;"></v-divider>
                     <v-toolbar-title v-if="$refs.calendar">
                         {{ $refs.calendar.title }}
                     </v-toolbar-title>
@@ -26,7 +38,7 @@
                     </v-btn>
                     <v-spacer></v-spacer>
                     <v-chip>
-                        <v-chip :class="{ 'on-hover': hover }" class="mr-2" @click="(type = 'day')">
+                        <v-chip class="mr-2" @click="(type = 'day')">
                             Day
                         </v-chip>
                         <v-chip class="mr-2" @click="type = 'week'">
@@ -39,37 +51,11 @@
                             4 Day
                         </v-chip>
                     </v-chip>
-
                 </v-toolbar>
             </v-sheet>
-            <v-sheet height="600">
-                <v-calendar ref="calendar" v-model="focus" color="primary" :type="type" @click:event="showEvent"
-                    @click:more="viewDay" @click:date="viewDay"></v-calendar>
-                <v-menu v-model="selectedOpen" :close-on-content-click="false" :activator="selectedElement" offset-x>
-                    <v-card color="grey lighten-4" min-width="350px" flat>
-                        <v-toolbar :color="selectedEvent.color" dark>
-                            <v-btn icon>
-                                <v-icon>mdi-pencil</v-icon>
-                            </v-btn>
-                            <v-toolbar-title v-html="selectedEvent.name"></v-toolbar-title>
-                            <v-spacer></v-spacer>
-                            <v-btn icon>
-                                <v-icon>mdi-heart</v-icon>
-                            </v-btn>
-                            <v-btn icon>
-                                <v-icon>mdi-dots-vertical</v-icon>
-                            </v-btn>
-                        </v-toolbar>
-                        <v-card-text>
-                            <span v-html="selectedEvent.details"></span>
-                        </v-card-text>
-                        <v-card-actions>
-                            <v-btn text color="secondary" @click="selectedOpen = false">
-                                Cancel
-                            </v-btn>
-                        </v-card-actions>
-                    </v-card>
-                </v-menu>
+            <v-sheet height="500">
+                <v-calendar ref="calendar" v-model="focus" color="primary" :type="type" @click:date="viewDay">
+                </v-calendar>
             </v-sheet>
         </v-col>
     </v-row>
@@ -78,7 +64,12 @@
 export default {
     layout: "Nav",
     data() {
+        const date = new Date();
+        const month = date.toLocaleString('default', { month: 'long' });
+        console.log(month);
         return {
+            month: month,
+            query: '',
             focus: '',
             type: 'month',
             typeToLabel: {
@@ -90,21 +81,17 @@ export default {
             selectedEvent: {},
             selectedElement: null,
             selectedOpen: false,
-            events: [],
-            colors: ['blue', 'indigo', 'deep-purple', 'cyan', 'green', 'orange', 'grey darken-1'],
-            names: ['Meeting', 'Holiday', 'PTO', 'Travel', 'Event', 'Birthday', 'Conference', 'Party'],
         }
     },
     mounted() {
         this.$refs.calendar.checkChange()
     },
+    created() {
+    },
     methods: {
         viewDay({ date }) {
             this.focus = date
             this.type = 'day'
-        },
-        getEventColor(event) {
-            return event.color
         },
         setToday() {
             this.focus = ''
@@ -115,7 +102,6 @@ export default {
         next() {
             this.$refs.calendar.next()
         },
-
         updateRange({ start, end }) {
             const events = []
             const min = new Date(`${start.date}T00:00:00`)
@@ -147,5 +133,10 @@ export default {
 }
 </script>
 <style scoped>
-
+input[type="text"] {
+    border: black;
+    font-size: 16px;
+    padding-left: 10px;
+    outline: black;
+}
 </style>
