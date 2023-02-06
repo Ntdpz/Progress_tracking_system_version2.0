@@ -1,11 +1,6 @@
 <template>
   <v-app dark>
-    <v-navigation-drawer
-      v-model="drawer"
-      :clipped="clipped"
-      fixed
-      app
-    >
+    <v-navigation-drawer v-model="drawer" :clipped="clipped" fixed app>
       <v-list-item>
         <v-list-item-content>
           <v-list-item-title class="text-h6">
@@ -38,13 +33,13 @@
       </v-list>
       <v-divider></v-divider>
       <v-list>
-        
         <v-list-group
           v-for="item in items3"
           :key="item.title"
           v-model="item.active"
           :prepend-icon="item.action"
           no-action
+          color="primary"
         >
           <template v-slot:activator>
             <v-list-item-content>
@@ -80,6 +75,7 @@
           :key="i"
           :to="item.to"
           router
+          color="primary"
           exact
         >
           <v-list-item-action>
@@ -89,8 +85,8 @@
             <v-list-item-title v-text="item.title" />
           </v-list-item-content>
         </v-list-item>
+        <v-divider></v-divider>
       </v-list>
-      <v-divider></v-divider>
     </v-navigation-drawer>
     <v-app-bar
       :clipped-left="clipped"
@@ -111,12 +107,12 @@
       </v-container>
     </v-main>
     <!-- <v-footer :absolute="!fixed" app>
-      <span>&copy; {{ new Date().getFullYear() }}</span>
-    </v-footer> -->
+        <span>&copy; {{ new Date().getFullYear() }}</span>
+      </v-footer> -->
   </v-app>
 </template>
-  
-  <script>
+    
+    <script>
 export default {
   data() {
     return {
@@ -140,7 +136,7 @@ export default {
           active: true,
           items: [
             { title: "Project1", route: "/issueList" },
-            { title: "Project2", route: "/issueList"},
+            { title: "Project2", route: "/issueList" },
             { title: "Project3", route: "/issueList" },
           ],
           title: "Project",
@@ -151,6 +147,16 @@ export default {
           icon: "mdi-calendar-month",
           title: "Schedule",
           to: "/schedule",
+        },
+        {
+          icon: "mdi-account",
+          title: "Manage User",
+          to: "/manageUser",
+        },
+        {
+          icon: "mdi-view-dashboard",
+          title: "Dashboard",
+          to: "/dashboard",
         },
       ],
       right: true,
@@ -165,7 +171,7 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-</style>
   
+  <style scoped>
+</style>
+    
