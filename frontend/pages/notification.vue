@@ -28,7 +28,6 @@
           </form>
         </v-banner>
       </template>
-
     </v-row>
     <v-divider></v-divider>
     <div>
