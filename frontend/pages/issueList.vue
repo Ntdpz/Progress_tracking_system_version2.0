@@ -30,7 +30,8 @@
           elevation="2"
         >
           <form class="center" @submit.prevent="search">
-            <v-icon color="primary">mdi-magnify</v-icon>
+            <!-- *ใส่ไอคอน -->
+            <v-icon color="primary">fa-solid fa-magnifying-glass</v-icon>
             <input
               class="mr-3 mt-1"
               type="text"
