@@ -15,7 +15,7 @@
                   padding: 0 0px;
                 " outlined elevation="2">
           <form class="center" @submit.prevent="search">
-            <v-icon color="purple">mdi-magnify</v-icon>
+            <v-icon color="primary">mdi-magnify</v-icon>
             <input class="mr-3" type="text" v-model="query" placeholder="Search some ..." />
           </form>
         </v-banner>
@@ -59,7 +59,7 @@
         <v-row>
           <v-col v-for="index in 2" :key="index" col="3" sm="3">
             <template>
-              <v-card width="280px" height="145px" outlined absolute color="purple">
+              <v-card width="280px" height="145px" outlined absolute color="primary">
                 <v-card-subtitle class="mb-1" style="font-size: 18px; color: black">
                   Stock Product {{ index }}
                 </v-card-subtitle>
