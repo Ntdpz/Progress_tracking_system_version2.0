@@ -81,44 +81,47 @@
               <v-row>
                 <v-col cols="12" sm="6" md="4">
                   <v-text-field
-                    label="Issue No."
-                    placeholder="Issue No."
+                    label="ตัวย่อ"
+                    placeholder="ตัวย่อ"
                     outlined
                     dense
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="8" md="8">
                   <v-text-field
-                    label="Issue Name"
-                    placeholder="Issue Name"
+                    label="Project Name"
+                    placeholder="Project Name"
                     outlined
                     dense
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" sm="6" md="4">
-                  <v-select
-                    :items="type_select"
-                    label="PNI/PNC/New Req"
-                    dense
+                <v-col cols="12">
+                  <v-text-field
+                    label="Agency"
+                    placeholder="Agency"
                     outlined
-                    v-model="type"
-                  ></v-select>
+                    dense
+                  ></v-text-field>
                 </v-col>
-                <v-col cols="12" sm="6" md="4">
-                  <v-select
-                    :items="screen_select"
-                    label="Screen No."
-                    dense
+                <v-col cols="12">
+                  <v-text-field
+                    label="Period"
+                    placeholder="Period"
                     outlined
-                  ></v-select>
+                    dense
+                  ></v-text-field>
                 </v-col>
               </v-row>
             </v-container>
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="primary" text @click="dialog = false"> Close </v-btn>
-            <v-btn color="primary" dark @click="dialog = false"> Create </v-btn>
+            <v-btn color="primary" text @click="dialogNewProject = false">
+              <h5>Close</h5></v-btn
+            >
+            <v-btn color="primary" dark @click="dialogNewProject = false">
+              <h5>Create</h5>
+            </v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -165,51 +168,51 @@
                     class="mdi mdi-plus-circle-outline"
                     style="font-size: 20px; color: black"
                   ></span>
-                  <h4 style="color: black">Add New Project</h4>
+                  <h4 style="color: black">Add New Sub System</h4>
                 </v-btn>
               </template>
               <v-card>
                 <v-card-title>
                   <v-col cols="12">
                     <v-row>
-                      <h5>Create Project</h5>
+                      <h5>Create System</h5>
                     </v-row>
                   </v-col>
                 </v-card-title>
                 <v-card-text>
                   <v-container>
                     <v-row>
-                      <v-col cols="12" sm="6" md="4">
+                      <v-col cols="12">
                         <v-text-field
-                          label="Issue No."
-                          placeholder="Issue No."
+                          label="System Name (TH)"
+                          placeholder="System Name (TH)"
+                          outlined
+                          dense
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12">
+                        <v-text-field
+                          label="System Name (EN)"
+                          placeholder="System Name (EN)"
                           outlined
                           dense
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="8" md="8">
                         <v-text-field
-                          label="Issue Name"
-                          placeholder="Issue Name"
+                          label="Short system name"
+                          placeholder="Short system name"
                           outlined
                           dense
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6" md="4">
                         <v-select
-                          :items="type_select"
-                          label="PNI/PNC/New Req"
+                          :items="member_select"
+                          label="Member"
                           dense
                           outlined
-                          v-model="type"
-                        ></v-select>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-select
-                          :items="screen_select"
-                          label="Screen No."
-                          dense
-                          outlined
+                          v-model="member"
                         ></v-select>
                       </v-col>
                     </v-row>
@@ -287,6 +290,7 @@ export default {
         // { text: "Actions", value: "actions", sortable: false },
       ],
       issue: [],
+      member_select: ["Dev1"],
     };
   },
   created() {
