@@ -439,7 +439,7 @@ export default {
       developer: [],
       implementer: [],
       missname: ['Mr', 'Miss'],
-      status: ['Active', 'Not Active'],
+      status: ['Active'],
       editedItem: {
         name: '',
         calories: 0,
@@ -498,15 +498,6 @@ export default {
           status: 'Active',
           role: 'User',
         },
-        {
-          photo: 'https://cdn.vuetifyjs.com/images/john.jpg',
-          name: 'Mr. Test',
-          code: 'AI00000002',
-          position: 'Implementer',
-          department: 'DD',
-          status: 'Not Active',
-          role: 'User',
-        },
       ];
       this.developer = [
         {
@@ -527,15 +518,6 @@ export default {
           position: 'Implementer',
           department: 'DD',
           status: 'Active',
-          role: 'User',
-        },
-        {
-          photo: 'https://cdn.vuetifyjs.com/images/john.jpg',
-          name: 'Mr. Test',
-          code: 'AI00000002',
-          position: 'Implementer',
-          department: 'DD',
-          status: 'Not Active',
           role: 'User',
         },
       ];
