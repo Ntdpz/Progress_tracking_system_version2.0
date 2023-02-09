@@ -154,6 +154,11 @@ export default {
           to: "/manageUser",
         },
         {
+          icon: "mdi-view-list",
+          title: "Manage Project",
+          to: "/projectList",
+        },
+        {
           icon: "mdi-view-dashboard",
           title: "Dashboard",
           to: "/dashboard",

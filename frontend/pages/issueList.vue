@@ -7,7 +7,7 @@
         class="center ml-4 mr-4 mt-3 mb-1"
         style="font-weight: bold; font-size: 20px"
       >
-        System List
+        Issue List
       </v-text-title>
       <v-divider
         class="mt-3 mb-1"
@@ -15,32 +15,25 @@
         vertical
         style="background-color: black"
       ></v-divider>
-      <template>
-        <v-banner
-          class="mt-3 ml-4"
-          style="
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 30px;
-            border-radius: 30px;
-            padding: 0 0px;
-          "
-          outlined
-          elevation="2"
-        >
-          <form class="center" @submit.prevent="search">
-            <!-- *ใส่ไอคอน -->
-            <v-icon color="primary">fa-solid fa-magnifying-glass</v-icon>
-            <input
-              class="mr-3 mt-1"
-              type="text"
-              v-model="query"
-              placeholder="Search some issue"
-            />
-          </form>
-        </v-banner>
-      </template>
+      <div
+        style="
+          border-radius: 99px;
+          border: 2px solid #333;
+          height: 35px;
+          width: 15%;
+          margin-left: 1%;
+          margin-top: 0.5%;
+        "
+      >
+        <v-text-field
+          placeholder="Search some issue"
+          prepend-icon="mdi-magnify"
+          rounded
+          dense
+          color="primary"
+          style="margin-top: 1.5px; margin-left: 3%"
+        ></v-text-field>
+      </div>
     </v-row>
     <v-divider></v-divider>
 
