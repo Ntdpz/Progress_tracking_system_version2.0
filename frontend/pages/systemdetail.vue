@@ -17,7 +17,7 @@
                                 " outlined elevation="2">
                     <form class="center" @submit.prevent="search">
                         <v-icon color="purple">mdi-magnify</v-icon>
-                        <input class="mr-3" type="text" v-model="query" placeholder="Search some project" />
+                        <input class="mr-3" type="text" v-model="query" placeholder="Search some system" />
                     </form>
                 </v-banner>
             </template>
@@ -28,7 +28,7 @@
             <v-row class="mt-0" no-gutters>
                 <v-col col="12" sm="12" md="12">
                     <!-- box-shadow: none; -->
-                    <v-card class="mt-0" tile outline style="box-shadow: none;">
+                    <v-card class="mt-0" tile outlined style="box-shadow: none; border: none;">
                         <v-card-title>
                             <v-btn icon to="/Home" color="primary" size="35px" left>
                                 <v-icon size="35px">mdi-arrow-left-circle</v-icon>
@@ -104,7 +104,7 @@
                 <v-row no-gutters>
                     <v-col v-for="(item, i) in 5" :key="i" col="4" sm="4" md="4">
                         <!-- box-shadow: none; -->
-                        <v-card :to="`/screendetail/${item}`" style="" class="ma-4 mt-0" tile outline height="300px">
+                        <v-card :to="`/screendetail/${item}`" style="" class="ma-4 mt-0" tile height="300px">
                             <v-img src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg" height="200px"></v-img>
                             <v-card-title>
                                 Screen {{ item }}
