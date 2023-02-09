@@ -59,25 +59,19 @@
         <v-row>
           <v-col v-for="index in 2" :key="index" col="3" sm="3">
             <template>
-              <v-card width="280px" height="145px" outlined absolute color="primary">
+              <v-card to="systemdetail" width="280px" height="145px" outlined absolute color="primary">
                 <v-card-subtitle class="mb-1" style="font-size: 18px; color: black">
                   Stock Product {{ index }}
                 </v-card-subtitle>
-                <v-card-actions style="justify-content: right">
-                  <v-btn rounded absolute bottom color="black" text> GO </v-btn>
-                </v-card-actions>
               </v-card>
             </template>
           </v-col>
           <v-col v-for="index in 12" :key="index" col="3" sm="3">
             <template>
-              <v-card width="280px" height="145px" outlined absolute color="orange">
+              <v-card to="systemdetail" width="280px" height="145px" outlined absolute color="orange">
                 <v-card-subtitle class="mb-1" style="font-size: 18px; color: black">
                   Market System {{ index }}
                 </v-card-subtitle>
-                <v-card-actions style="justify-content: right">
-                  <v-btn rounded absolute bottom color="black" text> GO </v-btn>
-                </v-card-actions>
               </v-card>
             </template>
           </v-col>

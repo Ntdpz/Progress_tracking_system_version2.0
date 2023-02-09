@@ -235,15 +235,15 @@
             v-remove-row-borders
           >
             <template v-slot:top> </template>
-            <template v-slot:item.name="{ item }">
+            <template v-slot:[`item.name`]="{ item }">
               <v-icon>mdi-format-list-bulleted</v-icon>
               {{ item.name }}
             </template>
-            <template v-slot:item.short_name="{ item }">
+            <template v-slot:[`item.short_name`]="{ item }">
               <v-icon>mdi-format-list-bulleted</v-icon>
               {{ item.short_name }}
             </template>
-            <template v-slot:item.member="{ item }">
+            <template v-slot:[`item.member`]="{ item }">
               {{ item.member }}
             </template>
             <!-- <template v-slot:item.actions="{ item }">
