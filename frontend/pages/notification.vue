@@ -24,7 +24,7 @@
                 " outlined elevation="2">
           <form class="center" @submit.prevent="search">
             <v-icon color="purple">mdi-magnify</v-icon>
-            <input class="mr-3" type="text" v-model="query" placeholder="Search some ..." />
+            <input class="mr-3" type="text" v-model="query" placeholder="Search some Notification" />
           </form>
         </v-banner>
       </template>
@@ -32,7 +32,7 @@
     <v-divider></v-divider>
     <div>
       <v-card v-for="n in 1" :key="n" class="mt-10 mb-10" elevation="8">
-        <v-card-title>Stock Product {{ n }}</v-card-title>
+        <v-card-title>Stock Product</v-card-title>
         <v-row class="ml-0 pl-3">
           <v-icon color="green">mdi-circle</v-icon>
           <v-card-subtitle style="font-size: 19px; color: black"
@@ -48,7 +48,7 @@
       </v-card>
 
       <v-card v-for="n in 1" :key="n" class="mt-10 mb-10" elevation="8">
-        <v-card-title>Reset Password {{ n }}</v-card-title>
+        <v-card-title>Reset Password</v-card-title>
         <v-row class="ml-0 pl-3">
           <v-icon color="red">mdi-circle</v-icon>
           <v-card-subtitle style="font-size: 19px; color: black"

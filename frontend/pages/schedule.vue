@@ -12,7 +12,7 @@
                                 border-radius: 30px;
                                 padding: 0 0px;
                               " outlined elevation="2">
-                            <form class="center" @submit.prevent="search">
+                            <form class="center">
                                 <v-icon color="purple">mdi-magnify</v-icon>
                                 <input class="mr-3" type="text" v-model="query" placeholder="Search some task" />
                             </form>
@@ -22,6 +22,9 @@
                     <v-divider class="mr-4 ml-4" inset vertical style="background-color:black;"></v-divider>
                     <v-toolbar-title v-if="$refs.calendar">
                         {{ $refs.calendar.title }}
+                    </v-toolbar-title>
+                    <v-toolbar-title v-else>
+                        {{ months }} {{ years }}
                     </v-toolbar-title>
                     <v-btn fab text small color="grey darken-2" @click="prev">
                         <v-icon small>
@@ -38,23 +41,35 @@
                     </v-btn>
                     <v-spacer></v-spacer>
                     <v-chip>
-                        <v-chip class="mr-2" @click="(type = 'day')">
+                        <v-chip @click="(ClickDay()), (type = 'day')" style="border: none;" :style="{
+                            backgroundColor: colorday ? '#883cfe' : null,
+                            color: colorday ? 'white' : 'black',
+                        }" class="mr-2">
                             Day
                         </v-chip>
-                        <v-chip class="mr-2" @click="type = 'week'">
+                        <v-chip class="mr-2" @click="(ClickWeek()), type = 'week'" style="border: none;" :style="{
+                            backgroundColor: colorweek ? '#883cfe' : null,
+                            color: colorweek ? 'white' : 'black',
+                        }">
                             Week
                         </v-chip>
-                        <v-chip class="mr-2" @click="type = 'month'">
+                        <v-chip class="mr-2" @click="(ClickMonth()), type = 'month'" style="border: none;" :style="{
+                            backgroundColor: colormonth ? '#883cfe' : null,
+                            color: colormonth ? 'white' : 'black',
+                        }">
                             Month
                         </v-chip>
-                        <v-chip class="mr-2" @click="type = '4day'">
+                        <v-chip class="mr-2" @click="(Click4Day()), type = '4day'" style="border: none;" :style="{
+                            backgroundColor: color4day ? '#883cfe' : null,
+                            color: color4day ? 'white' : 'black',
+                        }">
                             4 Day
                         </v-chip>
                     </v-chip>
                 </v-toolbar>
             </v-sheet>
             <v-sheet height="500">
-                <v-calendar ref="calendar" v-model="focus" color="primary" :type="type" @click:date="viewDay">
+                <v-calendar ref="calendar" v-model="focus" color="primary" :type="type">
                 </v-calendar>
             </v-sheet>
         </v-col>
@@ -67,8 +82,16 @@ export default {
         const date = new Date();
         const month = date.toLocaleString('default', { month: 'long' });
         console.log(month);
+        const today = new Date();
+        const months = today.getMonth() + 1;
+        const year = today.getFullYear();
         return {
-            month: month,
+            colorday: false,
+            colorweek: false,
+            colormonth: false,
+            color4day: false,
+            months: month,
+            years: year,
             query: '',
             focus: '',
             type: 'month',
@@ -86,9 +109,32 @@ export default {
     mounted() {
         this.$refs.calendar.checkChange()
     },
-    created() {
-    },
+
     methods: {
+        ClickDay() {
+            this.colorday = !this.colorday;
+            this.colorweek = false;
+            this.colormonth = false;
+            this.color4day = false;
+        },
+        ClickWeek() {
+            this.colorweek = !this.colorweek;
+            this.colorday = false;
+            this.colormonth = false;
+            this.color4day = false;
+        },
+        ClickMonth() {
+            this.colormonth = !this.colormonth;
+            this.colorday = false;
+            this.colorweek = false;
+            this.color4day = false;
+        },
+        Click4Day() {
+            this.color4day = !this.color4day;
+            this.colorday = false;
+            this.colorweek = false;
+            this.colormonth = false;
+        },
         viewDay({ date }) {
             this.focus = date
             this.type = 'day'
@@ -101,33 +147,6 @@ export default {
         },
         next() {
             this.$refs.calendar.next()
-        },
-        updateRange({ start, end }) {
-            const events = []
-            const min = new Date(`${start.date}T00:00:00`)
-            const max = new Date(`${end.date}T23:59:59`)
-            const days = (max.getTime() - min.getTime()) / 86400000
-            const eventCount = this.rnd(days, days + 20)
-
-            for (let i = 0; i < eventCount; i++) {
-                const allDay = this.rnd(0, 3) === 0
-                const firstTimestamp = this.rnd(min.getTime(), max.getTime())
-                const first = new Date(firstTimestamp - (firstTimestamp % 900000))
-                const secondTimestamp = this.rnd(2, allDay ? 288 : 8) * 900000
-                const second = new Date(first.getTime() + secondTimestamp)
-
-                events.push({
-                    name: this.names[this.rnd(0, this.names.length - 1)],
-                    start: first,
-                    end: second,
-                    color: this.colors[this.rnd(0, this.colors.length - 1)],
-                    timed: !allDay,
-                })
-            }
-            this.events = events
-        },
-        rnd(a, b) {
-            return Math.floor((b - a + 1) * Math.random()) + a
         },
     },
 }
