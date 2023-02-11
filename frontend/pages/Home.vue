@@ -1,13 +1,11 @@
 <template>
   <div class="content mx-auto">
     <v-row class="mb-3 ml-4">
-      
-        <v-text-title class="center ml-4 mr-4 mt-0 mb-1" style="font-weight: bold; font-size: 20px">
+      <v-text-title class="center ml-4 mr-4 mt-0 mb-1" style="font-weight: bold; font-size: 20px;">
         Home
       </v-text-title>
-      <v-divider vertical inset></v-divider>
       
-      <v-divider class="mt-0 mb-1" inset vertical style="background-color: black"></v-divider>
+      <v-divider class="hidden-xs-only xs mt-0 mb-1" inset vertical style="background-color: black"></v-divider>
       
         <template>
         <v-banner class="mt-0 ml-4" style="
