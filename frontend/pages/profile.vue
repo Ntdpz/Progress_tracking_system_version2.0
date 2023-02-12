@@ -132,7 +132,7 @@
 
 <script>
 export default {
-    layout: "Nav",
+    layout: "admin",
     data() {
         return {
             name: "Mr.",

@@ -77,7 +77,7 @@
 </template>
 <script>
 export default {
-    layout: "Nav",
+    layout: "admin",
     data() {
         const date = new Date();
         const month = date.toLocaleString('default', { month: 'long' });

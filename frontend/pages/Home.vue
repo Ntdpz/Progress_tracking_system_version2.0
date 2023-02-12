@@ -130,7 +130,7 @@
 
 <script>
 export default {
-  layout: "Nav",
+  layout: "admin",
   data() {
     return {
       dialog_newproject: false,

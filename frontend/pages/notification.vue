@@ -69,7 +69,7 @@
 <script>
 export default {
   
-  layout: "Nav",
+  layout: "admin",
   data() {
     return {
       query: "",

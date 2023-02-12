@@ -527,7 +527,7 @@
 
 <script>
 export default {
-  layout: "Nav",
+  layout: "admin",
   directives: {
     "remove-row-borders": {
       inserted(el) {
