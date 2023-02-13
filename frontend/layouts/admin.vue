@@ -161,7 +161,7 @@ export default {
         {
           icon: "mdi-view-dashboard",
           title: "Dashboard",
-          to: "/dashboard",
+          to: "/",
         },
       ],
       right: true,

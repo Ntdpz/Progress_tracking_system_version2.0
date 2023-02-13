@@ -17,10 +17,10 @@
         style="
           border-radius: 99px;
           border: 2px solid #333;
-          height: 35px;
+          height: 32px;
           width: 15%;
           margin-left: 1%;
-          margin-top: 0.5%;
+          margin-top: 0.8%;
         "
       >
         <v-text-field
@@ -29,7 +29,7 @@
           rounded
           dense
           color="primary"
-          style="margin-top: 1.5px; margin-left: 3%"
+          style="margin-top: 1px; margin-left: 3%"
         ></v-text-field>
       </div>
     </v-row>
