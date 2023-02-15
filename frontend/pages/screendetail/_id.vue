@@ -52,9 +52,9 @@
                                 <v-col cols="4" style="place-self: center;">
                                     <h5 class="">Screen Code</h5>
                                 </v-col>
-                                <v-col cols="8" >
-                                    <v-text-field style="text-align-last: center;" v-model="screencode" hide-details="auto" dense
-                                        outlined></v-text-field>
+                                <v-col cols="8">
+                                    <v-text-field style="text-align-last: center;" v-model="screencode"
+                                        hide-details="auto" dense outlined></v-text-field>
                                 </v-col>
                             </v-row>
                             <v-row>
@@ -62,8 +62,8 @@
                                     <h5 class="">Screen Name</h5>
                                 </v-col>
                                 <v-col cols="8">
-                                    <v-text-field style="text-align-last: center;" v-model="screenname" hide-details="auto" dense
-                                        outlined></v-text-field>
+                                    <v-text-field style="text-align-last: center;" v-model="screenname"
+                                        hide-details="auto" dense outlined></v-text-field>
                                 </v-col>
                             </v-row>
                             <v-row>
@@ -71,7 +71,8 @@
                                     <h5 class="">Developer</h5>
                                 </v-col>
                                 <v-col cols="8">
-                                    <v-text-field style="text-align-last: center;" v-model="developer" hide-details="auto" dense outlined></v-text-field>
+                                    <v-text-field style="text-align-last: center;" v-model="developer"
+                                        hide-details="auto" dense outlined></v-text-field>
                                 </v-col>
                             </v-row>
                             <v-row>
@@ -79,8 +80,8 @@
                                     <h5 class="">Implementer</h5>
                                 </v-col>
                                 <v-col cols="8">
-                                    <v-text-field style="text-align-last: center;" v-model="implementer" hide-details="auto" dense
-                                        outlined></v-text-field>
+                                    <v-text-field style="text-align-last: center;" v-model="implementer"
+                                        hide-details="auto" dense outlined></v-text-field>
                                 </v-col>
                             </v-row>
                             <v-row>
@@ -89,7 +90,8 @@
                                 </v-col>
                                 <v-col cols="4">
                                     <template>
-                                        <v-text-field style="text-align-last: center;" v-model="status" hide-details="auto" readonly dense outlined>
+                                        <v-text-field style="text-align-last: center;" v-model="status"
+                                            hide-details="auto" readonly dense outlined>
                                             <template v-slot:prepend-inner>
                                                 <v-icon
                                                     :color="status === 'Complete' ? 'green' : 'red'">mdi-circle</v-icon>
@@ -102,7 +104,8 @@
                                     <h5 class="">Level</h5>
                                 </v-col>
                                 <v-col cols="4">
-                                    <v-text-field style="text-align-last: center;" v-model="level" hide-details="auto" dense outlined></v-text-field>
+                                    <v-text-field style="text-align-last: center;" v-model="level" hide-details="auto"
+                                        dense outlined></v-text-field>
                                 </v-col>
                             </v-row>
                             <v-row>
@@ -110,7 +113,8 @@
                                     <h5 class="">Manday</h5>
                                 </v-col>
                                 <v-col cols="4">
-                                    <v-text-field style="text-align-last: center;" v-model="manday" hide-details="auto" dense outlined></v-text-field>
+                                    <v-text-field style="text-align-last: center;" v-model="manday" hide-details="auto"
+                                        dense outlined></v-text-field>
                                 </v-col>
                             </v-row>
                             <!--  -->

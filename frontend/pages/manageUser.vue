@@ -57,8 +57,9 @@
                       {{ item.status }}
                     </template>
                     <!-- ปุ่ม Manage -->
-                    <template v-slot:[`item.actions`]>
-                      <v-btn color="primary" style="color: white; border-radius: 20px">
+                    <template v-slot:[`item.actions`]="{ item }">
+                      <v-btn @click="(dialog_manage = true), (editItem(item))" color="primary"
+                        style="color: white; border-radius: 20px">
                         Manage
                       </v-btn>
                     </template>
@@ -257,138 +258,276 @@
                   <span class="text-h5">Create User</span>
                 </v-card-title>
                 <!-- Form -->
-                  <v-row class="mb-2" no-gutters>
-                    <!-- Upload image -->
-                    <v-col class="col-12" col="12" sm="12" md="2">
-                      <v-card style="border: none;" class="mx-auto text-center" outlined tile height="100%">
-                        <!--  -->
-                        <template>
-                          <div>
-                            <form>
-                              <label class="mt-10 avatar-upload">
-                                <input type="file" ref="fileInput" @change="uploadFile" />
-                                <v-icon class="center mt-7" color="black" size="30px"
-                                  v-if="!avatar">mdi-cloud-upload-outline</v-icon>
-                                <img v-if="avatar" :src="avatar" />
-                              </label>
-                            </form>
-                          </div>
-                        </template>
-                        <!--  -->
-                      </v-card>
-                    </v-col>
-                    <!-- Input Form -->
-                    <v-col col="12" sm="12" md="10">
-                      <v-card style="border: none;" class="pa-2" outlined tile height="100%">
+                <v-row class="mb-2" no-gutters>
+                  <!-- Upload image -->
+                  <v-col class="col-12" col="12" sm="12" md="2">
+                    <v-card style="border: none;" class="mx-auto text-center" outlined tile height="100%">
+                      <!--  -->
+                      <template>
                         <div>
-                          <v-row class="mr-2" style="margin-bottom:-2%; font-size: 14px;">
-                            <v-col class="hidden-xs-only" cols="12" sm="7">
-                              First Name
-                            </v-col>
-                            
-                            <v-col class="hidden-xs-only" cols="12" sm="5" style="margin-right:-1%; padding-right:0%;">
-                              Last Name
-                            </v-col>
-                          </v-row>
-                          <!--  -->
-                          <v-row class="mr-2 mt-0" style="margin-bottom:-8%;">
-                            <v-col cols="12" sm="3" style="margin-right:-1%; padding-right:0%;">
-                              <v-select v-model="name" :items="missname" label="Mr/Miss" dense rounded solo></v-select>
-                            </v-col>
-                            <v-col cols="12" sm="4">
-                              <v-text-field v-model="firstname" label="First Name" dense rounded solo></v-text-field>
-                            </v-col>
-                            <v-col cols="12" sm="5">
-                              <v-text-field v-model="lastname" label="Last Name" dense rounded solo></v-text-field>
-                            </v-col>
-                          </v-row>
-                          <!--  -->
-                          <v-row class="mr-2" style="margin-bottom:-2%; font-size: 14px;">
-                            <v-col class="hidden-xs-only" cols="12" sm="4">
-                              Code
-                            </v-col>
-                            <v-col class="hidden-xs-only" cols="12" sm="4">
-                              Position
-                            </v-col>
-                            <v-col class="hidden-xs-only" cols="12" sm="4" style="margin-right:-1%; padding-right:0%;">
-                              Department
-                            </v-col>
-                          </v-row>
-                          <!--  -->
-                          <v-row class="mr-2 mt-0" style="margin-bottom:-6%;">
-                            <v-col cols="12" sm="4">
-                              <v-text-field v-model="code" label="Code" dense rounded solo></v-text-field>
-                            </v-col>
-                            <v-col cols="12" sm="4">
-                              <v-select v-model="position" :items="positions" label="Position" dense rounded
-                                solo></v-select>
-                            </v-col>
-                            <v-col cols="12" sm="4">
-                              <v-text-field v-model="department" label="Department" dense rounded solo></v-text-field>
-                            </v-col>
-                          </v-row>
-                          <!--  -->
-                          <v-row class="mr-2 mt-0" style="margin-bottom:-2%; font-size: 14px;">
-                            <v-col class="hidden-xs-only" cols="12" sm="12">
-                              E-mail
-                            </v-col>
-                          </v-row>
-                          <!--  -->
-                          <v-row class="mr-2 mt-0" style="margin-bottom:-6%;">
-                            <v-col cols="12" sm="12">
-                              <v-text-field v-model="email" label="E-mail" dense rounded solo></v-text-field>
-                            </v-col>
-                          </v-row>
-                          <!--  -->
-                          <v-row class="mr-2 mt-0" style="margin-bottom:-2%; font-size: 14px;">
-                            <v-col class="hidden-xs-only" cols="12" sm="12">
-                              Passwords
-                            </v-col>
-                          </v-row>
-                          <!--  -->
-                          <v-row class="mr-2 mt-0" style="margin-bottom:-4%;">
-                            <v-col class="" cols="12" sm="12">
-                              <v-text-field v-model="password" label="Password" dense rounded solo></v-text-field>
-                            </v-col>
-                          </v-row>
-                          <!--  -->
-                          <v-row class="mr-2 mt-0" style="margin-bottom:-2%; font-size: 14px;">
-                            <v-col class="hidden-xs-only" cols="12" sm="6">
-                              Status
-                            </v-col>
-                            <v-col class="hidden-xs-only" cols="12" sm="6">
-                              Role
-                            </v-col>
-                          </v-row>
-                          <!--  -->
-                          <v-row class="mr-2 mt-0" >
-                            <v-col cols="12" sm="6">
-                              <v-select v-model="statusform" :items="status" label="Status" dense rounded
-                                solo></v-select>
-                            </v-col>
-
-                            <v-col cols="12" sm="6">
-                              <v-select v-model="role" :items="roles" label="Role" dense rounded solo></v-select>
-                            </v-col>
-                            <!--  -->
-                          </v-row>
-                          <v-col>
-
-                          </v-col>
-                          <v-row class="mr-2 mt-0" style="justify-content: right;">
-                            <v-btn elevation="2" color="primary"
-                              style=" color: white; border-radius: 10px" @click="(dialog = false)">
-                              Create
-                            </v-btn>
-                          </v-row>
+                          <form>
+                            <label class="mt-10 avatar-upload">
+                              <input type="file" ref="fileInput" @change="uploadFile" />
+                              <v-icon class="center mt-7" color="black" size="30px"
+                                v-if="!photo">mdi-cloud-upload-outline</v-icon>
+                              <img v-if="photo" :src="photo" />
+                            </label>
+                          </form>
                         </div>
-                      </v-card>
-                    </v-col>
-                  </v-row>
+                      </template>
+                      <!--  -->
+                    </v-card>
+                  </v-col>
+                  <!-- Input Form -->
+                  <v-col col="12" sm="12" md="10">
+                    <v-card style="border: none;" class="pa-2" outlined tile height="100%">
+                      <div>
+                        <v-row class="mr-2" style="margin-bottom:-2%; font-size: 14px;">
+                          <v-col class="hidden-xs-only" cols="12" sm="7">
+                            First Name
+                          </v-col>
 
-                
+                          <v-col class="hidden-xs-only" cols="12" sm="5" style="margin-right:-1%; padding-right:0%;">
+                            Last Name
+                          </v-col>
+                        </v-row>
+                        <!--  -->
+                        <v-row class="mr-2 mt-0" style="margin-bottom:-8%;">
+                          <v-col cols="12" sm="3" style="margin-right:-1%; padding-right:0%;">
+                            <v-select v-model="name" :items="missname" label="Mr/Miss" dense rounded solo></v-select>
+                          </v-col>
+                          <v-col cols="12" sm="4">
+                            <v-text-field v-model="firstname" label="First Name" dense rounded solo></v-text-field>
+                          </v-col>
+                          <v-col cols="12" sm="5">
+                            <v-text-field v-model="lastname" label="Last Name" dense rounded solo></v-text-field>
+                          </v-col>
+                        </v-row>
+                        <!--  -->
+                        <v-row class="mr-2" style="margin-bottom:-2%; font-size: 14px;">
+                          <v-col class="hidden-xs-only" cols="12" sm="4">
+                            Code
+                          </v-col>
+                          <v-col class="hidden-xs-only" cols="12" sm="4">
+                            Position
+                          </v-col>
+                          <v-col class="hidden-xs-only" cols="12" sm="4" style="margin-right:-1%; padding-right:0%;">
+                            Department
+                          </v-col>
+                        </v-row>
+                        <!--  -->
+                        <v-row class="mr-2 mt-0" style="margin-bottom:-6%;">
+                          <v-col cols="12" sm="4">
+                            <v-text-field v-model="code" label="Code" dense rounded solo></v-text-field>
+                          </v-col>
+                          <v-col cols="12" sm="4">
+                            <v-select v-model="position" :items="positions" label="Position" dense rounded
+                              solo></v-select>
+                          </v-col>
+                          <v-col cols="12" sm="4">
+                            <v-text-field v-model="department" label="Department" dense rounded solo></v-text-field>
+                          </v-col>
+                        </v-row>
+                        <!--  -->
+                        <v-row class="mr-2 mt-0" style="margin-bottom:-2%; font-size: 14px;">
+                          <v-col class="hidden-xs-only" cols="12" sm="12">
+                            E-mail
+                          </v-col>
+                        </v-row>
+                        <!--  -->
+                        <v-row class="mr-2 mt-0" style="margin-bottom:-6%;">
+                          <v-col cols="12" sm="12">
+                            <v-text-field v-model="email" label="E-mail" dense rounded solo></v-text-field>
+                          </v-col>
+                        </v-row>
+                        <!--  -->
+                        <v-row class="mr-2 mt-0" style="margin-bottom:-2%; font-size: 14px;">
+                          <v-col class="hidden-xs-only" cols="12" sm="12">
+                            Passwords
+                          </v-col>
+                        </v-row>
+                        <!--  -->
+                        <v-row class="mr-2 mt-0" style="margin-bottom:-4%;">
+                          <v-col class="" cols="12" sm="12">
+                            <v-text-field v-model="password" label="Password" dense rounded solo></v-text-field>
+                          </v-col>
+                        </v-row>
+                        <!--  -->
+                        <v-row class="mr-2 mt-0" style="margin-bottom:-2%; font-size: 14px;">
+                          <v-col class="hidden-xs-only" cols="12" sm="6">
+                            Status
+                          </v-col>
+                          <v-col class="hidden-xs-only" cols="12" sm="6">
+                            Role
+                          </v-col>
+                        </v-row>
+                        <!--  -->
+                        <v-row class="mr-2 mt-0">
+                          <v-col cols="12" sm="6">
+                            <v-select v-model="statusform" :items="status" label="Status" dense rounded solo></v-select>
+                          </v-col>
+
+                          <v-col cols="12" sm="6">
+                            <v-select v-model="role" :items="roles" label="Role" dense rounded solo></v-select>
+                          </v-col>
+                          <!--  -->
+                        </v-row>
+                        <v-col>
+
+                        </v-col>
+                        <v-row class="mr-2 mt-0" style="justify-content: right;">
+                          <v-btn elevation="2" color="primary" style=" color: white; border-radius: 10px"
+                            @click="(dialog = false)">
+                            Create
+                          </v-btn>
+                        </v-row>
+                      </div>
+                    </v-card>
+                  </v-col>
+                </v-row>
                 <!-- End Form -->
+              </v-card>
+            </v-dialog>
+            <!-- Dialog for button manage -->
+            <v-dialog v-model="dialog_manage" width="900px" max-height="100%">
+              <v-card class="mx-auto" height="580px" max-height="100%">
+                <v-card-title>
+                  <span class="text-h5">Create User</span>
+                </v-card-title>
+                <!-- Form -->
+                <v-row class="mb-2" no-gutters>
+                  <!-- Upload image -->
+                  <v-col class="col-12" col="12" sm="12" md="2">
+                    <v-card style="border: none;" class="mx-auto text-center" outlined tile height="100%">
+                      <!--  -->
+                      <template>
+                        <div>
+                          <form>
+                            <label class="mt-10 avatar-upload">
+                              <input type="file" ref="fileInput" @change="uploadFile_manage" />
+                              <v-icon class="center mt-7" color="black" size="30px"
+                                v-if="!editedItem.photo">mdi-cloud-upload-outline</v-icon>
+                              <img v-if="editedItem.photo" :src="editedItem.photo" />
+                            </label>
+                          </form>
+                        </div>
+                      </template>
+                      <!--  -->
+                    </v-card>
+                  </v-col>
+                  <!-- Input Form -->
+                  <v-col col="12" sm="12" md="10">
+                    <v-card style="border: none;" class="pa-2" outlined tile height="100%">
+                      <div>
+                        <v-row class="mr-2" style="margin-bottom:-2%; font-size: 14px;">
+                          <v-col class="hidden-xs-only" cols="12" sm="7">
+                            First Name
+                          </v-col>
 
+                          <v-col class="hidden-xs-only" cols="12" sm="5" style="margin-right:-1%; padding-right:0%;">
+                            Last Name
+                          </v-col>
+                        </v-row>
+                        <!--  -->
+                        <v-row class="mr-2 mt-0" style="margin-bottom:-8%;">
+                          <v-col cols="12" sm="3" style="margin-right:-1%; padding-right:0%;">
+                            <v-select v-model="editedItem.missname" :items="missname" label="Mr/Miss" dense rounded
+                              solo></v-select>
+                          </v-col>
+                          <v-col cols="12" sm="4">
+                            <v-text-field v-model="editedItem.name" label="First Name" dense rounded
+                              solo></v-text-field>
+                          </v-col>
+                          <v-col cols="12" sm="5">
+                            <v-text-field v-model="editedItem.lastname" label="Last Name" dense rounded
+                              solo></v-text-field>
+                          </v-col>
+                        </v-row>
+                        <!--  -->
+                        <v-row class="mr-2" style="margin-bottom:-2%; font-size: 14px;">
+                          <v-col class="hidden-xs-only" cols="12" sm="4">
+                            Code
+                          </v-col>
+                          <v-col class="hidden-xs-only" cols="12" sm="4">
+                            Position
+                          </v-col>
+                          <v-col class="hidden-xs-only" cols="12" sm="4" style="margin-right:-1%; padding-right:0%;">
+                            Department
+                          </v-col>
+                        </v-row>
+                        <!--  -->
+                        <v-row class="mr-2 mt-0" style="margin-bottom:-6%;">
+                          <v-col cols="12" sm="4">
+                            <v-text-field v-model="editedItem.code" label="Code" dense rounded solo></v-text-field>
+                          </v-col>
+                          <v-col cols="12" sm="4">
+                            <v-select v-model="editedItem.position" :items="positions" label="Position" dense rounded
+                              solo></v-select>
+                          </v-col>
+                          <v-col cols="12" sm="4">
+                            <v-text-field v-model="editedItem.department" label="Department" dense rounded
+                              solo></v-text-field>
+                          </v-col>
+                        </v-row>
+                        <!--  -->
+                        <v-row class="mr-2 mt-0" style="margin-bottom:-2%; font-size: 14px;">
+                          <v-col class="hidden-xs-only" cols="12" sm="12">
+                            E-mail
+                          </v-col>
+                        </v-row>
+                        <!--  -->
+                        <v-row class="mr-2 mt-0" style="margin-bottom:-6%;">
+                          <v-col cols="12" sm="12">
+                            <v-text-field v-model="editedItem.email" label="E-mail" dense rounded solo></v-text-field>
+                          </v-col>
+                        </v-row>
+                        <!--  -->
+                        <v-row class="mr-2 mt-0" style="margin-bottom:-2%; font-size: 14px;">
+                          <v-col class="hidden-xs-only" cols="12" sm="12">
+                            Passwords
+                          </v-col>
+                        </v-row>
+                        <!--  -->
+                        <v-row class="mr-2 mt-0" style="margin-bottom:-4%;">
+                          <v-col class="" cols="12" sm="12">
+                            <v-text-field v-model="editedItem.password" label="Password" dense rounded
+                              solo></v-text-field>
+                          </v-col>
+                        </v-row>
+                        <!--  -->
+                        <v-row class="mr-2 mt-0" style="margin-bottom:-2%; font-size: 14px;">
+                          <v-col class="hidden-xs-only" cols="12" sm="6">
+                            Status
+                          </v-col>
+                          <v-col class="hidden-xs-only" cols="12" sm="6">
+                            Role
+                          </v-col>
+                        </v-row>
+                        <!--  -->
+                        <v-row class="mr-2 mt-0">
+                          <v-col cols="12" sm="6">
+                            <v-select v-model="editedItem.status" :items="status" label="Status" dense rounded
+                              solo></v-select>
+                          </v-col>
+                          <v-col cols="12" sm="6">
+                            <v-select v-model="editedItem.role" :items="roles" label="Role" dense rounded
+                              solo></v-select>
+                          </v-col>
+                          <!--  -->
+                        </v-row>
+                        <v-col>
+                        </v-col>
+                        <v-row class="mr-2 mt-0" style="justify-content: right;">
+                          <v-btn elevation="2" color="primary" style=" color: white; border-radius: 10px"
+                            @click="(dialog_manage = false)">
+                            Create
+                          </v-btn>
+                        </v-row>
+                      </div>
+                    </v-card>
+                  </v-col>
+                </v-row>
+                <!-- End Form -->
               </v-card>
             </v-dialog>
             <!--  -->
@@ -404,7 +543,7 @@ export default {
   layout: "admin",
   data() {
     return {
-      avatar: null,
+      photo: null,
       name: '',
       firstname: '',
       lastname: '',
@@ -414,8 +553,24 @@ export default {
       email: '',
       password: '',
       role: '',
-      query: '',
       statusform: '',
+      query: '',
+      editedIndex: -1,
+      editedItem: {
+        photo: null,
+        missname: '',
+        name: '',
+        firstname: '',
+        lastname: '',
+        code: '',
+        position: '',
+        department: '',
+        // email: '',
+        // password: '',
+        status: '',
+        role: '',
+      },
+
       tab: null,
       items: [
         'All', 'Developer', 'Implementer', 'Program Management', 'System Analyst', 'report developer',
@@ -424,6 +579,7 @@ export default {
       positions: ['Developer', 'Implementer', 'Program Management', 'System Analyst', 'Report Developer'],
       dialog: false,
       dialogDelete: false,
+      dialog_manage: false,
       headers: [
         {
           text: 'Photo',
@@ -444,20 +600,6 @@ export default {
       implementer: [],
       missname: ['Mr', 'Miss'],
       status: ['Active'],
-      editedItem: {
-        name: '',
-        calories: 0,
-        fat: 0,
-        carbs: 0,
-        protein: 0,
-      },
-      defaultItem: {
-        name: '',
-        calories: 0,
-        fat: 0,
-        carbs: 0,
-        protein: 0,
-      },
     }
   },
   created() {
@@ -539,18 +681,35 @@ export default {
       ];
       this.reportdev = [];
     },
+
+    editItem(item) {
+      this.editedItem = Object.assign({}, item)
+      this.dialog_manage = true
+    },
+
     uploadFile() {
       const input = this.$refs.fileInput
       const file = input.files[0]
       try {
-        this.avatar = URL.createObjectURL(file)
+        this.photo = URL.createObjectURL(file)
 
         // Do something with the file, for example upload to a server
       } catch (error) {
         console.error(error)
-        this.avatar = null
+        this.photo = null
       }
-    }
+    },
+    uploadFile_manage() {
+      const input2 = this.$refs.fileInput
+      const file2 = input2.files[0]
+      try {
+        this.editedItem.photo = URL.createObjectURL(file2)
+        // Do something with the file, for example upload to a server
+      } catch (error) {
+        console.error(error)
+        this.editedItem.photo = null
+      }
+    },
   },
 }
 </script>
