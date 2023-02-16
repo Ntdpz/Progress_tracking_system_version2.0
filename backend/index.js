@@ -1,34 +1,19 @@
-const express = require("express");
+// module.exports = connection;
+var cors = require("cors");
 const bodyParser = require("body-parser");
+const express = require('express');
 const app = express();
-const mysql = require("mysql");
+const usersRouter = require('./router/users');
 
-const port = 7777; // port
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cors({ origin: true }));
+app.use(cors());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
-const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "",
-});
+app.use('/users', usersRouter);
 
-db.connect((err) => {
-  if (err) {
-    console.error("error connecting: " + err.stack);
-    return;
-  }
-  console.log("connected as id " + db.threadId);
-});
-
-app.get("/hello", (req, res, next) => {
-  res.send("hello");
-});
-
-app.use((req, res) => {
-    res.status(404).send({ url: `${req.originalUrl} not found` });
-});
-
-// *Port
-app.listen(process.env.PORT || port, function () {
-    console.log('Node app is running on 7777');
+app.listen(7777, () => {
+  console.log('Server listening on port 7777');
 });
