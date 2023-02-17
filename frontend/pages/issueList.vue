@@ -96,8 +96,19 @@
             <!-- *dialog -->
             <v-dialog v-model="dialog" persistent max-width="600px">
               <template v-slot:activator="{ on, attrs }">
-                <v-btn class="new-btn ma-2 text-left" outlined color="indigo" dark v-bind="attrs" v-on="on" block>
-                  <span class="mdi mdi-plus-circle-outline" style="font-size: 20px; color: black"></span>
+                <v-btn
+                  class="new-btn ma-2 text-left"
+                  outlined
+                  color="indigo"
+                  dark
+                  v-bind="attrs"
+                  v-on="on"
+                  block
+                >
+                  <span
+                    class="mdi mdi-plus-circle-outline"
+                    style="font-size: 20px; color: black"
+                  ></span>
                   <h4 style="color: black">Add New Issue</h4>
                 </v-btn>
               </template>
@@ -116,53 +127,122 @@
                   <v-container>
                     <v-row>
                       <v-col cols="12" sm="6" md="4">
-                        <v-text-field label="Issue No." placeholder="Issue No." outlined dense></v-text-field>
+                        <v-text-field
+                          label="Issue No."
+                          placeholder="Issue No."
+                          outlined
+                          dense
+                        ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="8" md="8">
-                        <v-text-field label="Issue Name" placeholder="Issue Name" outlined dense></v-text-field>
+                        <v-text-field
+                          label="Issue Name"
+                          placeholder="Issue Name"
+                          outlined
+                          dense
+                        ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6" md="4">
-                        <v-select :items="type_select" label="PNI/PNC/New Req" dense outlined v-model="type"></v-select>
+                        <v-select
+                          :items="type_select"
+                          label="PNI/PNC/New Req"
+                          dense
+                          outlined
+                          v-model="type"
+                        ></v-select>
                       </v-col>
                       <v-col cols="12" sm="6" md="4">
-                        <v-select :items="screen_select" label="Screen No." dense outlined></v-select>
+                        <v-select
+                          :items="screen_select"
+                          label="Screen No."
+                          dense
+                          outlined
+                        ></v-select>
                       </v-col>
                       <v-col cols="12" sm="6" md="4">
-                        <v-text-field label="Informer" placeholder="Implementer" outlined dense></v-text-field>
+                        <v-text-field
+                          label="Informer"
+                          placeholder="Implementer"
+                          outlined
+                          dense
+                        ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6" md="4">
-                        <v-select :items="priotity_select" label="Priotity" dense outlined
-                          prepend-icon="mdi-flag-outline"></v-select>
+                        <v-select
+                          :items="priotity_select"
+                          label="Priotity"
+                          dense
+                          outlined
+                          prepend-icon="mdi-flag-outline"
+                        ></v-select>
                       </v-col>
                       <v-col cols="12" sm="6" md="4">
-                        <v-menu ref="menu" v-model="menu" :close-on-content-click="false" :return-value.sync="date"
-                          transition="scale-transition" offset-y min-width="auto">
+                        <v-menu
+                          ref="menu"
+                          v-model="menu"
+                          :close-on-content-click="false"
+                          :return-value.sync="date"
+                          transition="scale-transition"
+                          offset-y
+                          min-width="auto"
+                        >
                           <template v-slot:activator="{ on, attrs }">
-                            <v-text-field v-model="date" label="Picker in menu" prepend-icon="mdi-calendar" readonly
-                              v-bind="attrs" v-on="on" class="pt-0"></v-text-field>
+                            <v-text-field
+                              v-model="date"
+                              label="Picker in menu"
+                              prepend-icon="mdi-calendar"
+                              readonly
+                              v-bind="attrs"
+                              v-on="on"
+                              class="pt-0"
+                            ></v-text-field>
                           </template>
                           <v-date-picker v-model="date" no-title scrollable>
                             <v-spacer></v-spacer>
                             <v-btn text color="primary" @click="menu = false">
                               Cancel
                             </v-btn>
-                            <v-btn text color="primary" @click="$refs.menu.save(date)">
+                            <v-btn
+                              text
+                              color="primary"
+                              @click="$refs.menu.save(date)"
+                            >
                               OK
                             </v-btn>
                           </v-date-picker>
                         </v-menu>
                       </v-col>
                       <v-col cols="12" sm="4" md="2">
-                        <v-select :items="dev_select" label="Dev" dense outlined></v-select>
+                        <v-select
+                          :items="dev_select"
+                          label="Dev"
+                          dense
+                          outlined
+                        ></v-select>
                       </v-col>
                       <v-col cols="12" sm="4" md="2">
-                        <v-select :items="qc_select" label="QC" dense outlined></v-select>
+                        <v-select
+                          :items="qc_select"
+                          label="QC"
+                          dense
+                          outlined
+                        ></v-select>
                       </v-col>
                       <v-col cols="12" sm="6" md="4" v-show="PNC">
-                        <v-text-field label="Document No." placeholder="Document No." outlined dense></v-text-field>
+                        <v-text-field
+                          label="Document No."
+                          placeholder="Document No."
+                          outlined
+                          dense
+                        ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="8" md="8" v-show="PNC">
-                        <v-text-field label="Customer Name" placeholder="Customer Name" outlined dense></v-text-field>
+                        <v-text-field
+                          label="Customer Name"
+                          placeholder="Customer Name"
+                          outlined
+                          dense
+                        ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6" md="6" v-show="Newreq">
                         <v-container fluid class="ma-0 pa-0">
@@ -170,23 +250,48 @@
                           <v-row>
                             <v-col>
                               <v-row>
-                                <v-checkbox v-model="selected" label="UI" value="UI"></v-checkbox>
+                                <v-checkbox
+                                  v-model="selected"
+                                  label="UI"
+                                  value="UI"
+                                ></v-checkbox>
                               </v-row>
                               <v-row>
-                                <v-checkbox v-model="selected" label="Business" value="Business"></v-checkbox>
+                                <v-checkbox
+                                  v-model="selected"
+                                  label="Business"
+                                  value="Business"
+                                ></v-checkbox>
                               </v-row>
                               <v-row>
-                                <v-checkbox v-model="selected" label="Data" value="Data"></v-checkbox></v-row>
+                                <v-checkbox
+                                  v-model="selected"
+                                  label="Data"
+                                  value="Data"
+                                ></v-checkbox
+                              ></v-row>
                             </v-col>
                             <v-col>
                               <v-row>
-                                <v-checkbox v-model="selected" label="Servies" value="Servies"></v-checkbox>
+                                <v-checkbox
+                                  v-model="selected"
+                                  label="Servies"
+                                  value="Servies"
+                                ></v-checkbox>
                               </v-row>
                               <v-row>
-                                <v-checkbox v-model="selected" label="Report" value="Report"></v-checkbox>
+                                <v-checkbox
+                                  v-model="selected"
+                                  label="Report"
+                                  value="Report"
+                                ></v-checkbox>
                               </v-row>
                               <v-row>
-                                <v-checkbox v-model="selected" label="Training" value="Training"></v-checkbox>
+                                <v-checkbox
+                                  v-model="selected"
+                                  label="Training"
+                                  value="Training"
+                                ></v-checkbox>
                               </v-row>
                             </v-col>
                           </v-row>
@@ -194,13 +299,25 @@
                       </v-col>
                       <v-col cols="12" sm="6" md="6" v-show="Newreq">
                         <p>Note for SA</p>
-                        <v-textarea solo name="input-7-4" label="Note for SA"></v-textarea>
+                        <v-textarea
+                          solo
+                          name="input-7-4"
+                          label="Note for SA"
+                        ></v-textarea>
                       </v-col>
                       <v-col cols="12" class="mt-0">
-                        <v-textarea solo name="input-7-4" label="Description"></v-textarea>
+                        <v-textarea
+                          solo
+                          name="input-7-4"
+                          label="Description"
+                        ></v-textarea>
                       </v-col>
                       <v-col cols="12">
-                        <v-file-input label="File input" outlined dense></v-file-input>
+                        <v-file-input
+                          label="File input"
+                          outlined
+                          dense
+                        ></v-file-input>
                       </v-col>
                     </v-row>
                   </v-container>
@@ -231,12 +348,20 @@
           </v-tabs>
 
           <!-- *Table 1 -->
-          <v-data-table :headers="headers" :items="issue" sort-by="calories" class="v-data-table elevation-1 mb-2"
-            v-remove-row-borders>
+          <v-data-table
+            :headers="headers"
+            :items="issue"
+            sort-by="calories"
+            class="v-data-table elevation-1 mb-2"
+            v-remove-row-borders
+          >
             <template v-slot:top>
               <v-toolbar flat>
                 <v-toolbar-title>
-                  <h5 class="pa-1" style="background-color: #1cff17; text-align: left">
+                  <h5
+                    class="pa-1"
+                    style="background-color: #1cff17; text-align: left"
+                  >
                     Own issue
                   </h5>
                 </v-toolbar-title>
@@ -259,7 +384,12 @@
               <!-- {{ item.issue_assignees }} -->
             </template>
             <template v-slot:[`item.actions`]>
-              <v-icon class="mr-2" @click="infoItem()">
+              <v-icon
+                class="mr-2"
+                @click="infoItem()"
+                size="20"
+                color="primary"
+              >
                 mdi-information-outline
               </v-icon>
             </template>
@@ -277,7 +407,10 @@
                     <v-col> Screen 1 </v-col>
                     <v-col> Finished </v-col>
                     <v-col>
-                      <v-icon style="color: #ff0000">mdi-flag-outline</v-icon></v-col>
+                      <v-icon style="color: #ff0000"
+                        >mdi-flag-outline</v-icon
+                      ></v-col
+                    >
                     <v-col> Nov 31, 2022 </v-col>
                   </v-row>
 
@@ -285,19 +418,34 @@
                     <v-col cols="6">
                       <v-row>
                         <p class="pa-2">Name</p>
-                        <v-text-field label="Issue No." placeholder="Issue No." outlined dense></v-text-field>
+                        <v-text-field
+                          label="Issue No."
+                          placeholder="Issue No."
+                          outlined
+                          dense
+                        ></v-text-field>
                       </v-row>
                     </v-col>
                   </v-row>
                   <v-row>
                     <v-col cols="12">
-                      <v-textarea solo name="input-7-4" label="Note for SA"></v-textarea></v-col>
+                      <v-textarea
+                        solo
+                        name="input-7-4"
+                        label="Note for SA"
+                      ></v-textarea
+                    ></v-col>
                   </v-row>
                   <v-row>
                     <v-col cols="6">
                       <v-row>
                         <p class="pa-2">Informer</p>
-                        <v-text-field label="Issue No." placeholder="Issue No." outlined dense></v-text-field>
+                        <v-text-field
+                          label="Issue No."
+                          placeholder="Issue No."
+                          outlined
+                          dense
+                        ></v-text-field>
                       </v-row>
                     </v-col>
                   </v-row>
@@ -337,25 +485,48 @@
                 </v-col>
 
                 <!-- col ใหญ่ฝั่งขวา -->
-                <v-col><v-row class="ml-2">
+                <v-col
+                  ><v-row class="ml-2">
                     <v-col>
                       <v-row class="text-h6"> Developer Section 1 </v-row>
                       <v-row class="mt-5">
                         <v-col cols="6">
                           <v-row>
                             <p class="pa-2">Date of accepting</p>
-                            <v-menu ref="menu" v-model="menu" :close-on-content-click="false" :return-value.sync="date"
-                              transition="scale-transition" offset-y min-width="auto">
+                            <v-menu
+                              ref="menu"
+                              v-model="menu"
+                              :close-on-content-click="false"
+                              :return-value.sync="date"
+                              transition="scale-transition"
+                              offset-y
+                              min-width="auto"
+                            >
                               <template v-slot:activator="{ on, attrs }">
-                                <v-text-field v-model="date" label="Picker in menu" prepend-icon="mdi-calendar" readonly
-                                  v-bind="attrs" v-on="on" class="pt-0"></v-text-field>
+                                <v-text-field
+                                  v-model="date"
+                                  label="Picker in menu"
+                                  prepend-icon="mdi-calendar"
+                                  readonly
+                                  v-bind="attrs"
+                                  v-on="on"
+                                  class="pt-0"
+                                ></v-text-field>
                               </template>
                               <v-date-picker v-model="date" no-title scrollable>
                                 <v-spacer></v-spacer>
-                                <v-btn text color="primary" @click="menu = false">
+                                <v-btn
+                                  text
+                                  color="primary"
+                                  @click="menu = false"
+                                >
                                   Cancel
                                 </v-btn>
-                                <v-btn text color="primary" @click="$refs.menu.save(date)">
+                                <v-btn
+                                  text
+                                  color="primary"
+                                  @click="$refs.menu.save(date)"
+                                >
                                   OK
                                 </v-btn>
                               </v-date-picker>
@@ -367,7 +538,12 @@
                         <v-col cols="6">
                           <v-row>
                             <p class="pa-2">Manday</p>
-                            <v-text-field label="Manday" placeholder="Manday" outlined dense></v-text-field>
+                            <v-text-field
+                              label="Manday"
+                              placeholder="Manday"
+                              outlined
+                              dense
+                            ></v-text-field>
                           </v-row>
                         </v-col>
                       </v-row>
@@ -383,34 +559,78 @@
                       <v-row>
                         <v-col cols="6">
                           <v-row>
-                            <v-menu ref="menu" v-model="menu" :close-on-content-click="false" :return-value.sync="date"
-                              transition="scale-transition" offset-y min-width="auto">
+                            <v-menu
+                              ref="menu"
+                              v-model="menu"
+                              :close-on-content-click="false"
+                              :return-value.sync="date"
+                              transition="scale-transition"
+                              offset-y
+                              min-width="auto"
+                            >
                               <template v-slot:activator="{ on, attrs }">
-                                <v-text-field v-model="date" label="Picker in menu" prepend-icon="mdi-calendar" readonly
-                                  v-bind="attrs" v-on="on" class="pt-0"></v-text-field>
+                                <v-text-field
+                                  v-model="date"
+                                  label="Picker in menu"
+                                  prepend-icon="mdi-calendar"
+                                  readonly
+                                  v-bind="attrs"
+                                  v-on="on"
+                                  class="pt-0"
+                                ></v-text-field>
                               </template>
                               <v-date-picker v-model="date" no-title scrollable>
                                 <v-spacer></v-spacer>
-                                <v-btn text color="primary" @click="menu = false">
+                                <v-btn
+                                  text
+                                  color="primary"
+                                  @click="menu = false"
+                                >
                                   Cancel
                                 </v-btn>
-                                <v-btn text color="primary" @click="$refs.menu.save(date)">
+                                <v-btn
+                                  text
+                                  color="primary"
+                                  @click="$refs.menu.save(date)"
+                                >
                                   OK
                                 </v-btn>
                               </v-date-picker>
                             </v-menu>
-                            <v-menu ref="menu" v-model="menu" :close-on-content-click="false" :return-value.sync="date"
-                              transition="scale-transition" offset-y min-width="auto">
+                            <v-menu
+                              ref="menu"
+                              v-model="menu"
+                              :close-on-content-click="false"
+                              :return-value.sync="date"
+                              transition="scale-transition"
+                              offset-y
+                              min-width="auto"
+                            >
                               <template v-slot:activator="{ on, attrs }">
-                                <v-text-field v-model="date" label="Picker in menu" prepend-icon="mdi-calendar" readonly
-                                  v-bind="attrs" v-on="on" class="pt-0"></v-text-field>
+                                <v-text-field
+                                  v-model="date"
+                                  label="Picker in menu"
+                                  prepend-icon="mdi-calendar"
+                                  readonly
+                                  v-bind="attrs"
+                                  v-on="on"
+                                  class="pt-0"
+                                ></v-text-field>
                               </template>
                               <v-date-picker v-model="date" no-title scrollable>
                                 <v-spacer></v-spacer>
-                                <v-btn text color="primary" @click="menu = false">
+                                <v-btn
+                                  text
+                                  color="primary"
+                                  @click="menu = false"
+                                >
                                   Cancel
                                 </v-btn>
-                                <v-btn text color="primary" @click="$refs.menu.save(date)">
+                                <v-btn
+                                  text
+                                  color="primary"
+                                  @click="$refs.menu.save(date)"
+                                >
                                   OK
                                 </v-btn>
                               </v-date-picker>
@@ -424,7 +644,12 @@
                         <v-col cols="6">
                           <v-row>
                             <p class="pa-2">Status</p>
-                            <v-text-field label="Status" placeholder="Status" outlined dense></v-text-field>
+                            <v-text-field
+                              label="Status"
+                              placeholder="Status"
+                              outlined
+                              dense
+                            ></v-text-field>
                           </v-row>
                         </v-col>
                       </v-row>
@@ -432,18 +657,40 @@
                         <v-col cols="6">
                           <v-row>
                             <p class="pa-2">Completion date</p>
-                            <v-menu ref="menu" v-model="menu" :close-on-content-click="false" :return-value.sync="date"
-                              transition="scale-transition" offset-y min-width="auto">
+                            <v-menu
+                              ref="menu"
+                              v-model="menu"
+                              :close-on-content-click="false"
+                              :return-value.sync="date"
+                              transition="scale-transition"
+                              offset-y
+                              min-width="auto"
+                            >
                               <template v-slot:activator="{ on, attrs }">
-                                <v-text-field v-model="date" label="Picker in menu" prepend-icon="mdi-calendar" readonly
-                                  v-bind="attrs" v-on="on" class="pt-0"></v-text-field>
+                                <v-text-field
+                                  v-model="date"
+                                  label="Picker in menu"
+                                  prepend-icon="mdi-calendar"
+                                  readonly
+                                  v-bind="attrs"
+                                  v-on="on"
+                                  class="pt-0"
+                                ></v-text-field>
                               </template>
                               <v-date-picker v-model="date" no-title scrollable>
                                 <v-spacer></v-spacer>
-                                <v-btn text color="primary" @click="menu = false">
+                                <v-btn
+                                  text
+                                  color="primary"
+                                  @click="menu = false"
+                                >
                                   Cancel
                                 </v-btn>
-                                <v-btn text color="primary" @click="$refs.menu.save(date)">
+                                <v-btn
+                                  text
+                                  color="primary"
+                                  @click="$refs.menu.save(date)"
+                                >
                                   OK
                                 </v-btn>
                               </v-date-picker>
@@ -454,11 +701,17 @@
                       <v-row>
                         <v-col cols="6">
                           <p class="">Cause / Remedy</p>
-                          <v-textarea solo name="input-7-4" label="Note for SA"></v-textarea>
+                          <v-textarea
+                            solo
+                            name="input-7-4"
+                            label="Note for SA"
+                          ></v-textarea>
                         </v-col>
                       </v-row>
                       <v-row class="justify-center mr-16 mt-5">
-                        <v-btn color="primary" @click="dialogInfo = false">Update</v-btn>
+                        <v-btn color="primary" @click="dialogInfo = false"
+                          >Update</v-btn
+                        >
                       </v-row>
                     </v-col>
                   </v-row>
@@ -472,30 +725,49 @@
                     <v-col cols="6">
                       <v-row>
                         <p class="pa-2">Status</p>
-                        <v-text-field label="Status" placeholder="Status" outlined dense></v-text-field>
+                        <v-text-field
+                          label="Status"
+                          placeholder="Status"
+                          outlined
+                          dense
+                        ></v-text-field>
                       </v-row>
                     </v-col>
                   </v-row>
                   <v-row>
                     <v-col cols="6">
                       <p class="">Cause / Remedy</p>
-                      <v-textarea solo name="input-7-4" label="Note for SA"></v-textarea>
+                      <v-textarea
+                        solo
+                        name="input-7-4"
+                        label="Note for SA"
+                      ></v-textarea>
                     </v-col>
                   </v-row>
                   <v-row class="justify-center mr-16">
-                    <v-btn color="primary" @click="dialogInfo = false">Close</v-btn>
+                    <v-btn color="primary" @click="dialogInfo = false"
+                      >Close</v-btn
+                    >
                   </v-row>
                 </v-col>
               </v-row>
             </v-card>
           </v-dialog>
           <!-- *Table 2 -->
-          <v-data-table :headers="headers" :items="issue" sort-by="calories" class="v-data-table elevation-1"
-            v-remove-row-borders>
+          <v-data-table
+            :headers="headers"
+            :items="issue"
+            sort-by="calories"
+            class="v-data-table elevation-1"
+            v-remove-row-borders
+          >
             <template v-slot:top>
               <v-toolbar flat>
                 <v-toolbar-title>
-                  <h5 class="pa-1" style="background-color: #aaaaaa; text-align: left">
+                  <h5
+                    class="pa-1"
+                    style="background-color: #aaaaaa; text-align: left"
+                  >
                     No one assigned
                   </h5>
                 </v-toolbar-title>
@@ -516,6 +788,16 @@
             <template v-slot:[`item.issue_assignees`]>
               <v-icon style="color: black">mdi-account-circle</v-icon>
               <!-- {{ item.issue_assignees }} -->
+            </template>
+            <template v-slot:[`item.actions`]>
+              <v-icon
+                class="mr-2"
+                @click="infoItem()"
+                size="20"
+                color="primary"
+              >
+                mdi-information-outline
+              </v-icon>
             </template>
           </v-data-table>
         </v-expansion-panel-content>

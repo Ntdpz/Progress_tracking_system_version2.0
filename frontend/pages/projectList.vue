@@ -249,11 +249,16 @@
             <template v-slot:[`item.member`]="{ item }">
               {{ item.member }}
             </template>
-            <!-- <template v-slot:item.actions="{ item }">
-              <v-icon class="mr-2" @click="infoItem()">
-                mdi-information-outline
+            <template v-slot:[`item.actions`]>
+              <v-icon
+                class="mr-2"
+                :to="`/systemdetail`"
+                size="20"
+                color="primary"
+              >
+                fa fa-angle-double-right
               </v-icon>
-            </template> -->
+            </template>
           </v-data-table>
         </v-expansion-panel-content>
       </v-expansion-panel>
@@ -287,6 +292,7 @@ export default {
         },
         { text: "Short system name", value: "short_name", sortable: false },
         { text: "Member", value: "member" },
+        { text: "Actions", value: "actions", sortable: false },
         // { text: "Actions", value: "actions", sortable: false },
       ],
       issue: [],
