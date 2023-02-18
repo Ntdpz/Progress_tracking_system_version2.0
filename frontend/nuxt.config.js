@@ -16,6 +16,13 @@ export default {
     ],
     link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
   },
+  target: 'static',
+  buildModules: [
+    '@nuxt/image',
+  ],
+  image: {
+    // Options
+  },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: ['@fortawesome/fontawesome-free/css/all.css',],

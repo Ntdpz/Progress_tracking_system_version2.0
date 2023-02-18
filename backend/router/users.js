@@ -3,9 +3,32 @@ const router = express.Router();
 const connection = require('../db'); // Import the connection object
 
 // * GET All FROM users
+// router.get('/getAll', async (req, res) => {
+//   try {
+//     connection.query('SELECT * FROM users', (err, results, fields) => {
+//       if (err) {
+//         console.log(err);
+//         return res.status(400).send();
+//       }
+//       res.status(200).json(results);
+//     });
+//   } catch (err) {
+//     console.log(err);
+//     return res.status(500).send();
+//   }
+// });
+
+// * GET All FROM users and query user_position
 router.get('/getAll', async (req, res) => {
   try {
-    connection.query('SELECT * FROM users', (err, results, fields) => {
+    const positionFilter = req.query.user_position; // get the value of the 'user_position' query parameter
+    let query = 'SELECT * FROM users';
+    const queryParams = [];
+    if (positionFilter) {
+      query += ' WHERE user_position = ?';
+      queryParams.push(positionFilter);
+    }
+    connection.query(query, queryParams, (err, results, fields) => {
       if (err) {
         console.log(err);
         return res.status(400).send();
@@ -42,10 +65,10 @@ router.get("/getOne/:id", async (req, res) => {
 //* POST user
 router.post("/create", async (req, res) => {
   const {
-    id,
-    user_fristname,
+    user_firstname,
     user_lastname,
     user_id,
+    user_code,
     user_position,
     user_department,
     user_email,
@@ -56,12 +79,12 @@ router.post("/create", async (req, res) => {
   } = req.body;
   try {
     connection.query(
-      "INSERT INTO users(user_fristname, user_lastname, user_id , user_position , user_department , user_email , user_password , user_status ,user_role , user_pic ) VALUES(?, ?, ? ,? , ?, ?, ?, ?, ?, ?)",
+      "INSERT INTO users(user_firstname, user_lastname, user_id , user_code, user_position , user_department , user_email , user_password , user_status ,user_role , user_pic ) VALUES(?, ?, ? ,?, ? , ?, ?, ?, ?, ?, ?)",
       [
-        id,
-        user_fristname,
+        user_firstname,
         user_lastname,
         user_id,
+        user_code,
         user_position,
         user_department,
         user_email,
