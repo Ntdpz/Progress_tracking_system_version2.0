@@ -21,6 +21,7 @@
     "vuetify": "^2.5.5"
   },
   "devDependencies": {
+    "@nuxt/image": "^0.7.1",
     "@nuxtjs/vuetify": "^1.12.1"
   }
 }

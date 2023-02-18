@@ -7,13 +7,13 @@
       <v-divider class="mt-0 mb-1" inset vertical style="background-color: black"></v-divider>
       <template>
         <v-banner class="mt-0 ml-4" style="
-                      display: flex;
-                      align-items: center;
-                      justify-content: center;
-                      height: 30px;
-                      border-radius: 30px;
-                      padding: 0 0px;
-                    " outlined elevation="2">
+                                        display: flex;
+                                        align-items: center;
+                                        justify-content: center;
+                                        height: 30px;
+                                        border-radius: 30px;
+                                        padding: 0 0px;
+                                      " outlined elevation="2">
           <form class="center" @submit.prevent="search">
             <v-icon color="purple">mdi-magnify</v-icon>
             <input class="mr-3" type="text" v-model="query" placeholder="Search some User" />
@@ -41,20 +41,35 @@
             </v-toolbar>
             <!-- ตารางย่อยในหัวข้อ -->
             <v-tabs-items v-model="tab">
-              <!-- Tab1 -->
+              <!-- Tab1 All -->
               <v-tab-item>
                 <v-card flat>
                   <!-- hide-default-footer ซ่อน footer-->
-                  <v-data-table style="text-align: center;" :headers="headers" :items="all" class="elevation-1">
-                    <template v-slot:[`item.photo`]="{ item }">
+                  <v-data-table style="text-align: center;" :headers="headers" :items="data" class="elevation-1">
+                    <template v-slot:[`item.name`]="{ item }">
+                      {{ item.user_firstname }}
+                    </template>
+                    <template v-slot:[`item.code`]="{ item }">
+                      {{ item.user_code }}
+                    </template>
+                    <template v-slot:[`item.position`]="{ item }">
+                      {{ item.user_position }}
+                    </template>
+                    <template v-slot:[`item.department`]="{ item }">
+                      {{ item.user_department }}
+                    </template>
+                    <template v-slot:[`item.role`]="{ item }">
+                      {{ item.user_role }}
+                    </template>
+                    <template v-slot:[`item.photo`]>
                       <v-avatar class="mx-auto" style="width: 35px; height: 35px">
-                        <img :src="item.photo" alt="John" />
+                        <img :src="avatar" alt="John" />
                       </v-avatar>
                     </template>
                     <template v-slot:[`item.status`]="{ item }">
-                      <v-icon v-if="item.status == 'Active'" color="success">mdi-circle</v-icon>
+                      <v-icon v-if="item.user_status == 'Active'" color="success">mdi-circle</v-icon>
                       <v-icon v-else color="error">mdi-circle</v-icon>
-                      {{ item.status }}
+                      {{ item.user_status }}
                     </template>
                     <!-- ปุ่ม Manage -->
                     <template v-slot:[`item.actions`]="{ item }">
@@ -75,24 +90,41 @@
                   <!--  -->
                 </v-card>
               </v-tab-item>
-              <!-- Tab2 -->
+              <!-- Tab2 Developer -->
               <v-tab-item>
                 <v-card flat>
                   <!-- hide-default-footer ซ่อน footer-->
-                  <v-data-table style="text-align: center;" :headers="headers" :items="developer" class="elevation-1">
-                    <template v-slot:[`item.photo`]="{ item }">
+                  <v-data-table style="text-align: center;" :headers="headers" :items="data_position_Developer"
+                    class="elevation-1">
+                    <template v-slot:[`item.name`]="{ item }">
+                      {{ item.user_firstname }}
+                    </template>
+                    <template v-slot:[`item.code`]="{ item }">
+                      {{ item.user_code }}
+                    </template>
+                    <template v-slot:[`item.position`]="{ item }">
+                      {{ item.user_position }}
+                    </template>
+                    <template v-slot:[`item.department`]="{ item }">
+                      {{ item.user_department }}
+                    </template>
+                    <template v-slot:[`item.role`]="{ item }">
+                      {{ item.user_role }}
+                    </template>
+                    <template v-slot:[`item.photo`]>
                       <v-avatar class="mx-auto" style="width: 35px; height: 35px">
-                        <img :src="item.photo" alt="John" />
+                        <img :src="avatar" alt="John" />
                       </v-avatar>
                     </template>
                     <template v-slot:[`item.status`]="{ item }">
-                      <v-icon v-if="item.status == 'Active'" color="success">mdi-circle</v-icon>
+                      <v-icon v-if="item.user_status == 'Active'" color="success">mdi-circle</v-icon>
                       <v-icon v-else color="error">mdi-circle</v-icon>
-                      {{ item.status }}
+                      {{ item.user_status }}
                     </template>
                     <!-- ปุ่ม Manage -->
-                    <template v-slot:[`item.actions`]>
-                      <v-btn color="primary" style="color: white; border-radius: 20px">
+                    <template v-slot:[`item.actions`]="{ item }">
+                      <v-btn @click="(dialog_manage = true), (editItem(item))" color="primary"
+                        style="color: white; border-radius: 20px">
                         Manage
                       </v-btn>
                     </template>
@@ -108,24 +140,41 @@
                   <!--  -->
                 </v-card>
               </v-tab-item>
-              <!-- Tab3 -->
+              <!-- Tab3 Implementer -->
               <v-tab-item>
                 <v-card flat>
                   <!-- hide-default-footer ซ่อน footer-->
-                  <v-data-table style="text-align: center;" :headers="headers" :items="implementer" class="elevation-1">
-                    <template v-slot:[`item.photo`]="{ item }">
+                  <v-data-table style="text-align: center;" :headers="headers" :items="data_position_Implementer"
+                    class="elevation-1">
+                    <template v-slot:[`item.name`]="{ item }">
+                      {{ item.user_firstname }}
+                    </template>
+                    <template v-slot:[`item.code`]="{ item }">
+                      {{ item.user_code }}
+                    </template>
+                    <template v-slot:[`item.position`]="{ item }">
+                      {{ item.user_position }}
+                    </template>
+                    <template v-slot:[`item.department`]="{ item }">
+                      {{ item.user_department }}
+                    </template>
+                    <template v-slot:[`item.role`]="{ item }">
+                      {{ item.user_role }}
+                    </template>
+                    <template v-slot:[`item.photo`]>
                       <v-avatar class="mx-auto" style="width: 35px; height: 35px">
-                        <img :src="item.photo" alt="John" />
+                        <img :src="avatar" alt="John" />
                       </v-avatar>
                     </template>
                     <template v-slot:[`item.status`]="{ item }">
-                      <v-icon v-if="item.status == 'Active'" color="success">mdi-circle</v-icon>
+                      <v-icon v-if="item.user_status == 'Active'" color="success">mdi-circle</v-icon>
                       <v-icon v-else color="error">mdi-circle</v-icon>
-                      {{ item.status }}
+                      {{ item.user_status }}
                     </template>
                     <!-- ปุ่ม Manage -->
-                    <template v-slot:[`item.actions`]>
-                      <v-btn color="primary" style="color: white; border-radius: 20px">
+                    <template v-slot:[`item.actions`]="{ item }">
+                      <v-btn @click="(dialog_manage = true), (editItem(item))" color="primary"
+                        style="color: white; border-radius: 20px">
                         Manage
                       </v-btn>
                     </template>
@@ -141,24 +190,41 @@
                   <!--  -->
                 </v-card>
               </v-tab-item>
-              <!-- Tab4 -->
+              <!-- Tab4 Program Management-->
               <v-tab-item>
                 <v-card flat>
                   <!-- hide-default-footer ซ่อน footer-->
-                  <v-data-table style="text-align: center;" :headers="headers" :items="pm" class="elevation-1">
-                    <template v-slot:[`item.photo`]="{ item }">
+                  <v-data-table style="text-align: center;" :headers="headers" :items="data_position_ProgramManagement"
+                    class="elevation-1">
+                    <template v-slot:[`item.name`]="{ item }">
+                      {{ item.user_firstname }}
+                    </template>
+                    <template v-slot:[`item.code`]="{ item }">
+                      {{ item.user_code }}
+                    </template>
+                    <template v-slot:[`item.position`]="{ item }">
+                      {{ item.user_position }}
+                    </template>
+                    <template v-slot:[`item.department`]="{ item }">
+                      {{ item.user_department }}
+                    </template>
+                    <template v-slot:[`item.role`]="{ item }">
+                      {{ item.user_role }}
+                    </template>
+                    <template v-slot:[`item.photo`]>
                       <v-avatar class="mx-auto" style="width: 35px; height: 35px">
-                        <img :src="item.photo" alt="John" />
+                        <img :src="avatar" alt="John" />
                       </v-avatar>
                     </template>
                     <template v-slot:[`item.status`]="{ item }">
-                      <v-icon v-if="item.status == 'Active'" color="success">mdi-circle</v-icon>
+                      <v-icon v-if="item.user_status == 'Active'" color="success">mdi-circle</v-icon>
                       <v-icon v-else color="error">mdi-circle</v-icon>
-                      {{ item.status }}
+                      {{ item.user_status }}
                     </template>
                     <!-- ปุ่ม Manage -->
-                    <template v-slot:[`item.actions`]>
-                      <v-btn color="primary" style="color: white; border-radius: 20px">
+                    <template v-slot:[`item.actions`]="{ item }">
+                      <v-btn @click="(dialog_manage = true), (editItem(item))" color="primary"
+                        style="color: white; border-radius: 20px">
                         Manage
                       </v-btn>
                     </template>
@@ -174,24 +240,41 @@
                   <!--  -->
                 </v-card>
               </v-tab-item>
-              <!-- Tab5 -->
+              <!-- Tab5 System Analyst-->
               <v-tab-item>
                 <v-card flat>
                   <!-- hide-default-footer ซ่อน footer-->
-                  <v-data-table style="text-align: center;" :headers="headers" :items="sa" class="elevation-1">
-                    <template v-slot:[`item.photo`]="{ item }">
+                  <v-data-table style="text-align: center;" :headers="headers" :items="data_position_SystemAnalyst"
+                    class="elevation-1">
+                    <template v-slot:[`item.name`]="{ item }">
+                      {{ item.user_firstname }}
+                    </template>
+                    <template v-slot:[`item.code`]="{ item }">
+                      {{ item.user_code }}
+                    </template>
+                    <template v-slot:[`item.position`]="{ item }">
+                      {{ item.user_position }}
+                    </template>
+                    <template v-slot:[`item.department`]="{ item }">
+                      {{ item.user_department }}
+                    </template>
+                    <template v-slot:[`item.role`]="{ item }">
+                      {{ item.user_role }}
+                    </template>
+                    <template v-slot:[`item.photo`]>
                       <v-avatar class="mx-auto" style="width: 35px; height: 35px">
-                        <img :src="item.photo" alt="John" />
+                        <img :src="avatar" alt="John" />
                       </v-avatar>
                     </template>
                     <template v-slot:[`item.status`]="{ item }">
-                      <v-icon v-if="item.status == 'Active'" color="success">mdi-circle</v-icon>
+                      <v-icon v-if="item.user_status == 'Active'" color="success">mdi-circle</v-icon>
                       <v-icon v-else color="error">mdi-circle</v-icon>
-                      {{ item.status }}
+                      {{ item.user_status }}
                     </template>
                     <!-- ปุ่ม Manage -->
-                    <template v-slot:[`item.actions`]>
-                      <v-btn color="primary" style="color: white; border-radius: 20px">
+                    <template v-slot:[`item.actions`]="{ item }">
+                      <v-btn @click="(dialog_manage = true), (editItem(item))" color="primary"
+                        style="color: white; border-radius: 20px">
                         Manage
                       </v-btn>
                     </template>
@@ -211,20 +294,37 @@
               <v-tab-item>
                 <v-card flat>
                   <!-- hide-default-footer ซ่อน footer-->
-                  <v-data-table style="text-align: center;" :headers="headers" :items="reportdev" class="elevation-1">
-                    <template v-slot:[`item.photo`]="{ item }">
+                  <v-data-table style="text-align: center;" :headers="headers" :items="data_position_ReportDeveloper"
+                    class="elevation-1">
+                    <template v-slot:[`item.name`]="{ item }">
+                      {{ item.user_firstname }}
+                    </template>
+                    <template v-slot:[`item.code`]="{ item }">
+                      {{ item.user_code }}
+                    </template>
+                    <template v-slot:[`item.position`]="{ item }">
+                      {{ item.user_position }}
+                    </template>
+                    <template v-slot:[`item.department`]="{ item }">
+                      {{ item.user_department }}
+                    </template>
+                    <template v-slot:[`item.role`]="{ item }">
+                      {{ item.user_role }}
+                    </template>
+                    <template v-slot:[`item.photo`]>
                       <v-avatar class="mx-auto" style="width: 35px; height: 35px">
-                        <img :src="item.photo" alt="John" />
+                        <img :src="avatar" alt="John" />
                       </v-avatar>
                     </template>
                     <template v-slot:[`item.status`]="{ item }">
-                      <v-icon v-if="item.status == 'Active'" color="success">mdi-circle</v-icon>
+                      <v-icon v-if="item.user_status == 'Active'" color="success">mdi-circle</v-icon>
                       <v-icon v-else color="error">mdi-circle</v-icon>
-                      {{ item.status }}
+                      {{ item.user_status }}
                     </template>
                     <!-- ปุ่ม Manage -->
-                    <template v-slot:[`item.actions`]>
-                      <v-btn color="primary" style="color: white; border-radius: 20px">
+                    <template v-slot:[`item.actions`]="{ item }">
+                      <v-btn @click="(dialog_manage = true), (editItem(item))" color="primary"
+                        style="color: white; border-radius: 20px">
                         Manage
                       </v-btn>
                     </template>
@@ -294,13 +394,13 @@
                         <!--  -->
                         <v-row class="mr-2 mt-0" style="margin-bottom:-8%;">
                           <v-col cols="12" sm="3" style="margin-right:-1%; padding-right:0%;">
-                            <v-select v-model="name" :items="missname" label="Mr/Miss" dense rounded solo></v-select>
+                            <v-select v-model="name" :items="misname" label="Mr/Miss" dense rounded solo></v-select>
                           </v-col>
                           <v-col cols="12" sm="4">
                             <v-text-field v-model="firstname" label="First Name" dense rounded solo></v-text-field>
                           </v-col>
                           <v-col cols="12" sm="5">
-                            <v-text-field v-model="lastname" label="Last Name" dense rounded solo></v-text-field>
+                            <v-text-field v-model="surname" label="Last Name" dense rounded solo></v-text-field>
                           </v-col>
                         </v-row>
                         <!--  -->
@@ -364,7 +464,7 @@
                         <!--  -->
                         <v-row class="mr-2 mt-0">
                           <v-col cols="12" sm="6">
-                            <v-select v-model="statusform" :items="status" label="Status" dense rounded solo></v-select>
+                            <v-select v-model="stratiform" :items="status" label="Status" dense rounded solo></v-select>
                           </v-col>
 
                           <v-col cols="12" sm="6">
@@ -377,7 +477,7 @@
                         </v-col>
                         <v-row class="mr-2 mt-0" style="justify-content: right;">
                           <v-btn elevation="2" color="primary" style=" color: white; border-radius: 10px"
-                            @click="(dialog = false)">
+                            @click="(dialog = false), (createUser())">
                             Create
                           </v-btn>
                         </v-row>
@@ -392,7 +492,7 @@
             <v-dialog v-model="dialog_manage" width="900px" max-height="100%">
               <v-card class="mx-auto" height="580px" max-height="100%">
                 <v-card-title>
-                  <span class="text-h5">Create User</span>
+                  <span class="text-h5">Manage User</span>
                 </v-card-title>
                 <!-- Form -->
                 <v-row class="mb-2" no-gutters>
@@ -406,8 +506,8 @@
                             <label class="mt-10 avatar-upload">
                               <input type="file" ref="fileInput" @change="uploadFile_manage" />
                               <v-icon class="center mt-7" color="black" size="30px"
-                                v-if="!editedItem.photo">mdi-cloud-upload-outline</v-icon>
-                              <img v-if="editedItem.photo" :src="editedItem.photo" />
+                                v-if="!avatar">mdi-cloud-upload-outline</v-icon>
+                              <img v-if="avatar" :src="avatar" />
                             </label>
                           </form>
                         </div>
@@ -431,15 +531,15 @@
                         <!--  -->
                         <v-row class="mr-2 mt-0" style="margin-bottom:-8%;">
                           <v-col cols="12" sm="3" style="margin-right:-1%; padding-right:0%;">
-                            <v-select v-model="editedItem.missname" :items="missname" label="Mr/Miss" dense rounded
+                            <v-select v-model="editedItem.misname" :items="misname" label="Mr/Miss" dense rounded
                               solo></v-select>
                           </v-col>
                           <v-col cols="12" sm="4">
-                            <v-text-field v-model="editedItem.name" label="First Name" dense rounded
+                            <v-text-field v-model="editedItem.user_firstname" label="First Name" dense rounded
                               solo></v-text-field>
                           </v-col>
                           <v-col cols="12" sm="5">
-                            <v-text-field v-model="editedItem.lastname" label="Last Name" dense rounded
+                            <v-text-field v-model="editedItem.user_surname" label="Last Name" dense rounded
                               solo></v-text-field>
                           </v-col>
                         </v-row>
@@ -458,14 +558,14 @@
                         <!--  -->
                         <v-row class="mr-2 mt-0" style="margin-bottom:-6%;">
                           <v-col cols="12" sm="4">
-                            <v-text-field v-model="editedItem.code" label="Code" dense rounded solo></v-text-field>
+                            <v-text-field v-model="editedItem.user_code" label="Code" dense rounded solo></v-text-field>
                           </v-col>
                           <v-col cols="12" sm="4">
-                            <v-select v-model="editedItem.position" :items="positions" label="Position" dense rounded
+                            <v-select v-model="editedItem.user_position" :items="positions" label="Position" dense rounded
                               solo></v-select>
                           </v-col>
                           <v-col cols="12" sm="4">
-                            <v-text-field v-model="editedItem.department" label="Department" dense rounded
+                            <v-text-field v-model="editedItem.user_department" label="Department" dense rounded
                               solo></v-text-field>
                           </v-col>
                         </v-row>
@@ -478,7 +578,8 @@
                         <!--  -->
                         <v-row class="mr-2 mt-0" style="margin-bottom:-6%;">
                           <v-col cols="12" sm="12">
-                            <v-text-field v-model="editedItem.email" label="E-mail" dense rounded solo></v-text-field>
+                            <v-text-field v-model="editedItem.user_email" label="E-mail" dense rounded
+                              solo></v-text-field>
                           </v-col>
                         </v-row>
                         <!--  -->
@@ -490,7 +591,7 @@
                         <!--  -->
                         <v-row class="mr-2 mt-0" style="margin-bottom:-4%;">
                           <v-col class="" cols="12" sm="12">
-                            <v-text-field v-model="editedItem.password" label="Password" dense rounded
+                            <v-text-field v-model="editedItem.user_password" label="Password" dense rounded
                               solo></v-text-field>
                           </v-col>
                         </v-row>
@@ -506,11 +607,11 @@
                         <!--  -->
                         <v-row class="mr-2 mt-0">
                           <v-col cols="12" sm="6">
-                            <v-select v-model="editedItem.status" :items="status" label="Status" dense rounded
+                            <v-select v-model="editedItem.user_status" :items="status" label="Status" dense rounded
                               solo></v-select>
                           </v-col>
                           <v-col cols="12" sm="6">
-                            <v-select v-model="editedItem.role" :items="roles" label="Role" dense rounded
+                            <v-select v-model="editedItem.user_role" :items="roles" label="Role" dense rounded
                               solo></v-select>
                           </v-col>
                           <!--  -->
@@ -518,9 +619,13 @@
                         <v-col>
                         </v-col>
                         <v-row class="mr-2 mt-0" style="justify-content: right;">
+                          <v-btn class="mr-4" elevation="2" color="error" style=" color: white; border-radius: 10px"
+                            @click="(dialog_manage = false)">
+                            Delete
+                          </v-btn>
                           <v-btn elevation="2" color="primary" style=" color: white; border-radius: 10px"
                             @click="(dialog_manage = false)">
-                            Create
+                            Update
                           </v-btn>
                         </v-row>
                       </div>
@@ -539,36 +644,37 @@
 </template>
 
 <script>
+const URI = "http://localhost:7777";
 export default {
   layout: "admin",
   data() {
     return {
       photo: null,
+      avatar: 'https://cdn.vuetifyjs.com/images/john.jpg',
       name: '',
       firstname: '',
-      lastname: '',
+      surname: '',
       code: '',
       position: '',
       department: '',
       email: '',
       password: '',
       role: '',
-      statusform: '',
+      stratiform: '',
       query: '',
       editedIndex: -1,
       editedItem: {
-        photo: null,
-        missname: '',
-        name: '',
-        firstname: '',
-        lastname: '',
-        code: '',
-        position: '',
-        department: '',
-        // email: '',
-        // password: '',
-        status: '',
-        role: '',
+        user_pic: null,
+        misname: '',
+        user_firstname: '',
+        user_surname: '',
+        user_code: '',
+        user_position: '',
+        user_department: '',
+        user_email: '',
+        user_password: '',
+        user_status: '',
+        user_role: '',
       },
 
       tab: null,
@@ -584,7 +690,7 @@ export default {
         {
           text: 'Photo',
           align: 'center',
-          sortable: true,
+          sortable: false,
           value: 'photo',
         },
         { text: 'Name', align: 'center', value: 'name' },
@@ -598,88 +704,91 @@ export default {
       all: [],
       developer: [],
       implementer: [],
-      missname: ['Mr', 'Miss'],
+      misname: ['Mr.', 'Miss.'],
       status: ['Active'],
+      // For Api
+      data: [],
+      data_position_Developer: [],
+      data_position_Implementer: [],
+      data_position_ProgramManagement: [],
+      data_position_SystemAnalyst: [],
+      data_position_ReportDeveloper: [],
+
+
     }
   },
   created() {
-    this.initialize();
+    this.getAll();
+    this.getPosition_Developer();
+    this.getPosition_Implementer();
+    this.getPosition_ProgramManagement();
+    this.getPosition_SystemAnalyst();
+    this.getPosition_ReportDeveloper();
   },
   methods: {
-    initialize() {
-      this.all = [
-        {
-          photo: 'https://cdn.vuetifyjs.com/images/john.jpg',
-          name: 'Mr. Implementer1',
-          code: 'AI00000001',
-          position: 'Implementer',
-          department: 'DD',
-          status: 'Active',
-          role: 'User',
-        },
-        {
-          photo: 'https://cdn.vuetifyjs.com/images/john.jpg',
-          name: 'Mr. Developer1',
-          code: 'AD00000001',
-          position: 'Developer',
-          department: 'SDD',
-          status: 'Active',
-          role: 'User',
-        },
-        {
-          photo: 'https://cdn.vuetifyjs.com/images/john.jpg',
-          name: 'Mr. PM1',
-          code: 'AP00000001',
-          position: 'PM',
-          department: 'SDD',
-          status: 'Active',
-          role: 'User',
-        },
-        {
-          photo: 'https://cdn.vuetifyjs.com/images/john.jpg',
-          name: 'Mr. SA1',
-          code: 'AS00000001',
-          position: 'System Analyst',
-          department: 'SDD',
-          status: 'Active',
-          role: 'User',
-        },
-      ];
-      this.developer = [
-        {
-          photo: 'https://cdn.vuetifyjs.com/images/john.jpg',
-          name: 'Mr. Developer1',
-          code: 'AD00000001',
-          position: 'Developer',
-          department: 'SDD',
-          status: 'Active',
-          role: 'User',
-        },
-      ];
-      this.implementer = [
-        {
-          photo: 'https://cdn.vuetifyjs.com/images/john.jpg',
-          name: 'Mr. Implementer1',
-          code: 'AI00000001',
-          position: 'Implementer',
-          department: 'DD',
-          status: 'Active',
-          role: 'User',
-        },
-      ];
-      this.pm = [];
-      this.sa = [
-        {
-          photo: 'https://cdn.vuetifyjs.com/images/john.jpg',
-          name: 'Mr. SA1',
-          code: 'AS00000001',
-          position: 'System Analyst',
-          department: 'SDD',
-          status: 'Active',
-          role: 'User',
-        },
-      ];
-      this.reportdev = [];
+    async getAll() {
+      await this.$axios.get(URI + "/users/getAll").then((data) => {
+        this.data = data.data;
+        console.log(data.data);
+      });
+    },
+    async getPosition_Developer() {
+      await this.$axios.get(URI + "/users/getAll?user_position=Developer").then((data) => {
+        this.data_position_Developer = data.data;
+        console.log(data.data);
+      });
+    },
+    async getPosition_Implementer() {
+      await this.$axios.get(URI + "/users/getAll?user_position=Implementer").then((data) => {
+        this.data_position_Implementer = data.data;
+        console.log(data.data);
+      });
+    },
+    async getPosition_ProgramManagement() {
+      await this.$axios.get(URI + "/users/getAll?user_position=Program%20Management").then((data) => {
+        this.data_position_ProgramManagement = data.data;
+        console.log(data.data);
+      });
+    },
+    async getPosition_SystemAnalyst() {
+      await this.$axios.get(URI + "/users/getAll?user_position=System%20Analyst").then((data) => {
+        this.data_position_SystemAnalyst = data.data;
+        console.log(data.data);
+      });
+    },
+    async getPosition_ReportDeveloper() {
+      await this.$axios.get(URI + "/users/getAll?user_position=Report%20Developer").then((data) => {
+        this.data_position_ReportDeveloper = data.data;
+        console.log(data.data);
+      });
+    },
+    async createUser() {
+      await this.$axios.post(URI + "/users/create", {
+          user_firstname: this.name + " " + this.firstname,
+          user_lastname: this.surname,
+          user_id: this.code,
+          user_code: this.code,
+          user_position: this.position,
+          user_department: this.department,
+          user_email: this.email,
+          user_password: this.password,
+          user_status: this.stratiform,
+          user_role: this.role,
+          user_pic: "-",
+      }).then((response) => {
+        console.log(response);
+        console.log("post success");
+        this.getAll();
+        this.getPosition_Developer();
+        this.getPosition_Implementer();
+        this.getPosition_ProgramManagement();
+        this.getPosition_SystemAnalyst();
+        this.getPosition_ReportDeveloper();
+        alert("success");
+      }).catch((err) => {
+        console.log(err);
+        alert(err);
+      });
     },
 
     editItem(item) {
@@ -700,16 +809,18 @@ export default {
       }
     },
     uploadFile_manage() {
-      const input2 = this.$refs.fileInput
-      const file2 = input2.files[0]
+      const input = this.$refs.fileInput
+      const file = input.files[0]
       try {
-        this.editedItem.photo = URL.createObjectURL(file2)
+        // editedItem.photo
+        this.avatar = URL.createObjectURL(file)
         // Do something with the file, for example upload to a server
       } catch (error) {
         console.error(error)
-        this.editedItem.photo = null
+        this.avatar = null
       }
     },
+
   },
 }
 </script>
