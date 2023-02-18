@@ -16,16 +16,14 @@ export default {
     ],
     link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
   },
-  target: 'static',
-  buildModules: [
-    '@nuxt/image',
-  ],
+  target: "static",
+  buildModules: ["@nuxt/image"],
   image: {
     // Options
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
-  css: ['@fortawesome/fontawesome-free/css/all.css',],
+  css: ["@fortawesome/fontawesome-free/css/all.css"],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [],
@@ -37,7 +35,16 @@ export default {
   buildModules: [
     // https://go.nuxtjs.dev/vuetify
     "@nuxtjs/vuetify",
+    "@nuxtjs/google-fonts",
   ],
+
+  googleFonts: {
+    families: {
+      Lato: true,
+      Montserrat: true,
+      Oxygen: true
+    },
+  },
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
@@ -47,18 +54,12 @@ export default {
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
-    baseURL: 'http://localhost:7777',
+    baseURL: "http://localhost:7777",
     // proxy: true,
   },
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {
-    defaultAssets: {
-      font: {
-        family: "Prompt",
-      },
-    },
-
     customVariables: ["~/assets/variables.scss"],
     theme: {
       dark: false,

@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-main style="background: gray">
+    <v-main>
       <v-container fluid fill-height style="background-color: #f1f1f1">
         <v-layout align-center justify-center>
           <v-flex style="text-align: -webkit-center">
@@ -13,11 +13,12 @@
                 >
               </v-toolbar>
               <v-card-text>
-                <v-form>
+                <v-form @submit.prevent="handleLogin">
                   <v-text-field
                     :rules="rules"
                     label="Employee ID."
                     placeholder="Enter your employee ID."
+                    v-model="user_id"
                     type="text"
                     outlined
                   ></v-text-field>
@@ -25,24 +26,24 @@
                     :rules="rules"
                     label="Password"
                     placeholder="Enter 6 charactor or more"
+                    v-model="user_password"
                     type="password"
                     outlined
                   ></v-text-field>
+                  <v-checkbox
+                    v-model="checkbox"
+                    class="mt-0"
+                    :label="`Remember Me`"
+                  ></v-checkbox>
+                  <v-btn
+                    style="color: white; font-weight: bold; height: 43px"
+                    color="#883CFE"
+                    width="90%"
+                    type="submit"
+                    >Login</v-btn
+                  >
                 </v-form>
-
-                <v-checkbox
-                  v-model="checkbox"
-                  class="mt-0"
-                  :label="`Remember Me`"
-                ></v-checkbox>
               </v-card-text>
-              <v-btn
-                style="color: white; font-weight: bold; height: 43px"
-                color="#883CFE"
-                width="90%"
-                @click="checkcountlogin()"
-                >Login</v-btn
-              >
             </v-card>
 
             <!-- dialog -->
@@ -97,6 +98,8 @@
 export default {
   data() {
     return {
+      user_id: "",
+      user_password: "",
       checkbox: false,
       dialog: false,
       countlogin: 0,
@@ -108,19 +111,45 @@ export default {
     };
   },
   updated() {},
+  created() {
+    // this.getUser();
+  },
   methods: {
-    checkcountlogin() {
-      this.countlogin = this.countlogin + 1;
-      console.log(this.countlogin);
-      if (this.countlogin == 3) {
-        this.dialog = true;
-      } else if (this.countlogin > 3) {
-        this.$router.push("/Home");
+    async handleLogin() {
+      try {
+        const response = await this.$axios.post("/users/login", {
+          user_id: this.user_id,
+          user_password: this.user_password,
+        });
+        if (response.data.authenticated) {
+          // Login successful
+          this.$router.push("/home");
+        } else {
+          // Show error message
+          this.countlogin = this.countlogin + 1;
+          if (this.countlogin >= 3) {
+            this.dialog = true;
+          }
+          console.log(this.countlogin);
+          alert("Invalid credentials");
+        }
+      } catch (error) {
+        console.error(error);
+        this.countlogin = this.countlogin + 1;
+        if (this.countlogin >= 3) {
+          this.dialog = true;
+        }
+        console.log(this.countlogin);
+        alert("Server error");
       }
     },
   },
+  updated() {},
 };
 </script>
 
 <style scoped>
+* {
+  font-family: "Lato", sans-serif;
+}
 </style>

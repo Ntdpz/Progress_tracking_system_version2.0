@@ -192,6 +192,9 @@ export default {
 </script>
 
 <style scoped>
+* {
+  font-family: "Lato", sans-serif;
+}
 .center {
   display: flex;
   align-items: center;

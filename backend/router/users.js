@@ -1,31 +1,15 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const connection = require('../db'); // Import the connection object
-
-// * GET All FROM users
-// router.get('/getAll', async (req, res) => {
-//   try {
-//     connection.query('SELECT * FROM users', (err, results, fields) => {
-//       if (err) {
-//         console.log(err);
-//         return res.status(400).send();
-//       }
-//       res.status(200).json(results);
-//     });
-//   } catch (err) {
-//     console.log(err);
-//     return res.status(500).send();
-//   }
-// });
+const connection = require("../db"); // Import the connection object
 
 // * GET All FROM users and query user_position
-router.get('/getAll', async (req, res) => {
+router.get("/getAll", async (req, res) => {
   try {
     const positionFilter = req.query.user_position; // get the value of the 'user_position' query parameter
-    let query = 'SELECT * FROM users';
+    let query = "SELECT * FROM users";
     const queryParams = [];
     if (positionFilter) {
-      query += ' WHERE user_position = ?';
+      query += " WHERE user_position = ?";
       queryParams.push(positionFilter);
     }
     connection.query(query, queryParams, (err, results, fields) => {
@@ -177,6 +161,33 @@ router.delete("/delete/:id", async (req, res) => {
   } catch (err) {
     console.log(err);
     return res.status(500).send();
+  }
+});
+
+router.post("/login", async (req, res) => {
+  const { user_id, user_password } = req.body;
+
+  try {
+    connection.query(
+      "SELECT * FROM users WHERE user_id = ? AND user_password = ?",
+      [user_id, user_password],
+      (error, results, fields) => {
+        if (error) {
+          console.error(error);
+          return res.status(500).json({ message: "Server error" });
+        }
+
+        if (results.length > 0) {
+          req.session.authenticated = true;
+          return res.status(200).json({ authenticated: true });
+        }
+
+        return res.status(401).json({ message: "Invalid credentials" });
+      }
+    );
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Server error" });
   }
 });
 
