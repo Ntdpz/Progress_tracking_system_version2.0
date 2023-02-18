@@ -250,14 +250,24 @@
               {{ item.member }}
             </template>
             <template v-slot:[`item.actions`]>
-              <v-icon
+              <!-- <v-icon
                 class="mr-2"
-                :to="`/systemdetail`"
+                to="`/systemdetail`"
                 size="20"
                 color="primary"
               >
                 fa fa-angle-double-right
-              </v-icon>
+              </v-icon> -->
+              <v-btn
+
+                color="primary"
+                icon
+                :to="`/systemdetail`"
+              >
+                <v-icon class="mr-2" size="20" color="primary">
+                  fa fa-angle-double-right
+                </v-icon>
+              </v-btn>
             </template>
           </v-data-table>
         </v-expansion-panel-content>
