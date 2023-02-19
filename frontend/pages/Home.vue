@@ -35,7 +35,6 @@
       </div>
     </v-row>
     <v-divider></v-divider>
-
     <!-- *Profile bar -->
     <v-row class="mb-6" no-gutters justify-start>
       <v-col class="mr-10" style="flex-grow: 0 !important">
@@ -52,18 +51,20 @@
         <v-text style="font-size: 20px">Active</v-text> -->
 
         <v-col class="pa-0 ma-0" style="width: 200px; margin: 0 !important"
-          ><v-text style="font-size: 20px; color: grey"
-            >AM00000001</v-text
-          ></v-col
+          ><v-text style="font-size: 20px; color: grey">{{
+            this.user_id
+          }}</v-text></v-col
         >
         <v-col class="pa-0 ma-0" style="width: 200px; margin: 0 !important">
-          <v-text style="font-size: 20px">Mr. Admin 1</v-text></v-col
+          <v-text style="font-size: 20px">{{
+            this.user_firstname
+          }}</v-text></v-col
         >
         <v-col class="pa-0 ma-0" style="width: 200px; margin: 0 !important">
           <v-icon class="mb-1" color="success" style="font-size: small"
             >mdi-circle</v-icon
           >
-          <v-text style="font-size: 20px">Active</v-text></v-col
+          <v-text style="font-size: 20px">{{ this.user_status }}</v-text></v-col
         >
       </v-col>
       <v-col class="mt-6 align-self-center" col="7" sm="5" md="7">
@@ -185,9 +186,28 @@ export default {
     return {
       dialog_newproject: false,
       query: "",
+      user_id: "",
+      user_firstname: "",
+      user_lastname: "",
+      user_status: "",
     };
   },
-  methods: {},
+  created() {
+    this.getUser();
+  },
+  methods: {
+    async getUser() {
+      await this.$axios
+        .get("/users/getAll?user_id=" + this.$store.state.user_id)
+        .then((res) => {
+          console.log(res.data);
+          this.user_id = res.data[0].user_id;
+          this.user_firstname = res.data[0].user_firstname;
+          this.user_lastname = res.data[0].user_lastname;
+          this.user_status = res.data[0].user_status;
+        });
+    },
+  },
 };
 </script>
 

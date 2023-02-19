@@ -6,11 +6,15 @@ const connection = require("../db"); // Import the connection object
 router.get("/getAll", async (req, res) => {
   try {
     const positionFilter = req.query.user_position; // get the value of the 'user_position' query parameter
+    const idFilter = req.query.user_id; // get the value of the 'user_position' query parameter
     let query = "SELECT * FROM users";
     const queryParams = [];
     if (positionFilter) {
       query += " WHERE user_position = ?";
       queryParams.push(positionFilter);
+    } else if (idFilter) {
+      query += " WHERE user_id = ?";
+      queryParams.push(idFilter);
     }
     connection.query(query, queryParams, (err, results, fields) => {
       if (err) {

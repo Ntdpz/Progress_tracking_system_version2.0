@@ -123,6 +123,8 @@ export default {
         });
         if (response.data.authenticated) {
           // Login successful
+          this.$store.commit("setState", { user_id: this.user_id });
+          console.log("response", response);
           this.$router.push("/home");
         } else {
           // Show error message
@@ -130,7 +132,7 @@ export default {
           if (this.countlogin >= 3) {
             this.dialog = true;
           }
-          console.log(this.countlogin);
+          // console.log(this.countlogin);
           alert("Invalid credentials");
         }
       } catch (error) {
@@ -139,7 +141,7 @@ export default {
         if (this.countlogin >= 3) {
           this.dialog = true;
         }
-        console.log(this.countlogin);
+        // console.log(this.countlogin);
         alert("Server error");
       }
     },

@@ -1,11 +1,6 @@
 <template>
   <v-app dark>
-    <v-navigation-drawer
-      v-model="drawer"
-      :clipped="clipped"
-      fixed
-      app
-    >
+    <v-navigation-drawer v-model="drawer" :clipped="clipped" fixed app>
       <v-list-item>
         <v-list-item-content>
           <v-list-item-title class="text-h6">
@@ -38,7 +33,6 @@
       </v-list>
       <v-divider></v-divider>
       <v-list>
-        
         <v-list-group
           v-for="item in items3"
           :key="item.title"
@@ -140,7 +134,7 @@ export default {
           active: true,
           items: [
             { title: "Project1", route: "/issueList" },
-            { title: "Project2", route: "/issueList"},
+            { title: "Project2", route: "/issueList" },
             { title: "Project3", route: "/issueList" },
           ],
           title: "Project",
@@ -167,5 +161,8 @@ export default {
 </script>
 
 <style scoped>
+* {
+  font-family: "Lato", sans-serif !important;
+}
 </style>
   
