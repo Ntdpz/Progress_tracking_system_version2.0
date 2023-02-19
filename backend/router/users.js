@@ -101,7 +101,7 @@ router.post("/create", async (req, res) => {
 router.put("/update/:id", async (req, res) => {
   const id = req.params.id;
   const {
-    user_fristname,
+    user_firstname,
     user_lastname,
     user_id,
     user_position,
@@ -115,9 +115,9 @@ router.put("/update/:id", async (req, res) => {
 
   try {
     connection.query(
-      "UPDATE users SET user_fristname = ? , user_lastname = ? , user_id = ? , user_position = ? , user_department = ? ,user_email = ? ,user_password = ? ,user_status = ?,user_role = ?, user_pic = ? WHERE id = ?",
+      "UPDATE users SET user_firstname = ? , user_lastname = ? , user_id = ? , user_position = ? , user_department = ? ,user_email = ? ,user_password = ? ,user_status = ?,user_role = ?, user_pic = ? WHERE id = ?",
       [
-        user_fristname,
+        user_firstname,
         user_lastname,
         user_id,
         user_position,

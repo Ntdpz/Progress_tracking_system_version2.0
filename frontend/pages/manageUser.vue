@@ -827,7 +827,7 @@
                           </v-col>
                           <v-col cols="12" sm="5">
                             <v-text-field
-                              v-model="editedItem.user_surname"
+                              v-model="editedItem.user_name"
                               label="Last Name"
                               dense
                               rounded
@@ -971,17 +971,17 @@
                             elevation="2"
                             color="error"
                             style="color: white; border-radius: 10px"
-                            @click="dialog_manage = false"
+                            @click="deleteUser()"
                           >
-                            Delete
+                            <h4>Delete</h4>
                           </v-btn>
                           <v-btn
                             elevation="2"
                             color="primary"
                             style="color: white; border-radius: 10px"
-                            @click="dialog_manage = false"
+                            @click="updateUser()"
                           >
-                            Update
+                            <h4>Update</h4>
                           </v-btn>
                         </v-row>
                       </div>
@@ -1019,6 +1019,7 @@ export default {
       query: "",
       editedIndex: -1,
       editedItem: {
+        id: "",
         user_pic: null,
         misname: "",
         user_firstname: "",
@@ -1053,6 +1054,12 @@ export default {
       dialogDelete: false,
       dialog_manage: false,
       headers: [
+        {
+          text: "ID",
+          align: "center",
+          sortable: false,
+          value: "id",
+        },
         {
           text: "Photo",
           align: "center",
@@ -1196,6 +1203,57 @@ export default {
         console.error(error);
         this.avatar = null;
       }
+    },
+    async updateUser() {
+      await this.$axios
+        .put("/users/update/" + this.editedItem.id, {
+          user_firstname: this.editedItem.user_firstname,
+          user_lastname: this.editedItem.user_surname,
+          user_id: this.editedItem.user_code,
+          user_position: this.editedItem.user_position,
+          user_department: this.editedItem.user_department,
+          user_email: this.editedItem.user_email,
+          user_password: this.editedItem.user_password,
+          user_status: this.editedItem.user_status,
+          user_role: this.editedItem.user_role,
+          user_pic: "pic2.png",
+        })
+        .then((response) => {
+          console.log(response);
+          console.log("Update success");
+          this.getAll();
+          this.getPosition_Developer();
+          this.getPosition_Implementer();
+          this.getPosition_ProgramManagement();
+          this.getPosition_SystemAnalyst();
+          this.getPosition_ReportDeveloper();
+          alert("Update success");
+          this.dialog_manage = false;
+        })
+        .catch((err) => {
+          console.log(err);
+          alert(err);
+        });
+    },
+    deleteUser() {
+      this.$axios
+        .delete("/users/delete/" + this.editedItem.id)
+        .then((response) => {
+          console.log(response);
+          console.log("Delete success");
+          this.getAll();
+          this.getPosition_Developer();
+          this.getPosition_Implementer();
+          this.getPosition_ProgramManagement();
+          this.getPosition_SystemAnalyst();
+          this.getPosition_ReportDeveloper();
+          alert("Delete success");
+          this.dialog_manage = false;
+        })
+        .catch((err) => {
+          console.log(err);
+          alert(err);
+        });
     },
   },
 };
