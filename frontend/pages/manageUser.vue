@@ -1202,6 +1202,9 @@ export default {
 </script>
 
 <style scoped>
+* {
+  font-family: "Lato", sans-serif;
+}
 input[type="text"] {
   border: black;
   font-size: 16px;

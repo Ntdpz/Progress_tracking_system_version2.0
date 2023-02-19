@@ -4,7 +4,7 @@
             <v-sheet height="64">
                 <v-toolbar flat>
                     <template>
-                        <v-banner class="mt-0 ml-4" style="
+                        <v-banner class="mt-0 ml-0" style="
                                 display: flex;
                                 align-items: center;
                                 justify-content: center;
@@ -88,7 +88,7 @@ export default {
         return {
             colorday: false,
             colorweek: false,
-            colormonth: false,
+            colormonth: true,
             color4day: false,
             months: month,
             years: year,
@@ -152,6 +152,9 @@ export default {
 }
 </script>
 <style scoped>
+* {
+  font-family: "Lato", sans-serif;
+}
 input[type="text"] {
     border: black;
     font-size: 16px;
