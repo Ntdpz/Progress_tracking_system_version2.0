@@ -154,6 +154,9 @@ export default {
 </script>
 
 <style scoped>
+* {
+  font-family: "Lato", sans-serif;
+}
 input[type="text"] {
   font-size: 16px;
   padding-left: 10px;

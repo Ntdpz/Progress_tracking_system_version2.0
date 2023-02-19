@@ -347,6 +347,9 @@ export default {
 </script>
 
 <style scoped>
+* {
+  font-family: "Lato", sans-serif;
+}
 .new-btn {
   display: flex;
   justify-content: flex-start;

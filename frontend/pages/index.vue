@@ -85,3 +85,9 @@ export default {
   layout: "admin",
 };
 </script>
+
+<style scoped>
+* {
+  font-family: "Lato", sans-serif;
+}
+</style>
