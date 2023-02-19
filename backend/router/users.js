@@ -56,7 +56,7 @@ router.post("/create", async (req, res) => {
     user_firstname,
     user_lastname,
     user_id,
-    user_code,
+    
     user_position,
     user_department,
     user_email,
@@ -67,12 +67,11 @@ router.post("/create", async (req, res) => {
   } = req.body;
   try {
     connection.query(
-      "INSERT INTO users(user_firstname, user_lastname, user_id , user_code, user_position , user_department , user_email , user_password , user_status ,user_role , user_pic ) VALUES(?, ?, ? ,?, ? , ?, ?, ?, ?, ?, ?)",
+      "INSERT INTO users(user_firstname, user_lastname, user_id, user_position , user_department , user_email , user_password , user_status ,user_role , user_pic ) VALUES(?, ?, ?, ? , ?, ?, ?, ?, ?, ?)",
       [
         user_firstname,
         user_lastname,
         user_id,
-        user_code,
         user_position,
         user_department,
         user_email,

@@ -55,7 +55,7 @@
                       {{ item.user_firstname }}
                     </template>
                     <template v-slot:[`item.code`]="{ item }">
-                      {{ item.user_code }}
+                      {{ item.user_id }}
                     </template>
                     <template v-slot:[`item.position`]="{ item }">
                       {{ item.user_position }}
@@ -105,7 +105,7 @@
                       {{ item.user_firstname }}
                     </template>
                     <template v-slot:[`item.code`]="{ item }">
-                      {{ item.user_code }}
+                      {{ item.user_id }}
                     </template>
                     <template v-slot:[`item.position`]="{ item }">
                       {{ item.user_position }}
@@ -155,7 +155,7 @@
                       {{ item.user_firstname }}
                     </template>
                     <template v-slot:[`item.code`]="{ item }">
-                      {{ item.user_code }}
+                      {{ item.user_id }}
                     </template>
                     <template v-slot:[`item.position`]="{ item }">
                       {{ item.user_position }}
@@ -205,7 +205,7 @@
                       {{ item.user_firstname }}
                     </template>
                     <template v-slot:[`item.code`]="{ item }">
-                      {{ item.user_code }}
+                      {{ item.user_id }}
                     </template>
                     <template v-slot:[`item.position`]="{ item }">
                       {{ item.user_position }}
@@ -255,7 +255,7 @@
                       {{ item.user_firstname }}
                     </template>
                     <template v-slot:[`item.code`]="{ item }">
-                      {{ item.user_code }}
+                      {{ item.user_id }}
                     </template>
                     <template v-slot:[`item.position`]="{ item }">
                       {{ item.user_position }}
@@ -305,7 +305,7 @@
                       {{ item.user_firstname }}
                     </template>
                     <template v-slot:[`item.code`]="{ item }">
-                      {{ item.user_code }}
+                      {{ item.user_id }}
                     </template>
                     <template v-slot:[`item.position`]="{ item }">
                       {{ item.user_position }}
@@ -559,7 +559,7 @@
                         <!--  -->
                         <v-row class="mr-2 mt-0" style="margin-bottom: -6%">
                           <v-col cols="12" sm="4">
-                            <v-text-field v-model="editedItem.user_code" label="Code" dense rounded solo></v-text-field>
+                            <v-text-field v-model="editedItem.user_id" label="Code" dense rounded solo></v-text-field>
                           </v-col>
                           <v-col cols="12" sm="4">
                             <v-select v-model="editedItem.user_position" :items="positions" label="Position" dense rounded
@@ -668,7 +668,7 @@ export default {
         misname: "",
         user_firstname: "",
         user_lastname: "",
-        user_code: "",
+        user_id: "",
         user_position: "",
         user_department: "",
         user_email: "",
@@ -793,7 +793,6 @@ export default {
           user_firstname: this.name + " " + this.firstname,
           user_lastname: this.lastname,
           user_id: this.code,
-          user_code: this.code,
           user_position: this.position,
           user_department: this.department,
           user_email: this.email,
@@ -853,7 +852,7 @@ export default {
         .put("/users/update/" + this.editedItem.id, {
           user_firstname: this.editedItem.user_firstname,
           user_lastname: this.editedItem.user_lastname,
-          user_id: this.editedItem.user_code,
+          user_id: this.editedItem.user_id,
           user_position: this.editedItem.user_position,
           user_department: this.editedItem.user_department,
           user_email: this.editedItem.user_email,
