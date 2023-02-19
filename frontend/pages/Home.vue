@@ -96,7 +96,7 @@
           <!--  -->
           <v-card>
             <v-card-title>
-              <span class="text-h5">Create Project</span>
+              <span class="text-h3" style="font-weight: bold;">Create Project</span>
             </v-card-title>
             <v-card-text>
               <v-container>
@@ -104,10 +104,10 @@
                   <!-- <v-row>  </v-row> -->
                 <v-row>
                   <v-col  sm="9" md="9" style="place-self: center;">
-                    <h5>Project Name</h5>
+                    <h3 style="color: black; font-weight: bold;">Project Name</h3>
                   </v-col>
                   <v-col  sm="3" md="3" style="place-self: center;">
-                    <h5>ตัวย่อ</h5>
+                    <h3 style="color: black; font-weight: bold;">ตัวย่อ</h3>
                   </v-col>
                 </v-row>
                 <v-row>
@@ -120,7 +120,7 @@
                 </v-row>
                 <v-row>
                   <v-col  sm="12" md="12" style="place-self: center;">
-                    <h5>Agency</h5>
+                    <h3 style="color: black; font-weight: bold;">Agency</h3>
                   </v-col>
                 </v-row>
                 <v-row>
@@ -130,7 +130,7 @@
                 </v-row>
                 <v-row>
                   <v-col  sm="12" md="12" style="place-self: center;">
-                    <h5>Period</h5>
+                    <h3 style="color: black; font-weight: bold;">Period</h3>
                   </v-col>
                 </v-row>
                 <v-row>
