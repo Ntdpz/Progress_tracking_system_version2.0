@@ -98,6 +98,7 @@
                         <v-row class="mr-2 mt-0" style="margin-bottom:-4%;font-weight: bold; color: black;">
                             <v-col cols="12" sm="12">
                                 <v-text-field v-model="user_password" label="Password" solo readonly></v-text-field>
+                                <!-- Icon -->
                             </v-col>
                         </v-row>
                         <v-row class="mr-2 mt-0" style="margin-bottom:-2%;font-weight: bold; color: black;">
