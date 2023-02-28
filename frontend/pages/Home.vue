@@ -13,8 +13,7 @@
                       justify-content: center;
                       height: 30px;
                       border-radius: 30px;
-                      padding: 0 0px;
-                    " outlined elevation="2">
+                      padding: 0 0px;" outlined elevation="2">
           <form class="center" @submit.prevent="search">
             <v-icon color="primary">mdi-magnify</v-icon>
             <input style="width: 200px;" class="mr-3" type="text" v-model="query" placeholder="Search Some Project" />
@@ -95,59 +94,61 @@
         <v-dialog v-model="dialog_newproject" max-width="700px">
           <!--  -->
           <v-card>
-            <v-card-title>
-              <span class="text-h3" style="font-weight: bold;">Create Project</span>
-            </v-card-title>
-            <v-card-text>
-              <v-container>
-                
-                  <!-- <v-row>  </v-row> -->
-                <v-row>
-                  <v-col  sm="9" md="9" style="place-self: center;">
-                    <h3 style="color: black; font-weight: bold;">Project Name</h3>
-                  </v-col>
-                  <v-col  sm="3" md="3" style="place-self: center;">
-                    <h3 style="color: black; font-weight: bold;">ตัวย่อ</h3>
-                  </v-col>
-                </v-row>
-                <v-row>
-                  <v-col  sm="9" md="9">
-                    <v-text-field required hide-details="auto" dense outlined></v-text-field>
-                  </v-col>
-                  <v-col  sm="3" md="3">
-                    <v-text-field required hide-details="auto" dense outlined></v-text-field>
-                  </v-col>
-                </v-row>
-                <v-row>
-                  <v-col  sm="12" md="12" style="place-self: center;">
-                    <h3 style="color: black; font-weight: bold;">Agency</h3>
-                  </v-col>
-                </v-row>
-                <v-row>
-                  <v-col  sm="12" md="12">
-                    <v-text-field required hide-details="auto" dense outlined></v-text-field>
-                  </v-col>
-                </v-row>
-                <v-row>
-                  <v-col  sm="12" md="12" style="place-self: center;">
-                    <h3 style="color: black; font-weight: bold;">Period</h3>
-                  </v-col>
-                </v-row>
-                <v-row>
-                  <v-col sm="12" md="12">
-                    <v-text-field required hide-details="auto" dense outlined></v-text-field>
-                  </v-col>
-                </v-row>
-                
-              </v-container>
-            </v-card-text>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn class="mb-4" color="primary" style="color: white; border-radius: 10px" @click="dialog_newproject = false">
-                Create Project
-              </v-btn>
-            </v-card-actions>
-          </v-card>
+          <v-card-title>
+            <v-col cols="12">
+              <v-row>
+                <h5>Create Project</h5>
+              </v-row>
+            </v-col>
+          </v-card-title>
+          <v-card-text>
+            <v-container>
+              <v-row>
+                <v-col cols="12" sm="6" md="4">
+                  <v-text-field
+                    label="ตัวย่อ"
+                    placeholder="ตัวย่อ"
+                    outlined
+                    dense
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" sm="8" md="8">
+                  <v-text-field
+                    label="Project Name"
+                    placeholder="Project Name"
+                    outlined
+                    dense
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12">
+                  <v-text-field
+                    label="Agency"
+                    placeholder="Agency"
+                    outlined
+                    dense
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12">
+                  <v-text-field
+                    label="Period"
+                    placeholder="Period"
+                    outlined
+                    dense
+                  ></v-text-field>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="primary" text @click="dialog_newproject = false">
+              <h5>Close</h5></v-btn
+            >
+            <v-btn color="primary" dark @click="dialog_newproject = false">
+              <h5>Create</h5>
+            </v-btn>
+          </v-card-actions>
+        </v-card>
           <!--  -->
         </v-dialog>
       </v-card>
