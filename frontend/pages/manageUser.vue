@@ -7,13 +7,13 @@
       <v-divider class="mt-0 mb-1" inset vertical style="background-color: black"></v-divider>
       <template>
         <v-banner class="mt-0 ml-4" style="
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              height: 30px;
-              border-radius: 30px;
-              padding: 0 0px;
-            " outlined elevation="2">
+                                      display: flex;
+                                      align-items: center;
+                                      justify-content: center;
+                                      height: 30px;
+                                      border-radius: 30px;
+                                      padding: 0 0px;
+                                    " outlined elevation="2">
           <form class="center" @submit.prevent="search">
             <v-icon color="purple">mdi-magnify</v-icon>
             <input class="mr-3" type="text" v-model="query" placeholder="Search some User" />
@@ -27,12 +27,12 @@
       <v-row no-gutters>
         <!-- เอาเส้นออกใส่ border: none; -->
         <v-card class="pa-2" tile outlined style="
-              border: none;
-              width: 100%;
-              height: 100%;
-              display: flex;
-              justify-content: center;
-            ">
+                                      border: none;
+                                      width: 100%;
+                                      height: 100%;
+                                      display: flex;
+                                      justify-content: center;
+                                    ">
           <v-col class="mb-6" col="12" sm="12" md="12">
             <!-- หมวดหมู่ หัวข้อใหญ่ -->
             <v-toolbar class="mb-2">
@@ -66,11 +66,14 @@
                     <template v-slot:[`item.role`]="{ item }">
                       {{ item.user_role }}
                     </template>
-                    <template v-slot:[`item.photo`]>
-                      <v-avatar class="mx-auto" style="width: 35px; height: 35px">
-                        <img :src="avatar" alt="John" />
-                      </v-avatar>
+                    <template v-slot:[`item.photo`]="{ item }">
+                      <div v-for="(info, i) in data" :key="i">
+                        <v-avatar v-if="item.id == imageALL[i].id" class="mx-auto" style="width: 35px; height: 35px">
+                          <img :src="getImageUrl(imageALL[i].fileName)" />
+                        </v-avatar>
+                      </div>
                     </template>
+
                     <template v-slot:[`item.status`]="{ item }">
                       <v-icon v-if="item.user_status == 'Active'" color="success">mdi-circle</v-icon>
                       <v-icon v-else color="error">mdi-circle</v-icon>
@@ -116,10 +119,13 @@
                     <template v-slot:[`item.role`]="{ item }">
                       {{ item.user_role }}
                     </template>
-                    <template v-slot:[`item.photo`]>
-                      <v-avatar class="mx-auto" style="width: 35px; height: 35px">
-                        <img :src="avatar" alt="John" />
-                      </v-avatar>
+                    <template v-slot:[`item.photo`]="{ item }">
+                      <div v-for="(info, i) in data_position_Developer" :key="i">
+                        <v-avatar v-if="item.id == imageDeveloper[i].id" class="mx-auto"
+                          style="width: 35px; height: 35px">
+                          <img :src="getImageUrl(imageDeveloper[i].fileName)" />
+                        </v-avatar>
+                      </div>
                     </template>
                     <template v-slot:[`item.status`]="{ item }">
                       <v-icon v-if="item.user_status == 'Active'" color="success">mdi-circle</v-icon>
@@ -166,10 +172,13 @@
                     <template v-slot:[`item.role`]="{ item }">
                       {{ item.user_role }}
                     </template>
-                    <template v-slot:[`item.photo`]>
-                      <v-avatar class="mx-auto" style="width: 35px; height: 35px">
-                        <img :src="avatar" alt="John" />
-                      </v-avatar>
+                    <template v-slot:[`item.photo`]="{ item }">
+                      <div v-for="(info, i) in data_position_Implementer" :key="i">
+                        <v-avatar v-if="item.id == imageImplementer[i].id" class="mx-auto"
+                          style="width: 35px; height: 35px">
+                          <img :src="getImageUrl(imageImplementer[i].fileName)" />
+                        </v-avatar>
+                      </div>
                     </template>
                     <template v-slot:[`item.status`]="{ item }">
                       <v-icon v-if="item.user_status == 'Active'" color="success">mdi-circle</v-icon>
@@ -216,10 +225,13 @@
                     <template v-slot:[`item.role`]="{ item }">
                       {{ item.user_role }}
                     </template>
-                    <template v-slot:[`item.photo`]>
-                      <v-avatar class="mx-auto" style="width: 35px; height: 35px">
-                        <img :src="avatar" alt="John" />
-                      </v-avatar>
+                    <template v-slot:[`item.photo`]="{ item }">
+                      <div v-for="(info, i) in data_position_ProgramManagement" :key="i">
+                        <v-avatar v-if="item.id == imageProgramManagement[i].id" class="mx-auto"
+                          style="width: 35px; height: 35px">
+                          <img :src="getImageUrl(imageProgramManagement[i].fileName)" />
+                        </v-avatar>
+                      </div>
                     </template>
                     <template v-slot:[`item.status`]="{ item }">
                       <v-icon v-if="item.user_status == 'Active'" color="success">mdi-circle</v-icon>
@@ -266,10 +278,13 @@
                     <template v-slot:[`item.role`]="{ item }">
                       {{ item.user_role }}
                     </template>
-                    <template v-slot:[`item.photo`]>
-                      <v-avatar class="mx-auto" style="width: 35px; height: 35px">
-                        <img :src="avatar" alt="John" />
-                      </v-avatar>
+                    <template v-slot:[`item.photo`]="{ item }">
+                      <div v-for="(info, i) in data_position_SystemAnalyst" :key="i">
+                        <v-avatar v-if="item.id == imageSystemAnalyst[i].id" class="mx-auto"
+                          style="width: 35px; height: 35px">
+                          <img :src="getImageUrl(imageSystemAnalyst[i].fileName)" />
+                        </v-avatar>
+                      </div>
                     </template>
                     <template v-slot:[`item.status`]="{ item }">
                       <v-icon v-if="item.user_status == 'Active'" color="success">mdi-circle</v-icon>
@@ -316,10 +331,13 @@
                     <template v-slot:[`item.role`]="{ item }">
                       {{ item.user_role }}
                     </template>
-                    <template v-slot:[`item.photo`]>
-                      <v-avatar class="mx-auto" style="width: 35px; height: 35px">
-                        <img :src="avatar" alt="John" />
-                      </v-avatar>
+                    <template v-slot:[`item.photo`]="{ item }">
+                      <div v-for="(info, i) in data_position_ReportDeveloper" :key="i">
+                        <v-avatar v-if="item.id == imageReportDeveloper[i].id" class="mx-auto"
+                          style="width: 35px; height: 35px">
+                          <img :src="getImageUrl(imageReportDeveloper[i].fileName)" />
+                        </v-avatar>
+                      </div>
                     </template>
                     <template v-slot:[`item.status`]="{ item }">
                       <v-icon v-if="item.user_status == 'Active'" color="success">mdi-circle</v-icon>
@@ -478,7 +496,7 @@
                         <v-col> </v-col>
                         <v-row class="mr-2 mt-0" style="justify-content: right">
                           <v-btn elevation="2" color="primary" style="color: white; border-radius: 10px"
-                            @click="(dialog = false), createUser()">
+                            @click="(dialog = false), createUser2()">
                             Create
                           </v-btn>
                         </v-row>
@@ -507,8 +525,9 @@
                             <label class="mt-10 avatar-upload">
                               <input type="file" ref="fileInput" @change="uploadFile_manage" />
                               <v-icon class="center mt-7" color="black" size="30px"
-                                v-if="!avatar">mdi-cloud-upload-outline</v-icon>
-                              <img v-if="avatar" :src="avatar" />
+                                v-if="!imageManage">mdi-cloud-upload-outline</v-icon>
+                              <img v-if="avatar != null" :src="avatar" />
+                              <img v-else-if="imageManage" :src="getImageUrl(imageManage)" />
                             </label>
                           </form>
                         </div>
@@ -540,7 +559,7 @@
                               solo></v-text-field>
                           </v-col>
                           <v-col cols="12" sm="5">
-                            <v-text-field v-model="editedItem.user_name" label="Last Name" dense rounded
+                            <v-text-field v-model="editedItem.user_lastname" label="Last Name" dense rounded
                               solo></v-text-field>
                           </v-col>
                         </v-row>
@@ -648,8 +667,14 @@ export default {
   layout: "admin",
   data() {
     return {
-      photo: null,
-      avatar: "https://cdn.vuetifyjs.com/images/john.jpg",
+      titleName: "",
+      titleFirstname: "",
+      imageManageUpload: "",
+      imageFileUpload: "",
+      imageManage: null,
+      photo: "",
+      // https://cdn.vuetifyjs.com/images/john.jpg
+      avatar: null,
       name: "",
       firstname: "",
       lastname: "",
@@ -675,6 +700,7 @@ export default {
         user_password: "",
         user_status: "",
         user_role: "",
+        imageFile: "",
       },
 
       tab: null,
@@ -730,6 +756,12 @@ export default {
       data_position_ProgramManagement: [],
       data_position_SystemAnalyst: [],
       data_position_ReportDeveloper: [],
+      imageALL: [],
+      imageDeveloper: [],
+      imageImplementer: [],
+      imageProgramManagement: [],
+      imageSystemAnalyst: [],
+      imageReportDeveloper: [],
     };
   },
   created() {
@@ -744,7 +776,8 @@ export default {
     async getAll() {
       await this.$axios.get("/users/getAll").then((data) => {
         this.data = data.data;
-        console.log(data.data);
+        console.log(this.data);
+        this.splitImage(this.data, this.imageALL);
       });
     },
     async getPosition_Developer() {
@@ -753,6 +786,7 @@ export default {
         .then((data) => {
           this.data_position_Developer = data.data;
           console.log(data.data);
+          this.splitImage(this.data_position_Developer, this.imageDeveloper);
         });
     },
     async getPosition_Implementer() {
@@ -761,6 +795,7 @@ export default {
         .then((data) => {
           this.data_position_Implementer = data.data;
           console.log(data.data);
+          this.splitImage(this.data_position_Implementer, this.imageImplementer);
         });
     },
     async getPosition_ProgramManagement() {
@@ -769,6 +804,7 @@ export default {
         .then((data) => {
           this.data_position_ProgramManagement = data.data;
           console.log(data.data);
+          this.splitImage(this.data_position_ProgramManagement, this.imageProgramManagement);
         });
     },
     async getPosition_SystemAnalyst() {
@@ -777,6 +813,8 @@ export default {
         .then((data) => {
           this.data_position_SystemAnalyst = data.data;
           console.log(data.data);
+          this.splitImage(this.data_position_SystemAnalyst, this.imageSystemAnalyst);
+
         });
     },
     async getPosition_ReportDeveloper() {
@@ -785,6 +823,8 @@ export default {
         .then((data) => {
           this.data_position_ReportDeveloper = data.data;
           console.log(data.data);
+          this.splitImage(this.data_position_ReportDeveloper, this.imageReportDeveloper);
+
         });
     },
     async createUser() {
@@ -818,17 +858,79 @@ export default {
         });
     },
 
+    getImageUrl(fileName) {
+      return require(`@/uploads/${fileName}`);
+    },
+
     editItem(item) {
       this.editedItem = Object.assign({}, item);
+      const parts = item.user_pic.split("\\");
+      const directory = parts[1];
+      this.imageManage = parts[parts.length - 1]
+      console.log(this.imageManage);
+      console.log(item.user_firstname);
+      const regex = /^(Mr\.|Miss\.)\s+(.*)$/; // Regular expression to match title and name
+      const matches = item.user_firstname.match(regex);
+      if (matches) {
+        console.log(matches);
+        this.editedItem.misname = matches[1];
+        const name2 = matches[2].trim();
+        const nameParts = name2.split(" ");
+        this.editedItem.user_firstname = nameParts[0];
+        console.log(this.editedItem.user_firstname);
+      }
       this.dialog_manage = true;
     },
 
-    uploadFile() {
-      const input = this.$refs.fileInput;
-      const file = input.files[0];
+    async createUser2() {
       try {
-        this.photo = URL.createObjectURL(file);
+        const formData = new FormData()
+        formData.append('user_firstname', this.name + " " + this.firstname,)
+        formData.append('user_lastname', this.lastname)
+        formData.append('user_id', this.code)
+        formData.append('user_position', this.position,)
+        formData.append('user_department', this.department)
+        formData.append('user_email', this.email)
+        formData.append('user_password', this.password,)
+        formData.append('user_status', this.stratiform,)
+        formData.append('user_role', this.role,)
+        formData.append('image', this.imageFileUpload)
+        await this.$axios.post('/users/createUser', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        })
+        console.log("post success");
+        this.getAll();
+        this.getPosition_Developer();
+        this.getPosition_Implementer();
+        this.getPosition_ProgramManagement();
+        this.getPosition_SystemAnalyst();
+        this.getPosition_ReportDeveloper();
+        alert("success");
+      } catch (error) {
+        console.error(error)
+        alert('Error submitting form')
+      }
+    },
 
+    splitImage(data, image) {
+      data.forEach(file => {
+        const parts = file.user_pic.split("\\");
+        const directory = parts[1];
+        const fileName = parts[parts.length - 1];
+        const extractedFile = { id: file.id, directory, fileName };
+        image.push(extractedFile);
+        console.log(image);
+      });
+    },
+
+    uploadFile() {
+      const input2 = this.$refs.fileInput;
+      this.imageFileUpload = input2.files[0];
+      try {
+        this.photo = URL.createObjectURL(this.imageFileUpload);
+        console.log(this.imageFileUpload);
         // Do something with the file, for example upload to a server
       } catch (error) {
         console.error(error);
@@ -837,14 +939,15 @@ export default {
     },
     uploadFile_manage() {
       const input = this.$refs.fileInput;
-      const file = input.files[0];
+      this.imageManageUpload = input.files[0];
       try {
         // editedItem.photo
-        this.avatar = URL.createObjectURL(file);
+        this.avatar = URL.createObjectURL(this.imageManageUpload);
+        console.log(this.imageManageUpload);
         // Do something with the file, for example upload to a server
       } catch (error) {
         console.error(error);
-        this.avatar = null;
+        // this.avatar = null;
       }
     },
     async updateUser() {
@@ -859,7 +962,7 @@ export default {
           user_password: this.editedItem.user_password,
           user_status: this.editedItem.user_status,
           user_role: this.editedItem.user_role,
-          user_pic: "pic2.png",
+          user_pic: "-",
         })
         .then((response) => {
           console.log(response);
@@ -880,7 +983,7 @@ export default {
     },
     deleteUser() {
       this.$axios
-        .delete("/users/delete/" + this.editedItem.id)
+        .delete("/users/deleteUser/" + this.editedItem.id)
         .then((response) => {
           console.log(response);
           console.log("Delete success");
@@ -897,6 +1000,18 @@ export default {
           console.log(err);
           alert(err);
         });
+    },
+    titleName() {
+      const regex = /^(Mr\.|Miss\.)\s+(.*)$/; // Regular expression to match title and name
+      const matches = this.user_firstname.match(regex);
+      if (matches) {
+        console.log(matches);
+        this.titleName = matches[1];
+        const name2 = matches[2].trim();
+        const nameParts = name2.split(" ");
+        this.titleFirstname = nameParts[0];
+        console.log(this.title);
+      }
     },
   },
 };

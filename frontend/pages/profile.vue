@@ -10,8 +10,9 @@
                         <v-avatar class="mt-6 mx-auto" style="width: 150px; height: 150px">
                             <img src="https://cdn.vuetifyjs.com/images/john.jpg" alt="John" />
                         </v-avatar>
-                        <v-btn color="white" icon style="background-color: #883cfe; float: right;
-                                                        margin-left: -42px; margin-top: 131px; position: absolute;">
+                        <v-btn color="white" icon
+                            style="background-color: #883cfe; float: right;
+                                                                                                    margin-left: -42px; margin-top: 131px; position: absolute;">
                             <v-icon>mdi-pencil</v-icon>
                         </v-btn>
                     </div>
@@ -50,7 +51,7 @@
                                 </v-select>
                             </v-col>
                             <v-col class="" cols="5" sm="5">
-                                <v-text-field v-model="user_firstname" label="First Name" solo></v-text-field>
+                                <v-text-field v-model="firstname" label="First Name" solo></v-text-field>
                             </v-col>
                             <v-col class="" cols="5" sm="5">
                                 <v-text-field v-model="user_lastname" label="Last Name" solo></v-text-field>
@@ -71,7 +72,7 @@
                         </v-row>
                         <v-row class="mr-2 mt-0" style="margin-bottom:-4%;font-weight: bold; color: black;">
                             <v-col cols="4" sm="4">
-                                <v-text-field v-model="user_code" label="Code" solo readonly></v-text-field>
+                                <v-text-field v-model="user_id" label="Code" solo ></v-text-field>
                             </v-col>
                             <v-col cols="4" sm="4">
                                 <v-text-field v-model="user_position" label="Position" solo readonly></v-text-field>
@@ -87,7 +88,7 @@
                         </v-row>
                         <v-row class="mr-2 mt-0" style="margin-bottom:-4%;font-weight: bold; color: black;">
                             <v-col class="" cols="12" sm="12">
-                                <v-text-field v-model="user_email" label="E-mail" solo readonly></v-text-field>
+                                <v-text-field v-model="user_email" label="E-mail" solo></v-text-field>
                             </v-col>
                         </v-row>
                         <v-row class="mr-2 mt-0" style="margin-bottom:-2%;font-weight: bold; color: black;">
@@ -97,7 +98,9 @@
                         </v-row>
                         <v-row class="mr-2 mt-0" style="margin-bottom:-4%;font-weight: bold; color: black;">
                             <v-col cols="12" sm="12">
-                                <v-text-field v-model="user_password" label="Password" solo readonly></v-text-field>
+                                <v-text-field :append-icon="show3 ? 'mdi-pencil' : 'mdi-pencil'"
+                                    :type="show3 ? 'Password' : 'Password'" @click:append="show3 = !show3"
+                                    v-model="user_password" label="Password" solo readonly></v-text-field>
                                 <!-- Icon -->
                             </v-col>
                         </v-row>
@@ -129,7 +132,51 @@
                         </v-row>
                         <!--  -->
                     </div>
-
+                    <!-- dialog password persistent -->
+                    <v-dialog v-model="show3" max-width="500px">
+                        <v-card width="100%" height="100%">
+                            <v-card-title>
+                                <span class="text-h5" style="font-weight: bold; color: black;">Change Password</span>
+                            </v-card-title>
+                            <v-container>
+                                <v-col class="mr-2 mt-0 hidden-xs-only" cols="12" sm="12"
+                                    style="margin-bottom:-2%;font-weight: bold;font-size: 16px;">
+                                    Current Password
+                                </v-col>
+                                <v-col class="mt-0 mb-0 pb-0" cols="12">
+                                    <v-text-field v-model="c_password" solo label="Current Password" type="password"></v-text-field>
+                                </v-col>
+                                <v-col class="mr-2 mt-0 pt-0 hidden-xs-only" cols="12" sm="12"
+                                    style="margin-bottom:-2%;font-weight: bold;">
+                                    New Password
+                                </v-col>
+                                <v-col class="mt-0 mb-0 pb-0" cols="12">
+                                    <v-text-field v-model="n_password" :append-icon="show2 ? 'mdi-eye' : 'mdi-eye-off'"
+                                        :type="show2 ? 'text' : 'password'" @click:append="show2 = !show2" solo
+                                        label="New Password"></v-text-field>
+                                </v-col>
+                                <v-col class="mr-2 mt-0 pt-0 hidden-xs-only" cols="12" sm="12"
+                                    style="margin-bottom:-2%;font-weight: bold;">
+                                    Confirm Password Again
+                                </v-col>
+                                <v-col class="mt-0 mb-0 pb-0" cols="12">
+                                    <v-text-field v-model="cf_password" :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+                                        :type="show1 ? 'text' : 'password'" @click:append="show1 = !show1" solo
+                                        label="Confirm Password Again"></v-text-field>
+                                </v-col>
+                                <!--  -->
+                                <v-row class="mr-2 mt-0 mb-4 pt-0"
+                                    style="justify-content: right;font-weight: bold; color: black;">
+                                    <v-btn class="mr-2" elevation="2" color="error" @click="(show3 = false),(clearChangePassword())"
+                                        style="color: white; border-radius: 10px;">Cancel
+                                    </v-btn>
+                                    <v-btn class="mr-2" elevation="2" color="primary" @click="(show3 = false),(clearChangePassword())"
+                                        style="color: white; border-radius: 10px;">Save
+                                    </v-btn>
+                                </v-row>
+                            </v-container>
+                        </v-card>
+                    </v-dialog>
 
 
                 </v-card>
@@ -148,36 +195,38 @@ export default {
     layout: "admin",
     data() {
         return {
-
+            show1: false,
+            show2: false,
+            show3: false,
+            c_password: "",
+            n_password: "",
+            cf_password: "",
+            password: 'Password',
             user_id: "",
             user_firstname: "",
             user_lastname: "",
             user_status: "",
             user_role: "",
-            user_code: "",
             user_position: "",
             user_password: "",
             user_email: "",
             user_department: "",
-            name: "Mr.",
-            firstname: "implementer1",
-            lastname: "implementer1",
-            code: "A000000001",
-            position: "Implementer",
-            department: "DD",
+            name: "",
             online: "true",
-            email: "implementer1@admin.com",
-            password: "**********",
-            status: "Active",
+            title: "",
+            firstname: "",
             online: true,
-            role: "User",
-            items: ['Mr.', 'Miss'],
+            items: ['Mr.', 'Miss.'],
         };
+    },
+    mounted() {
+        this.titleName();
     },
     created() {
         this.getUser();
     },
     methods: {
+
         async getUser() {
             await this.$axios.get("/users/getAll?user_id=" + this.$store.state.user_id).then((res) => {
                 console.log(res.data);
@@ -186,13 +235,30 @@ export default {
                 this.user_lastname = res.data[0].user_lastname;
                 this.user_status = res.data[0].user_status;
                 this.user_role = res.data[0].user_role;
-                this.user_code = res.data[0].user_code;
                 this.user_position = res.data[0].user_position;
                 this.user_password = res.data[0].user_password;
                 this.user_email = res.data[0].user_email;
                 this.user_department = res.data[0].user_department;
                 console.log(this.user_status);
+                this.titleName();
             });
+        },
+        titleName() {
+            const regex = /^(Mr\.|Miss\.)\s+(.*)$/; // Regular expression to match title and name
+            const matches = this.user_firstname.match(regex);
+            if (matches) {
+                console.log(matches);
+                this.name = matches[1];
+                const name2 = matches[2].trim();
+                const nameParts = name2.split(" ");
+                this.firstname = nameParts[0];
+                console.log(this.title);
+            }
+        },
+        clearChangePassword() {
+            this.c_password = "";
+            this.n_password = "";
+            this.cf_password = "";
         },
     },
 };
@@ -200,8 +266,9 @@ export default {
 
 <style scoped>
 * {
-  font-family: "Lato", sans-serif;
+    font-family: "Lato", sans-serif;
 }
+
 .center {
     display: flex;
     align-items: center;

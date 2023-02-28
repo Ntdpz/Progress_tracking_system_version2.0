@@ -1,6 +1,104 @@
 const express = require("express");
 const router = express.Router();
 const connection = require("../db"); // Import the connection object
+const multer = require('multer');
+const fs = require('fs');
+
+const storage = multer.diskStorage({
+  destination(req, file, cb) {
+    cb(null, '../frontend/uploads/');
+  },
+  filename(req, file, cb) {
+    cb(null, `${Date.now()}-${file.originalname}`)
+  },
+});
+
+const upload = multer({ storage });
+
+// * post user + image
+router.post('/createUser', upload.single('image'), (req, res) => {
+  const {
+    user_firstname,
+    user_lastname,
+    user_id,
+    user_position,
+    user_department,
+    user_email,
+    user_password,
+    user_status,
+    user_role,
+  } = req.body;
+  const user_pic = req.file ? req.file.path : null
+
+  const sql = `INSERT INTO users(user_firstname, user_lastname, user_id, user_position , user_department , user_email , user_password , user_status ,user_role , user_pic ) VALUES(?, ?, ?, ? , ?, ?, ?, ?, ?, ?)`
+  connection.query(sql, [
+        user_firstname,
+        user_lastname,
+        user_id,
+        user_position,
+        user_department,
+        user_email,
+        user_password,
+        user_status,
+        user_role,
+        user_pic,
+  ], (err, result) => {
+    if (err) {
+      console.error(err)
+      res.sendStatus(500)
+    } else {
+      console.log(`Inserted ${result.affectedRows} row(s)`)
+      res.sendStatus(200)
+    }
+  })
+});
+
+//*delete images
+// Route to handle DELETE requests to /api/images/:id
+router.delete('/api/images/:id', (req, res) => {
+  const id = req.params.id;
+
+  // Get the image path from the database
+  const sql = `SELECT imagePath FROM mytable WHERE id = ${id}`;
+  connection.query(sql, (error, results, fields) => {
+    if (error) {
+      console.log(`Error retrieving image path from database: ${error}`);
+      res.status(500).send(`Error retrieving image path from database: ${error}`);
+      return;
+    }
+
+    if (results.length === 0) {
+      console.log(`Image with ID ${id} not found in database.`);
+      res.status(404).send(`Image with ID ${id} not found in database.`);
+      return;
+    }
+
+    const imagePath = results[0].imagePath;
+
+    // Delete image file from server
+    fs.unlink(imagePath, (err) => {
+      if (err) {
+        console.log(`Error deleting image file: ${err}`);
+        res.status(500).send(`Error deleting image file: ${err}`);
+        return;
+      }
+      console.log(`Image file ${imagePath} deleted successfully.`);
+
+      // Delete database entry
+      const deleteSql = `DELETE FROM mytable WHERE id = ${id}`;
+      connection.query(deleteSql, (error, results, fields) => {
+        if (error) {
+          console.log(`Error deleting image record from database: ${error}`);
+          res.status(500).send(`Error deleting image record from database: ${error}`);
+          return;
+        }
+        console.log(`Database entry with id ${id} deleted successfully.`);
+        res.status(200).send(`Image with ID ${id} deleted successfully.`);
+      });
+    });
+  });
+});
+
 
 // * GET All FROM users and query user_position
 router.get("/getAll", async (req, res) => {
@@ -56,7 +154,6 @@ router.post("/create", async (req, res) => {
     user_firstname,
     user_lastname,
     user_id,
-    
     user_position,
     user_department,
     user_email,
@@ -140,6 +237,52 @@ router.put("/update/:id", async (req, res) => {
     console.log(err);
     return res.status(500).send();
   }
+});
+
+//*delete user + image by ID
+// Route to handle DELETE requests to /api/images/:id
+router.delete('/deleteUser/:id', (req, res) => {
+  const id = req.params.id;
+
+  // Get the image path from the database
+  const sql = `SELECT user_pic FROM users WHERE id = ${id}`;
+  connection.query(sql, (error, results, fields) => {
+    if (error) {
+      console.log(`Error retrieving image path from database: ${error}`);
+      res.status(500).send(`Error retrieving image path from database: ${error}`);
+      return;
+    }
+
+    if (results.length === 0) {
+      console.log(`Image with ID ${id} not found in database.`);
+      res.status(404).send(`Image with ID ${id} not found in database.`);
+      return;
+    }
+
+    const imagePath = results[0].user_pic;
+
+    // Delete image file from server
+    fs.unlink(imagePath, (err) => {
+      if (err) {
+        console.log(`Error deleting image file: ${err}`);
+        res.status(500).send(`Error deleting image file: ${err}`);
+        return;
+      }
+      console.log(`Image file ${imagePath} deleted successfully.`);
+
+      // Delete database entry
+      const deleteSql = `DELETE FROM users WHERE id = ${id}`;
+      connection.query(deleteSql, (error, results, fields) => {
+        if (error) {
+          console.log(`Error deleting image record from database: ${error}`);
+          res.status(500).send(`Error deleting image record from database: ${error}`);
+          return;
+        }
+        console.log(`Database entry with id ${id} deleted successfully.`);
+        res.status(200).send(`Image with ID ${id} deleted successfully.`);
+      });
+    });
+  });
 });
 
 //* DELETE user by ID
