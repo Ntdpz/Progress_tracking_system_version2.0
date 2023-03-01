@@ -25,7 +25,7 @@
     <!-- class="green lighten-5" -->
     <v-container>
       <v-row no-gutters>
-        <!-- เอาเส้นออกใส่ border: none; -->
+        <!-- -เอาเส้นออกใส่ border: none; -->
         <v-card class="pa-2" tile outlined style="
                                       border: none;
                                       width: 100%;
