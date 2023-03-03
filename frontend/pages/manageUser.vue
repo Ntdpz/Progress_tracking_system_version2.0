@@ -669,7 +669,7 @@ export default {
     return {
       titleName: "",
       titleFirstname: "",
-      imageManageUpload: "",
+      imageManageUpload: null,
       imageFileUpload: "",
       imageManage: null,
       photo: "",
@@ -778,6 +778,8 @@ export default {
         this.data = data.data;
         console.log(this.data);
         this.splitImage(this.data, this.imageALL);
+        console.log("this.imageALL");
+        console.log(this.data[0].user_pic);
       });
     },
     async getPosition_Developer() {
@@ -839,7 +841,7 @@ export default {
           user_password: this.password,
           user_status: this.stratiform,
           user_role: this.role,
-          user_pic: "-",
+          user_pic: null,
         })
         .then((response) => {
           console.log(response);
@@ -984,8 +986,8 @@ export default {
 
   async updateUser2() {
   const formData = new FormData();
-  formData.append("image", this.imageManageUpload);
-  formData.append("user_firstname", this.editedItem.user_firstname);
+  formData.append("image", this.imageManageUpload );
+  formData.append("user_firstname", this.editedItem.misname +" "+ this.editedItem.user_firstname);
   formData.append("user_lastname", this.editedItem.user_lastname);
   formData.append("user_id", this.editedItem.user_id);
   formData.append("user_position", this.editedItem.user_position);

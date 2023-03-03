@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
     <div>
         <div>
             <button @click="deleteImage">delete</button>
@@ -127,4 +127,4 @@ export default {
     },
 
 }
-</script>
+</script> -->
