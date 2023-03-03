@@ -643,7 +643,7 @@
                             <h4>Delete</h4>
                           </v-btn>
                           <v-btn elevation="2" color="primary" style="color: white; border-radius: 10px"
-                            @click="updateUser()">
+                            @click="updateUser2()">
                             <h4>Update</h4>
                           </v-btn>
                         </v-row>
@@ -981,6 +981,40 @@ export default {
           alert(err);
         });
     },
+
+  async updateUser2() {
+  const formData = new FormData();
+  formData.append("image", this.imageManageUpload);
+  formData.append("user_firstname", this.editedItem.user_firstname);
+  formData.append("user_lastname", this.editedItem.user_lastname);
+  formData.append("user_id", this.editedItem.user_id);
+  formData.append("user_position", this.editedItem.user_position);
+  formData.append("user_department", this.editedItem.user_department);
+  formData.append("user_email", this.editedItem.user_email);
+  formData.append("user_password", this.editedItem.user_password);
+  formData.append("user_status", this.editedItem.user_status);
+  formData.append("user_role", this.editedItem.user_role);
+
+  await this.$axios
+    .put("/users/updateUsers/" + this.editedItem.id + "/image", formData)
+    .then((response) => {
+      console.log(response);
+      console.log("Update success");
+      this.getAll();
+      this.getPosition_Developer();
+      this.getPosition_Implementer();
+      this.getPosition_ProgramManagement();
+      this.getPosition_SystemAnalyst();
+      this.getPosition_ReportDeveloper();
+      alert("Update success");
+      this.dialog_manage = false;
+    })
+    .catch((err) => {
+      console.log(err);
+      alert(err);
+    });
+},
+
     deleteUser() {
       this.$axios
         .delete("/users/deleteUser/" + this.editedItem.id)

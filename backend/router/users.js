@@ -9,7 +9,9 @@ const storage = multer.diskStorage({
     cb(null, '../frontend/uploads/');
   },
   filename(req, file, cb) {
-    cb(null, `${Date.now()}-${file.originalname}`)
+    const originalname = file.originalname;
+    const filename = Date.now() + '-' + originalname.substring(originalname.lastIndexOf('/')+1);
+    cb(null, filename);
   },
 });
 
@@ -28,7 +30,7 @@ router.post('/createUser', upload.single('image'), (req, res) => {
     user_status,
     user_role,
   } = req.body;
-  const user_pic = req.file ? req.file.path : null
+  const user_pic = req.file ? req.file.filename : null;
 
   const sql = `INSERT INTO users(user_firstname, user_lastname, user_id, user_position , user_department , user_email , user_password , user_status ,user_role , user_pic ) VALUES(?, ?, ?, ? , ?, ?, ?, ?, ?, ?)`
   connection.query(sql, [
@@ -52,6 +54,66 @@ router.post('/createUser', upload.single('image'), (req, res) => {
     }
   })
 });
+
+
+// * Edit user + image
+// PUT update user information and profile picture
+router.put('/updateUsers/:id/image', upload.single('image'), (req, res) => {
+  const id = req.params.id;
+  const {
+    user_firstname,
+    user_lastname,
+    user_id,
+    user_position,
+    user_department,
+    user_email,
+    user_password,
+    user_status,
+    user_role,
+  } = req.body;
+  const user_pic = req.file ? req.file.filename : null;
+
+  try {
+    connection.query(
+      `UPDATE users SET 
+        user_firstname = ?,
+        user_lastname = ?,
+        user_id = ?,
+        user_position = ?,
+        user_department = ?,
+        user_email = ?,
+        user_password = ?,
+        user_status = ?,
+        user_role = ?,
+        user_pic = ?
+      WHERE id = ?`,
+      [
+        user_firstname,
+        user_lastname,
+        user_id,
+        user_position,
+        user_department,
+        user_email,
+        user_password,
+        user_status,
+        user_role,
+        user_pic,
+        id,
+      ],
+      (err, results, fields) => {
+        if (err) {
+          console.log(err);
+          return res.status(400).send(err);
+        }
+        res.status(200).json({ message: 'User updated successfully!' });
+      }
+    );
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send(err);
+  }
+});
+
 
 //*delete images
 // Route to handle DELETE requests to /api/images/:id
