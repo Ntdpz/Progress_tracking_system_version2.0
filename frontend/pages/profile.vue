@@ -8,12 +8,14 @@
                     style="border: none;  height: 200px; display: flex; justify-content: center">
                     <div>
                         <v-avatar class="mt-6 mx-auto" style="width: 150px; height: 150px">
-                            <img src="https://cdn.vuetifyjs.com/images/john.jpg" alt="John" />
+                            <!-- <img src="https://cdn.vuetifyjs.com/images/john.jpg" alt="John" /> -->
+                            <img v-if="avatar != null" :src="avatar" />
+                            <img v-else-if="user_pic" :src="getImageUrl(user_pic)" />
                         </v-avatar>
                         <v-btn color="white" icon
-                            style="background-color: #883cfe; float: right;
-                                                                                                    margin-left: -42px; margin-top: 131px; position: absolute;">
-                            <v-icon>mdi-pencil</v-icon>
+                            style="background-color: #883cfe; float: right; margin-left: -42px; margin-top: 131px; position: absolute;">
+                            <v-icon @click="$refs.fileInput.click()">mdi-pencil</v-icon>
+                            <input ref="fileInput" type="file" style="display:none;" @change="uploadFile">
                         </v-btn>
                     </div>
                 </v-card>
@@ -72,7 +74,7 @@
                         </v-row>
                         <v-row class="mr-2 mt-0" style="margin-bottom:-4%;font-weight: bold; color: black;">
                             <v-col cols="4" sm="4">
-                                <v-text-field v-model="user_id" label="Code" solo ></v-text-field>
+                                <v-text-field v-model="user_id" label="Code" solo></v-text-field>
                             </v-col>
                             <v-col cols="4" sm="4">
                                 <v-text-field v-model="user_position" label="Position" solo readonly></v-text-field>
@@ -144,7 +146,8 @@
                                     Current Password
                                 </v-col>
                                 <v-col class="mt-0 mb-0 pb-0" cols="12">
-                                    <v-text-field v-model="c_password" solo label="Current Password" type="password"></v-text-field>
+                                    <v-text-field v-model="c_password" solo label="Current Password"
+                                        type="password"></v-text-field>
                                 </v-col>
                                 <v-col class="mr-2 mt-0 pt-0 hidden-xs-only" cols="12" sm="12"
                                     style="margin-bottom:-2%;font-weight: bold;">
@@ -167,10 +170,12 @@
                                 <!--  -->
                                 <v-row class="mr-2 mt-0 mb-4 pt-0"
                                     style="justify-content: right;font-weight: bold; color: black;">
-                                    <v-btn class="mr-2" elevation="2" color="error" @click="(show3 = false),(clearChangePassword())"
+                                    <v-btn class="mr-2" elevation="2" color="error"
+                                        @click="(show3 = false), (clearChangePassword())"
                                         style="color: white; border-radius: 10px;">Cancel
                                     </v-btn>
-                                    <v-btn class="mr-2" elevation="2" color="primary" @click="(show3 = false),(clearChangePassword())"
+                                    <v-btn class="mr-2" elevation="2" color="primary"
+                                        @click="(show3 = false), (clearChangePassword())"
                                         style="color: white; border-radius: 10px;">Save
                                     </v-btn>
                                 </v-row>
@@ -217,6 +222,9 @@ export default {
             firstname: "",
             online: true,
             items: ['Mr.', 'Miss.'],
+            user_pic: null,
+            imageUpload: null,
+            avatar: null,
         };
     },
     mounted() {
@@ -239,7 +247,8 @@ export default {
                 this.user_password = res.data[0].user_password;
                 this.user_email = res.data[0].user_email;
                 this.user_department = res.data[0].user_department;
-                console.log(this.user_status);
+                this.user_pic = res.data[0].user_pic;
+                console.log(this.user_pic);
                 this.titleName();
             });
         },
@@ -259,6 +268,55 @@ export default {
             this.c_password = "";
             this.n_password = "";
             this.cf_password = "";
+        },
+        getImageUrl(fileName) {
+            return require(`@/uploads/${fileName}`);
+        },
+        uploadFile() {
+            const input = this.$refs.fileInput;
+            this.imageUpload = input.files[0];
+            try {
+                // editedItem.photo
+                this.avatar = URL.createObjectURL(this.imageUpload);
+                console.log(this.imageUpload);
+                // Do something with the file, for example upload to a server
+            } catch (error) {
+                console.error(error);
+                // this.avatar = null;
+            }
+        },
+
+        async updateUser() {
+            const formData = new FormData();
+            formData.append("image", this.imageUpload);
+            formData.append("user_firstname", this.name + " " + this.user_firstname);
+            formData.append("user_lastname", this.user_lastname);
+            formData.append("user_id", this.user_id);
+            formData.append("user_position", this.user_position);
+            formData.append("user_department", this.user_department);
+            formData.append("user_email", this.user_email);
+            formData.append("user_password", this.user_password);
+            formData.append("user_status", this.user_status);
+            formData.append("user_role", this.user_role);
+
+            await this.$axios
+                .put("/users/updateUsers/" + this.editedItem.id + "/image", formData)
+                .then((response) => {
+                    console.log(response);
+                    console.log("Update success");
+                    this.getAll();
+                    this.getPosition_Developer();
+                    this.getPosition_Implementer();
+                    this.getPosition_ProgramManagement();
+                    this.getPosition_SystemAnalyst();
+                    this.getPosition_ReportDeveloper();
+                    alert("Update success");
+                    this.dialog_manage = false;
+                })
+                .catch((err) => {
+                    console.log(err);
+                    alert(err);
+                });
         },
     },
 };
