@@ -5,7 +5,9 @@ const express = require("express");
 const session = require("express-session");
 const app = express();
 const usersRouter = require("./router/users");
-const projectRouter = require("./router/projects")
+const projectsRouter = require("./router/projects");
+const systemsRouter = require("./router/systems");
+const screensRouter = require("./router/screens");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -24,9 +26,9 @@ app.use(
 );
 
 app.use("/users", usersRouter);
-// app.use("/projects", projectsRouter);
-app.use("/projects",projectRouter);
-
+app.use("/projects", projectsRouter);
+app.use("/systems", systemsRouter);
+app.use("/screens", screensRouter);
 
 app.get("/getAll", async (req, res) => {
   try {
