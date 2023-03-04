@@ -387,7 +387,8 @@ router.delete('/deleteUser/:id', (req, res) => {
     }
 
     // const imagePath = results[0].user_pic;
-    const imagePath = '..\\frontend\\uploads\\' + results[0].user_pic;
+    const imagePath = '../frontend/uploads/' + results[0].user_pic;
+    // const imagePath = path.join(__dirname, '..', 'frontend', 'uploads', results[0].user_pic);
 
     // Delete image file from server
     fs.unlink(imagePath, (err) => {

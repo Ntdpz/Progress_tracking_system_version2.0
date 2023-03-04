@@ -7,13 +7,13 @@
       <v-divider class="mt-0 mb-1" inset vertical style="background-color: black"></v-divider>
       <template>
         <v-banner class="mt-0 ml-4" style="
-                                      display: flex;
-                                      align-items: center;
-                                      justify-content: center;
-                                      height: 30px;
-                                      border-radius: 30px;
-                                      padding: 0 0px;
-                                    " outlined elevation="2">
+                                        display: flex;
+                                        align-items: center;
+                                        justify-content: center;
+                                        height: 30px;
+                                        border-radius: 30px;
+                                        padding: 0 0px;
+                                      " outlined elevation="2">
           <form class="center" @submit.prevent="search">
             <v-icon color="purple">mdi-magnify</v-icon>
             <input class="mr-3" type="text" v-model="query" placeholder="Search some User" />
@@ -27,12 +27,12 @@
       <v-row no-gutters>
         <!-- -เอาเส้นออกใส่ border: none; -->
         <v-card class="pa-2" tile outlined style="
-                                      border: none;
-                                      width: 100%;
-                                      height: 100%;
-                                      display: flex;
-                                      justify-content: center;
-                                    ">
+                                        border: none;
+                                        width: 100%;
+                                        height: 100%;
+                                        display: flex;
+                                        justify-content: center;
+                                      ">
           <v-col class="mb-6" col="12" sm="12" md="12">
             <!-- หมวดหมู่ หัวข้อใหญ่ -->
             <v-toolbar class="mb-2">
@@ -673,7 +673,6 @@ export default {
       imageFileUpload: "",
       imageManage: null,
       photo: "",
-      // https://cdn.vuetifyjs.com/images/john.jpg
       avatar: null,
       name: "",
       firstname: "",
@@ -984,38 +983,38 @@ export default {
         });
     },
 
-  async updateUser2() {
-  const formData = new FormData();
-  formData.append("image", this.imageManageUpload );
-  formData.append("user_firstname", this.editedItem.misname +" "+ this.editedItem.user_firstname);
-  formData.append("user_lastname", this.editedItem.user_lastname);
-  formData.append("user_id", this.editedItem.user_id);
-  formData.append("user_position", this.editedItem.user_position);
-  formData.append("user_department", this.editedItem.user_department);
-  formData.append("user_email", this.editedItem.user_email);
-  formData.append("user_password", this.editedItem.user_password);
-  formData.append("user_status", this.editedItem.user_status);
-  formData.append("user_role", this.editedItem.user_role);
+    async updateUser2() {
+      const formData = new FormData();
+      formData.append("image", this.imageManageUpload);
+      formData.append("user_firstname", this.editedItem.misname + " " + this.editedItem.user_firstname);
+      formData.append("user_lastname", this.editedItem.user_lastname);
+      formData.append("user_id", this.editedItem.user_id);
+      formData.append("user_position", this.editedItem.user_position);
+      formData.append("user_department", this.editedItem.user_department);
+      formData.append("user_email", this.editedItem.user_email);
+      formData.append("user_password", this.editedItem.user_password);
+      formData.append("user_status", this.editedItem.user_status);
+      formData.append("user_role", this.editedItem.user_role);
 
-  await this.$axios
-    .put("/users/updateUsers/" + this.editedItem.id + "/image", formData)
-    .then((response) => {
-      console.log(response);
-      console.log("Update success");
-      this.getAll();
-      this.getPosition_Developer();
-      this.getPosition_Implementer();
-      this.getPosition_ProgramManagement();
-      this.getPosition_SystemAnalyst();
-      this.getPosition_ReportDeveloper();
-      alert("Update success");
-      this.dialog_manage = false;
-    })
-    .catch((err) => {
-      console.log(err);
-      alert(err);
-    });
-},
+      await this.$axios
+        .put("/users/updateUsers/" + this.editedItem.id + "/image", formData)
+        .then((response) => {
+          console.log(response);
+          console.log("Update success");
+          this.getAll();
+          this.getPosition_Developer();
+          this.getPosition_Implementer();
+          this.getPosition_ProgramManagement();
+          this.getPosition_SystemAnalyst();
+          this.getPosition_ReportDeveloper();
+          alert("Update success");
+          this.dialog_manage = false;
+        })
+        .catch((err) => {
+          console.log(err);
+          alert(err);
+        });
+    },
 
     deleteUser() {
       this.$axios
@@ -1038,6 +1037,7 @@ export default {
         });
     },
     titleName() {
+      try {
       const regex = /^(Mr\.|Miss\.)\s+(.*)$/; // Regular expression to match title and name
       const matches = this.user_firstname.match(regex);
       if (matches) {
@@ -1048,6 +1048,10 @@ export default {
         this.titleFirstname = nameParts[0];
         console.log(this.title);
       }
+      } catch (error) {
+        
+      }
+      
     },
   },
 };
