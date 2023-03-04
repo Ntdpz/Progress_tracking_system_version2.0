@@ -11,6 +11,7 @@
                             <!-- <img src="https://cdn.vuetifyjs.com/images/john.jpg" alt="John" /> -->
                             <img v-if="avatar != null" :src="avatar" />
                             <img v-else-if="user_pic" :src="getImageUrl(user_pic)" />
+                            <img v-else :src="getdefaultImageUrl(defaultImage)" />
                         </v-avatar>
                         <v-btn color="white" icon
                             style="background-color: #883cfe; float: right; margin-left: -42px; margin-top: 131px; position: absolute;">
@@ -128,14 +129,14 @@
                             </v-col>
                         </v-row>
                         <v-row class="mr-2 mt-0 mt-lg-6" style="justify-content: right;font-weight: bold; color: black;">
-                            <v-btn to="/home" class="mr-2" elevation="2" color="primary"
+                            <v-btn class="mr-2" elevation="2" color="primary" @click="updateUser()"
                                 style="color: white; border-radius: 10px;">Update
                             </v-btn>
                         </v-row>
                         <!--  -->
                     </div>
                     <!-- dialog password persistent -->
-                    <v-dialog v-model="show3" max-width="500px">
+                    <v-dialog v-model="show3" max-width="500px" persistent>
                         <v-card width="100%" height="100%">
                             <v-card-title>
                                 <span class="text-h5" style="font-weight: bold; color: black;">Change Password</span>
@@ -143,10 +144,10 @@
                             <v-container>
                                 <v-col class="mr-2 mt-0 hidden-xs-only" cols="12" sm="12"
                                     style="margin-bottom:-2%;font-weight: bold;font-size: 16px;">
-                                    Current Password
+                                    Old Password
                                 </v-col>
                                 <v-col class="mt-0 mb-0 pb-0" cols="12">
-                                    <v-text-field v-model="c_password" solo label="Current Password"
+                                    <v-text-field v-model="o_password" solo label="Old Password"
                                         type="password"></v-text-field>
                                 </v-col>
                                 <v-col class="mr-2 mt-0 pt-0 hidden-xs-only" cols="12" sm="12"
@@ -175,7 +176,7 @@
                                         style="color: white; border-radius: 10px;">Cancel
                                     </v-btn>
                                     <v-btn class="mr-2" elevation="2" color="primary"
-                                        @click="(show3 = false), (clearChangePassword())"
+                                        @click="(checkPassword())"
                                         style="color: white; border-radius: 10px;">Save
                                     </v-btn>
                                 </v-row>
@@ -203,10 +204,11 @@ export default {
             show1: false,
             show2: false,
             show3: false,
-            c_password: "",
+            o_password: "",
             n_password: "",
             cf_password: "",
             password: 'Password',
+            id:"",
             user_id: "",
             user_firstname: "",
             user_lastname: "",
@@ -216,15 +218,15 @@ export default {
             user_password: "",
             user_email: "",
             user_department: "",
-            name: "",
             online: "true",
-            title: "",
+            name: "",
             firstname: "",
             online: true,
             items: ['Mr.', 'Miss.'],
             user_pic: null,
             imageUpload: null,
             avatar: null,
+            defaultImage: "Avatar.jpg",
         };
     },
     mounted() {
@@ -238,6 +240,7 @@ export default {
         async getUser() {
             await this.$axios.get("/users/getAll?user_id=" + this.$store.state.user_id).then((res) => {
                 console.log(res.data);
+                this.id = res.data[0].id;
                 this.user_id = res.data[0].user_id;
                 this.user_firstname = res.data[0].user_firstname;
                 this.user_lastname = res.data[0].user_lastname;
@@ -258,19 +261,20 @@ export default {
             if (matches) {
                 console.log(matches);
                 this.name = matches[1];
-                const name2 = matches[2].trim();
-                const nameParts = name2.split(" ");
-                this.firstname = nameParts[0];
-                console.log(this.title);
-            }
+                this.firstname = matches[2].trim();
+                console.log(this.firstname);
+            } 
         },
         clearChangePassword() {
-            this.c_password = "";
+            this.o_password = "";
             this.n_password = "";
             this.cf_password = "";
         },
         getImageUrl(fileName) {
             return require(`@/uploads/${fileName}`);
+        },
+        getdefaultImageUrl(fileName) {
+            return require(`@/defaultimage/${fileName}`);
         },
         uploadFile() {
             const input = this.$refs.fileInput;
@@ -286,37 +290,57 @@ export default {
             }
         },
 
-        async updateUser() {
-            const formData = new FormData();
-            formData.append("image", this.imageUpload);
-            formData.append("user_firstname", this.name + " " + this.user_firstname);
-            formData.append("user_lastname", this.user_lastname);
-            formData.append("user_id", this.user_id);
-            formData.append("user_position", this.user_position);
-            formData.append("user_department", this.user_department);
-            formData.append("user_email", this.user_email);
-            formData.append("user_password", this.user_password);
-            formData.append("user_status", this.user_status);
-            formData.append("user_role", this.user_role);
+        checkPassword() {
+            // Check old password
+            if (this.o_password != "" || this.n_password != "" || this.cf_password != "") {
+                if (this.o_password == this.user_password) {
+                    if (this.n_password == this.cf_password) {
+                        this.user_password = this.cf_password;
+                        alert("Change password successfully!");
+                        this.clearChangePassword();
+                        this.show3 = false;
+                    } else {
+                        alert("New Password and confirm password are not the same");
+                        
+                    }
+                } else {
+                    alert("Old password is wrong");
+                }
+            } else {
+                alert("Password must not be null.");
+            }
+        },
 
-            await this.$axios
-                .put("/users/updateUsers/" + this.editedItem.id + "/image", formData)
-                .then((response) => {
-                    console.log(response);
-                    console.log("Update success");
-                    this.getAll();
-                    this.getPosition_Developer();
-                    this.getPosition_Implementer();
-                    this.getPosition_ProgramManagement();
-                    this.getPosition_SystemAnalyst();
-                    this.getPosition_ReportDeveloper();
-                    alert("Update success");
-                    this.dialog_manage = false;
-                })
-                .catch((err) => {
-                    console.log(err);
-                    alert(err);
-                });
+        async updateUser() {
+            if (this.$store.state.user_id != undefined) {
+                const formData = new FormData();
+                formData.append("image", this.imageUpload);
+                formData.append("user_firstname", this.name + " " + this.firstname);
+                formData.append("user_lastname", this.user_lastname);
+                formData.append("user_id", this.user_id);
+                formData.append("user_position", this.user_position);
+                formData.append("user_department", this.user_department);
+                formData.append("user_email", this.user_email);
+                formData.append("user_password", this.user_password);
+                formData.append("user_status", this.user_status);
+                formData.append("user_role", this.user_role);
+
+                await this.$axios
+                    .put("/users/updateUsers/" + this.id + "/image", formData)
+                    .then((response) => {
+                        console.log(response);
+                        alert("Update success");
+                        this.getUser();
+                        this.$router.push('/Home');
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                        alert(err);
+                    });
+            } else {
+                alert("Update failure: this.$store.state.user_id = undefined");
+            }
+
         },
     },
 };
