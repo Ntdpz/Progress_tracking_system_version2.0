@@ -28,12 +28,12 @@
       <v-row no-gutters>
         <!-- -เอาเส้นออกใส่ border: none; -->
         <v-card class="pa-2" tile outlined style="
-                                      border: none;
-                                      width: 100%;
-                                      height: 100%;
-                                      display: flex;
-                                      justify-content: center;
-                                    ">
+                                        border: none;
+                                        width: 100%;
+                                        height: 100%;
+                                        display: flex;
+                                        justify-content: center;
+                                      ">
           <v-col class="mb-6" col="12" sm="12" md="12">
             <!-- หมวดหมู่ หัวข้อใหญ่ -->
             <v-toolbar class="mb-2">
@@ -407,7 +407,7 @@
                         <v-row class="mr-2" style="margin-bottom: -2%; font-size: 14px">
                           <v-col class="hidden-xs-only" cols="12" sm="3">
                             Title
-                            </v-col>
+                          </v-col>
                           <v-col class="hidden-xs-only" cols="12" sm="4">
                             First Name
                           </v-col>
@@ -508,7 +508,7 @@
                           </v-col>
                           <!--  -->
                         </v-row>
-                        
+
                         <v-row class="mr-6 mt-0 mb-1" style="justify-content: right">
                           <v-btn class="mr-4" elevation="2" color="error" style="color: white; border-radius: 10px"
                             @click="(dialog = false), (clearInfoNewUser())">
@@ -573,16 +573,16 @@
                         <!--  -->
                         <v-row class="mr-2 mt-0" style="margin-bottom: -8%">
                           <v-col cols="12" sm="3" style="margin-right: -1%; padding-right: 0%">
-                            <v-select :rules="[rules.required]" v-model="editedItem.misname" :items="misname" label="Mr/Miss" dense rounded
-                              solo></v-select>
+                            <v-select :rules="[rules.required]" v-model="editedItem.misname" :items="misname"
+                              label="Mr/Miss" dense rounded solo></v-select>
                           </v-col>
                           <v-col cols="12" sm="4">
-                            <v-text-field :rules="[rules.required]" v-model="editedItem.user_firstname" label="First Name" dense rounded
-                              solo></v-text-field>
+                            <v-text-field :rules="[rules.required]" v-model="editedItem.user_firstname" label="First Name"
+                              dense rounded solo></v-text-field>
                           </v-col>
                           <v-col cols="12" sm="5">
-                            <v-text-field :rules="[rules.required]" v-model="editedItem.user_lastname" label="Last Name" dense rounded
-                              solo></v-text-field>
+                            <v-text-field :rules="[rules.required]" v-model="editedItem.user_lastname" label="Last Name"
+                              dense rounded solo></v-text-field>
                           </v-col>
                         </v-row>
                         <!--  -->
@@ -600,15 +600,16 @@
                         <!--  -->
                         <v-row class="mr-2 mt-0" style="margin-bottom: -6%">
                           <v-col cols="12" sm="4">
-                            <v-text-field :rules="[rules.required]" v-model="editedItem.user_id" label="Code" dense rounded solo></v-text-field>
+                            <v-text-field :rules="[rules.required]" v-model="editedItem.user_id" label="Code" dense
+                              rounded solo></v-text-field>
                           </v-col>
                           <v-col cols="12" sm="4">
-                            <v-select :rules="[rules.required]" v-model="editedItem.user_position" :items="positions" label="Position" dense rounded
-                              solo></v-select>
+                            <v-select :rules="[rules.required]" v-model="editedItem.user_position" :items="positions"
+                              label="Position" dense rounded solo></v-select>
                           </v-col>
                           <v-col cols="12" sm="4">
-                            <v-text-field :rules="[rules.required]" v-model="editedItem.user_department" label="Department" dense rounded
-                              solo></v-text-field>
+                            <v-text-field :rules="[rules.required]" v-model="editedItem.user_department"
+                              label="Department" dense rounded solo></v-text-field>
                           </v-col>
                         </v-row>
                         <!--  -->
@@ -620,8 +621,8 @@
                         <!--  -->
                         <v-row class="mr-2 mt-0" style="margin-bottom: -6%">
                           <v-col cols="12" sm="12">
-                            <v-text-field :rules="[rules.required, rules.email]" v-model="editedItem.user_email" label="E-mail" dense rounded
-                              solo></v-text-field>
+                            <v-text-field :rules="[rules.required, rules.email]" v-model="editedItem.user_email"
+                              label="E-mail" dense rounded solo></v-text-field>
                           </v-col>
                         </v-row>
                         <!--  -->
@@ -651,12 +652,12 @@
                         <!--  -->
                         <v-row class="mr-2 mt-0">
                           <v-col cols="12" sm="6">
-                            <v-select :rules="[rules.required]" v-model="editedItem.user_status" :items="status" label="Status" dense rounded
-                              solo></v-select>
+                            <v-select :rules="[rules.required]" v-model="editedItem.user_status" :items="status"
+                              label="Status" dense rounded solo></v-select>
                           </v-col>
                           <v-col cols="12" sm="6">
-                            <v-select :rules="[rules.required]" v-model="editedItem.user_role" :items="roles" label="Role" dense rounded
-                              solo></v-select>
+                            <v-select :rules="[rules.required]" v-model="editedItem.user_role" :items="roles" label="Role"
+                              dense rounded solo></v-select>
                           </v-col>
                           <!--  -->
                         </v-row>
@@ -863,37 +864,6 @@ export default {
 
         });
     },
-    async createUser() {
-      await this.$axios
-        .post("/users/create", {
-          user_firstname: this.name + " " + this.firstname,
-          user_lastname: this.lastname,
-          user_id: this.code,
-          user_position: this.position,
-          user_department: this.department,
-          user_email: this.email,
-          user_password: this.password,
-          user_status: this.stratiform,
-          user_role: this.role,
-          user_pic: null,
-        })
-        .then((response) => {
-          console.log(response);
-          console.log("post success");
-          this.getAll();
-          this.getPosition_Developer();
-          this.getPosition_Implementer();
-          this.getPosition_ProgramManagement();
-          this.getPosition_SystemAnalyst();
-          this.getPosition_ReportDeveloper();
-          alert("success");
-        })
-        .catch((err) => {
-          console.log(err);
-          alert(err);
-        });
-    },
-
     getImageUrl(fileName) {
       return require(`@/uploads/${fileName}`);
     },
@@ -937,13 +907,21 @@ export default {
           },
         })
         console.log("post success");
-        this.getAll();
-        this.getPosition_Developer();
-        this.getPosition_Implementer();
-        this.getPosition_ProgramManagement();
-        this.getPosition_SystemAnalyst();
-        this.getPosition_ReportDeveloper();
-        alert("success");
+        const promise = new Promise((resolve, reject) => {
+          this.getAll();
+          this.getPosition_Developer();
+          this.getPosition_Implementer();
+          this.getPosition_ProgramManagement();
+          this.getPosition_SystemAnalyst();
+          this.getPosition_ReportDeveloper();
+          resolve();
+        });
+        promise.then(() => {
+          setTimeout(() => {
+            alert("success");
+          }, 2000);
+        });
+
       } catch (error) {
         console.error(error)
         alert('Error submitting form')
@@ -1144,4 +1122,5 @@ input[type="text"] {
   font-size: 16px;
   line-height: 40px;
   color: #bbbbbb;
-}</style>
+}
+</style>
