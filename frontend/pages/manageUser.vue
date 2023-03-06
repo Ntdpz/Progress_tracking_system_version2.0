@@ -432,7 +432,7 @@
                           </v-col>
                         </v-row>
                         <!--  -->
-                        <v-row class="mr-2" style="margin-bottom: -2%; font-size: 14px">
+                        <v-row class="mr-2 mt-6" style="margin-bottom: -2%; font-size: 14px">
                           <v-col class="hidden-xs-only" cols="12" sm="4">
                             Code
                           </v-col>
@@ -459,7 +459,7 @@
                           </v-col>
                         </v-row>
                         <!--  -->
-                        <v-row class="mr-2 mt-0" style="margin-bottom: -2%; font-size: 14px">
+                        <v-row class="mr-2 mt-2" style="margin-bottom: -2%; font-size: 14px">
                           <v-col class="hidden-xs-only" cols="12" sm="12">
                             E-mail
                           </v-col>
@@ -472,7 +472,7 @@
                           </v-col>
                         </v-row>
                         <!--  -->
-                        <v-row class="mr-2 mt-0" style="margin-bottom: -2%; font-size: 14px">
+                        <v-row class="mr-2 mt-2" style="margin-bottom: -2%; font-size: 14px">
                           <v-col class="hidden-xs-only" cols="12" sm="12">
                             Passwords
                           </v-col>
@@ -508,9 +508,9 @@
                           </v-col>
                           <!--  -->
                         </v-row>
-                        <v-col> </v-col>
+                        
                         <v-row class="mr-6 mt-0 mb-1" style="justify-content: right">
-                          <v-btn class="mr-2" elevation="2" color="error" style="color: white; border-radius: 10px"
+                          <v-btn class="mr-4" elevation="2" color="error" style="color: white; border-radius: 10px"
                             @click="(dialog = false), (clearInfoNewUser())">
                             Cancel
                           </v-btn>
@@ -559,7 +559,10 @@
                     <v-card style="border: none" class="pa-2" outlined tile height="100%">
                       <div>
                         <v-row class="mr-2" style="margin-bottom: -2%; font-size: 14px">
-                          <v-col class="hidden-xs-only" cols="12" sm="7">
+                          <v-col class="hidden-xs-only" cols="12" sm="3">
+                            Title
+                          </v-col>
+                          <v-col class="hidden-xs-only" cols="12" sm="4">
                             First Name
                           </v-col>
 
@@ -570,20 +573,20 @@
                         <!--  -->
                         <v-row class="mr-2 mt-0" style="margin-bottom: -8%">
                           <v-col cols="12" sm="3" style="margin-right: -1%; padding-right: 0%">
-                            <v-select v-model="editedItem.misname" :items="misname" label="Mr/Miss" dense rounded
+                            <v-select :rules="[rules.required]" v-model="editedItem.misname" :items="misname" label="Mr/Miss" dense rounded
                               solo></v-select>
                           </v-col>
                           <v-col cols="12" sm="4">
-                            <v-text-field v-model="editedItem.user_firstname" label="First Name" dense rounded
+                            <v-text-field :rules="[rules.required]" v-model="editedItem.user_firstname" label="First Name" dense rounded
                               solo></v-text-field>
                           </v-col>
                           <v-col cols="12" sm="5">
-                            <v-text-field v-model="editedItem.user_lastname" label="Last Name" dense rounded
+                            <v-text-field :rules="[rules.required]" v-model="editedItem.user_lastname" label="Last Name" dense rounded
                               solo></v-text-field>
                           </v-col>
                         </v-row>
                         <!--  -->
-                        <v-row class="mr-2" style="margin-bottom: -2%; font-size: 14px">
+                        <v-row class="mr-2 mt-6" style="margin-bottom: -2%; font-size: 14px">
                           <v-col class="hidden-xs-only" cols="12" sm="4">
                             Code
                           </v-col>
@@ -597,19 +600,19 @@
                         <!--  -->
                         <v-row class="mr-2 mt-0" style="margin-bottom: -6%">
                           <v-col cols="12" sm="4">
-                            <v-text-field v-model="editedItem.user_id" label="Code" dense rounded solo></v-text-field>
+                            <v-text-field :rules="[rules.required]" v-model="editedItem.user_id" label="Code" dense rounded solo></v-text-field>
                           </v-col>
                           <v-col cols="12" sm="4">
-                            <v-select v-model="editedItem.user_position" :items="positions" label="Position" dense rounded
+                            <v-select :rules="[rules.required]" v-model="editedItem.user_position" :items="positions" label="Position" dense rounded
                               solo></v-select>
                           </v-col>
                           <v-col cols="12" sm="4">
-                            <v-text-field v-model="editedItem.user_department" label="Department" dense rounded
+                            <v-text-field :rules="[rules.required]" v-model="editedItem.user_department" label="Department" dense rounded
                               solo></v-text-field>
                           </v-col>
                         </v-row>
                         <!--  -->
-                        <v-row class="mr-2 mt-0" style="margin-bottom: -2%; font-size: 14px">
+                        <v-row class="mr-2 mt-2" style="margin-bottom: -2%; font-size: 14px">
                           <v-col class="hidden-xs-only" cols="12" sm="12">
                             E-mail
                           </v-col>
@@ -617,12 +620,12 @@
                         <!--  -->
                         <v-row class="mr-2 mt-0" style="margin-bottom: -6%">
                           <v-col cols="12" sm="12">
-                            <v-text-field v-model="editedItem.user_email" label="E-mail" dense rounded
+                            <v-text-field :rules="[rules.required, rules.email]" v-model="editedItem.user_email" label="E-mail" dense rounded
                               solo></v-text-field>
                           </v-col>
                         </v-row>
                         <!--  -->
-                        <v-row class="mr-2 mt-0" style="margin-bottom: -2%; font-size: 14px">
+                        <v-row class="mr-2 mt-2" style="margin-bottom: -2%; font-size: 14px">
                           <v-col class="hidden-xs-only" cols="12" sm="12">
                             Passwords
                           </v-col>
@@ -648,17 +651,16 @@
                         <!--  -->
                         <v-row class="mr-2 mt-0">
                           <v-col cols="12" sm="6">
-                            <v-select v-model="editedItem.user_status" :items="status" label="Status" dense rounded
+                            <v-select :rules="[rules.required]" v-model="editedItem.user_status" :items="status" label="Status" dense rounded
                               solo></v-select>
                           </v-col>
                           <v-col cols="12" sm="6">
-                            <v-select v-model="editedItem.user_role" :items="roles" label="Role" dense rounded
+                            <v-select :rules="[rules.required]" v-model="editedItem.user_role" :items="roles" label="Role" dense rounded
                               solo></v-select>
                           </v-col>
                           <!--  -->
                         </v-row>
-                        <v-col> </v-col>
-                        <v-row class="mr-2 mt-0" style="justify-content: right">
+                        <v-row class="mr-6 mt-0 mb-1" style="justify-content: right">
                           <v-btn class="mr-4" elevation="2" color="error" style="color: white; border-radius: 10px"
                             @click="deleteUser()">
                             <h4>Delete</h4>
@@ -703,8 +705,8 @@ export default {
       department: "",
       email: "",
       password: "",
-      role: "",
-      stratiform: "",
+      role: "User",
+      stratiform: "Active",
       query: "",
       editedIndex: -1,
       editedItem: {
@@ -742,7 +744,7 @@ export default {
       ],
       departments: ["DD"],
       rules: {
-        required: value => !!value || 'Required.',
+        required: value => !!value || '*Required*',
         counter: value => value.length >= 8 || 'Min 8 characters',
         email: value => {
           const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
