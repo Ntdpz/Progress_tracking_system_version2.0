@@ -258,14 +258,9 @@
               >
                 fa fa-angle-double-right
               </v-icon> -->
-              <v-btn
-
-                color="primary"
-                icon
-                :to="`/systemdetail`"
-              >
-                <v-icon class="mr-2" size="20" color="primary">
-                  fa fa-angle-double-right
+              <v-btn color="primary" icon :to="`/systemdetail`">
+                <v-icon class="mr-2 ml-2" size="20" color="primary">
+                  mdi mdi-chevron-right-circle-outline
                 </v-icon>
               </v-btn>
             </template>

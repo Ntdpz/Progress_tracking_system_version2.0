@@ -175,7 +175,7 @@
                                         @click="(show3 = false), (clearChangePassword())"
                                         style="color: white; border-radius: 10px;">Cancel
                                     </v-btn>
-                                    <v-btn class="mr-2" elevation="2" color="primary" @click="(checkPassword())"
+                                    <v-btn class="mr-2" elevation="2" color="primary" @click="(show3 = false),(clearChangePassword())"
                                         style="color: white; border-radius: 10px;">Save
                                     </v-btn>
                                 </v-row>
@@ -207,7 +207,6 @@ export default {
             n_password: "",
             cf_password: "",
             password: 'Password',
-            id: "",
             user_id: "",
             user_firstname: "",
             user_lastname: "",
@@ -260,99 +259,16 @@ export default {
             if (matches) {
                 console.log(matches);
                 this.name = matches[1];
-                this.firstname = matches[2].trim();
-                console.log(this.firstname);
+                const name2 = matches[2].trim();
+                const nameParts = name2.split(" ");
+                this.firstname = nameParts[0];
+                console.log(this.title);
             }
         },
         clearChangePassword() {
             this.o_password = "";
             this.n_password = "";
             this.cf_password = "";
-        },
-        getImageUrl(fileName) {
-            return require(`@/uploads/${fileName}`);
-        },
-        getdefaultImageUrl(fileName) {
-            return require(`@/defaultimage/${fileName}`);
-        },
-        uploadFile() {
-            const input = this.$refs.fileInput;
-            this.imageUpload = input.files[0];
-            try {
-                // editedItem.photo
-                this.avatar = URL.createObjectURL(this.imageUpload);
-                console.log(this.imageUpload);
-                // Do something with the file, for example upload to a server
-            } catch (error) {
-                console.error(error);
-                // this.avatar = null;
-            }
-        },
-
-        checkPassword() {
-            // Check old password
-            if (this.o_password != "" || this.n_password != "" || this.cf_password != "") {
-                if (this.o_password == this.user_password) {
-                    if (this.n_password == this.cf_password) {
-                        this.user_password = this.cf_password;
-                        alert("Change password successfully!");
-                        this.clearChangePassword();
-                        this.show3 = false;
-                    } else {
-                        alert("New Password and confirm password are not the same");
-
-                    }
-                } else {
-                    alert("Old password is wrong");
-                }
-            } else {
-                alert("Password must not be null.");
-            }
-        },
-
-        async updateUser() {
-            try {
-                if (this.$store.state.user_id != undefined) {
-                    const formData = new FormData();
-                    formData.append("image", this.imageUpload);
-                    formData.append("user_firstname", this.name + " " + this.firstname);
-                    formData.append("user_lastname", this.user_lastname);
-                    formData.append("user_id", this.user_id);
-                    formData.append("user_position", this.user_position);
-                    formData.append("user_department", this.user_department);
-                    formData.append("user_email", this.user_email);
-                    formData.append("user_password", this.user_password);
-                    formData.append("user_status", this.user_status);
-                    formData.append("user_role", this.user_role);
-
-                    await this.$axios
-                        .put("/users/updateUsers/" + this.id + "/image", formData)
-                        .then((response) => {
-                            console.log(response);
-                            alert("Update success");
-                            // ดัก error รูปภาพโหลดไม่ทัน
-                            const promise = new Promise((resolve, reject) => {
-                                this.getUser();
-                                resolve();
-                            });
-                            promise.then(() => {
-                                setTimeout(() => {
-                                    this.$router.push({ name: 'Home' });
-                                }, 2000);
-                            });
-                        })
-                        .catch((err) => {
-                            console.log(err);
-                            alert(err);
-                        });
-                } else {
-                    alert("Update failure: this.$store.state.user_id = undefined");
-                }
-            } catch (error) {
-                alert(error);
-            }
-
-
         },
     },
 };

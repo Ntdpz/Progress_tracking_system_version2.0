@@ -27,8 +27,13 @@
     <v-container>
       <v-row no-gutters>
         <!-- -เอาเส้นออกใส่ border: none; -->
-        <v-card class="pa-2" tile outlined
-          style="border: none; width: 100%; height: 100%; display: flex; justify-content: center;">
+        <v-card class="pa-2" tile outlined style="
+                                      border: none;
+                                      width: 100%;
+                                      height: 100%;
+                                      display: flex;
+                                      justify-content: center;
+                                    ">
           <v-col class="mb-6" col="12" sm="12" md="12">
             <!-- หมวดหมู่ หัวข้อใหญ่ -->
             <v-toolbar class="mb-2">
@@ -1065,18 +1070,15 @@ export default {
         });
     },
     titleName() {
-      try {
-        const regex = /^(Mr\.|Miss\.)\s+(.*)$/; // Regular expression to match title and name
-        const matches = this.user_firstname.match(regex);
-        if (matches) {
-          console.log(matches);
-          this.titleName = matches[1];
-          const name2 = matches[2].trim();
-          const nameParts = name2.split(" ");
-          this.titleFirstname = nameParts[0];
-          console.log(this.title);
-        }
-      } catch (error) {
+      const regex = /^(Mr\.|Miss\.)\s+(.*)$/; // Regular expression to match title and name
+      const matches = this.user_firstname.match(regex);
+      if (matches) {
+        console.log(matches);
+        this.titleName = matches[1];
+        const name2 = matches[2].trim();
+        const nameParts = name2.split(" ");
+        this.titleFirstname = nameParts[0];
+        console.log(this.title);
       }
     },
     clearInfoNewUser() {
