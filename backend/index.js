@@ -4,10 +4,13 @@ const bodyParser = require("body-parser");
 const express = require("express");
 const session = require("express-session");
 const app = express();
+
+//import router
 const usersRouter = require("./router/users");
 const projectsRouter = require("./router/projects");
 const systemsRouter = require("./router/systems");
 const screensRouter = require("./router/screens");
+const issuesRouter = require("./router/issues");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -29,6 +32,7 @@ app.use("/users", usersRouter);
 app.use("/projects", projectsRouter);
 app.use("/systems", systemsRouter);
 app.use("/screens", screensRouter);
+app.use("/issues", issuesRouter);
 
 app.get("/getAll", async (req, res) => {
   try {

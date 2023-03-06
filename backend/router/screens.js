@@ -171,20 +171,20 @@ router.delete("/delete/:id", async (req, res) => {
 router.post("/addUserScreen", async (req, res) => {
   const { user_id, screen_ids } = req.body;
   try {
-    const createUserProjects = (user_id, screen_ids) => {
-      // Check that system_ids is an array
+    const createUserScreens = (user_id, screen_ids) => {
+      // Check that screen_ids is an array
       if (!Array.isArray(screen_ids)) {
         console.log("Error: screen_ids is not an array");
         return;
       }
 
-      // http://localhost:7777/systems/addUserSystem
+      // http://localhost:7777/systems/addUserScreen
       //   {
       //     "user_id": 15,
-      //      "screen_ids": [1]
+      //     "screen_ids": [1]
       //  }
 
-      // Map over the project IDs and insert a new row into the user_projects table for each one
+      // Map over the screen IDs and insert a new row into the user_screens table for each one
       screen_ids.map((screen_id) => {
         connection.query(
           "INSERT INTO user_screens (user_id, screen_id) VALUES (?, ?)",
@@ -192,7 +192,7 @@ router.post("/addUserScreen", async (req, res) => {
           (error, results, fields) => {
             if (error) {
               console.log(
-                `Error while creating user-project mapping for user ${user_id} and project ${screen_id}`,
+                `Error while creating user-screen mapping for user ${user_id} and screen ${screen_id}`,
                 error
               );
             }
@@ -200,12 +200,13 @@ router.post("/addUserScreen", async (req, res) => {
         );
       });
     };
-    createUserProjects(user_id, screen_ids);
+    createUserScreens(user_id, screen_ids);
     return res.status(200).send("User-screen mappings created successfully");
   } catch (err) {
     console.log("Error while creating user-screen mappings", err);
     return res.status(500).send();
   }
 });
+
 
 module.exports = router;

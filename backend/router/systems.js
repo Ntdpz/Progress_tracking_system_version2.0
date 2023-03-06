@@ -151,40 +151,39 @@ router.delete("/delete/:id", async (req, res) => {
 router.post("/addUserSystem", async (req, res) => {
   const { user_id, system_ids } = req.body;
   try {
-    const createUserProjects = (user_id, system_ids) => {
+    const createUserSystemMappings = async (user_id, system_ids) => {
       // Check that system_ids is an array
       if (!Array.isArray(system_ids)) {
         console.log("Error: system_ids is not an array");
-        return;
+        return res.status(400).send("system_ids must be an array");
       }
 
-      // http://localhost:7777/systems/addUserSystem
-      //   {
-      //     "user_id": 15,
-      //     "system_ids": [1]
-      //  }
+      // Map over the system IDs and insert a new row into the user_systems table for each one
+      for (const system_id of system_ids) {
+        try {
+          await connection.query(
+            "INSERT INTO user_systems (user_id, system_id) VALUES (?, ?)",
+            [user_id, system_id]
+          );
+        } catch (error) {
+          console.log(
+            `Error while creating user-system mapping for user ${user_id} and system ${system_id}`,
+            error
+          );
+          return res
+            .status(500)
+            .send(
+              `Error while creating user-system mapping for user ${user_id} and system ${system_id}`
+            );
+        }
+      }
 
-      // Map over the project IDs and insert a new row into the user_projects table for each one
-      system_ids.map((system_id) => {
-        connection.query(
-          "INSERT INTO user_systems (user_id, system_id) VALUES (?, ?)",
-          [user_id, system_id],
-          (error, results, fields) => {
-            if (error) {
-              console.log(
-                `Error while creating user-project mapping for user ${user_id} and project ${system_id}`,
-                error
-              );
-            }
-          }
-        );
-      });
+      return res.status(200).send("User-system mappings created successfully");
     };
-    createUserProjects(user_id, system_ids);
-    return res.status(200).send("User-system mappings created successfully");
+    await createUserSystemMappings(user_id, system_ids);
   } catch (err) {
     console.log("Error while creating user-system mappings", err);
-    return res.status(500).send();
+    return res.status(500).send("Internal Server Error");
   }
 });
 
