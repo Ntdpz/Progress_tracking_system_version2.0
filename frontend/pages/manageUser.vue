@@ -1,38 +1,34 @@
 <template>
   <div class="body">
     <v-row class="mb-3 ml-4">
+
       <v-text-title class="center ml-4 mr-4 mt-0 mb-1" style="font-weight: bold; font-size: 20px">
         Manage Users
       </v-text-title>
       <v-divider class="mt-0 mb-1" inset vertical style="background-color: black"></v-divider>
-      <template>
-        <v-banner class="mt-0 ml-4" style="
-                                        display: flex;
-                                        align-items: center;
-                                        justify-content: center;
-                                        height: 30px;
-                                        border-radius: 30px;
-                                        padding: 0 0px;
-                                      " outlined elevation="2">
-          <form class="center" @submit.prevent="search">
-            <v-icon color="purple">mdi-magnify</v-icon>
-            <input class="mr-3" type="text" v-model="query" placeholder="Search some User" />
-          </form>
-        </v-banner>
-      </template>
+      <v-banner class="mt-0 ml-4"
+        style="display: flex; align-items: center; justify-content: center; height: 30px; border-radius: 30px; padding: 0 0px;"
+        outlined elevation="2">
+        <form class="center" @submit.prevent="search">
+          <v-icon color="purple">mdi-magnify</v-icon>
+          <input class="mr-3" type="text" v-model="query" placeholder="Search some User" />
+        </form>
+      </v-banner>
+
+      <v-btn @click="dialog = true" class="ml-auto mr-10" elevation="2" color="primary"
+        style="color: white; border-radius: 10px">
+        <v-icon left> mdi-plus-circle-outline </v-icon>
+        New User
+      </v-btn>
+
     </v-row>
     <v-divider></v-divider>
     <!-- class="green lighten-5" -->
     <v-container>
       <v-row no-gutters>
         <!-- -เอาเส้นออกใส่ border: none; -->
-        <v-card class="pa-2" tile outlined style="
-                                        border: none;
-                                        width: 100%;
-                                        height: 100%;
-                                        display: flex;
-                                        justify-content: center;
-                                      ">
+        <v-card class="pa-2" tile outlined
+          style="border: none; width: 100%; height: 100%; display: flex; justify-content: center;">
           <v-col class="mb-6" col="12" sm="12" md="12">
             <!-- หมวดหมู่ หัวข้อใหญ่ -->
             <v-toolbar class="mb-2">
@@ -366,13 +362,13 @@
               <!-- จบ Tab ทั้ง 6 -->
             </v-tabs-items>
             <!-- ปุ่มสร้าง User + Dialog -->
-            <template>
+            <!-- <template>
               <v-btn @click="dialog = true" class="ml-2 mb-0 mt-9" elevation="2" color="primary" bottom right absolute
                 style="color: white; border-radius: 10px">
                 <v-icon left> mdi-plus-circle-outline </v-icon>
                 New User
               </v-btn>
-            </template>
+            </template> -->
             <v-dialog v-model="dialog" width="900px" max-height="100%">
               <v-card class="mx-auto" height="580px" max-height="100%">
                 <v-card-title>
@@ -404,7 +400,10 @@
                     <v-card style="border: none" class="pa-2" outlined tile height="100%">
                       <div>
                         <v-row class="mr-2" style="margin-bottom: -2%; font-size: 14px">
-                          <v-col class="hidden-xs-only" cols="12" sm="7">
+                          <v-col class="hidden-xs-only" cols="12" sm="3">
+                            Title
+                            </v-col>
+                          <v-col class="hidden-xs-only" cols="12" sm="4">
                             First Name
                           </v-col>
 
@@ -415,13 +414,16 @@
                         <!--  -->
                         <v-row class="mr-2 mt-0" style="margin-bottom: -8%">
                           <v-col cols="12" sm="3" style="margin-right: -1%; padding-right: 0%">
-                            <v-select v-model="name" :items="misname" label="Mr/Miss" dense rounded solo></v-select>
+                            <v-select :rules="[rules.required]" v-model="name" :items="misname" label="Mr/Miss" dense
+                              rounded solo></v-select>
                           </v-col>
                           <v-col cols="12" sm="4">
-                            <v-text-field v-model="firstname" label="First Name" dense rounded solo></v-text-field>
+                            <v-text-field :rules="[rules.required]" v-model="firstname" label="First Name" dense rounded
+                              solo></v-text-field>
                           </v-col>
                           <v-col cols="12" sm="5">
-                            <v-text-field v-model="lastname" label="Last Name" dense rounded solo></v-text-field>
+                            <v-text-field :rules="[rules.required]" v-model="lastname" label="Last Name" dense rounded
+                              solo></v-text-field>
                           </v-col>
                         </v-row>
                         <!--  -->
@@ -439,14 +441,16 @@
                         <!--  -->
                         <v-row class="mr-2 mt-0" style="margin-bottom: -6%">
                           <v-col cols="12" sm="4">
-                            <v-text-field v-model="code" label="Code" dense rounded solo></v-text-field>
+                            <v-text-field :rules="[rules.required]" v-model="code" label="Code" dense rounded
+                              solo></v-text-field>
                           </v-col>
                           <v-col cols="12" sm="4">
-                            <v-select v-model="position" :items="positions" label="Position" dense rounded
-                              solo></v-select>
+                            <v-select :rules="[rules.required]" v-model="position" :items="positions" label="Position"
+                              dense rounded solo></v-select>
                           </v-col>
                           <v-col cols="12" sm="4">
-                            <v-text-field v-model="department" label="Department" dense rounded solo></v-text-field>
+                            <v-select :rules="[rules.required]" v-model="department" :items="departments"
+                              label="Department" dense rounded solo></v-select>
                           </v-col>
                         </v-row>
                         <!--  -->
@@ -458,7 +462,8 @@
                         <!--  -->
                         <v-row class="mr-2 mt-0" style="margin-bottom: -6%">
                           <v-col cols="12" sm="12">
-                            <v-text-field v-model="email" label="E-mail" dense rounded solo></v-text-field>
+                            <v-text-field :rules="[rules.required, rules.email]" v-model="email" label="E-mail" dense
+                              rounded solo></v-text-field>
                           </v-col>
                         </v-row>
                         <!--  -->
@@ -470,7 +475,10 @@
                         <!--  -->
                         <v-row class="mr-2 mt-0" style="margin-bottom: -4%">
                           <v-col class="" cols="12" sm="12">
-                            <v-text-field v-model="password" label="Password" dense rounded solo></v-text-field>
+                            <v-text-field :rules="[rules.required, rules.counter]" v-model="password" label="Password"
+                              :append-icon="showpassword_newbt ? 'mdi-eye' : 'mdi-eye-off'"
+                              @click:append="showpassword_newbt = !showpassword_newbt"
+                              :type="showpassword_newbt ? 'text' : 'password'" dense rounded solo></v-text-field>
                           </v-col>
                         </v-row>
                         <!--  -->
@@ -485,16 +493,22 @@
                         <!--  -->
                         <v-row class="mr-2 mt-0">
                           <v-col cols="12" sm="6">
-                            <v-select v-model="stratiform" :items="status" label="Status" dense rounded solo></v-select>
+                            <v-select :rules="[rules.required]" v-model="stratiform" :items="status" label="Status" dense
+                              rounded solo></v-select>
                           </v-col>
 
                           <v-col cols="12" sm="6">
-                            <v-select v-model="role" :items="roles" label="Role" dense rounded solo></v-select>
+                            <v-select :rules="[rules.required]" v-model="role" :items="roles" label="Role" dense rounded
+                              solo></v-select>
                           </v-col>
                           <!--  -->
                         </v-row>
                         <v-col> </v-col>
-                        <v-row class="mr-2 mt-0" style="justify-content: right">
+                        <v-row class="mr-6 mt-0 mb-1" style="justify-content: right">
+                          <v-btn class="mr-2" elevation="2" color="error" style="color: white; border-radius: 10px"
+                            @click="(dialog = false), (clearInfoNewUser())">
+                            Cancel
+                          </v-btn>
                           <v-btn elevation="2" color="primary" style="color: white; border-radius: 10px"
                             @click="(dialog = false), createUser2()">
                             Create
@@ -611,8 +625,10 @@
                         <!--  -->
                         <v-row class="mr-2 mt-0" style="margin-bottom: -4%">
                           <v-col class="" cols="12" sm="12">
-                            <v-text-field v-model="editedItem.user_password" label="Password" dense rounded
-                              solo></v-text-field>
+                            <v-text-field v-model="editedItem.user_password" label="Password"
+                              :append-icon="showpassword_managebt ? 'mdi-eye' : 'mdi-eye-off'"
+                              @click:append="showpassword_managebt = !showpassword_managebt"
+                              :type="showpassword_managebt ? 'text' : 'password'" dense rounded solo></v-text-field>
                           </v-col>
                         </v-row>
                         <!--  -->
@@ -719,6 +735,15 @@ export default {
         "System Analyst",
         "Report Developer",
       ],
+      departments: ["DD"],
+      rules: {
+        required: value => !!value || 'Required.',
+        counter: value => value.length >= 8 || 'Min 8 characters',
+        email: value => {
+          const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+          return pattern.test(value) || 'Invalid e-mail.'
+        },
+      },
       dialog: false,
       dialogDelete: false,
       dialog_manage: false,
@@ -761,6 +786,9 @@ export default {
       imageProgramManagement: [],
       imageSystemAnalyst: [],
       imageReportDeveloper: [],
+      showpassword_newbt: false,
+      showpassword_managebt: false,
+
     };
   },
   created() {
@@ -1038,20 +1066,31 @@ export default {
     },
     titleName() {
       try {
-      const regex = /^(Mr\.|Miss\.)\s+(.*)$/; // Regular expression to match title and name
-      const matches = this.user_firstname.match(regex);
-      if (matches) {
-        console.log(matches);
-        this.titleName = matches[1];
-        const name2 = matches[2].trim();
-        const nameParts = name2.split(" ");
-        this.titleFirstname = nameParts[0];
-        console.log(this.title);
-      }
+        const regex = /^(Mr\.|Miss\.)\s+(.*)$/; // Regular expression to match title and name
+        const matches = this.user_firstname.match(regex);
+        if (matches) {
+          console.log(matches);
+          this.titleName = matches[1];
+          const name2 = matches[2].trim();
+          const nameParts = name2.split(" ");
+          this.titleFirstname = nameParts[0];
+          console.log(this.title);
+        }
       } catch (error) {
-        
       }
-      
+    },
+    clearInfoNewUser() {
+      this.photo = "";
+      this.name = "";
+      this.firstname = "";
+      this.lastname = "";
+      this.code = "";
+      this.position = "";
+      this.department = "";
+      this.email = "";
+      this.password = "";
+      this.stratiform = "";
+      this.role = "";
     },
   },
 };
@@ -1101,5 +1140,4 @@ input[type="text"] {
   font-size: 16px;
   line-height: 40px;
   color: #bbbbbb;
-}
-</style>
+}</style>

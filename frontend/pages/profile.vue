@@ -175,8 +175,7 @@
                                         @click="(show3 = false), (clearChangePassword())"
                                         style="color: white; border-radius: 10px;">Cancel
                                     </v-btn>
-                                    <v-btn class="mr-2" elevation="2" color="primary"
-                                        @click="(checkPassword())"
+                                    <v-btn class="mr-2" elevation="2" color="primary" @click="(checkPassword())"
                                         style="color: white; border-radius: 10px;">Save
                                     </v-btn>
                                 </v-row>
@@ -208,7 +207,7 @@ export default {
             n_password: "",
             cf_password: "",
             password: 'Password',
-            id:"",
+            id: "",
             user_id: "",
             user_firstname: "",
             user_lastname: "",
@@ -263,7 +262,7 @@ export default {
                 this.name = matches[1];
                 this.firstname = matches[2].trim();
                 console.log(this.firstname);
-            } 
+            }
         },
         clearChangePassword() {
             this.o_password = "";
@@ -301,7 +300,7 @@ export default {
                         this.show3 = false;
                     } else {
                         alert("New Password and confirm password are not the same");
-                        
+
                     }
                 } else {
                     alert("Old password is wrong");
@@ -312,34 +311,47 @@ export default {
         },
 
         async updateUser() {
-            if (this.$store.state.user_id != undefined) {
-                const formData = new FormData();
-                formData.append("image", this.imageUpload);
-                formData.append("user_firstname", this.name + " " + this.firstname);
-                formData.append("user_lastname", this.user_lastname);
-                formData.append("user_id", this.user_id);
-                formData.append("user_position", this.user_position);
-                formData.append("user_department", this.user_department);
-                formData.append("user_email", this.user_email);
-                formData.append("user_password", this.user_password);
-                formData.append("user_status", this.user_status);
-                formData.append("user_role", this.user_role);
+            try {
+                if (this.$store.state.user_id != undefined) {
+                    const formData = new FormData();
+                    formData.append("image", this.imageUpload);
+                    formData.append("user_firstname", this.name + " " + this.firstname);
+                    formData.append("user_lastname", this.user_lastname);
+                    formData.append("user_id", this.user_id);
+                    formData.append("user_position", this.user_position);
+                    formData.append("user_department", this.user_department);
+                    formData.append("user_email", this.user_email);
+                    formData.append("user_password", this.user_password);
+                    formData.append("user_status", this.user_status);
+                    formData.append("user_role", this.user_role);
 
-                await this.$axios
-                    .put("/users/updateUsers/" + this.id + "/image", formData)
-                    .then((response) => {
-                        console.log(response);
-                        alert("Update success");
-                        this.getUser();
-                        this.$router.push('/Home');
-                    })
-                    .catch((err) => {
-                        console.log(err);
-                        alert(err);
-                    });
-            } else {
-                alert("Update failure: this.$store.state.user_id = undefined");
+                    await this.$axios
+                        .put("/users/updateUsers/" + this.id + "/image", formData)
+                        .then((response) => {
+                            console.log(response);
+                            alert("Update success");
+                            // ดัก error รูปภาพโหลดไม่ทัน
+                            const promise = new Promise((resolve, reject) => {
+                                this.getUser();
+                                resolve();
+                            });
+                            promise.then(() => {
+                                setTimeout(() => {
+                                    this.$router.push({ name: 'Home' });
+                                }, 2000);
+                            });
+                        })
+                        .catch((err) => {
+                            console.log(err);
+                            alert(err);
+                        });
+                } else {
+                    alert("Update failure: this.$store.state.user_id = undefined");
+                }
+            } catch (error) {
+                alert(error);
             }
+
 
         },
     },
