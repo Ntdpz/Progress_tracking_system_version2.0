@@ -11,6 +11,7 @@ const projectsRouter = require("./router/projects");
 const systemsRouter = require("./router/systems");
 const screensRouter = require("./router/screens");
 const issuesRouter = require("./router/issues");
+const notificationsRouter = require("./router/notifications");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -33,6 +34,7 @@ app.use("/projects", projectsRouter);
 app.use("/systems", systemsRouter);
 app.use("/screens", screensRouter);
 app.use("/issues", issuesRouter);
+app.use("/notifications", notificationsRouter);
 
 app.get("/getAll", async (req, res) => {
   try {
