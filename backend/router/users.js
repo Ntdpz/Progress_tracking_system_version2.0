@@ -4,6 +4,7 @@ const connection = require("../db"); // Import the connection object
 const multer = require('multer');
 const fs = require('fs');
 const path = require('path');
+const uuid = require('uuid');
 
 const storage = multer.diskStorage({
   destination(req, file, cb) {
@@ -11,7 +12,7 @@ const storage = multer.diskStorage({
   },
   filename(req, file, cb) {
     const originalname = file.originalname;
-    const filename = Date.now() + '-' + originalname.substring(originalname.lastIndexOf('/')+1);
+    const filename = uuid.v4() + '-'+ Date.now() + '-' + originalname.substring(originalname.lastIndexOf('/')+1);
     cb(null, filename);
   },
 });
@@ -34,11 +35,11 @@ router.post('/createUser', upload.single('image'), (req, res) => {
     user_role,
   } = req.body;
   
-  const user_pic = req.file ? req.file.filename : defaultImage;
+  const user_pic = req.file ? req.file.filename : `${uuid.v4()}-${defaultImage}`;
   
   if (!req.file) {
     // Copy the default image file to the uploads directory
-    const targetPath = path.join('../frontend/uploads/', defaultImage);
+    const targetPath = path.join('../frontend/uploads/', user_pic);
     fs.copyFileSync('../frontend/defaultimage/Avatar.jpg', targetPath);
   }
 

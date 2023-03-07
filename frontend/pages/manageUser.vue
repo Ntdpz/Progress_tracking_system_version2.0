@@ -698,7 +698,7 @@ export default {
       imageManage: null,
       photo: "",
       avatar: null,
-      name: "",
+      name: "Mr.",
       firstname: "",
       lastname: "",
       code: "",
