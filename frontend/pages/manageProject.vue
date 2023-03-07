@@ -20,8 +20,7 @@
           height: 32px;
           width: 15%;
           margin-left: 1%;
-          margin-top: 0.8%;
-        "
+          margin-top: 0.8%;"
       >
         <v-text-field
           placeholder="Search some project"
@@ -79,12 +78,22 @@
           <v-card-text>
             <v-container>
               <v-row>
+                <v-col cols="12">
+                  <v-text-field
+                    label="Project ID"
+                    placeholder="Project ID"
+                    outlined
+                    dense
+                    v-model="formCreateProject.project_id"
+                  ></v-text-field>
+                </v-col>
                 <v-col cols="12" sm="6" md="4">
                   <v-text-field
                     label="ตัวย่อ"
                     placeholder="ตัวย่อ"
                     outlined
                     dense
+                    v-model="formCreateProject.project_shortname"
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="8" md="8">
@@ -93,23 +102,99 @@
                     placeholder="Project Name"
                     outlined
                     dense
+                    v-model="formCreateProject.project_name"
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12">
+                <v-col cols="12" class="pb-0">
                   <v-text-field
                     label="Agency"
                     placeholder="Agency"
                     outlined
                     dense
+                    v-model="formCreateProject.project_agency"
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12">
-                  <v-text-field
-                    label="Period"
-                    placeholder="Period"
-                    outlined
-                    dense
-                  ></v-text-field>
+                <v-col cols="12" sm="6" md="6">
+                  <v-menu
+                    ref="menuDateStart"
+                    v-model="menuDateStart"
+                    :close-on-content-click="false"
+                    :return-value.sync="formCreateProject.project_start"
+                    transition="scale-transition"
+                    offset-y
+                    min-width="290px"
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-text-field
+                        v-model="formCreateProject.project_start"
+                        label="Date Start"
+                        prepend-icon="mdi mdi-calendar-clock-outline"
+                        readonly
+                        v-bind="attrs"
+                        v-on="on"
+                      ></v-text-field>
+                    </template>
+                    <v-date-picker
+                      v-model="formCreateProject.project_start"
+                      no-title
+                      scrollable
+                    >
+                      <v-spacer></v-spacer>
+                      <v-btn text color="primary" @click="menuDateStart = false"
+                        >Cancel</v-btn
+                      >
+                      <v-btn
+                        text
+                        color="primary"
+                        @click="
+                          $refs.menuDateStart.save(
+                            formCreateProject.project_start
+                          )
+                        "
+                        >OK</v-btn
+                      >
+                    </v-date-picker>
+                  </v-menu>
+                </v-col>
+                <v-col cols="12" sm="6" md="6">
+                  <v-menu
+                    ref="menuDateEnd"
+                    v-model="menuDateEnd"
+                    :close-on-content-click="false"
+                    :return-value.sync="formCreateProject.project_end"
+                    transition="scale-transition"
+                    offset-y
+                    min-width="290px"
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-text-field
+                        v-model="formCreateProject.project_end"
+                        label="Date End"
+                        prepend-icon="mdi mdi-calendar-clock-outline"
+                        readonly
+                        v-bind="attrs"
+                        v-on="on"
+                      ></v-text-field>
+                    </template>
+                    <v-date-picker
+                      v-model="formCreateProject.project_end"
+                      no-title
+                      scrollable
+                    >
+                      <v-spacer></v-spacer>
+                      <v-btn text color="primary" @click="menuDateEnd = false"
+                        >Cancel</v-btn
+                      >
+                      <v-btn
+                        text
+                        color="primary"
+                        @click="
+                          $refs.menuDateEnd.save(formCreateProject.project_end)
+                        "
+                        >OK</v-btn
+                      >
+                    </v-date-picker>
+                  </v-menu>
                 </v-col>
               </v-row>
             </v-container>
@@ -119,7 +204,7 @@
             <v-btn color="primary" text @click="dialogNewProject = false">
               <h5>Close</h5></v-btn
             >
-            <v-btn color="primary" dark @click="dialogNewProject = false">
+            <v-btn color="primary" dark @click="postProject()">
               <h5>Create</h5>
             </v-btn>
           </v-card-actions>
@@ -250,14 +335,6 @@
               {{ item.member }}
             </template>
             <template v-slot:[`item.actions`]>
-              <!-- <v-icon
-                class="mr-2"
-                to="`/systemdetail`"
-                size="20"
-                color="primary"
-              >
-                fa fa-angle-double-right
-              </v-icon> -->
               <v-btn color="primary" icon :to="`/systemdetail`">
                 <v-icon class="mr-2 ml-2" size="20" color="primary">
                   mdi mdi-chevron-right-circle-outline
@@ -286,6 +363,8 @@ export default {
   },
   data() {
     return {
+      menuDateStart: false,
+      menuDateEnd: false,
       dialog: false,
       dialogNewProject: false,
       headers: [
@@ -302,6 +381,14 @@ export default {
       ],
       issue: [],
       member_select: ["Dev1"],
+      formCreateProject: {
+        project_shortname: "",
+        project_name: "",
+        project_id: "",
+        project_agency: "",
+        project_start: new Date().toISOString().substr(0, 10),
+        project_end: new Date().toISOString().substr(0, 10),
+      },
     };
   },
   created() {
@@ -336,6 +423,27 @@ export default {
           member: "Dev",
         },
       ];
+    },
+    async postProject() {
+      try {
+        await this.$axios.post(
+          "/projects/createProject",
+          this.formCreateProject
+        );
+        console.log("post success");
+        const promise = new Promise((resolve, reject) => {
+          resolve();
+          this.dialogNewProject = false;
+        });
+        promise.then(() => {
+          setTimeout(() => {
+            alert("success");
+          }, 2000);
+        });
+      } catch (error) {
+        console.error(error);
+        alert("Error submitting form");
+      }
     },
   },
 };

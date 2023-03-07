@@ -156,7 +156,7 @@ export default {
         {
           icon: "mdi-view-list",
           title: "Manage Project",
-          to: "/projectList",
+          to: "/manageProject",
         },
         {
           icon: "mdi-view-dashboard",
