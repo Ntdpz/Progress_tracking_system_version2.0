@@ -608,8 +608,8 @@
                               label="Position" dense rounded solo></v-select>
                           </v-col>
                           <v-col cols="12" sm="4">
-                            <v-text-field :rules="[rules.required]" v-model="editedItem.user_department"
-                              label="Department" dense rounded solo></v-text-field>
+                              <v-select :rules="[rules.required]" v-model="editedItem.user_department" :items="departments"
+                                label="Department" dense rounded solo></v-select>
                           </v-col>
                         </v-row>
                         <!--  -->
@@ -1073,6 +1073,9 @@ export default {
       this.password = "";
       this.stratiform = "";
       this.role = "";
+    },
+    checktextfiled() {
+      
     },
   },
 };
