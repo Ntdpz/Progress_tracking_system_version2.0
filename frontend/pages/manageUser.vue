@@ -813,8 +813,8 @@ export default {
         this.data = data.data;
         console.log(this.data);
         this.splitImage(this.data, this.imageALL);
-        console.log("this.imageALL");
-        console.log(this.data[0].user_pic);
+        // console.log("this.imageALL");
+        // console.log(this.data[0].user_pic);
       });
     },
     async getPosition_Developer() {
@@ -822,7 +822,7 @@ export default {
         .get("/users/getAll?user_position=Developer")
         .then((data) => {
           this.data_position_Developer = data.data;
-          console.log(data.data);
+          // console.log(data.data);
           this.splitImage(this.data_position_Developer, this.imageDeveloper);
         });
     },
@@ -831,7 +831,7 @@ export default {
         .get("/users/getAll?user_position=Implementer")
         .then((data) => {
           this.data_position_Implementer = data.data;
-          console.log(data.data);
+          // console.log(data.data);
           this.splitImage(this.data_position_Implementer, this.imageImplementer);
         });
     },
@@ -840,7 +840,7 @@ export default {
         .get("/users/getAll?user_position=Program%20Management")
         .then((data) => {
           this.data_position_ProgramManagement = data.data;
-          console.log(data.data);
+          // console.log(data.data);
           this.splitImage(this.data_position_ProgramManagement, this.imageProgramManagement);
         });
     },
@@ -849,7 +849,7 @@ export default {
         .get("/users/getAll?user_position=System%20Analyst")
         .then((data) => {
           this.data_position_SystemAnalyst = data.data;
-          console.log(data.data);
+          // console.log(data.data);
           this.splitImage(this.data_position_SystemAnalyst, this.imageSystemAnalyst);
 
         });
@@ -859,7 +859,7 @@ export default {
         .get("/users/getAll?user_position=Report%20Developer")
         .then((data) => {
           this.data_position_ReportDeveloper = data.data;
-          console.log(data.data);
+          // console.log(data.data);
           this.splitImage(this.data_position_ReportDeveloper, this.imageReportDeveloper);
 
         });
@@ -873,12 +873,12 @@ export default {
       const parts = item.user_pic.split("\\");
       const directory = parts[1];
       this.imageManage = parts[parts.length - 1]
-      console.log(this.imageManage);
-      console.log(item.user_firstname);
+      // console.log(this.imageManage);
+      // console.log(item.user_firstname);
       const regex = /^(Mr\.|Miss\.)\s+(.*)$/; // Regular expression to match title and name
       const matches = item.user_firstname.match(regex);
       if (matches) {
-        console.log(matches);
+        // console.log(matches);
         this.editedItem.misname = matches[1];
         const name2 = matches[2].trim();
         const nameParts = name2.split(" ");
@@ -914,12 +914,14 @@ export default {
           this.getPosition_ProgramManagement();
           this.getPosition_SystemAnalyst();
           this.getPosition_ReportDeveloper();
+          this.clearInfoNewUser();
           resolve();
         });
         promise.then(() => {
           setTimeout(() => {
             alert("success");
-          }, 2000);
+            window.location.href = 'http://localhost:3000/manageUser'; // replace with your actual URL
+          }, 1000);
         });
 
       } catch (error) {
@@ -935,7 +937,7 @@ export default {
         const fileName = parts[parts.length - 1];
         const extractedFile = { id: file.id, directory, fileName };
         image.push(extractedFile);
-        console.log(image);
+        // console.log(image);
       });
     },
 
@@ -1012,8 +1014,8 @@ export default {
       await this.$axios
         .put("/users/updateUsers/" + this.editedItem.id + "/image", formData)
         .then((response) => {
-          console.log(response);
-          console.log("Update success");
+          // console.log(response);
+          // console.log("Update success");
           this.getAll();
           this.getPosition_Developer();
           this.getPosition_Implementer();
@@ -1033,8 +1035,8 @@ export default {
       this.$axios
         .delete("/users/deleteUser/" + this.editedItem.id)
         .then((response) => {
-          console.log(response);
-          console.log("Delete success");
+          // console.log(response);
+          // console.log("Delete success");
           this.getAll();
           this.getPosition_Developer();
           this.getPosition_Implementer();
@@ -1053,12 +1055,12 @@ export default {
       const regex = /^(Mr\.|Miss\.)\s+(.*)$/; // Regular expression to match title and name
       const matches = this.user_firstname.match(regex);
       if (matches) {
-        console.log(matches);
+        // console.log(matches);
         this.titleName = matches[1];
         const name2 = matches[2].trim();
         const nameParts = name2.split(" ");
         this.titleFirstname = nameParts[0];
-        console.log(this.title);
+        // console.log(this.title);
       }
     },
     clearInfoNewUser() {
@@ -1074,9 +1076,9 @@ export default {
       this.stratiform = "";
       this.role = "";
     },
-    checktextfiled() {
+    // checktextfiled() {
       
-    },
+    // },
   },
 };
 </script>
