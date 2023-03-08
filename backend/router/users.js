@@ -1,28 +1,34 @@
 const express = require("express");
 const router = express.Router();
 const connection = require("../db"); // Import the connection object
-const multer = require('multer');
-const fs = require('fs');
-const path = require('path');
-const uuid = require('uuid');
+const multer = require("multer");
+const fs = require("fs");
+const path = require("path");
+const uuid = require("uuid");
 
 const storage = multer.diskStorage({
   destination(req, file, cb) {
-    cb(null, '../frontend/uploads/');
+    cb(null, "../frontend/uploads/");
   },
   filename(req, file, cb) {
     const originalname = file.originalname;
-    const filename = uuid.v4() + '-'+ Date.now() + '-' + originalname.substring(originalname.lastIndexOf('/')+1);
+    const filename =
+      uuid.v4() +
+      "-" +
+      Date.now() +
+      "-" +
+      originalname.substring(originalname.lastIndexOf("/") + 1);
     cb(null, filename);
   },
 });
 
 const upload = multer({ storage });
-const defaultName = '../frontend/defaultimage/Avatar.jpg';
-const defaultImage = Date.now() + '-' + defaultName.substring(defaultName.lastIndexOf('/')+1);
+const defaultName = "../frontend/defaultimage/Avatar.jpg";
+const defaultImage =
+  Date.now() + "-" + defaultName.substring(defaultName.lastIndexOf("/") + 1);
 
 // * post user + image
-router.post('/createUser', upload.single('image'), (req, res) => {
+router.post("/createUser", upload.single("image"), (req, res) => {
   const {
     user_firstname,
     user_lastname,
@@ -34,42 +40,47 @@ router.post('/createUser', upload.single('image'), (req, res) => {
     user_status,
     user_role,
   } = req.body;
-  
-  const user_pic = req.file ? req.file.filename : `${uuid.v4()}-${defaultImage}`;
-  
+
+  const user_pic = req.file
+    ? req.file.filename
+    : `${uuid.v4()}-${defaultImage}`;
+
   if (!req.file) {
     // Copy the default image file to the uploads directory
-    const targetPath = path.join('../frontend/uploads/', user_pic);
-    fs.copyFileSync('../frontend/defaultimage/Avatar.jpg', targetPath);
+    const targetPath = path.join("../frontend/uploads/", user_pic);
+    fs.copyFileSync("../frontend/defaultimage/Avatar.jpg", targetPath);
   }
 
-  const sql = `INSERT INTO users(user_firstname, user_lastname, user_id, user_position , user_department , user_email , user_password , user_status ,user_role , user_pic ) VALUES(?, ?, ?, ? , ?, ?, ?, ?, ?, ?)`
-  connection.query(sql, [
-        user_firstname,
-        user_lastname,
-        user_id,
-        user_position,
-        user_department,
-        user_email,
-        user_password,
-        user_status,
-        user_role,
-        user_pic,
-  ], (err, result) => {
-    if (err) {
-      console.error(err)
-      res.sendStatus(500)
-    } else {
-      console.log(`Inserted ${result.affectedRows} row(s)`)
-      res.sendStatus(200)
+  const sql = `INSERT INTO users(user_firstname, user_lastname, user_id, user_position , user_department , user_email , user_password , user_status ,user_role , user_pic ) VALUES(?, ?, ?, ? , ?, ?, ?, ?, ?, ?)`;
+  connection.query(
+    sql,
+    [
+      user_firstname,
+      user_lastname,
+      user_id,
+      user_position,
+      user_department,
+      user_email,
+      user_password,
+      user_status,
+      user_role,
+      user_pic,
+    ],
+    (err, result) => {
+      if (err) {
+        console.error(err);
+        res.sendStatus(500);
+      } else {
+        console.log(`Inserted ${result.affectedRows} row(s)`);
+        res.sendStatus(200);
+      }
     }
-  })
+  );
 });
-
 
 // * Edit user + image
 // PUT update user information and profile picture
-router.put('/updateUsers/:id/image', upload.single('image'), (req, res) => {
+router.put("/updateUsers/:id/image", upload.single("image"), (req, res) => {
   const id = req.params.id;
   const {
     user_firstname,
@@ -91,24 +102,43 @@ router.put('/updateUsers/:id/image', upload.single('image'), (req, res) => {
 
     if (user_pic) {
       // Get the current profile picture path of the user
-      connection.query(`SELECT user_pic FROM users WHERE id = ?`, [id], (err, results, fields) => {
-        if (err) {
-          console.log(err);
-          return res.status(400).send(err);
-        }
-        // If the user already has a profile picture, delete it
-        if (results[0].user_pic) {
-          deletePath = '../frontend/uploads/' + results[0].user_pic;
-          fs.unlink(deletePath, (err) => {
-            if (err) {
-              console.error(err);
-              return;
+      connection.query(
+        `SELECT user_pic FROM users WHERE id = ?`,
+        [id],
+        (err, results, fields) => {
+          if (err) {
+            console.log(err);
+            return res.status(400).send(err);
+          }
+          // If the user already has a profile picture, delete it
+          if (
+            results[0].user_pic ===
+            "7d443ab8-28c9-4eab-aa42-5fda3fc64bc5-1678276877293-aaa.jpeg"
+          ) {
+            console.log("it is save!");
+          }else if( results[0].user_pic !=
+            "7d443ab8-28c9-4eab-aa42-5fda3fc64bc5-1678276877293-aaa.jpeg" && results[0].user_pic){
+              deletePath = "../frontend/uploads/" + results[0].user_pic;
+              fs.unlink(deletePath, (err) => {
+                if (err) {
+                  console.error(err);
+                  return;
+                }
+                console.log("Old profile picture deleted"+ results[0].user_pic)
+              });
             }
-            console.log('Old profile picture deleted!');
-          });
-        }
-        // Update user with new image
-        sql = `UPDATE users SET 
+          // if (results[0].user_pic) {
+          //   deletePath = "../frontend/uploads/" + results[0].user_pic;
+          //   fs.unlink(deletePath, (err) => {
+          //     if (err) {
+          //       console.error(err);
+          //       return;
+          //     }
+          //     console.log("Old profile picture deleted!");
+          //   });
+          // }
+          // Update user with new image
+          sql = `UPDATE users SET 
               user_firstname = ?,
               user_lastname = ?,
               user_id = ?,
@@ -120,27 +150,28 @@ router.put('/updateUsers/:id/image', upload.single('image'), (req, res) => {
               user_role = ?,
               user_pic = ?
             WHERE id = ?`;
-        values = [
-          user_firstname,
-          user_lastname,
-          user_id,
-          user_position,
-          user_department,
-          user_email,
-          user_password,
-          user_status,
-          user_role,
-          user_pic,
-          id,
-        ];
-        connection.query(sql, values, (err, results, fields) => {
-          if (err) {
-            console.log(err);
-            return res.status(400).send(err);
-          }
-          res.status(200).json({ message: 'User updated successfully!' });
-        });
-      });
+          values = [
+            user_firstname,
+            user_lastname,
+            user_id,
+            user_position,
+            user_department,
+            user_email,
+            user_password,
+            user_status,
+            user_role,
+            user_pic,
+            id,
+          ];
+          connection.query(sql, values, (err, results, fields) => {
+            if (err) {
+              console.log(err);
+              return res.status(400).send(err);
+            }
+            res.status(200).json({ message: "User updated successfully!" });
+          });
+        }
+      );
     } else {
       // Update user without changing the image
       sql = `UPDATE users SET 
@@ -171,7 +202,7 @@ router.put('/updateUsers/:id/image', upload.single('image'), (req, res) => {
           console.log(err);
           return res.status(400).send(err);
         }
-        res.status(200).json({ message: 'User updated successfully!' });
+        res.status(200).json({ message: "User updated successfully!" });
       });
     }
   } catch (err) {
@@ -180,10 +211,9 @@ router.put('/updateUsers/:id/image', upload.single('image'), (req, res) => {
   }
 });
 
-
 //*delete images
 // Route to handle DELETE requests to /api/images/:id
-router.delete('/api/images/:id', (req, res) => {
+router.delete("/api/images/:id", (req, res) => {
   const id = req.params.id;
 
   // Get the image path from the database
@@ -191,7 +221,9 @@ router.delete('/api/images/:id', (req, res) => {
   connection.query(sql, (error, results, fields) => {
     if (error) {
       console.log(`Error retrieving image path from database: ${error}`);
-      res.status(500).send(`Error retrieving image path from database: ${error}`);
+      res
+        .status(500)
+        .send(`Error retrieving image path from database: ${error}`);
       return;
     }
 
@@ -217,7 +249,9 @@ router.delete('/api/images/:id', (req, res) => {
       connection.query(deleteSql, (error, results, fields) => {
         if (error) {
           console.log(`Error deleting image record from database: ${error}`);
-          res.status(500).send(`Error deleting image record from database: ${error}`);
+          res
+            .status(500)
+            .send(`Error deleting image record from database: ${error}`);
           return;
         }
         console.log(`Database entry with id ${id} deleted successfully.`);
@@ -226,7 +260,6 @@ router.delete('/api/images/:id', (req, res) => {
     });
   });
 });
-
 
 // * GET All FROM users and query user_position
 router.get("/getAll", async (req, res) => {
@@ -369,7 +402,7 @@ router.put("/update/:id", async (req, res) => {
 
 //*delete user + image by ID
 // Route to handle DELETE requests to /api/images/:id
-router.delete('/deleteUser/:id', (req, res) => {
+router.delete("/deleteUser/:id", (req, res) => {
   const id = req.params.id;
 
   // Get the image path from the database
@@ -377,7 +410,9 @@ router.delete('/deleteUser/:id', (req, res) => {
   connection.query(sql, (error, results, fields) => {
     if (error) {
       console.log(`Error retrieving image path from database: ${error}`);
-      res.status(500).send(`Error retrieving image path from database: ${error}`);
+      res
+        .status(500)
+        .send(`Error retrieving image path from database: ${error}`);
       return;
     }
 
@@ -388,7 +423,7 @@ router.delete('/deleteUser/:id', (req, res) => {
     }
 
     // const imagePath = results[0].user_pic;
-    const imagePath = '../frontend/uploads/' + results[0].user_pic;
+    const imagePath = "../frontend/uploads/" + results[0].user_pic;
     // const imagePath = path.join(__dirname, '..', 'frontend', 'uploads', results[0].user_pic);
 
     // Delete image file from server
@@ -405,7 +440,9 @@ router.delete('/deleteUser/:id', (req, res) => {
       connection.query(deleteSql, (error, results, fields) => {
         if (error) {
           console.log(`Error deleting image record from database: ${error}`);
-          res.status(500).send(`Error deleting image record from database: ${error}`);
+          res
+            .status(500)
+            .send(`Error deleting image record from database: ${error}`);
           return;
         }
         console.log(`Database entry with id ${id} deleted successfully.`);
