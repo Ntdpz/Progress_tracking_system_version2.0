@@ -28,12 +28,12 @@
       <v-row no-gutters>
         <!-- -เอาเส้นออกใส่ border: none; -->
         <v-card class="pa-2" tile outlined style="
-                                        border: none;
-                                        width: 100%;
-                                        height: 100%;
-                                        display: flex;
-                                        justify-content: center;
-                                      ">
+                                                border: none;
+                                                width: 100%;
+                                                height: 100%;
+                                                display: flex;
+                                                justify-content: center;
+                                              ">
           <v-col class="mb-6" col="12" sm="12" md="12">
             <!-- หมวดหมู่ หัวข้อใหญ่ -->
             <v-toolbar class="mb-2">
@@ -419,8 +419,8 @@
                         <!--  -->
                         <v-row class="mr-2 mt-0" style="margin-bottom: -8%">
                           <v-col cols="12" sm="3" style="margin-right: -1%; padding-right: 0%">
-                            <v-select :rules="[rules.required]" v-model="name" :items="misname" label="Mr/Miss" dense
-                              rounded solo></v-select>
+                            <v-select :rules="[rules.required]" v-model="name" :items="dataDefault_nametitle"
+                              label="Mr/Miss" dense rounded solo></v-select>
                           </v-col>
                           <v-col cols="12" sm="4">
                             <v-text-field :rules="[rules.required]" v-model="firstname" label="First Name" dense rounded
@@ -450,11 +450,11 @@
                               solo></v-text-field>
                           </v-col>
                           <v-col cols="12" sm="4">
-                            <v-select :rules="[rules.required]" v-model="position" :items="positions" label="Position"
-                              dense rounded solo></v-select>
+                            <v-select :rules="[rules.required]" v-model="position" :items="dataDefault_position"
+                              label="Position" dense rounded solo></v-select>
                           </v-col>
                           <v-col cols="12" sm="4">
-                            <v-select :rules="[rules.required]" v-model="department" :items="departments"
+                            <v-select :rules="[rules.required]" v-model="department" :items="dataDefault_department"
                               label="Department" dense rounded solo></v-select>
                           </v-col>
                         </v-row>
@@ -498,13 +498,14 @@
                         <!--  -->
                         <v-row class="mr-2 mt-0">
                           <v-col cols="12" sm="6">
-                            <v-select :rules="[rules.required]" v-model="stratiform" :items="status" label="Status" dense
-                              rounded solo></v-select>
+                            <v-select :rules="[rules.required]" v-model="stratiform" :items="dataDefault_status_user"
+                              label="Status" dense rounded solo></v-select>
                           </v-col>
 
                           <v-col cols="12" sm="6">
-                            <v-select :rules="[rules.required]" v-model="role" :items="roles" label="Role" dense rounded
-                              solo></v-select>
+                            <v-select :rules="[rules.required]" v-model="role" :items="dataDefault_role_user" label="Role"
+                              dense rounded solo>
+                            </v-select>
                           </v-col>
                           <!--  -->
                         </v-row>
@@ -573,8 +574,8 @@
                         <!--  -->
                         <v-row class="mr-2 mt-0" style="margin-bottom: -8%">
                           <v-col cols="12" sm="3" style="margin-right: -1%; padding-right: 0%">
-                            <v-select :rules="[rules.required]" v-model="editedItem.misname" :items="misname"
-                              label="Mr/Miss" dense rounded solo></v-select>
+                            <v-select :rules="[rules.required]" v-model="editedItem.misname"
+                              :items="dataDefault_nametitle" label="Mr/Miss" dense rounded solo></v-select>
                           </v-col>
                           <v-col cols="12" sm="4">
                             <v-text-field :rules="[rules.required]" v-model="editedItem.user_firstname" label="First Name"
@@ -604,12 +605,12 @@
                               rounded solo></v-text-field>
                           </v-col>
                           <v-col cols="12" sm="4">
-                            <v-select :rules="[rules.required]" v-model="editedItem.user_position" :items="positions"
-                              label="Position" dense rounded solo></v-select>
+                            <v-select :rules="[rules.required]" v-model="editedItem.user_position"
+                              :items="dataDefault_position" label="Position" dense rounded solo></v-select>
                           </v-col>
                           <v-col cols="12" sm="4">
-                              <v-select :rules="[rules.required]" v-model="editedItem.user_department" :items="departments"
-                                label="Department" dense rounded solo></v-select>
+                            <v-select :rules="[rules.required]" v-model="editedItem.user_department"
+                              :items="dataDefault_department" label="Department" dense rounded solo></v-select>
                           </v-col>
                         </v-row>
                         <!--  -->
@@ -652,12 +653,12 @@
                         <!--  -->
                         <v-row class="mr-2 mt-0">
                           <v-col cols="12" sm="6">
-                            <v-select :rules="[rules.required]" v-model="editedItem.user_status" :items="status"
-                              label="Status" dense rounded solo></v-select>
+                            <v-select :rules="[rules.required]" v-model="editedItem.user_status"
+                              :items="dataDefault_status_user" label="Status" dense rounded solo></v-select>
                           </v-col>
                           <v-col cols="12" sm="6">
-                            <v-select :rules="[rules.required]" v-model="editedItem.user_role" :items="roles" label="Role"
-                              dense rounded solo></v-select>
+                            <v-select :rules="[rules.required]" v-model="editedItem.user_role"
+                              :items="dataDefault_role_user" label="Role" dense rounded solo></v-select>
                           </v-col>
                           <!--  -->
                         </v-row>
@@ -735,14 +736,6 @@ export default {
         "System Analyst",
         "report developer",
       ],
-      roles: ["User", "Admin"],
-      positions: [
-        "Developer",
-        "Implementer",
-        "Program Management",
-        "System Analyst",
-        "Report Developer",
-      ],
       departments: ["DD"],
       rules: {
         required: value => !!value || '*Required*',
@@ -779,8 +772,6 @@ export default {
       all: [],
       developer: [],
       implementer: [],
-      misname: ["Mr.", "Miss."],
-      status: ["Active"],
       // For Api
       data: [],
       data_position_Developer: [],
@@ -796,7 +787,14 @@ export default {
       imageReportDeveloper: [],
       showpassword_newbt: false,
       showpassword_managebt: false,
-
+      dataDefault: [],
+      dataDefault_role_user: [],
+      dataDefault_nametitle: [],
+      dataDefault_position: [],
+      dataDefault_department: [],
+      dataDefault_status_user: [],
+      dataDefault_issue_type: [],
+      dataDefault_issue_priotity: [],
     };
   },
   created() {
@@ -806,6 +804,7 @@ export default {
     this.getPosition_ProgramManagement();
     this.getPosition_SystemAnalyst();
     this.getPosition_ReportDeveloper();
+    this.getAllDefault();
   },
   methods: {
     async getAll() {
@@ -1076,9 +1075,36 @@ export default {
       this.stratiform = "";
       this.role = "";
     },
-    // checktextfiled() {
-      
-    // },
+    async getAllDefault() {
+      await this.$axios.get("/default_settings/getAll").then((data) => {
+        this.dataDefault = data.data;
+        console.clear();
+        console.log(this.dataDefault);
+        this.dataDefault.forEach((item) => {
+          if (item.role_user) {
+            this.dataDefault_role_user.push(item.role_user);
+          }
+          if (item.nametitle) {
+            this.dataDefault_nametitle.push(item.nametitle);
+          }
+          if (item.position) {
+            this.dataDefault_position.push(item.position);
+          }
+          if (item.department) {
+            this.dataDefault_department.push(item.department);
+          }
+          if (item.status_user) {
+            this.dataDefault_status_user.push(item.status_user);
+          }
+          if (item.issue_type) {
+            this.dataDefault_issue_type.push(item.issue_type);
+          }
+          if (item.issue_priotity) {
+            this.dataDefault_issue_priotity.push(item.issue_priotity);
+          }
+        });
+      });
+    },
   },
 };
 </script>

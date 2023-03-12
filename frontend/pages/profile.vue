@@ -42,7 +42,7 @@
                                         <v-select class="" v-model="name" :items="items" label="Mr/Miss" solo></v-select>
                                     </v-col> -->
                             <v-col class="" cols="2" sm="2" style="margin-right:-1%; padding-right:0%;">
-                                <v-select v-model="name" :items="items" label="Mr/Miss" solo item-text="text"
+                                <v-select v-model="name" :items="dataDefault_nametitle" label="Mr/Miss" solo item-text="text"
                                     item-value="value">
                                     <template #item="{ item, on }">
                                         <v-list-item :value="item.value" v-on="on">
@@ -222,11 +222,18 @@ export default {
             name: "",
             firstname: "",
             online: true,
-            items: ['Mr.', 'Miss.'],
             user_pic: null,
             imageUpload: null,
             avatar: null,
             defaultImage: "Avatar.jpg",
+            dataDefault: [],
+            dataDefault_role_user: [],
+            dataDefault_nametitle: [],
+            dataDefault_position: [],
+            dataDefault_department: [],
+            dataDefault_status_user: [],
+            dataDefault_issue_type: [],
+            dataDefault_issue_priotity: [],
         };
     },
     mounted() {
@@ -234,6 +241,7 @@ export default {
     },
     created() {
         this.getUser();
+        this.getAllDefault();
     },
     methods: {
 
@@ -353,12 +361,39 @@ export default {
             } catch (error) {
                 alert(error);
             }
-
-
         },
-
         getdefaultImageUrl(fileName) {
             return require(`@/defaultimage/${fileName}`);
+        },
+        async getAllDefault() {
+            await this.$axios.get("/default_settings/getAll").then((data) => {
+                this.dataDefault = data.data;
+                console.clear();
+                console.log(this.dataDefault);
+                this.dataDefault.forEach((item) => {
+                    if (item.role_user) {
+                        this.dataDefault_role_user.push(item.role_user);
+                    }
+                    if (item.nametitle) {
+                        this.dataDefault_nametitle.push(item.nametitle);
+                    }
+                    if (item.position) {
+                        this.dataDefault_position.push(item.position);
+                    }
+                    if (item.department) {
+                        this.dataDefault_department.push(item.department);
+                    }
+                    if (item.status_user) {
+                        this.dataDefault_status_user.push(item.status_user);
+                    }
+                    if (item.issue_type) {
+                        this.dataDefault_issue_type.push(item.issue_type);
+                    }
+                    if (item.issue_priotity) {
+                        this.dataDefault_issue_priotity.push(item.issue_priotity);
+                    }
+                });
+            });
         },
     },
 };
