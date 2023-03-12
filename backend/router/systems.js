@@ -14,7 +14,14 @@ router.get("/test", async (req, res) => {
 // * GET All FROM systems
 router.get("/getAll", async (req, res) => {
   try {
-    connection.query("SELECT * FROM systems", (err, results, fields) => {
+    const projectFilter = req.query.project_id;
+    let query = "SELECT * FROM systems";
+    const queryParams = [];
+    if (projectFilter) {
+      query += " WHERE project_id = ?";
+      queryParams.push(projectFilter);
+    }
+    connection.query(query, queryParams, (err, results, fields) => {
       if (err) {
         console.log(err);
         return res.status(400).send();

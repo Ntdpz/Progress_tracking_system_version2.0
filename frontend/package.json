@@ -18,6 +18,7 @@
     "@nuxtjs/fontawesome": "^1.1.2",
     "@nuxtjs/google-fonts": "^2.0.0",
     "core-js": "^3.15.1",
+    "moment": "^2.29.4",
     "nuxt": "^2.15.7",
     "vue-cal": "^4.8.1",
     "vuetify": "^2.5.5"
