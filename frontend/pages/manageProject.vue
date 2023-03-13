@@ -65,27 +65,41 @@
       class="mb-5"
       :items="projectList"
     >
-    
       <v-expansion-panel>
-        <v-expansion-panel-header>
+        <v-expansion-panel-header disable-icon-rotate>
           <v-row no-gutters>
             <v-col>
               <v-row class="mt-1">
                 <h4>{{ project.project_name }}</h4>
-                <p style="color: #b6b5b5; font-size: 16px; margin-left: 5%">
-                  3 Sub System
+                <p
+                  style="color: #b6b5b5; font-size: 16px; margin-left: 5%"
+                  v-show="getSystemCount(project) > 0"
+                >
+                  {{ getSystemCount(project) }} Sub System
+                </p>
+                <p
+                  style="color: #b6b5b5; font-size: 16px; margin-left: 5%"
+                  v-show="getSystemCount(project) <= 0"
+                >
+                  Not have system
                 </p>
               </v-row>
             </v-col>
             <v-col>
-              <v-row class="mt-1 mb-1">
-                <h4>{{ project.project_id }}</h4>
+              <v-row class="mt-1 mb-1" align="start" justify="start">
+                <h4 style="justify-self: start">{{ project.project_id }}</h4>
                 <v-spacer></v-spacer>
-                <h4>{{ project.formattedDateStart }}</h4>
+                <h4 style="justify-self: start">
+                  {{ project.formattedDateStart }}
+                </h4>
                 <v-spacer></v-spacer>
-                <h4>{{ project.formattedDateEnd }}</h4>
+                <h4 style="justify-self: start">
+                  {{ project.formattedDateEnd }}
+                </h4>
                 <v-spacer></v-spacer>
-                <h4>{{ project.project_agency }}</h4>
+                <h4 style="justify-self: start">
+                  {{ project.project_agency }}
+                </h4>
                 <v-spacer></v-spacer>
                 <v-btn
                   color="primary"
@@ -358,18 +372,18 @@
           </v-row>
           <v-data-table
             :headers="headers"
-            :items="system"
+            :items="project.systems"
             sort-by="calories"
             class="v-data-table elevation-1 mb-2 mt-5"
             v-remove-row-borders
           >
             <template v-slot:top> </template>
             <template v-slot:[`item.name`]="{ item }">
-              <v-icon>mdi-format-list-bulleted</v-icon>
+              <v-icon color="primary">mdi-format-list-bulleted</v-icon>
               {{ item.system_nameTH }}
             </template>
             <template v-slot:[`item.short_name`]="{ item }">
-              <v-icon>mdi-format-list-bulleted</v-icon>
+              <v-icon color="primary">mdi-format-list-bulleted</v-icon>
               {{ item.system_shortname }}
             </template>
             <template v-slot:[`item.member`]="{ item }">
@@ -441,10 +455,18 @@ export default {
       },
     };
   },
-  created() {
+  mounted() {
     // this.initialize();
     this.getProject();
     this.getSystem();
+  },
+  computed: {
+    totalSystemCount() {
+      return this.projectList.reduce(
+        (count, project) => count + project.systems.length,
+        0
+      );
+    },
   },
   methods: {
     initialize() {
@@ -589,9 +611,16 @@ export default {
     },
     async getSystem() {
       await this.$axios.get("/systems/getAll").then((res) => {
-        this.system = res.data;
-        console.log(this.system);
+        this.projectList.forEach((project) => {
+          project.systems = res.data.filter(
+            (system) => system.project_id === project.id
+          );
+        });
+        console.log(this.projectList);
       });
+    },
+    getSystemCount(project) {
+      return project.systems ? project.systems.length : 0;
     },
   },
 };
