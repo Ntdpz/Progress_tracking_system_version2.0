@@ -1,74 +1,80 @@
 <template>
-  <div>
-    <v-dialog v-model="dialog" max-width="500px">
-      <v-card>
-        <v-card-title>
-          {{ mode === 'create' ? 'Create Item' : 'Edit Item' }}
-        </v-card-title>
-        <v-card-text>
-          <v-form ref="form">
-            <v-text-field label="Name" v-model="item.name"></v-text-field>
-            <v-text-field label="Description" v-model="item.description"></v-text-field>
-          </v-form>
-        </v-card-text>
-        <v-card-actions>
-          <v-btn color="primary" @click="saveItem">{{ mode === 'create' ? 'Create' : 'Save' }}</v-btn>
-          <v-btn color="secondary" @click="closeDialog">Cancel</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-
-    <v-btn color="primary" @click="openDialog('create')">Create Item</v-btn>
-    <v-btn color="primary" @click="openDialog('edit')">Edit Item</v-btn>
-  </div>
+  <v-container>
+    <v-row>
+      <v-col v-for="(project, index) in projectList" :key="index" cols="12">
+        <v-card>
+          <v-card-title>
+            {{ project.project_id }} ({{ getSystemCount(project) }})
+          </v-card-title>
+          <v-card-text>
+            <v-data-table :headers="headers" :items="project.systems">
+              <template #item="{ item }">
+                <tr>
+                  <td>{{ item.system_nameTH }}</td>
+                  <td>{{ item.description }}</td>
+                  <td>{{ item.created_at }}</td>
+                  <td>{{ item.updated_at }}</td>
+                </tr>
+              </template>
+            </v-data-table>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
-import axios from 'axios';
-
 export default {
   data() {
     return {
-      dialog: false,
-      mode: 'create',
-      item: {
-        name: '',
-        description: '',
-      },
-      itemId: null, // Store the ID of the item being edited
+      projectList: [],
+      headers: [
+        { text: "Name", value: "name" },
+        { text: "Description", value: "description" },
+        { text: "Created At", value: "created_at" },
+        { text: "Updated At", value: "updated_at" },
+      ],
     };
   },
   methods: {
-    async openDialog(mode) {
-      this.mode = mode;
-      this.dialog = true;
-
-      if (mode === 'edit') {
-        const response = await axios.get(`/api/items/${this.itemId}`);
-        const itemData = response.data;
-
-        if (itemData) {
-          this.item = { ...itemData };
-        }
-      } else {
-        if (this.$refs.form) {
-          this.$refs.form.reset();
-        }
-      }
+    async getProjects() {
+      await this.$axios.get("/projects/getAll").then((res) => {
+        this.projectList = res.data;
+      });
     },
-    async saveItem() {
-      if (this.mode === 'create') {
-        // Create new item
-        await axios.post('/api/items', this.item);
-      } else {
-        // Update existing item
-        await axios.put(`/api/items/${this.itemId}`, this.item);
-      }
-      this.dialog = false;
+    async getSystems() {
+      await this.$axios.get("/systems/getAll").then((res) => {
+        // Loop through each project and assign the associated systems
+        this.projectList.forEach((project) => {
+          project.systems = res.data.filter(
+            (system) => system.project_id === project.id
+          );
+        });
+      });
     },
-    closeDialog() {
-      this.dialog = false;
+    getSystemCount(project) {
+      return project.systems ? project.systems.length : 0;
     },
+  },
+  computed: {
+    totalSystemCount() {
+      return this.projectList.reduce(
+        (count, project) => count + project.systems.length,
+        0
+      );
+    },
+  },
+  mounted() {
+    this.getProjects();
+    this.getSystems();
   },
 };
 </script>
+
+
+<style scoped>
+* {
+  font-family: "Lato", sans-serif;
+}
+</style>
