@@ -297,6 +297,7 @@
                   v-bind="attrs"
                   v-on="on"
                   block
+                  @click="dialogSystem(projectList[index])"
                 >
                   <span
                     class="mdi mdi-plus-circle-outline"
@@ -317,11 +318,32 @@
                   <v-container>
                     <v-row>
                       <v-col cols="12">
+                        <p>Create system form Project ID</p>
+                        <v-text-field
+                          label="Project ID"
+                          placeholder="Project ID"
+                          outlined
+                          dense
+                          disabled
+                          v-model="editedItem.project_id"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12">
+                        <v-text-field
+                          label="System ID"
+                          placeholder="System ID"
+                          outlined
+                          dense
+                          v-model="system.system_id"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12">
                         <v-text-field
                           label="System Name (TH)"
                           placeholder="System Name (TH)"
                           outlined
                           dense
+                          v-model="system.system_nameTH"
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12">
@@ -330,6 +352,7 @@
                           placeholder="System Name (EN)"
                           outlined
                           dense
+                          v-model="system.system_nameEN"
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="8" md="8">
@@ -338,9 +361,10 @@
                           placeholder="Short system name"
                           outlined
                           dense
+                          v-model="system.system_shortname"
                         ></v-text-field>
                       </v-col>
-                      <v-col cols="12" sm="6" md="4">
+                      <!-- <v-col cols="12" sm="6" md="4">
                         <v-autocomplete
                           label="Autocomplete"
                           :items="[
@@ -353,8 +377,9 @@
                           ]"
                           multiple
                           variant="solo"
+                          v-model="system.system_member"
                         ></v-autocomplete>
-                      </v-col>
+                      </v-col> -->
                     </v-row>
                   </v-container>
                 </v-card-text>
@@ -363,7 +388,11 @@
                   <v-btn color="primary" text @click="dialogSubsystem = false">
                     Close
                   </v-btn>
-                  <v-btn color="primary" dark @click="dialogSubsystem = false">
+                  <v-btn
+                    color="primary"
+                    dark
+                    @click="createSystem(projectList)"
+                  >
                     Create
                   </v-btn>
                 </v-card-actions>
@@ -404,7 +433,9 @@
 </template>
 
 <script>
+import { create } from "domain";
 import moment from "moment";
+import Vue from "vue";
 export default {
   layout: "admin",
   directives: {
@@ -440,7 +471,14 @@ export default {
         { text: "Actions", value: "actions", sortable: false },
         // { text: "Actions", value: "actions", sortable: false },
       ],
-      system: [],
+      system: {
+        project_id: "", //primary key of projects
+        system_id: "",
+        system_nameTH: "",
+        system_nameEN: "",
+        system_shortname: "",
+        system_member: "dev1",
+      },
       projectList: [],
       member_select: ["Dev1"],
       member: "",
@@ -455,10 +493,10 @@ export default {
       },
     };
   },
-  mounted() {
-    // this.initialize();
-    this.getProject();
-    this.getSystem();
+  async created() {
+    await this.initialize();
+    await this.getProject();
+    await this.getSystems();
   },
   computed: {
     totalSystemCount() {
@@ -470,33 +508,7 @@ export default {
   },
   methods: {
     initialize() {
-      this.system = [
-        // {
-        //   name: "sub system",
-        //   short_name: "Issue name",
-        //   member: "Dev",
-        // },
-        // {
-        //   name: "sub system",
-        //   short_name: "Issue name",
-        //   member: "Dev",
-        // },
-        // {
-        //   name: "sub system",
-        //   short_name: "Issue name",
-        //   member: "Dev",
-        // },
-        // {
-        //   name: "sub system",
-        //   short_name: "Issue name",
-        //   member: "Dev",
-        // },
-        // {
-        //   name: "sub system",
-        //   short_name: "Issue name",
-        //   member: "Dev",
-        // },
-      ];
+      this.projectList = [];
     },
     async getProject() {
       await this.$axios.get("/projects/getAll").then((res) => {
@@ -609,18 +621,53 @@ export default {
         }
       }
     },
-    async getSystem() {
+    async getSystems() {
       await this.$axios.get("/systems/getAll").then((res) => {
+        // Loop through each project and assign the associated systems
         this.projectList.forEach((project) => {
-          project.systems = res.data.filter(
-            (system) => system.project_id === project.id
+          Vue.set(
+            project,
+            "systems",
+            res.data.filter((system) => system.project_id === project.id)
           );
         });
-        console.log(this.projectList);
       });
+      console.log(this.projectList);
     },
     getSystemCount(project) {
       return project.systems ? project.systems.length : 0;
+    },
+    async dialogSystem(projectList) {
+      console.log(projectList.id);
+      this.editedIndex = this.projectList.indexOf(projectList);
+      this.editedItem = Object.assign({}, projectList);
+      this.system.project_id = projectList.id;
+      console.log(this.system.project_id + "id is post");
+      console.log(this.projectList.project_id);
+    },
+    async createSystem() {
+      try {
+        await this.$axios.post("/systems/createSystem", this.system);
+        console.log("post success");
+        window.location.reload();
+        const promise = new Promise((resolve, reject) => {
+          resolve();
+          this.dialog = false;
+          this.system.project_id == "";
+          this.system.system_nameTH == "";
+          this.system.system_nameEN == "";
+          this.system.system_shortname == "";
+          this.system.system_member == "";
+        });
+        promise.then(() => {
+          setTimeout(() => {
+            alert("success");
+          }, 2000);
+        });
+      } catch (error) {
+        console.error(error);
+        alert("Error submitting form");
+      }
     },
   },
 };
