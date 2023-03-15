@@ -1,36 +1,20 @@
 <template>
   <div class="body">
     <v-row class="mb-3">
-      <v-text-title
-        class="center ml-4 mr-4 mt-3 mb-1"
-        style="font-weight: bold; font-size: 20px"
-      >
+      <v-text-title class="center ml-4 mr-4 mt-3 mb-1" style="font-weight: bold; font-size: 20px">
         Project List
       </v-text-title>
-      <v-divider
-        class="mt-3 mb-1"
-        inset
-        vertical
-        style="background-color: black"
-      ></v-divider>
-      <div
-        style="
-          border-radius: 99px;
-          border: 2px solid #333;
-          height: 32px;
-          width: 15%;
-          margin-left: 1%;
-          margin-top: 0.8%;
-        "
-      >
-        <v-text-field
-          placeholder="Search some project"
-          prepend-icon="mdi-magnify"
-          rounded
-          dense
-          color="primary"
-          style="margin-top: 1px; margin-left: 3%"
-        ></v-text-field>
+      <v-divider class="mt-3 mb-1" inset vertical style="background-color: black"></v-divider>
+      <div style="
+              border-radius: 99px;
+              border: 2px solid #333;
+              height: 32px;
+              width: 15%;
+              margin-left: 1%;
+              margin-top: 0.8%;
+            ">
+        <v-text-field placeholder="Search some project" prepend-icon="mdi-magnify" rounded dense color="primary"
+          style="margin-top: 1px; margin-left: 3%"></v-text-field>
       </div>
     </v-row>
     <v-divider></v-divider>
@@ -44,43 +28,22 @@
       <h4 class="" style="margin-right: 16.5%">Agency</h4>
     </v-row>
 
-    <v-btn
-      class="new-btn ma-2 text-left"
-      outlined
-      color="indigo"
-      dark
-      block
-      @click="openDialog('create')"
-    >
-      <span
-        class="mdi mdi-plus-circle-outline"
-        style="font-size: 20px; color: black"
-      ></span>
+    <v-btn class="new-btn ma-2 text-left" outlined color="indigo" dark block @click="openDialog('create')">
+      <span class="mdi mdi-plus-circle-outline" style="font-size: 20px; color: black"></span>
       <h4 style="color: black">Add New Project</h4>
     </v-btn>
     <br />
-    <v-expansion-panels
-      v-for="(project, index) in projectList"
-      :key="index"
-      class="mb-5"
-      :items="projectList"
-    >
+    <v-expansion-panels v-for="(project, index) in projectList" :key="index" class="mb-5" :items="projectList">
       <v-expansion-panel>
         <v-expansion-panel-header disable-icon-rotate>
           <v-row no-gutters>
             <v-col>
               <v-row class="mt-1">
                 <h4>{{ project.project_name }}</h4>
-                <p
-                  style="color: #b6b5b5; font-size: 16px; margin-left: 5%"
-                  v-show="getSystemCount(project) > 0"
-                >
+                <p style="color: #b6b5b5; font-size: 16px; margin-left: 5%" v-show="getSystemCount(project) > 0">
                   {{ getSystemCount(project) }} Sub System
                 </p>
-                <p
-                  style="color: #b6b5b5; font-size: 16px; margin-left: 5%"
-                  v-show="getSystemCount(project) <= 0"
-                >
+                <p style="color: #b6b5b5; font-size: 16px; margin-left: 5%" v-show="getSystemCount(project) <= 0">
                   Not have system
                 </p>
               </v-row>
@@ -101,18 +64,13 @@
                   {{ project.project_agency }}
                 </h4>
                 <v-spacer></v-spacer>
-                <v-btn
-                  color="primary"
-                  icon
-                  style="height: 25px"
-                  @click="openDialog('edit', projectList[index])"
-                >
+                <v-btn color="primary" icon style="height: 25px" @click="openDialog('edit', projectList[index])">
                   <v-icon class="pa-0" size="25" color="primary">
                     mdi mdi-square-edit-outline
                   </v-icon>
                 </v-btn>
-                <v-spacer></v-spacer> </v-row
-            ></v-col>
+                <v-spacer></v-spacer>
+              </v-row></v-col>
           </v-row>
           <v-dialog v-model="dialog" max-width="500px" :retain-focus="false">
             <v-card>
@@ -131,147 +89,70 @@
                 <v-container>
                   <v-row>
                     <v-col cols="12">
-                      <v-text-field
-                        label="Project ID"
-                        placeholder="Project ID"
-                        outlined
-                        dense
-                        v-model="editedItem.project_id"
-                      ></v-text-field>
+                      <v-text-field label="Project ID" placeholder="Project ID" outlined dense
+                        v-model="editedItem.project_id"></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="6" md="4">
-                      <v-text-field
-                        label="ตัวย่อ"
-                        placeholder="ตัวย่อ"
-                        outlined
-                        dense
-                        v-model="editedItem.project_shortname"
-                      ></v-text-field>
+                      <v-text-field label="ตัวย่อ" placeholder="ตัวย่อ" outlined dense
+                        v-model="editedItem.project_shortname"></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="8" md="8">
-                      <v-text-field
-                        label="Project Name"
-                        placeholder="Project Name"
-                        outlined
-                        dense
-                        v-model="editedItem.project_name"
-                      ></v-text-field>
+                      <v-text-field label="Project Name" placeholder="Project Name" outlined dense
+                        v-model="editedItem.project_name"></v-text-field>
                     </v-col>
                     <v-col cols="12" class="pb-0">
-                      <v-text-field
-                        label="Agency"
-                        placeholder="Agency"
-                        outlined
-                        dense
-                        v-model="editedItem.project_agency"
-                      ></v-text-field>
+                      <v-text-field label="Agency" placeholder="Agency" outlined dense
+                        v-model="editedItem.project_agency"></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="6" md="6" v-show="mode == 'create'">
-                      <v-menu
-                        ref="menuDateStart"
-                        v-model="menuDateStart"
-                        :close-on-content-click="false"
-                        transition="scale-transition"
-                        offset-y
-                        min-width="290px"
-                      >
+                      <v-menu ref="menuDateStart" v-model="menuDateStart" :close-on-content-click="false"
+                        transition="scale-transition" offset-y min-width="290px">
                         <template v-slot:activator="{ on, attrs }">
-                          <v-text-field
-                            v-model="dateStart"
-                            label="Picker in menu"
-                            prepend-icon="mdi mdi-calendar-clock-outline"
-                            readonly
-                            v-bind="attrs"
-                            v-on="on"
-                          ></v-text-field>
+                          <v-text-field v-model="dateStart" label="Picker in menu"
+                            prepend-icon="mdi mdi-calendar-clock-outline" readonly v-bind="attrs"
+                            v-on="on"></v-text-field>
                         </template>
                         <v-date-picker v-model="dateStart" no-title scrollable>
                           <v-spacer></v-spacer>
-                          <v-btn
-                            text
-                            color="primary"
-                            @click="menuDateStart = false"
-                            >Cancel</v-btn
-                          >
-                          <v-btn
-                            text
-                            color="primary"
-                            @click="$refs.menuDateStart.save(dateStart)"
-                            >OK</v-btn
-                          >
+                          <v-btn text color="primary" @click="menuDateStart = false">Cancel</v-btn>
+                          <v-btn text color="primary" @click="$refs.menuDateStart.save(dateStart)">OK</v-btn>
                         </v-date-picker>
                       </v-menu>
                     </v-col>
                     <v-col cols="12" sm="6" md="6" v-show="mode == 'create'">
-                      <v-menu
-                        ref="menuDateEnd"
-                        v-model="menuDateEnd"
-                        :close-on-content-click="false"
-                        transition="scale-transition"
-                        offset-y
-                        min-width="290px"
-                      >
+                      <v-menu ref="menuDateEnd" v-model="menuDateEnd" :close-on-content-click="false"
+                        transition="scale-transition" offset-y min-width="290px">
                         <template v-slot:activator="{ on, attrs }">
-                          <v-text-field
-                            v-model="dateEnd"
-                            label="Picker in menu"
-                            prepend-icon="mdi mdi-calendar-clock-outline"
-                            readonly
-                            v-bind="attrs"
-                            v-on="on"
-                          ></v-text-field>
+                          <v-text-field v-model="dateEnd" label="Picker in menu"
+                            prepend-icon="mdi mdi-calendar-clock-outline" readonly v-bind="attrs"
+                            v-on="on"></v-text-field>
                         </template>
                         <v-date-picker v-model="dateEnd" no-title scrollable>
                           <v-spacer></v-spacer>
-                          <v-btn
-                            text
-                            color="primary"
-                            @click="menuDateEnd = false"
-                            >Cancel</v-btn
-                          >
-                          <v-btn
-                            text
-                            color="primary"
-                            @click="$refs.menuDateEnd.save(dateEnd)"
-                            >OK</v-btn
-                          >
+                          <v-btn text color="primary" @click="menuDateEnd = false">Cancel</v-btn>
+                          <v-btn text color="primary" @click="$refs.menuDateEnd.save(dateEnd)">OK</v-btn>
                         </v-date-picker>
                       </v-menu>
                     </v-col>
                     <v-col cols="12" sm="6" md="6" v-show="mode == 'edit'">
-                      <v-text-field
-                        label="Date Start"
-                        placeholder="Date Start"
-                        outlined
-                        dense
-                        v-model="editedItem.formattedDateStart"
-                      ></v-text-field>
+                      <v-text-field label="Date Start" placeholder="Date Start" outlined dense
+                        v-model="editedItem.formattedDateStart"></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="6" md="6" v-show="mode == 'edit'">
-                      <v-text-field
-                        label="Date End"
-                        placeholder="Date End"
-                        outlined
-                        dense
-                        v-model="editedItem.formattedDateEnd"
-                      ></v-text-field>
+                      <v-text-field label="Date End" placeholder="Date End" outlined dense
+                        v-model="editedItem.formattedDateEnd"></v-text-field>
                     </v-col>
                   </v-row>
                 </v-container>
               </v-card-text>
               <v-card-actions>
-                <v-btn
-                  color="error"
-                  dark
-                  @click="deleteProject()"
-                  v-show="mode == 'edit'"
-                >
-                  <h5>Delete</h5></v-btn
-                >
+                <v-btn color="error" dark @click="deleteProject()" v-show="mode == 'edit'">
+                  <h5>Delete</h5>
+                </v-btn>
                 <v-spacer></v-spacer>
                 <v-btn color="primary" text @click="dialog = false">
-                  <h5>Close</h5></v-btn
-                >
+                  <h5>Close</h5>
+                </v-btn>
                 <v-btn color="primary" dark @click="saveProject()">
                   <h5>{{ mode === "create" ? "Create" : "Save" }}</h5>
                 </v-btn>
@@ -282,27 +163,11 @@
         <v-expansion-panel-content>
           <v-row justify="center" class="ml-5 mr-5 mt-0">
             <!-- *dialog -->
-            <v-dialog
-              v-model="dialogSubsystem"
-              persistent
-              max-width="600px"
-              class=""
-            >
+            <v-dialog v-model="dialogSubsystem" persistent max-width="600px" class="">
               <template v-slot:activator="{ on, attrs }">
-                <v-btn
-                  class="new-btn ma-2 text-left"
-                  outlined
-                  color="indigo"
-                  dark
-                  v-bind="attrs"
-                  v-on="on"
-                  block
-                  @click="dialogSystem(projectList[index])"
-                >
-                  <span
-                    class="mdi mdi-plus-circle-outline"
-                    style="font-size: 20px; color: black"
-                  ></span>
+                <v-btn class="new-btn ma-2 text-left" outlined color="indigo" dark v-bind="attrs" v-on="on" block
+                  @click="dialogSystem(projectList[index])">
+                  <span class="mdi mdi-plus-circle-outline" style="font-size: 20px; color: black"></span>
                   <h4 style="color: black">Add New Sub System</h4>
                 </v-btn>
               </template>
@@ -319,50 +184,24 @@
                     <v-row>
                       <v-col cols="12">
                         <p>Create system form Project ID</p>
-                        <v-text-field
-                          label="Project ID"
-                          placeholder="Project ID"
-                          outlined
-                          dense
-                          disabled
-                          v-model="editedItem.project_id"
-                        ></v-text-field>
+                        <v-text-field label="Project ID" placeholder="Project ID" outlined dense disabled
+                          v-model="editedItem.project_id"></v-text-field>
                       </v-col>
                       <v-col cols="12">
-                        <v-text-field
-                          label="System ID"
-                          placeholder="System ID"
-                          outlined
-                          dense
-                          v-model="system.system_id"
-                        ></v-text-field>
+                        <v-text-field label="System ID" placeholder="System ID" outlined dense
+                          v-model="system.system_id"></v-text-field>
                       </v-col>
                       <v-col cols="12">
-                        <v-text-field
-                          label="System Name (TH)"
-                          placeholder="System Name (TH)"
-                          outlined
-                          dense
-                          v-model="system.system_nameTH"
-                        ></v-text-field>
+                        <v-text-field label="System Name (TH)" placeholder="System Name (TH)" outlined dense
+                          v-model="system.system_nameTH"></v-text-field>
                       </v-col>
                       <v-col cols="12">
-                        <v-text-field
-                          label="System Name (EN)"
-                          placeholder="System Name (EN)"
-                          outlined
-                          dense
-                          v-model="system.system_nameEN"
-                        ></v-text-field>
+                        <v-text-field label="System Name (EN)" placeholder="System Name (EN)" outlined dense
+                          v-model="system.system_nameEN"></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="8" md="8">
-                        <v-text-field
-                          label="Short system name"
-                          placeholder="Short system name"
-                          outlined
-                          dense
-                          v-model="system.system_shortname"
-                        ></v-text-field>
+                        <v-text-field label="Short system name" placeholder="Short system name" outlined dense
+                          v-model="system.system_shortname"></v-text-field>
                       </v-col>
                       <!-- <v-col cols="12" sm="6" md="4">
                         <v-autocomplete
@@ -388,24 +227,15 @@
                   <v-btn color="primary" text @click="dialogSubsystem = false">
                     Close
                   </v-btn>
-                  <v-btn
-                    color="primary"
-                    dark
-                    @click="createSystem(projectList)"
-                  >
+                  <v-btn color="primary" dark @click="createSystem(projectList)">
                     Create
                   </v-btn>
                 </v-card-actions>
               </v-card>
             </v-dialog>
           </v-row>
-          <v-data-table
-            :headers="headers"
-            :items="project.systems"
-            sort-by="calories"
-            class="v-data-table elevation-1 mb-2 mt-5"
-            v-remove-row-borders
-          >
+          <v-data-table :headers="headers" :items="project.systems" sort-by="calories"
+            class="v-data-table elevation-1 mb-2 mt-5" v-remove-row-borders>
             <template v-slot:top> </template>
             <template v-slot:[`item.name`]="{ item }">
               <v-icon color="primary">mdi-format-list-bulleted</v-icon>
@@ -418,8 +248,8 @@
             <template v-slot:[`item.member`]="{ item }">
               {{ item.system_member }}
             </template>
-            <template v-slot:[`item.actions`]>
-              <v-btn color="primary" icon :to="`/systemdetail`">
+            <template v-slot:[`item.actions`]="{ item }">
+              <v-btn color="primary" icon :to="`/systemdetail/${item.id}`">
                 <v-icon class="mr-2 ml-2" size="20" color="primary">
                   mdi mdi-chevron-right-circle-outline
                 </v-icon>
@@ -677,6 +507,7 @@ export default {
 * {
   font-family: "Lato", sans-serif;
 }
+
 .new-btn {
   display: flex;
   justify-content: flex-start;
