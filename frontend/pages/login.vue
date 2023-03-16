@@ -100,7 +100,7 @@ export default {
           // Login successful
           this.$store.commit("setState", { user_id: this.user_id });
           console.log("response", response);
-          this.$router.push("/home");
+          this.$router.push("/");
         } else {
           // Show error message
           this.countlogin = this.countlogin + 1;

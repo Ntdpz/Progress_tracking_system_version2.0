@@ -1,40 +1,7 @@
 <template>
   <div class="body">
     <!-- *Search bar* -->
-
-    <v-row class="mb-3">
-      <v-text-title
-        class="center ml-4 mr-4 mt-3 mb-1"
-        style="font-weight: bold; font-size: 20px"
-      >
-        Issue List
-      </v-text-title>
-      <v-divider
-        class="mt-3 mb-1"
-        inset
-        vertical
-        style="background-color: black"
-      ></v-divider>
-      <div
-        style="
-          border-radius: 99px;
-          border: 2px solid #333;
-          height: 35px;
-          width: 15%;
-          margin-left: 1%;
-          margin-top: 0.5%;
-        "
-      >
-        <v-text-field
-          placeholder="Search some issue"
-          prepend-icon="mdi-magnify"
-          rounded
-          dense
-          color="primary"
-          style="margin-top: 1.5px; margin-left: 3%"
-        ></v-text-field>
-      </div>
-    </v-row>
+    <Searchbar title="Issue List" />
     <v-divider></v-divider>
 
     <!-- *Header* -->
@@ -808,7 +775,9 @@
 </template>
 
 <script>
+import Searchbar from "~/components/Searchbar.vue";
 export default {
+  components: { Searchbar },
   layout: "admin",
   directives: {
     "remove-row-borders": {

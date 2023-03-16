@@ -1,34 +1,6 @@
 <template>
   <div>
-    <v-row class="mb-3 ml-4">
-      <v-text-title
-        class="center ml-4 mr-4 mt-0 mb-1"
-        style="font-weight: bold; font-size: 20px"
-      >
-        Notifications
-      </v-text-title>
-      <v-divider
-        class="mt-0 mb-1"
-        inset
-        vertical
-        style="background-color: black"
-      ></v-divider>
-      <template>
-        <v-banner class="mt-0 ml-4" style="
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  height: 30px;
-                  border-radius: 30px;
-                  padding: 0 0px;
-                " outlined elevation="2">
-          <form class="center" @submit.prevent="search">
-            <v-icon color="purple">mdi-magnify</v-icon>
-            <input class="mr-3" type="text" v-model="query" placeholder="Search some Notification" />
-          </form>
-        </v-banner>
-      </template>
-    </v-row>
+    <searchbar title="Notifications" />
     <v-divider></v-divider>
     <div>
       <v-card v-for="n in 1" :key="n" class="mt-10 mb-10" elevation="8">
@@ -67,17 +39,17 @@
 </template>
 
 <script>
+import Searchbar from "../components/Searchbar.vue";
 export default {
-  
+  components: { Searchbar },
+
   layout: "admin",
   data() {
     return {
       query: "",
     };
   },
-  methods: {
-   
-  },
+  methods: {},
 };
 </script>
 

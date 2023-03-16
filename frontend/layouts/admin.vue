@@ -122,7 +122,7 @@ export default {
         {
           icon: "mdi-home",
           title: "Home",
-          to: "/home",
+          to: "/",
         },
         {
           icon: "mdi-bell-badge",
