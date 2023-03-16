@@ -2,40 +2,22 @@
   <div>
     <!-- title -->
     <v-row class="mb-3">
-      <title
-        class="center ml-4 mr-4 mt-0 mb-1"
-        style="font-weight: bold; font-size: 20px"
-      >
+      <title class="center ml-4 mr-4 mt-0 mb-1" style="font-weight: bold; font-size: 20px">
         System Detail
       </title>
-      <v-divider
-        class="mt-0 mb-1"
-        inset
-        vertical
-        style="background-color: black"
-      ></v-divider>
+      <v-divider class="mt-0 mb-1" inset vertical style="background-color: black"></v-divider>
       <template>
-        <v-banner
-          class="mt-0 ml-4"
-          style="
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 30px;
-            border-radius: 30px;
-            padding: 0 0px;
-          "
-          outlined
-          elevation="2"
-        >
+        <v-banner class="mt-0 ml-4" style="
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    height: 30px;
+                    border-radius: 30px;
+                    padding: 0 0px;
+                  " outlined elevation="2">
           <form class="center" @submit.prevent="search">
             <v-icon color="purple">mdi-magnify</v-icon>
-            <input
-              class="mr-3"
-              type="text"
-              v-model="query"
-              placeholder="Search some system"
-            />
+            <input class="mr-3" type="text" v-model="query" placeholder="Search some system" />
           </form>
         </v-banner>
       </template>
@@ -46,34 +28,24 @@
       <v-row class="mt-0" no-gutters>
         <v-col col="12" sm="12" md="12">
           <!-- box-shadow: none; -->
-          <v-card
-            class="mt-0"
-            tile
-            outlined
-            style="box-shadow: none; border: none"
-          >
+          <v-card class="mt-0" tile outlined style="box-shadow: none; border: none">
             <v-card-title>
-              <v-btn icon @click="back" color="primary" size="35px" left>
+              <v-btn class="mr-2" icon @click="back" color="primary" size="35px" left>
                 <v-icon size="35px">mdi-arrow-left-circle</v-icon>
               </v-btn>
               {{ dataSystem.system_nameTH }}({{ dataSystem.system_shortname }})
               ของ Project: {{ projectName.project_name }}
-              <v-avatar class="ml-4" color="primary" size="20"> </v-avatar>
-              <v-avatar class="ml-4" color="error" size="20"> </v-avatar>
-              <v-avatar class="ml-4" color="orange" size="20"> </v-avatar>
+              <!-- <v-avatar class="ml-4" color="primary" size="20"> </v-avatar>
+              <v-avatar class="ml-4" color="error" size="20"> </v-avatar> -->
+              <v-btn class="ml-3" icon color="primary" size="35px">
+                <v-icon size="35px" @click="(editSystem = true)">mdi mdi-square-edit-outline</v-icon>
+              </v-btn>
+
             </v-card-title>
             <!-- button + dialog new sub system -->
 
-            <v-btn
-              @click="(dialog_newscreen = true), resetday()"
-              class="mr-2"
-              elevation="2"
-              color="primary"
-              top
-              right
-              absolute
-              style="color: white; border-radius: 10px; font-weight: bold"
-            >
+            <v-btn @click="(dialog_newscreen = true), resetday()" class="mr-2" elevation="2" color="primary" top right
+              absolute style="color: white; border-radius: 10px; font-weight: bold">
               <v-icon left> mdi-plus-circle-outline </v-icon>New Screen
             </v-btn>
 
@@ -85,37 +57,19 @@
                     <v-container fluid>
                       <v-row>
                         <v-col>
-                          <v-card
-                            style="border: none"
-                            class="mx-auto text-center"
-                            outlined
-                            tile
-                            height="100%"
-                          >
+                          <v-card style="border: none" class="mx-auto text-center" outlined tile height="100%">
                             <!--  -->
 
                             <form>
                               <div class="d-flex justify-center">
-                                <label
-                                  class="mt-0 avatar-upload"
-                                  style="
-                                    display: flex;
-                                    justify-content: center;
-                                    align-items: center;
-                                  "
-                                >
-                                  <input
-                                    type="file"
-                                    ref="fileInput"
-                                    @change="uploadFile"
-                                  />
-                                  <v-icon
-                                    class="center mt-0"
-                                    color="black"
-                                    size="30px"
-                                    v-if="!photo"
-                                    >mdi-cloud-upload-outline</v-icon
-                                  >
+                                <label class="mt-0 avatar-upload" style="
+                                            display: flex;
+                                            justify-content: center;
+                                            align-items: center;
+                                          ">
+                                  <input type="file" ref="fileInput" @change="uploadFile" />
+                                  <v-icon class="center mt-0" color="black" size="30px"
+                                    v-if="!photo">mdi-cloud-upload-outline</v-icon>
                                   <img v-if="photo" :src="photo" />
                                 </label>
                               </div>
@@ -126,201 +80,107 @@
                         </v-col>
                       </v-row>
                       <v-row>
-                        <v-col
-                          class="mb-0 pb-0 hidden-sm-and-up"
-                          style="place-self: center"
-                        >
+                        <v-col class="mb-0 pb-0 hidden-sm-and-up" style="place-self: center">
                           <h4 class="">Screen Code</h4>
                         </v-col>
                       </v-row>
                       <v-row>
-                        <v-col
-                          class="hidden-xs-only"
-                          sm="4"
-                          md="4"
-                          style="place-self: center"
-                        >
+                        <v-col class="hidden-xs-only" sm="4" md="4" style="place-self: center">
                           <h4 class="">Screen Code</h4>
                         </v-col>
 
                         <v-col class="col-12" sm="8" md="8">
-                          <v-text-field
-                            style="text-align-last: center"
-                            v-model="screenID"
-                            hide-details="auto"
-                            dense
-                            outlined
-                          ></v-text-field>
+                          <v-text-field style="text-align-last: center" v-model="screenID" hide-details="auto" dense
+                            outlined></v-text-field>
                         </v-col>
                       </v-row>
                       <v-row>
-                        <v-col
-                          class="mb-0 pb-0 hidden-sm-and-up"
-                          style="place-self: center"
-                        >
+                        <v-col class="mb-0 pb-0 hidden-sm-and-up" style="place-self: center">
                           <h4 class="">Screen Name</h4>
                         </v-col>
                       </v-row>
                       <v-row>
-                        <v-col
-                          class="hidden-xs-only"
-                          sm="4"
-                          md="4"
-                          style="place-self: center"
-                        >
+                        <v-col class="hidden-xs-only" sm="4" md="4" style="place-self: center">
                           <h4 class="">Screen Name</h4>
                         </v-col>
                         <v-col class="col-12" sm="8" md="8">
-                          <v-text-field
-                            style="text-align-last: center"
-                            v-model="screenname"
-                            hide-details="auto"
-                            dense
-                            outlined
-                          ></v-text-field>
+                          <v-text-field style="text-align-last: center" v-model="screenname" hide-details="auto" dense
+                            outlined></v-text-field>
                         </v-col>
                       </v-row>
                       <v-row>
-                        <v-col
-                          class="mb-0 pb-0 hidden-sm-and-up"
-                          style="place-self: center"
-                        >
+                        <v-col class="mb-0 pb-0 hidden-sm-and-up" style="place-self: center">
                           <h4 class="">Developer</h4>
                         </v-col>
                       </v-row>
                       <v-row>
-                        <v-col
-                          class="hidden-xs-only"
-                          sm="4"
-                          md="4"
-                          style="place-self: center"
-                        >
+                        <v-col class="hidden-xs-only" sm="4" md="4" style="place-self: center">
                           <h4 class="">Developer</h4>
                         </v-col>
                         <v-col class="col-12" sm="8" md="8">
-                          <v-text-field
-                            style="text-align-last: center"
-                            v-model="developer"
-                            hide-details="auto"
-                            dense
-                            outlined
-                          ></v-text-field>
+                          <v-text-field style="text-align-last: center" v-model="developer" hide-details="auto" dense
+                            outlined></v-text-field>
                         </v-col>
                       </v-row>
                       <v-row>
-                        <v-col
-                          class="mb-0 pb-0 hidden-sm-and-up"
-                          style="place-self: center"
-                        >
+                        <v-col class="mb-0 pb-0 hidden-sm-and-up" style="place-self: center">
                           <h4 class="">Implementer</h4>
                         </v-col>
                       </v-row>
                       <v-row>
-                        <v-col
-                          class="hidden-xs-only"
-                          sm="4"
-                          md="4"
-                          style="place-self: center"
-                        >
+                        <v-col class="hidden-xs-only" sm="4" md="4" style="place-self: center">
                           <h4 class="">Implementer</h4>
                         </v-col>
                         <v-col class="col-12" sm="8" md="8">
-                          <v-text-field
-                            style="text-align-last: center"
-                            v-model="implementer"
-                            hide-details="auto"
-                            dense
-                            outlined
-                          ></v-text-field>
+                          <v-text-field style="text-align-last: center" v-model="implementer" hide-details="auto" dense
+                            outlined></v-text-field>
                         </v-col>
                       </v-row>
                       <v-row>
-                        <v-col
-                          class="mb-0 pb-0 hidden-sm-and-up"
-                          style="place-self: center"
-                        >
+                        <v-col class="mb-0 pb-0 hidden-sm-and-up" style="place-self: center">
                           <h4 class="">Status</h4>
                         </v-col>
-                        <v-col
-                          class="mb-0 pb-0 hidden-sm-and-up"
-                          style="place-self: center"
-                        >
+                        <v-col class="mb-0 pb-0 hidden-sm-and-up" style="place-self: center">
                           <h4 class="">Level</h4>
                         </v-col>
                       </v-row>
                       <v-row>
-                        <v-col
-                          class="hidden-xs-only"
-                          sm="2"
-                          md="2"
-                          style="place-self: center"
-                        >
+                        <v-col class="hidden-xs-only" sm="2" md="2" style="place-self: center">
                           <h4 class="">Status</h4>
                         </v-col>
                         <v-col sm="4" md="4">
                           <template>
-                            <v-text-field
-                              style="text-align-last: center"
-                              v-model="status"
-                              hide-details="auto"
-                              readonly
-                              dense
-                              outlined
-                            >
+                            <v-text-field style="text-align-last: center" v-model="status" hide-details="auto" readonly
+                              dense outlined>
                               <template v-slot:prepend-inner>
-                                <v-icon
-                                  :color="
-                                    status === 'Complete' ? 'green' : 'red'
-                                  "
-                                  >mdi-circle</v-icon
-                                >
+                                <v-icon :color="
+                                  status === 'Complete' ? 'green' : 'red'
+                                ">mdi-circle</v-icon>
                               </template>
                             </v-text-field>
                           </template>
                         </v-col>
-                        <v-col
-                          class="hidden-xs-only"
-                          sm="2"
-                          md="2"
-                          style="place-self: center"
-                        >
+                        <v-col class="hidden-xs-only" sm="2" md="2" style="place-self: center">
                           <h4 class="">Level</h4>
                         </v-col>
                         <v-col sm="4" md="4">
-                          <v-text-field
-                            style="text-align-last: center"
-                            v-model="level"
-                            hide-details="auto"
-                            dense
-                            outlined
-                          ></v-text-field>
+                          <v-text-field style="text-align-last: center" v-model="level" hide-details="auto" dense
+                            outlined></v-text-field>
                         </v-col>
                       </v-row>
                       <v-row> </v-row>
                       <v-row>
-                        <v-col
-                          class="mb-0 pb-0 hidden-sm-and-up"
-                          style="place-self: center"
-                        >
+                        <v-col class="mb-0 pb-0 hidden-sm-and-up" style="place-self: center">
                           <h4 class="">Manday</h4>
                         </v-col>
                       </v-row>
                       <v-row>
-                        <v-col
-                          class="hidden-xs-only"
-                          cols="3"
-                          style="place-self: center"
-                        >
+                        <v-col class="hidden-xs-only" cols="3" style="place-self: center">
                           <h4 class="">Manday</h4>
                         </v-col>
                         <v-col class="col-10" sm="4" md="4">
-                          <v-text-field
-                            style="text-align-last: center"
-                            v-model="manday"
-                            hide-details="auto"
-                            dense
-                            outlined
-                          ></v-text-field>
+                          <v-text-field style="text-align-last: center" v-model="manday" hide-details="auto" dense
+                            outlined type="number"></v-text-field>
                         </v-col>
                         <v-col style="place-self: center">
                           <h4 class="">Days</h4>
@@ -367,27 +227,15 @@
                                             </v-row> -->
                       <!--  -->
                       <v-row class="" style="justify-content: right">
-                        <v-btn
-                          @click="(dialog_newscreen = false), ClearText()"
-                          to="#"
-                          class="mr-2"
-                          elevation="2"
-                          color="error"
-                          style="color: white; border-radius: 10px"
-                          >Cancel
+                        <v-btn @click="(dialog_newscreen = false), ClearText()" class="mr-2" elevation="2"
+                          color="error" style="color: white; border-radius: 10px">Cancel
                         </v-btn>
 
-                        <v-btn
-                          @click="
-                            (dialog_newscreen = false),
-                              (calculateManDay(manday), ClearText())
-                          "
-                          to="#"
-                          class="mr-2"
-                          elevation="2"
-                          color="primary"
-                          style="color: white; border-radius: 10px"
-                          >Create
+                        <v-btn @click="
+                          (dialog_newscreen = false),
+                          (calculateManDay(manday), ClearText())
+                        " class="mr-2" elevation="2" color="primary"
+                          style="color: white; border-radius: 10px">Create
                         </v-btn>
                       </v-row>
                       <!--  -->
@@ -397,6 +245,46 @@
               </v-card>
               <!--  -->
             </v-dialog>
+            <!-- dialog system -->
+            <v-dialog v-model="editSystem" max-width="600px">
+              <v-card class="mt-0" tile outlined style="box-shadow: none; border: none">
+                <!-- code text fields system  -->
+                <v-container fluid>
+                  <v-card-title>
+                    System Detail
+                  </v-card-title>
+                  <!-- กล่องข้อความ -->
+                  <v-row>
+                    <v-col>
+                      <v-row>
+                        <v-col class="mb-0 pb-0 hidden-sm-and-up" style="place-self: center">
+                          <v-card-text class="">System Name</v-card-text>
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col class="hidden-xs-only" sm="4" md="4" style="place-self: center">
+                          <v-card-text class="">System Name</v-card-text>
+                        </v-col>
+                        <v-col class="col-12" sm="8" md="8" style="align-self: center;">
+                          <v-text-field style="text-align-last: center" v-model="system_name" hide-details="auto" dense
+                            outlined></v-text-field>
+                        </v-col>
+                      </v-row>
+                    </v-col>
+                  </v-row>
+                  <!-- button -->
+                  <v-row class="mb-4" style="justify-content: right">
+                            <v-btn @click="editSystem=false" class="mr-2" elevation="2"
+                              color="error" style="color: white; border-radius: 10px">Delete
+                            </v-btn>
+
+                            <v-btn @click="editSystem=false" class="mr-3" elevation="2" color="primary"
+                              style="color: white; border-radius: 10px">Update
+                            </v-btn>
+                  </v-row>
+                </v-container>
+              </v-card>
+            </v-dialog>
             <!--    -->
           </v-card>
         </v-col>
@@ -405,21 +293,10 @@
       <v-container class="">
         <v-row no-gutters>
           <template v-if="AllScreens.length">
-            <v-col
-              v-for="(item, i) in AllScreens"
-              :key="i"
-              col="4"
-              sm="4"
-              md="4"
-            >
+            <v-col v-for="(item, i) in AllScreens" :key="i" col="4" sm="4" md="4">
               <v-responsive :aspect-ratio="4 / 3" class="ma-4 mt-0">
-                <v-card
-                  :to="`/screendetail/${item.id}`"
-                  class="elevation-0"
-                  outlined
-                  rounded
-                >
-                  <v-img :src="getImageUrl(item.screen_pic)" height="250px" />
+                <v-card :to="`/screendetail/${item.id}`" class="elevation-0" outlined rounded>
+                  <v-img :src="getImageUrl(item.screen_pic)" max-height="250px" contain aspect-ratio="1" />
                   <v-card-title> Screen: {{ item.screen_name }} </v-card-title>
                   <v-card-subtitle style="color: black">
                     ผู้รับผิดชอบ Dev {{ item.screen_developer }}
@@ -472,6 +349,7 @@ export default {
       menuDateStartEdit: false,
       AllScreens: [],
       imageDefault: "DefaultScreen.jpg",
+      editSystem: false,
     };
   },
   created() {

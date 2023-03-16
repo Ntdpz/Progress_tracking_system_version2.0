@@ -2,40 +2,22 @@
   <div>
     <!-- title -->
     <v-row class="mb-3">
-      <b
-        class="center ml-4 mr-4 mt-0 mb-1"
-        style="font-weight: bold; font-size: 20px"
-      >
+      <b class="center ml-4 mr-4 mt-0 mb-1" style="font-weight: bold; font-size: 20px">
         Screen {{ screensID.screen_name }}
       </b>
-      <v-divider
-        class="mt-0 mb-1"
-        inset
-        vertical
-        style="background-color: black"
-      ></v-divider>
+      <v-divider class="mt-0 mb-1" inset vertical style="background-color: black"></v-divider>
       <template>
-        <v-banner
-          class="mt-0 ml-4"
-          style="
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 30px;
-            border-radius: 30px;
-            padding: 0 0px;
-          "
-          outlined
-          elevation="2"
-        >
+        <v-banner class="mt-0 ml-4" style="
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              height: 30px;
+              border-radius: 30px;
+              padding: 0 0px;
+            " outlined elevation="2">
           <form class="center">
             <v-icon color="purple">mdi-magnify</v-icon>
-            <input
-              class="mr-3"
-              type="text"
-              v-model="query"
-              placeholder="Search some screen"
-            />
+            <input class="mr-3" type="text" v-model="query" placeholder="Search some screen" />
           </form>
         </v-banner>
       </template>
@@ -46,21 +28,9 @@
       <!-- title -->
       <v-row no-gutters>
         <v-col col="12" sm="12" md="12">
-          <v-card
-            class="mt-0"
-            outlined
-            tile
-            style="box-shadow: none; border: none"
-          >
+          <v-card class="mt-0" outlined tile style="box-shadow: none; border: none">
             <v-card-title>
-              <v-btn
-                icon
-                :to="`/systemdetail/${screensID.system_id}`"
-                class="mr-4"
-                color="primary"
-                size="35px"
-                left
-              >
+              <v-btn icon :to="`/systemdetail/${screensID.system_id}`" class="mr-4" color="primary" size="35px" left>
                 <v-icon size="35px">mdi-arrow-left-circle</v-icon>
               </v-btn>
               Screen {{ screensID.screen_name }}
@@ -71,233 +41,125 @@
       <!-- รูป กับรายลละเอียด -->
       <v-row no-gutters>
         <v-col col="6" sm="6" md="6">
-          <v-card style="" class="ma-1 mt-0" tile>
+          <!-- height="100%" -->
+          <v-card class="ma-1 mt-0" tile height="100%">
             <div v-if="loading">
-              <v-progress-circular
-                class="center"
-                :size="70"
-                :width="7"
-                color="purple"
-                indeterminate
-              ></v-progress-circular>
+              <v-progress-circular class="center" :size="70" :width="7" color="purple"
+                indeterminate></v-progress-circular>
             </div>
-            <v-img
-              v-else-if="selectedImage"
-              :src="selectedImage"
-              height="430px"
-            ></v-img>
-            <v-img
-              v-else-if="screensID"
-              :src="getImageUrl(screensID.screen_pic)"
-              height="100%"
-            ></v-img>
+            <v-img v-else-if="selectedImage" :src="selectedImage" max-height="482px" aspect-ratio="1"
+          contain></v-img>
+            <v-img v-else-if="screensID" :src="getImageUrl(screensID.screen_pic)" max-hight="482px" aspect-ratio="1"
+          contain
+              ></v-img>
           </v-card>
-          <v-btn
-            class=""
-            elevation="2"
-            color="primary"
-            style="color: white; border-radius: 10px"
-            @click="selectImage"
-            >Change Image...</v-btn
-          >
+          <v-btn class="" elevation="2" color="primary" style="color: white; border-radius: 10px"
+            @click="selectImage">Change Image...</v-btn>
         </v-col>
 
         <v-col col="6" sm="6" md="6">
           <v-card outlined tile height="100%">
             <v-container fluid>
               <v-row>
-                <v-col
-                  class="mb-0 pb-0 hidden-sm-and-up"
-                  style="place-self: center"
-                >
+                <v-col class="mb-0 pb-0 hidden-sm-and-up" style="place-self: center">
                   <h4 class="">Screen ID</h4>
                 </v-col>
               </v-row>
               <v-row>
-                <v-col
-                  class="hidden-xs-only"
-                  sm="4"
-                  md="4"
-                  style="place-self: center"
-                >
+                <v-col class="hidden-xs-only" sm="4" md="4" style="place-self: center">
                   <h4 class="">Screen ID</h4>
                 </v-col>
 
                 <v-col class="col-12" sm="8" md="8">
-                  <v-text-field
-                    style="text-align-last: center"
-                    v-model="screensID.screen_id"
-                    hide-details="auto"
-                    dense
-                    outlined
-                  ></v-text-field>
+                  <v-text-field style="text-align-last: center" v-model="screensID.screen_id" hide-details="auto" dense
+                    outlined></v-text-field>
                 </v-col>
               </v-row>
               <v-row>
-                <v-col
-                  class="mb-0 pb-0 hidden-sm-and-up"
-                  style="place-self: center"
-                >
+                <v-col class="mb-0 pb-0 hidden-sm-and-up" style="place-self: center">
                   <h4 class="">Screen Name</h4>
                 </v-col>
               </v-row>
               <v-row>
-                <v-col
-                  class="hidden-xs-only"
-                  sm="4"
-                  md="4"
-                  style="place-self: center"
-                >
+                <v-col class="hidden-xs-only" sm="4" md="4" style="place-self: center">
                   <h4 class="">Screen Name</h4>
                 </v-col>
                 <v-col class="col-12" sm="8" md="8">
-                  <v-text-field
-                    style="text-align-last: center"
-                    v-model="screenname"
-                    hide-details="auto"
-                    dense
-                    outlined
-                  ></v-text-field>
+                  <v-text-field style="text-align-last: center" v-model="screenname" hide-details="auto" dense
+                    outlined></v-text-field>
                 </v-col>
               </v-row>
               <v-row>
-                <v-col
-                  class="mb-0 pb-0 hidden-sm-and-up"
-                  style="place-self: center"
-                >
+                <v-col class="mb-0 pb-0 hidden-sm-and-up" style="place-self: center">
                   <h4 class="">Developer</h4>
                 </v-col>
               </v-row>
               <v-row>
-                <v-col
-                  class="hidden-xs-only"
-                  sm="4"
-                  md="4"
-                  style="place-self: center"
-                >
+                <v-col class="hidden-xs-only" sm="4" md="4" style="place-self: center">
                   <h4 class="">Developer</h4>
                 </v-col>
                 <v-col class="col-12" sm="8" md="8">
-                  <v-text-field
-                    style="text-align-last: center"
-                    v-model="screensID.screen_developer"
-                    hide-details="auto"
-                    dense
-                    outlined
-                  ></v-text-field>
+                  <v-text-field style="text-align-last: center" v-model="screensID.screen_developer" hide-details="auto"
+                    dense outlined></v-text-field>
                 </v-col>
               </v-row>
               <v-row>
-                <v-col
-                  class="mb-0 pb-0 hidden-sm-and-up"
-                  style="place-self: center"
-                >
+                <v-col class="mb-0 pb-0 hidden-sm-and-up" style="place-self: center">
                   <h4 class="">Implementer</h4>
                 </v-col>
               </v-row>
               <v-row>
-                <v-col
-                  class="hidden-xs-only"
-                  sm="4"
-                  md="4"
-                  style="place-self: center"
-                >
+                <v-col class="hidden-xs-only" sm="4" md="4" style="place-self: center">
                   <h4 class="">Implementer</h4>
                 </v-col>
                 <v-col class="col-12" sm="8" md="8">
-                  <v-text-field
-                    style="text-align-last: center"
-                    v-model="screensID.screen_implementer"
-                    hide-details="auto"
-                    dense
-                    outlined
-                  ></v-text-field>
+                  <v-text-field style="text-align-last: center" v-model="screensID.screen_implementer" hide-details="auto"
+                    dense outlined></v-text-field>
                 </v-col>
               </v-row>
               <v-row>
-                <v-col
-                  class="mb-0 pb-0 hidden-sm-and-up"
-                  style="place-self: center"
-                >
+                <v-col class="mb-0 pb-0 hidden-sm-and-up" style="place-self: center">
                   <h4 class="">Status</h4>
                 </v-col>
-                <v-col
-                  class="mb-0 pb-0 hidden-sm-and-up"
-                  style="place-self: center"
-                >
+                <v-col class="mb-0 pb-0 hidden-sm-and-up" style="place-self: center">
                   <h4 class="">Level</h4>
                 </v-col>
               </v-row>
               <v-row>
-                <v-col
-                  class="hidden-xs-only"
-                  sm="2"
-                  md="2"
-                  style="place-self: center"
-                >
+                <v-col class="hidden-xs-only" sm="2" md="2" style="place-self: center">
                   <h4 class="">Status</h4>
                 </v-col>
                 <v-col sm="4" md="4">
                   <template>
-                    <v-text-field
-                      style="text-align-last: center"
-                      v-model="screensID.screen_status"
-                      hide-details="auto"
-                      readonly
-                      dense
-                      outlined
-                    >
+                    <v-text-field style="text-align-last: center" v-model="screensID.screen_status" hide-details="auto"
+                      readonly dense outlined>
                       <template v-slot:prepend-inner>
-                        <v-icon :color="status === 'Complete' ? 'green' : 'red'"
-                          >mdi-circle</v-icon
-                        >
+                        <v-icon :color="status === 'Complete' ? 'green' : 'red'">mdi-circle</v-icon>
                       </template>
                     </v-text-field>
                   </template>
                 </v-col>
-                <v-col
-                  class="hidden-xs-only"
-                  sm="2"
-                  md="2"
-                  style="place-self: center"
-                >
+                <v-col class="hidden-xs-only" sm="2" md="2" style="place-self: center">
                   <h4 class="">Level</h4>
                 </v-col>
                 <v-col sm="4" md="4">
-                  <v-text-field
-                    style="text-align-last: center"
-                    v-model="screensID.screen_level"
-                    hide-details="auto"
-                    dense
-                    outlined
-                  ></v-text-field>
+                  <v-text-field style="text-align-last: center" v-model="screensID.screen_level" hide-details="auto" dense
+                    outlined></v-text-field>
                 </v-col>
               </v-row>
               <v-row> </v-row>
               <v-row>
-                <v-col
-                  class="mb-0 pb-0 hidden-sm-and-up"
-                  style="place-self: center"
-                >
+                <v-col class="mb-0 pb-0 hidden-sm-and-up" style="place-self: center">
                   <h4 class="">Manday</h4>
                 </v-col>
               </v-row>
               <v-row>
-                <v-col
-                  class="hidden-xs-only"
-                  cols="3"
-                  style="place-self: center"
-                >
+                <v-col class="hidden-xs-only" cols="3" style="place-self: center">
                   <h4 class="">Manday</h4>
                 </v-col>
                 <v-col class="col-10" sm="4" md="4">
-                  <v-text-field
-                    style="text-align-last: center"
-                    v-model="screensID.screen_manday"
-                    hide-details="auto"
-                    dense
-                    outlined
-                  ></v-text-field>
+                  <v-text-field style="text-align-last: center" v-model="screensID.screen_manday" hide-details="auto"
+                    dense outlined></v-text-field>
                 </v-col>
                 <v-col style="place-self: center">
                   <h4 class="">Days</h4>
@@ -306,23 +168,13 @@
               <!--  -->
               <v-row class="mb-4" style="justify-content: right">
                 <v-col class="col-auto" sm="9" md="9" style="text-align: right">
-                  <v-btn
-                    class="mr-0"
-                    elevation="2"
-                    color="error"
-                    style="color: white; border-radius: 10px"
-                    @click="deleteScreen"
-                    >Delete
+                  <v-btn class="mr-0" elevation="2" color="error" style="color: white; border-radius: 10px"
+                    @click="deleteScreen">Delete
                   </v-btn>
                 </v-col>
                 <v-col class="col-auto" sm="3" md="3" style="text-align: right">
-                  <v-btn
-                    class=""
-                    elevation="2"
-                    color="primary"
-                    style="color: white; border-radius: 10px"
-                    @click="calculateManDay(screensID.screen_manday)"
-                    >Update
+                  <v-btn class="" elevation="2" color="primary" style="color: white; border-radius: 10px"
+                    @click="calculateManDay(screensID.screen_manday)">Update
                   </v-btn>
                 </v-col>
               </v-row>
@@ -424,7 +276,7 @@ export default {
           // window.location.reload();
         });
     },
-    deleteScreen() {},
+    deleteScreen() { },
     getImageUrl(fileName) {
       return require(`@/screenImages/${fileName}`);
     },
