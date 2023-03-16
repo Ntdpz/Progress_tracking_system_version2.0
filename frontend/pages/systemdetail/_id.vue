@@ -225,12 +225,14 @@
                                             <!--  -->
                                             <v-row class="" style="justify-content: right;">
 
-                                                <v-btn @click="(dialog_newscreen = false)" to="#" class="mr-2" elevation="2"
-                                                    color="error" style="color: white; border-radius: 10px;">Cancel
+                                                <v-btn @click="(dialog_newscreen = false), ClearText()" to="#" class="mr-2"
+                                                    elevation="2" color="error"
+                                                    style="color: white; border-radius: 10px;">Cancel
                                                 </v-btn>
 
-                                                <v-btn @click="(dialog_newscreen = false), (calculateManDay(manday))" to="#"
-                                                    class="mr-2" elevation="2" color="primary"
+                                                <v-btn
+                                                    @click="(dialog_newscreen = false), (calculateManDay(manday), ClearText())"
+                                                    to="#" class="mr-2" elevation="2" color="primary"
                                                     style="color: white; border-radius: 10px;">Create
                                                 </v-btn>
 
@@ -294,13 +296,13 @@ export default {
             imageFileUpload: "",
             query: '',
             dialog_newscreen: false,
-            screenID: 'A001',
-            screenname: 'List Page',
-            developer: 'Developer 1',
-            implementer: 'Implements 1',
-            status: 'Not Complete',
-            level: 100,
-            manday: 365,
+            screenID: "",
+            screenname: "",
+            developer: "",
+            implementer: "",
+            status: "Not Complete",
+            level: null,
+            manday: null,
             mode: "create",
             today: new Date(),
             dateEnd: new Date(),
@@ -376,6 +378,17 @@ export default {
                 console.log(res.data);
             });
         },
+        ClearText() {
+            this.photo = "";
+            this.screenID = "";
+            this.screenname = "";
+            this.developer = "";
+            this.implementer = "";
+            this.status = "Not Complete";
+            this.level = null;
+            this.manday = null;
+
+        },
         async createScreen() {
             try {
                 const today = this.today.toISOString().substr(0, 10);
@@ -394,27 +407,35 @@ export default {
                 formData.append("screen_end", dateEnd);
                 formData.append("screen_manday", this.manday);
 
-                await this.$axios.post('/screens/createScreen', formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                    },
-                })
-                console.log("post success");
-                const promise = new Promise((resolve, reject) => {
-                    resolve();
-                });
-                promise.then(() => {
-                    setTimeout(() => {
-                        alert("success");
-                        window.location.reload();
-                    }, 1000);
-                });
+                if (this.screenID == "" || this.screenname == "" || this.developer == ""
+                    || this.implementer == "" || this.status == "" || this.level == null || this.manday == null) {
+                    alert("Please enter all information.");
+                } else {
+                    await this.$axios.post('/screens/createScreen', formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data',
+                        },
+                    })
+                    console.log("post success");
+                    const promise = new Promise((resolve, reject) => {
+                        resolve();
+                    });
+                    promise.then(() => {
+                        setTimeout(() => {
+                            alert("success");
+                            window.location.reload();
+                        }, 1000);
+                    });
+                }
+
+
             } catch (error) {
                 console.error(error);
                 alert('Error submitting form');
             }
-
         },
+
+
     },
 }
 </script>
