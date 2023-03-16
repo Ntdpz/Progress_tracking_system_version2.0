@@ -350,6 +350,7 @@ export default {
       AllScreens: [],
       imageDefault: "DefaultScreen.jpg",
       editSystem: false,
+      system_name:"",
     };
   },
   created() {
