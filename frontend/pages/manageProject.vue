@@ -266,12 +266,12 @@
                   @click="deleteProject()"
                   v-show="mode == 'edit'"
                 >
-                  <h5>Delete</h5></v-btn
-                >
+                  <h5>Delete</h5>
+                </v-btn>
                 <v-spacer></v-spacer>
                 <v-btn color="primary" text @click="dialog = false">
-                  <h5>Close</h5></v-btn
-                >
+                  <h5>Close</h5>
+                </v-btn>
                 <v-btn color="primary" dark @click="saveProject()">
                   <h5>{{ mode === "create" ? "Create" : "Save" }}</h5>
                 </v-btn>
@@ -418,8 +418,8 @@
             <template v-slot:[`item.member`]="{ item }">
               {{ item.system_member }}
             </template>
-            <template v-slot:[`item.actions`]>
-              <v-btn color="primary" icon :to="`/systemdetail`">
+            <template v-slot:[`item.actions`]="{ item }">
+              <v-btn color="primary" icon :to="`/systemdetail/${item.id}`">
                 <v-icon class="mr-2 ml-2" size="20" color="primary">
                   mdi mdi-chevron-right-circle-outline
                 </v-icon>
@@ -677,6 +677,7 @@ export default {
 * {
   font-family: "Lato", sans-serif;
 }
+
 .new-btn {
   display: flex;
   justify-content: flex-start;

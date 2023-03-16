@@ -46,11 +46,16 @@
       <!-- title -->
       <v-row no-gutters>
         <v-col col="12" sm="12" md="12">
-          <v-card outlined tile style="box-shadow: none; border: none">
+          <v-card
+            class="mt-0"
+            outlined
+            tile
+            style="box-shadow: none; border: none"
+          >
             <v-card-title>
               <v-btn
                 icon
-                to="/systemdetail"
+                :to="`/systemdetail/${screensID.system_id}`"
                 class="mr-4"
                 color="primary"
                 size="35px"
@@ -87,7 +92,16 @@
               height="100%"
             ></v-img>
           </v-card>
+          <v-btn
+            class=""
+            elevation="2"
+            color="primary"
+            style="color: white; border-radius: 10px"
+            @click="selectImage"
+            >Change Image...</v-btn
+          >
         </v-col>
+
         <v-col col="6" sm="6" md="6">
           <v-card outlined tile height="100%">
             <v-container fluid>
@@ -96,7 +110,7 @@
                   class="mb-0 pb-0 hidden-sm-and-up"
                   style="place-self: center"
                 >
-                  <h4 class="">Screen Code</h4>
+                  <h4 class="">Screen ID</h4>
                 </v-col>
               </v-row>
               <v-row>
@@ -106,13 +120,13 @@
                   md="4"
                   style="place-self: center"
                 >
-                  <h4 class="">Screen Code</h4>
+                  <h4 class="">Screen ID</h4>
                 </v-col>
 
                 <v-col class="col-12" sm="8" md="8">
                   <v-text-field
                     style="text-align-last: center"
-                    v-model="screencode"
+                    v-model="screensID.screen_id"
                     hide-details="auto"
                     dense
                     outlined
@@ -166,7 +180,7 @@
                 <v-col class="col-12" sm="8" md="8">
                   <v-text-field
                     style="text-align-last: center"
-                    v-model="developer"
+                    v-model="screensID.screen_developer"
                     hide-details="auto"
                     dense
                     outlined
@@ -193,7 +207,7 @@
                 <v-col class="col-12" sm="8" md="8">
                   <v-text-field
                     style="text-align-last: center"
-                    v-model="implementer"
+                    v-model="screensID.screen_implementer"
                     hide-details="auto"
                     dense
                     outlined
@@ -227,7 +241,7 @@
                   <template>
                     <v-text-field
                       style="text-align-last: center"
-                      v-model="status"
+                      v-model="screensID.screen_status"
                       hide-details="auto"
                       readonly
                       dense
@@ -252,7 +266,7 @@
                 <v-col sm="4" md="4">
                   <v-text-field
                     style="text-align-last: center"
-                    v-model="level"
+                    v-model="screensID.screen_level"
                     hide-details="auto"
                     dense
                     outlined
@@ -279,7 +293,7 @@
                 <v-col class="col-10" sm="4" md="4">
                   <v-text-field
                     style="text-align-last: center"
-                    v-model="manday"
+                    v-model="screensID.screen_manday"
                     hide-details="auto"
                     dense
                     outlined
@@ -335,8 +349,14 @@ export default {
       implementer: "Implements 1",
       status: "Not Complete",
       level: 100,
-      manday: "365",
+      manday: 365,
       id: this.$route.params.id,
+      screensID: [],
+      loading: true,
+      imageChange: "",
+      selectedImage: null,
+      today: new Date(),
+      dateEnd: new Date(),
     };
   },
   created() {
@@ -443,10 +463,21 @@ export default {
 * {
   font-family: "Lato", sans-serif;
 }
+
 input[type="text"] {
   border: black;
   font-size: 16px;
   padding-left: 10px;
   outline: black;
+}
+
+.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.v-progress-circular {
+  margin: 1rem;
 }
 </style>
