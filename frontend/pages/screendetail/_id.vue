@@ -3,7 +3,7 @@
         <!-- title -->
         <v-row class="mb-3 ">
             <b class="center ml-4 mr-4 mt-0 mb-1" style="font-weight: bold; font-size: 20px">
-                Screen {{ id }}
+                Screen {{ screensID.screen_name }}
             </b>
             <v-divider class="mt-0 mb-1" inset vertical style="background-color: black"></v-divider>
             <template>
@@ -33,7 +33,7 @@
                             <v-btn icon to="/systemdetail" class="mr-4" color="primary" size="35px" left>
                                 <v-icon size="35px">mdi-arrow-left-circle</v-icon>
                             </v-btn>
-                            Screen {{ id }}
+                            Screen {{ screensID.screen_name }}
                         </v-card-title>
                     </v-card>
                 </v-col>
@@ -42,7 +42,12 @@
             <v-row no-gutters>
                 <v-col col="6" sm="6" md="6">
                     <v-card style="" class="ma-1 mt-0" tile>
-                        <v-img src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg" height="430px"></v-img>
+                        <div v-if="loading">
+                            <v-progress-circular class="center" :size="70" :width="7" color="purple"
+                                indeterminate></v-progress-circular>
+                        </div>
+                        <v-img v-else-if="selectedImage" :src="selectedImage" height="430px"></v-img>
+                        <v-img v-else-if="screensID" :src="getImageUrl(screensID.screen_pic)" height="100%"></v-img>
                     </v-card>
                 </v-col>
                 <v-col col="6" sm="6" md="6">
@@ -73,8 +78,8 @@
                                     <h4 class="">Screen Name</h4>
                                 </v-col>
                                 <v-col class="col-12" sm="8" md="8">
-                                    <v-text-field style="text-align-last: center;" v-model="screenname" hide-details="auto"
-                                        dense outlined></v-text-field>
+                                    <v-text-field style="text-align-last: center;" v-model="screenname"
+                                        hide-details="auto" dense outlined></v-text-field>
                                 </v-col>
                             </v-row>
                             <v-row>
@@ -157,14 +162,15 @@
                             </v-row>
                             <!--  -->
                             <v-row class="mb-4" style="justify-content: right;">
-                                <v-col class="col-auto"  sm="9" md="9" style="text-align: right;">
-                                        <v-btn to="#" class=" mr-0" elevation="2" color="error"
-                                            style="color: white; border-radius: 10px;">Delete
-                                        </v-btn>
-                                    </v-col>
+                                <v-col class="col-auto" sm="9" md="9" style="text-align: right;">
+                                    <v-btn  class=" mr-0" elevation="2" color="error"
+                                        style="color: white; border-radius: 10px;"
+                                        @click="deleteScreen">Delete
+                                    </v-btn>
+                                </v-col>
                                 <v-col class="col-auto" sm="3" md="3" style="text-align: right;">
-                                    <v-btn to="#" class="" elevation="2" color="primary"
-                                        style="color: white; border-radius: 10px;">Update
+                                    <v-btn class="" elevation="2" color="primary" style="color: white; border-radius: 10px;"
+                                        @click="calculateManDay(screensID.screen_manday)">Update
                                     </v-btn>
                                 </v-col>
 
@@ -189,7 +195,7 @@ export default {
             query: '',
             showIcon: true,
             screencode: 'A001',
-            screenname: 'List Page',
+            screenname: '',
             developer: 'Developer 1',
             implementer: 'Implements 1',
             status: 'Not Complete',
@@ -197,6 +203,100 @@ export default {
             manday: '365',
             id: this.$route.params.id,
         };
+    },
+    created() {
+        this.getScreenID();
+    },
+    mounted() {
+        // this.getScreenID();
+    },
+    methods: {
+        async getScreenID() {
+            await this.$axios.get('/screens/getOne/' + this.id).then((data) => {
+                this.screensID = data.data[0];
+                this.screenname = data.data[0].screen_name;
+                this.IDdelete = this.screensID.system_id;
+                console.log(this.screensID.screen_pic);
+                this.loading = false;
+            })
+        },
+        calculateManDay(manday) {
+            this.dateEnd = new Date(this.today.getTime() + manday * 24 * 60 * 60 * 1000);
+            console.log(this.today.toISOString().substr(0, 10));
+            console.log(this.dateEnd.toISOString().substr(0, 10));
+            this.updateScreen();
+            return;
+        },
+        resetday() {
+            this.today = new Date();
+            this.dateEnd = new Date();
+            return;
+        },
+        async updateScreen() {
+            const formData = new FormData();
+            formData.append("image", this.imageChange);
+            formData.append("system_id", this.screensID.system_id);
+            formData.append("project_id", this.screensID.project_id);
+            formData.append("screen_id", this.screensID.screen_id);
+            formData.append("screen_name", this.screenname);
+            formData.append("screen_developer", this.screensID.screen_developer);
+            formData.append("screen_implementer", this.screensID.screen_implementer);
+            formData.append("screen_status", this.screensID.screen_status);
+            formData.append("screen_level", this.screensID.screen_level);
+            formData.append("screen_start", this.today.toISOString().substr(0, 10));
+            formData.append("screen_end", this.dateEnd.toISOString().substr(0, 10));
+            formData.append("screen_manday", this.screensID.screen_manday);
+
+            await this.$axios
+                .put("/screens/updateScreen/" + this.id + "/image", formData)
+                .then((response) => {
+                    // window.location.reload();
+                    const promise = new Promise((resolve, reject) => {
+                        resolve();
+                    });
+                    promise.then(() => {
+                        setTimeout(() => {
+                            alert("update success");
+                            this.$router.push('/systemdetail/'+this.screensID.system_id);
+                        }, 2000);
+                    });
+                })
+                .catch((err) => {
+                    console.log(err);
+                    alert(err);
+                    // window.location.reload();
+                });
+        },
+        deleteScreen() {
+
+        },
+        getImageUrl(fileName) {
+            return require(`@/screenImages/${fileName}`);
+        },
+        selectImage() {
+            // Create a file input element
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.addEventListener('change', (event) => {
+                // Get the selected file เอาไว้ Post
+                this.imageChange = event.target.files[0];
+                // เอาไว้โชว์
+                this.selectedImage = URL.createObjectURL(this.imageChange);
+                console.log(this.imageChange);
+            })
+            input.click();
+        },
+        async deleteScreen() {
+            await this.$axios.delete("/screens/delete/" + this.id).then((res) => {
+                alert("Delete success");
+                this.$router.push('/systemdetail/'+this.screensID.system_id);
+                // this.IDdelete
+            }).catch((err) => {
+                console.log(err);
+                alert(err);
+            });
+        },
     },
 }
 </script>
