@@ -21,3 +21,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+* {
+  font-family: "Lato", sans-serif;
+}
+</style>

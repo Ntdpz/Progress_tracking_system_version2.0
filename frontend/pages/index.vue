@@ -47,8 +47,8 @@
             >
           </v-col>
           <v-col col="6" sm="6" md="6" lg="6" style="text-align: right">
-            <v-btn color="primary" @click="dialog = true">Open Dialog</v-btn>
-            <dialog-create-project :dialog.sync="dialog" />
+            <!-- <v-btn color="primary" @click="dialog = true">Open Dialog</v-btn>
+            <dialog-create-project :dialog.sync="dialog" /> -->
             <!-- <v-btn
               @click="dialog_newproject = true"
               class="mr-2"
