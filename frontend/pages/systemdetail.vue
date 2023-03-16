@@ -53,7 +53,7 @@
             style="box-shadow: none; border: none"
           >
             <v-card-title>
-              <v-btn icon to="/home" color="primary" size="35px" left>
+              <v-btn icon @click="back" color="primary" size="35px" left>
                 <v-icon size="35px">mdi-arrow-left-circle</v-icon>
               </v-btn>
               Sub System ระบบรอง SS For
@@ -84,6 +84,48 @@
                 <v-col>
                   <v-card outlined tile height="100%" style="border: none">
                     <v-container fluid>
+                      <v-row>
+                        <v-col>
+                          <v-card
+                            style="border: none"
+                            class="mx-auto text-center"
+                            outlined
+                            tile
+                            height="100%"
+                          >
+                            <!--  -->
+
+                            <form>
+                              <div class="d-flex justify-center">
+                                <label
+                                  class="mt-0 avatar-upload"
+                                  style="
+                                    display: flex;
+                                    justify-content: center;
+                                    align-items: center;
+                                  "
+                                >
+                                  <input
+                                    type="file"
+                                    ref="fileInput"
+                                    @change="uploadFile"
+                                  />
+                                  <v-icon
+                                    class="center mt-0"
+                                    color="black"
+                                    size="30px"
+                                    v-if="!photo"
+                                    >mdi-cloud-upload-outline</v-icon
+                                  >
+                                  <img v-if="photo" :src="photo" />
+                                </label>
+                              </div>
+                            </form>
+
+                            <!--  -->
+                          </v-card>
+                        </v-col>
+                      </v-row>
                       <v-row>
                         <v-col
                           class="mb-0 pb-0 hidden-sm-and-up"
@@ -323,22 +365,23 @@
         <v-row no-gutters>
           <v-col v-for="(item, i) in 5" :key="i" col="4" sm="4" md="4">
             <!-- box-shadow: none; -->
-            <v-card
-              :to="`/screendetail/${item}`"
-              style=""
-              class="ma-4 mt-0"
-              tile
-              height="300px"
-            >
-              <v-img
-                src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
-                height="200px"
-              ></v-img>
-              <v-card-title> Screen {{ item }} </v-card-title>
-              <v-card-subtitle style="color: black">
-                ผู้รับผิดชอบ Dev {{ item }}
-              </v-card-subtitle>
-            </v-card>
+            <v-responsive :aspect-ratio="4 / 3" class="ma-4 mt-0">
+              <v-card
+                :to="`/screendetail/${item}`"
+                class="elevation-0"
+                outlined
+                rounded
+              >
+                <v-img
+                  src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
+                  height="100%"
+                ></v-img>
+                <v-card-title> Screen {{ item }} </v-card-title>
+                <v-card-subtitle style="color: black">
+                  ผู้รับผิดชอบ Dev {{ item }}
+                </v-card-subtitle>
+              </v-card>
+            </v-responsive>
           </v-col>
         </v-row>
       </v-container>
@@ -351,6 +394,8 @@ export default {
   layout: "admin",
   data() {
     return {
+      photo: "",
+      imageFileUpload: "",
       query: "",
       dialog_newscreen: false,
       screencode: "A001",
@@ -362,7 +407,23 @@ export default {
       manday: "365",
     };
   },
-  methos: {},
+  methods: {
+    uploadFile() {
+      const input2 = this.$refs.fileInput;
+      this.imageFileUpload = input2.files[0];
+      try {
+        this.photo = URL.createObjectURL(this.imageFileUpload);
+        console.log(this.imageFileUpload);
+        // Do something with the file, for example upload to a server
+      } catch (error) {
+        console.error(error);
+        this.photo = null;
+      }
+    },
+    back() {
+      this.$router.push("/manageProject");
+    },
+  },
 };
 </script>
 
@@ -370,10 +431,49 @@ export default {
 * {
   font-family: "Lato", sans-serif;
 }
+
 input[type="text"] {
   border: black;
   font-size: 16px;
   padding-left: 10px;
   outline: black;
+}
+
+.avatar-upload {
+  display: inline-block;
+  width: 300px;
+  height: 200px;
+  border-radius: 10px;
+  text-align: center;
+  background-color: #a1a1a1;
+  text-align: center;
+  cursor: pointer;
+}
+
+.avatar-upload input[type="file"] {
+  display: none;
+}
+
+.avatar-upload img {
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.avatar-upload i {
+  font-size: 16px;
+  line-height: 40px;
+  color: #bbbbbb;
+}
+
+.my-card {
+  border-radius: 20px;
+}
+
+.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>
