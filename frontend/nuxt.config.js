@@ -42,7 +42,7 @@ export default {
     families: {
       Lato: true,
       Montserrat: true,
-      Oxygen: true
+      Oxygen: true,
     },
   },
 
