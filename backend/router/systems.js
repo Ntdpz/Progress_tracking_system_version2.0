@@ -128,7 +128,7 @@ router.put("/updateSystem/:id", async (req, res) => {
   }
 });
 
-//* DELETE user by ID
+//* DELETE system by ID
 router.delete("/delete/:id", async (req, res) => {
   const id = req.params.id;
 
