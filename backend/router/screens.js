@@ -419,6 +419,56 @@ router.delete("/delete/:id", (req, res) => {
   });
 });
 
+// *delete screen by system_id
+router.delete("/deleteScreen/:system_id", (req, res) => {
+  const system_id = req.params.system_id;
+
+  try {
+    connection.query(
+      `SELECT screen_pic FROM screens WHERE system_id = ?`,
+      [system_id],
+      (err, results, fields) => {
+        if (err) {
+          console.log(err);
+          return res.status(400).send(err);
+        }
+
+        // Delete images from the file system
+        results.forEach((result) => {
+          if (result.screen_pic && result.screen_pic !== "DefaultScreen.jpg") {
+            const deletePath = "../frontend/screenImages/" + result.screen_pic;
+            fs.unlink(deletePath, (err) => {
+              if (err) {
+                console.error(err);
+                return;
+              }
+              console.log("Old profile picture deleted" + result.screen_pic);
+            });
+          }
+        });
+
+        connection.query(
+          `DELETE FROM screens WHERE system_id = ?`,
+          [system_id],
+          (err, results, fields) => {
+            if (err) {
+              console.log(err);
+              return res.status(400).send(err);
+            }
+            res
+              .status(200)
+              .json({ message: "Screens deleted successfully!" });
+          }
+        );
+      }
+    );
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send();
+  }
+});
+
+
 router.post("/addUserScreen", async (req, res) => {
   const { user_id, screen_ids } = req.body;
   try {

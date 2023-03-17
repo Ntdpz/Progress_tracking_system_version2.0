@@ -8,13 +8,13 @@
       <v-divider class="mt-0 mb-1" inset vertical style="background-color: black"></v-divider>
       <template>
         <v-banner class="mt-0 ml-4" style="
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    height: 30px;
-                    border-radius: 30px;
-                    padding: 0 0px;
-                  " outlined elevation="2">
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            height: 30px;
+                            border-radius: 30px;
+                            padding: 0 0px;
+                          " outlined elevation="2">
           <form class="center" @submit.prevent="search">
             <v-icon color="purple">mdi-magnify</v-icon>
             <input class="mr-3" type="text" v-model="query" placeholder="Search some system" />
@@ -63,10 +63,10 @@
                             <form>
                               <div class="d-flex justify-center">
                                 <label class="mt-0 avatar-upload" style="
-                                            display: flex;
-                                            justify-content: center;
-                                            align-items: center;
-                                          ">
+                                                    display: flex;
+                                                    justify-content: center;
+                                                    align-items: center;
+                                                  ">
                                   <input type="file" ref="fileInput" @change="uploadFile" />
                                   <v-icon class="center mt-0" color="black" size="30px"
                                     v-if="!photo">mdi-cloud-upload-outline</v-icon>
@@ -227,15 +227,14 @@
                                             </v-row> -->
                       <!--  -->
                       <v-row class="" style="justify-content: right">
-                        <v-btn @click="(dialog_newscreen = false), ClearText()" class="mr-2" elevation="2"
-                          color="error" style="color: white; border-radius: 10px">Cancel
+                        <v-btn @click="(dialog_newscreen = false), ClearText()" class="mr-2" elevation="2" color="error"
+                          style="color: white; border-radius: 10px">Cancel
                         </v-btn>
 
                         <v-btn @click="
                           (dialog_newscreen = false),
                           (calculateManDay(manday), ClearText())
-                        " class="mr-2" elevation="2" color="primary"
-                          style="color: white; border-radius: 10px">Create
+                        " class="mr-2" elevation="2" color="primary" style="color: white; border-radius: 10px">Create
                         </v-btn>
                       </v-row>
                       <!--  -->
@@ -253,35 +252,120 @@
                   <v-card-title>
                     System Detail
                   </v-card-title>
-                  <!-- กล่องข้อความ -->
+                  <!-- กล่องข้อความ 1 -->
                   <v-row>
                     <v-col>
                       <v-row>
                         <v-col class="mb-0 pb-0 hidden-sm-and-up" style="place-self: center">
-                          <v-card-text class="">System Name</v-card-text>
+                          <v-card-text class="">System ID</v-card-text>
                         </v-col>
                       </v-row>
                       <v-row>
                         <v-col class="hidden-xs-only" sm="4" md="4" style="place-self: center">
-                          <v-card-text class="">System Name</v-card-text>
+                          <v-card-text class="">System ID</v-card-text>
                         </v-col>
                         <v-col class="col-12" sm="8" md="8" style="align-self: center;">
-                          <v-text-field style="text-align-last: center" v-model="system_name" hide-details="auto" dense
+                          <v-text-field style="text-align-last: center" v-model="system_id" hide-details="auto" dense
                             outlined></v-text-field>
                         </v-col>
                       </v-row>
                     </v-col>
                   </v-row>
-                  <!-- button -->
-                  <v-row class="mb-4" style="justify-content: right">
-                            <v-btn @click="editSystem=false" class="mr-2" elevation="2"
-                              color="error" style="color: white; border-radius: 10px">Delete
-                            </v-btn>
-
-                            <v-btn @click="editSystem=false" class="mr-3" elevation="2" color="primary"
-                              style="color: white; border-radius: 10px">Update
-                            </v-btn>
+                  <!--  -->
+                  <v-row>
+                    <v-col>
+                      <v-row>
+                        <v-col class="mb-0 pb-0 hidden-sm-and-up" style="place-self: center">
+                          <v-card-text class="">System Name(TH)</v-card-text>
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col class="hidden-xs-only" sm="4" md="4" style="place-self: center">
+                          <v-card-text class="">System Name(TH)</v-card-text>
+                        </v-col>
+                        <v-col class="col-12" sm="8" md="8" style="align-self: center;">
+                          <v-text-field style="text-align-last: center" v-model="system_nameTH" hide-details="auto" dense
+                            outlined></v-text-field>
+                        </v-col>
+                      </v-row>
+                    </v-col>
                   </v-row>
+                  <!--  -->
+                  <v-row>
+                    <v-col>
+                      <v-row>
+                        <v-col class="mb-0 pb-0 hidden-sm-and-up" style="place-self: center">
+                          <v-card-text class="">System Name(EN)</v-card-text>
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col class="hidden-xs-only" sm="4" md="4" style="place-self: center">
+                          <v-card-text class="">System Name(EN)</v-card-text>
+                        </v-col>
+                        <v-col class="col-12" sm="8" md="8" style="align-self: center;">
+                          <v-text-field style="text-align-last: center" v-model="system_nameEN" hide-details="auto" dense
+                            outlined></v-text-field>
+                        </v-col>
+                      </v-row>
+                    </v-col>
+                  </v-row>
+                  <!--  -->
+                  <v-row>
+                    <v-col>
+                      <v-row>
+                        <v-col class="mb-0 pb-0 hidden-sm-and-up" style="place-self: center">
+                          <v-card-text class="">Shot system name</v-card-text>
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col class="hidden-xs-only" sm="4" md="4" style="place-self: center">
+                          <v-card-text class="">Shot system name</v-card-text>
+                        </v-col>
+                        <v-col class="col-12" sm="8" md="8" style="align-self: center;">
+                          <v-text-field style="text-align-last: center" v-model="short_system_name" hide-details="auto"
+                            dense outlined></v-text-field>
+                        </v-col>
+                      </v-row>
+                    </v-col>
+                  </v-row>
+                  <!--  -->
+                  <!-- button -->
+                  <v-card-actions>
+                    <v-btn @click="dialog_delete = true" color="error" dark>
+                      <h5>Delete</h5>
+                    </v-btn>
+                    <v-spacer></v-spacer>
+                    <v-btn @click="editSystem = false" color="primary" text>
+                      <h5>Close</h5>
+                    </v-btn>
+                    <v-btn @click="(editSystem = false), (updateSystem())" color="primary" dark>
+                      <h5>update</h5>
+                    </v-btn>
+                  </v-card-actions>
+                  <!--  -->
+                  <v-dialog v-model="dialog_delete" max-width="400px">
+                    <v-card>
+                      <div class="mt-2" style="text-align: center;">
+                        <v-icon size="70px" class="mt-2" color="error">mdi-alert-outline</v-icon>
+                      </div>
+                      <v-card-title>
+                        Are you such <b style="color:red;">&nbsp; delete &nbsp;</b> system?
+                      </v-card-title>
+                      <v-card-text>
+                        If delete system, All screen in this system will also be deleted.
+                      </v-card-text>
+                      <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn @click="(dialog_delete = false), (editSystem = false)" color="primary" text>
+                          <h5>Cancle</h5>
+                        </v-btn>
+                        <v-btn @click="deleteScreenByIdSystem()" color="primary" dark>
+                          <h5>Delete</h5>
+                        </v-btn>
+                      </v-card-actions>
+                    </v-card>
+                  </v-dialog>
+                  <!--  -->
                 </v-container>
               </v-card>
             </v-dialog>
@@ -350,7 +434,11 @@ export default {
       AllScreens: [],
       imageDefault: "DefaultScreen.jpg",
       editSystem: false,
-      system_name:"",
+      dialog_delete: false,
+      system_id: "",
+      system_nameTH: "",
+      system_nameEN: "",
+      short_system_name: "",
     };
   },
   created() {
@@ -405,10 +493,51 @@ export default {
       await this.$axios.get("/systems/getOne/" + this.id).then((data) => {
         this.dataSystem = data.data[0];
         this.projectID = data.data[0].project_id;
+        this.system_id = data.data[0].system_id;
+        this.system_nameTH = data.data[0].system_nameTH;
+        this.system_nameEN = data.data[0].system_nameEN;
+        this.short_system_name = data.data[0].system_shortname;
+
         // console.clear();
         console.log("this.projectID");
         console.log(this.projectID);
         this.getProjectID();
+      });
+    },
+    async updateSystem() {
+      await this.$axios.put("/systems/updateSystem/" + this.id, {
+        project_id: this.projectID,
+        system_id: this.system_id,
+        system_nameTH: this.system_nameTH,
+        system_nameEN: this.system_nameEN,
+        system_shortname: this.short_system_name,
+        system_member: "dev1",
+      }).then((response) => {
+        console.log(response);
+        console.log("Update success");
+        alert("Update success");
+        window.location.reload();
+      }).catch((err) => {
+        console.log(err);
+        alert(err);
+      });
+    },
+    async deleteSystem() {
+      this.$axios.delete("/systems/delete/" + this.id).then((res) => {
+        alert("Detete System Success!");
+        this.$router.push("/manageProject");
+      }).catch((err) => {
+        console.log(err);
+        alert(err);
+      });
+    },
+    async deleteScreenByIdSystem() {
+      this.$axios.delete("/screens/deleteScreen/" + this.id).then((res) => {
+        alert("Detete ScreenAll Success!");
+        this.deleteSystem();
+      }).catch((err) => {
+        console.log(err);
+        alert(err);
       });
     },
     async getProject() {
