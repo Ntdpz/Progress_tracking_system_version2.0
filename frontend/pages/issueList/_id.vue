@@ -6,21 +6,25 @@
 
     <!-- *Header* -->
     <v-row class="mt-4 ml-2 mb-2">
-      <h4>Project Name</h4>
+      <h4>{{ this.projectName }}</h4>
       <p style="color: #b6b5b5; font-size: 16px" class="ml-2">
-        {{ this.sub_project_count }} Sub Systems
+        {{ this.systemslength }} Sub Systems
       </p>
     </v-row>
 
     <!-- * box -->
-    <v-expansion-panels class="mb-6">
+    <v-expansion-panels
+      class="mb-6"
+      v-for="(system, index) in systems"
+      :key="index"
+    >
       <v-expansion-panel>
         <v-expansion-panel-header>
           <template>
             <v-row no-gutters>
               <v-col cols="4">
                 <v-row style="margin-top: 1%">
-                  <h4>Sub System 1</h4>
+                  <h4>{{ system.system_nameTH }}</h4>
                   <p style="color: #b6b5b5; font-size: 16px; margin-left: 5%">
                     3 Issue
                   </p>
@@ -29,21 +33,9 @@
               <v-spacer></v-spacer>
               <v-col cols="4">
                 <v-row>
-                  <h4 style="margin-top: 3.5%; margin-right: 2%">
+                  <!-- <h4 style="margin-top: 3.5%; margin-right: 2%">
                     Sub System 1
-                  </h4>
-                  <v-chip class="ma-2" color="primary" text-color="white">
-                    <v-avatar left>
-                      <v-icon>mdi-account-circle</v-icon>
-                    </v-avatar>
-                    Mike
-                  </v-chip>
-                  <v-chip class="ma-2" color="primary" text-color="white">
-                    <v-avatar left>
-                      <v-icon>mdi-account-circle</v-icon>
-                    </v-avatar>
-                    Mike
-                  </v-chip>
+                  </h4> -->
                   <v-chip class="ma-2" color="primary" text-color="white">
                     <v-avatar left>
                       <v-icon>mdi-account-circle</v-icon>
@@ -58,7 +50,7 @@
         </v-expansion-panel-header>
 
         <!-- *content -->
-        <v-expansion-panel-content>
+        <v-expansion-panel-content class="mt-2">
           <v-row justify="center">
             <!-- *dialog -->
             <v-dialog v-model="dialog" persistent max-width="600px">
@@ -773,8 +765,9 @@
     <!-- * box2 -->
   </div>
 </template>
-
-<script>
+  
+  <script>
+import Vue from "vue";
 import Searchbar from "~/components/Searchbar.vue";
 export default {
   components: { Searchbar },
@@ -791,6 +784,7 @@ export default {
   },
   data() {
     return {
+      id: this.$route.params.id,
       dialog: false,
       sub_project_count: "2",
       date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
@@ -816,6 +810,10 @@ export default {
         { text: "Actions", value: "actions", sortable: false },
       ],
       issue: [],
+      project: [],
+      systems: [],
+      projectName: "",
+      systemslength: "",
       priotity_select: ["Critical", "Hight", "Low"],
       type_select: ["PNI", "PNC", "New Req"],
       screen_select: ["Screen 1", "Screen 2"],
@@ -824,8 +822,10 @@ export default {
       selected: ["UI"],
     };
   },
-  created() {
-    this.initialize();
+  async created() {
+    await this.initialize();
+    await this.getProject();
+    await this.getSystems();
   },
   updated() {
     if (this.type == "PNC") {
@@ -895,11 +895,35 @@ export default {
     showDialog() {
       console.log("SHow");
     },
+    async getProject() {
+      await this.$axios.get("/projects/getOne/" + this.id).then((res) => {
+        this.project = res.data;
+        this.projectName = this.project[0].project_name;
+        console.log(this.project[0].project_name, "this.project");
+      });
+    },
+    async getSystems() {
+      await this.$axios.get("/systems/getAll").then((res) => {
+        // Loop through each project and assign the associated systems
+        this.project.forEach((project) => {
+          Vue.set(
+            project,
+            "systems",
+            res.data.filter((system) => system.project_id === project.id)
+          );
+        });
+      });
+      this.systems = this.project[0].systems;
+      this.systemslength = this.project[0].systems.length;
+      console.log(this.project, "this.project");
+      console.log(this.system, "this.system");
+      console.log(this.systemslength, "this.systemslength");
+    },
   },
 };
 </script>
-
-<style scoped>
+  
+  <style scoped>
 * {
   font-family: "Lato", sans-serif;
 }
@@ -918,8 +942,8 @@ input[type="text"] {
   outline: black;
 }
 </style>
-
-<style scoped>
+  
+  <style scoped>
 * {
   font-family: "Lato", sans-serif;
 }

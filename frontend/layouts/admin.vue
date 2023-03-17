@@ -34,36 +34,29 @@
       <v-divider></v-divider>
       <v-list>
         <v-list-group
-          v-for="item in items3"
-          :key="item.title"
-          v-model="item.active"
-          :prepend-icon="item.action"
+          v-for="(project, index) in items3"
+          :key="index"
+          v-model="project.active"
+          :prepend-icon="project.action"
           no-action
-          color="primary"
         >
           <template v-slot:activator>
             <v-list-item-content>
-              <v-list-item-title v-text="item.title"></v-list-item-title>
+              <v-list-item-title>{{ project.title }}</v-list-item-title>
             </v-list-item-content>
           </template>
 
           <v-list-item
-            v-for="child in item.items"
+            v-for="child in project.projectList"
             :key="child.title"
-            @click="goToPage(child.route)"
+            :to="`/issueList/${child.id}`"
           >
             <v-list-item-content>
-              <v-row class="ma-0 pa-0">
-                <v-col class="ma-0 pa-0" style="flex-grow: 0.2 !important">
-                  <v-icon class="ma-0 pa-0">mdi-view-list</v-icon>
-                </v-col>
-                <v-col class="ma-0 pa-0">
-                  <v-list-item-title
-                    v-text="child.title"
-                    class="ma-0 mt-1 pa-0"
-                  ></v-list-item-title>
-                </v-col>
-              </v-row>
+              <v-list-item-title
+                ><v-icon color="primary" class="mr-2"
+                  >mdi mdi-format-list-bulleted</v-icon
+                >{{ child.project_name }}</v-list-item-title
+              >
             </v-list-item-content>
           </v-list-item>
         </v-list-group>
@@ -135,11 +128,12 @@ export default {
           action: "mdi-view-list",
           active: true,
           items: [
-            { title: "Project1", route: "/issueList" },
-            { title: "Project2", route: "/issueList" },
-            { title: "Project3", route: "/issueList" },
+            // { title: "Project1", route: "/issueList" },
+            // { title: "Project2", route: "/issueList" },
+            // { title: "Project3", route: "/issueList" },
           ],
           title: "Project",
+          projectList: [],
         },
       ],
       items2: [
@@ -169,9 +163,23 @@ export default {
       title: "Note Management",
     };
   },
+  async mounted() {
+    await this.$axios.get("/projects/getAll").then((res) => {
+      res.data.forEach((project) => {
+        project.active = false; // initialize active property to false
+      });
+      this.items3[0].projectList = res.data;
+      console.log(this.items3[0].projectList, "this.items[0].projectList");
+    });
+  },
   methods: {
     goToPage(route) {
       this.$router.push(route);
+    },
+    async getProject() {
+      await this.$axios.get("/projects/getAll").then((res) => {
+        this.items3.items = res.data;
+      });
     },
   },
 };
