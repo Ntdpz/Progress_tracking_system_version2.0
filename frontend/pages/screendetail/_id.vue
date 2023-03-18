@@ -8,13 +8,13 @@
       <v-divider class="mt-0 mb-1" inset vertical style="background-color: black"></v-divider>
       <template>
         <v-banner class="mt-0 ml-4" style="
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                height: 30px;
-                border-radius: 30px;
-                padding: 0 0px;
-              " outlined elevation="2">
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  height: 30px;
+                  border-radius: 30px;
+                  padding: 0 0px;
+                " outlined elevation="2">
           <form class="center">
             <v-icon color="purple">mdi-magnify</v-icon>
             <input class="mr-3" type="text" v-model="query" placeholder="Search some screen" />
@@ -172,7 +172,8 @@
                   </v-btn>
                 </v-col>
                 <v-col xs="12" sm="6" md="9" class="d-flex justify-end">
-                  <v-btn @click="dialog_canEdit = true" class="mr-2" elevation="2" color="primary" style="color: white; border-radius: 10px">
+                  <v-btn @click="dialog_canEdit = true" class="mr-2" elevation="2" color="primary"
+                    style="color: white; border-radius: 10px">
                     Edit
                   </v-btn>
                   <v-btn elevation="2" color="primary" style="color: white; border-radius: 10px"
@@ -183,21 +184,17 @@
                 <v-dialog v-model="dialog_canEdit" max-width="350px">
                   <v-card>
                     <v-card-title>
-                  Now, you can edit and delete screen detail
-                </v-card-title>
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn
-                    color="green darken-1"
-                    text
-                    @click="dialog_canEdit = false, disabled=false"
-                  >
-                    OK
-                  </v-btn>
-                </v-card-actions>
-                        </v-card>
-                      </v-dialog>
-                    </v-row>
+                      Now, you can edit and delete screen detail
+                    </v-card-title>
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
+                      <v-btn color="green darken-1" text @click="dialog_canEdit = false, disabled = false">
+                        OK
+                      </v-btn>
+                    </v-card-actions>
+                  </v-card>
+                </v-dialog>
+              </v-row>
 
               <!--  -->
             </v-container>
@@ -229,8 +226,8 @@ export default {
       selectedImage: null,
       today: new Date(),
       dateEnd: new Date(),
-      disabled:true,
-      dialog_canEdit:false,
+      disabled: true,
+      dialog_canEdit: false,
     };
   },
   created() {

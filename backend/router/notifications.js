@@ -2,6 +2,13 @@ const express = require("express");
 const router = express.Router();
 const connection = require("../db");
 
+function generateId() {
+  const maxId = 999999999;
+  const minId = 100000000;
+  const id = Math.floor(Math.random() * (maxId - minId + 1)) + minId;
+  return id;
+}
+
 router.get("/test", async (req, res) => {
   try {
     return "Hello";
@@ -56,11 +63,12 @@ router.post("/createNoti", async (req, res) => {
       notification_message,
       notification_type,
       notification_read,
-    } = req.body;
+  } = req.body;
+  const id = generateId();
     try {
       connection.query(
-        "INSERT INTO notifications (user_id, issue_id, notification_message, notification_type, notification_read) VALUES (?, ?, ?, ?, ?)",
-        [user_id, issue_id, notification_message, notification_type, notification_read],
+        "INSERT INTO notifications (id,user_id, issue_id, notification_message, notification_type, notification_read) VALUES (?,?, ?, ?, ?, ?)",
+        [id,user_id, issue_id, notification_message, notification_type, notification_read],
         (err, results, fields) => {
           if (err) {
             console.log("Error while inserting a notification into the database", err);

@@ -26,6 +26,13 @@ const upload = multer({ storage });
 const defaultName = "../frontend/uploads/DefaultAvatar.jpg";
 const defaultImage = defaultName.substring(defaultName.lastIndexOf("/") + 1);
 
+function generateId() {
+  const maxId = 999999999;
+  const minId = 100000000;
+  const id = Math.floor(Math.random() * (maxId - minId + 1)) + minId;
+  return id;
+}
+
 // * post user + image
 router.post("/createUser", upload.single("image"), (req, res) => {
   const {
@@ -43,16 +50,19 @@ router.post("/createUser", upload.single("image"), (req, res) => {
   const user_pic = req.file
     ? req.file.filename
     : defaultImage;
+  
+  const id = generateId();
 
   // if (!req.file) {
   //   const targetPath = path.join("../frontend/uploads/", user_pic);
   //   fs.copyFileSync("../frontend/defaultimage/Avatar.jpg", targetPath);
   // }
 
-  const sql = `INSERT INTO users(user_firstname, user_lastname, user_id, user_position , user_department , user_email , user_password , user_status ,user_role , user_pic ) VALUES(?, ?, ?, ? , ?, ?, ?, ?, ?, ?)`;
+  const sql = `INSERT INTO users(id,user_firstname, user_lastname, user_id, user_position , user_department , user_email , user_password , user_status ,user_role , user_pic ) VALUES(?,?, ?, ?, ? , ?, ?, ?, ?, ?, ?)`;
   connection.query(
     sql,
     [
+      id,
       user_firstname,
       user_lastname,
       user_id,
