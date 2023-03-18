@@ -8,13 +8,13 @@
       <v-divider class="mt-0 mb-1" inset vertical style="background-color: black"></v-divider>
       <template>
         <v-banner class="mt-0 ml-4" style="
-                              display: flex;
-                              align-items: center;
-                              justify-content: center;
-                              height: 30px;
-                              border-radius: 30px;
-                              padding: 0 0px;
-                            " outlined elevation="2">
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                height: 30px;
+                                border-radius: 30px;
+                                padding: 0 0px;
+                              " outlined elevation="2">
           <form class="center" @submit.prevent="search">
             <v-icon color="purple">mdi-magnify</v-icon>
             <input class="mr-3" type="text" v-model="query" placeholder="Search some system" />
@@ -23,7 +23,7 @@
       </template>
     </v-row>
     <v-divider></v-divider>
-    <!-- Sub System -->0
+    <!-- Sub System -->
     <v-container class="" style="margin-top: 0%">
       <v-row class="mt-0" no-gutters>
         <v-col col="12" sm="12" md="12">
@@ -67,10 +67,10 @@
                             <form>
                               <div class="d-flex justify-center">
                                 <label class="mt-0 avatar-upload" style="
-                                                      display: flex;
-                                                      justify-content: center;
-                                                      align-items: center;
-                                                    ">
+                                                        display: flex;
+                                                        justify-content: center;
+                                                        align-items: center;
+                                                      ">
                                   <input type="file" ref="fileInput" @change="uploadFile" />
                                   <v-icon class="center mt-0" color="black" size="30px"
                                     v-if="!photo">mdi-cloud-upload-outline</v-icon>
@@ -95,7 +95,7 @@
 
                         <v-col class="col-12" sm="8" md="8">
                           <v-text-field style="text-align-last: center" v-model="screenID" hide-details="auto" dense
-                            outlined ></v-text-field>
+                            outlined></v-text-field>
                         </v-col>
                       </v-row>
                       <v-row>
@@ -384,7 +384,8 @@
             <v-col v-for="(item, i) in AllScreens" :key="i" col="4" sm="4" md="4">
               <v-responsive :aspect-ratio="4 / 3" class="ma-4 mt-0">
                 <v-card :to="`/screendetail/${item.id}`" class="elevation-0" outlined rounded>
-                  <v-img :src="getImageUrl(item.screen_pic)" max-height="250px" contain aspect-ratio="1" />
+                  <v-img :src="getImageUrl(item.screen_pic)" max-height="250px" contain aspect-ratio="1"
+                    class="d-block mx-auto" />
                   <v-card-title> Screen: {{ item.screen_name }} </v-card-title>
                   <v-card-subtitle style="color: black">
                     ผู้รับผิดชอบ Dev {{ item.screen_developer }}
@@ -444,7 +445,7 @@ export default {
       system_nameEN: "",
       short_system_name: "",
       count_screen: "",
-      
+
     };
   },
   created() {

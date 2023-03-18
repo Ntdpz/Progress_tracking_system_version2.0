@@ -167,7 +167,7 @@
               <v-row justify="space-between">
                 <v-col xs="12" sm="6" md="3">
                   <v-btn class="mr-0" elevation="2" color="error" style="color: white; border-radius: 10px"
-                    @click="deleteScreen">
+                    @click="deleteScreen" :disabled="disabled">
                     Delete
                   </v-btn>
                 </v-col>
@@ -183,21 +183,21 @@
                 <v-dialog v-model="dialog_canEdit" max-width="350px">
                   <v-card>
                     <v-card-title>
-            Now, you can edit screen detail
-          </v-card-title>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn
-              color="green darken-1"
-              text
-              @click="dialog_canEdit = false, disabled=false"
-            >
-              OK
-            </v-btn>
-          </v-card-actions>
-                  </v-card>
-                </v-dialog>
-              </v-row>
+                  Now, you can edit and delete screen detail
+                </v-card-title>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn
+                    color="green darken-1"
+                    text
+                    @click="dialog_canEdit = false, disabled=false"
+                  >
+                    OK
+                  </v-btn>
+                </v-card-actions>
+                        </v-card>
+                      </v-dialog>
+                    </v-row>
 
               <!--  -->
             </v-container>
