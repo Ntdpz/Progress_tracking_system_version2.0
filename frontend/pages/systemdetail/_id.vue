@@ -8,13 +8,13 @@
       <v-divider class="mt-0 mb-1" inset vertical style="background-color: black"></v-divider>
       <template>
         <v-banner class="mt-0 ml-4" style="
-                            display: flex;
-                            align-items: center;
-                            justify-content: center;
-                            height: 30px;
-                            border-radius: 30px;
-                            padding: 0 0px;
-                          " outlined elevation="2">
+                              display: flex;
+                              align-items: center;
+                              justify-content: center;
+                              height: 30px;
+                              border-radius: 30px;
+                              padding: 0 0px;
+                            " outlined elevation="2">
           <form class="center" @submit.prevent="search">
             <v-icon color="purple">mdi-magnify</v-icon>
             <input class="mr-3" type="text" v-model="query" placeholder="Search some system" />
@@ -23,7 +23,7 @@
       </template>
     </v-row>
     <v-divider></v-divider>
-    <!-- Sub System -->
+    <!-- Sub System -->0
     <v-container class="" style="margin-top: 0%">
       <v-row class="mt-0" no-gutters>
         <v-col col="12" sm="12" md="12">
@@ -34,20 +34,24 @@
                 <v-icon size="35px">mdi-arrow-left-circle</v-icon>
               </v-btn>
               {{ dataSystem.system_nameTH }}({{ dataSystem.system_shortname }})
-              ของ Project: {{ projectName.project_name }}
+              ของ Project: {{ projectName.project_name }} ●
+              <b class="ml-1" style="color: #b6b5b5;">
+                {{ count_screen }}
+              </b>
               <!-- <v-avatar class="ml-4" color="primary" size="20"> </v-avatar>
               <v-avatar class="ml-4" color="error" size="20"> </v-avatar> -->
               <v-btn class="ml-3" icon color="primary" size="35px">
                 <v-icon size="35px" @click="(editSystem = true)">mdi mdi-square-edit-outline</v-icon>
               </v-btn>
-
+              <v-spacer></v-spacer>
+              <v-btn @click="(dialog_newscreen = true), resetday()" elevation="2" color="primary"
+                style="color: white; border-radius: 10px; font-weight: bold;">
+                <v-icon left> mdi-plus-circle-outline </v-icon>New Screen
+              </v-btn>
             </v-card-title>
             <!-- button + dialog new sub system -->
 
-            <v-btn @click="(dialog_newscreen = true), resetday()" class="mr-2" elevation="2" color="primary" top right
-              absolute style="color: white; border-radius: 10px; font-weight: bold">
-              <v-icon left> mdi-plus-circle-outline </v-icon>New Screen
-            </v-btn>
+
 
             <!--  -->
             <v-dialog v-model="dialog_newscreen" max-width="600px">
@@ -63,10 +67,10 @@
                             <form>
                               <div class="d-flex justify-center">
                                 <label class="mt-0 avatar-upload" style="
-                                                    display: flex;
-                                                    justify-content: center;
-                                                    align-items: center;
-                                                  ">
+                                                      display: flex;
+                                                      justify-content: center;
+                                                      align-items: center;
+                                                    ">
                                   <input type="file" ref="fileInput" @change="uploadFile" />
                                   <v-icon class="center mt-0" color="black" size="30px"
                                     v-if="!photo">mdi-cloud-upload-outline</v-icon>
@@ -91,7 +95,7 @@
 
                         <v-col class="col-12" sm="8" md="8">
                           <v-text-field style="text-align-last: center" v-model="screenID" hide-details="auto" dense
-                            outlined></v-text-field>
+                            outlined ></v-text-field>
                         </v-col>
                       </v-row>
                       <v-row>
@@ -439,6 +443,8 @@ export default {
       system_nameTH: "",
       system_nameEN: "",
       short_system_name: "",
+      count_screen: "",
+      
     };
   },
   created() {
@@ -454,8 +460,22 @@ export default {
         .get("/screens/getAll?system_id=" + this.id)
         .then((data) => {
           this.AllScreens = data.data;
-          console.log(this.AllScreens);
+          console.log(this.AllScreens.length);
+          this.count_screens();
+
+          // this.count_screen = this.AllScreens.length;
+          // console.log(this.count_screen);
+
         });
+    },
+    count_screens() {
+      const c = this.AllScreens.length;
+      if (c <= 1) {
+        this.count_screen = c + " Screen";
+      } else {
+        this.count_screen = c + " Screens";
+      }
+      return;
     },
     calculateManDay(manday) {
       this.dateEnd = new Date(
