@@ -49,7 +49,7 @@
                 <v-icon left> mdi-plus-circle-outline </v-icon>New Screen
               </v-btn>
             </v-card-title>
-            <!-- button + dialog new sub system -->
+            <!-- button + dialog new screen -->
 
 
 
@@ -149,7 +149,7 @@
                         </v-col>
                       </v-row>
                       <v-row>
-                        <v-col class="hidden-xs-only" sm="2" md="2" style="place-self: center">
+                        <v-col class="hidden-xs-only" sm="4" md="4" style="place-self: center">
                           <h4 class="">Status</h4>
                         </v-col>
                         <v-col sm="4" md="4">
@@ -164,10 +164,10 @@
                             </v-text-field>
                           </template>
                         </v-col>
-                        <v-col class="hidden-xs-only" sm="2" md="2" style="place-self: center">
+                        <v-col class="pl-6 hidden-xs-only" sm="2" md="2" style="place-self: center">
                           <h4 class="">Level</h4>
                         </v-col>
-                        <v-col sm="4" md="4">
+                        <v-col class="pl-0" sm="2" md="2">
                           <v-text-field style="text-align-last: center" v-model="level" hide-details="auto" dense
                             outlined></v-text-field>
                         </v-col>
@@ -179,10 +179,10 @@
                         </v-col>
                       </v-row>
                       <v-row>
-                        <v-col class="hidden-xs-only" cols="3" style="place-self: center">
+                        <v-col class="hidden-xs-only" cols="4" style="place-self: center">
                           <h4 class="">Manday</h4>
                         </v-col>
-                        <v-col class="col-10" sm="4" md="4">
+                        <v-col class="col-10" sm="6" md="6">
                           <v-text-field style="text-align-last: center" v-model="manday" hide-details="auto" dense
                             outlined type="number"></v-text-field>
                         </v-col>

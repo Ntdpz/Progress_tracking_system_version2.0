@@ -181,7 +181,8 @@
                     Update
                   </v-btn>
                 </v-col>
-                <v-dialog v-model="dialog_canEdit" max-width="350px">
+                <!--  -->
+                <v-dialog v-model="dialog_canEdit" max-width="450px">
                   <v-card>
                     <v-card-title>
                       Now, you can edit and delete screen detail
