@@ -11,6 +11,13 @@ router.get("/test", async (req, res) => {
   }
 });
 
+function generateId() {
+  const maxId = 999999999;
+  const minId = 100000000;
+  const id = Math.floor(Math.random() * (maxId - minId + 1)) + minId;
+  return id;
+}
+
 // * GET All FROM projects
 router.get("/getAll", async (req, res) => {
   try {
@@ -58,10 +65,12 @@ router.post("/createProject", async (req, res) => {
     project_start,
     project_end,
   } = req.body;
+  const id = generateId();
   try {
     connection.query(
-      "INSERT INTO projects(project_id, project_name, project_shortname ,project_agency, project_start, project_end) VALUES(?, ?, ? ,? ,?,?)",
+      "INSERT INTO projects(id,project_id, project_name, project_shortname ,project_agency, project_start, project_end) VALUES(?,?, ?, ? ,? ,?,?)",
       [
+        id,
         project_id,
         project_name,
         project_shortname,

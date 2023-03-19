@@ -11,6 +11,13 @@ router.get("/test", async (req, res) => {
   }
 });
 
+function generateId() {
+  const maxId = 999999999;
+  const minId = 100000000;
+  const id = Math.floor(Math.random() * (maxId - minId + 1)) + minId;
+  return id;
+}
+
 // * GET All FROM systems
 router.get("/getAll", async (req, res) => {
   try {
@@ -65,10 +72,12 @@ router.post("/createSystem", async (req, res) => {
     system_shortname,
     system_member,
   } = req.body;
+  const id = generateId();
   try {
     connection.query(
-      "INSERT INTO systems(project_id,system_id,system_nameTH,system_nameEN,system_shortname,system_member) VALUES(?, ?, ? ,? ,?,?)",
+      "INSERT INTO systems(id, project_id,system_id,system_nameTH,system_nameEN,system_shortname,system_member) VALUES(?, ?, ?, ? ,? ,?,?)",
       [
+        id,
         project_id,
         system_id,
         system_nameTH,

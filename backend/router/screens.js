@@ -5,6 +5,7 @@ const multer = require("multer");
 const fs = require("fs");
 const path = require("path");
 const uuid = require("uuid");
+const crypto = require("crypto");
 
 const storage = multer.diskStorage({
   destination(req, file, cb) {
@@ -26,6 +27,13 @@ const upload = multer({ storage });
 const defaultName = "../frontend/screenImages/DefaultScreen.jpg";
 const defaultImage = defaultName.substring(defaultName.lastIndexOf("/") + 1);
 
+function generateId() {
+  const maxId = 999999999;
+  const minId = 100000000;
+  const id = Math.floor(Math.random() * (maxId - minId + 1)) + minId;
+  return id;
+}
+
 // * POST FROM screens
 router.post("/createScreen", upload.single("image"), (req, res) => {
   const {
@@ -43,10 +51,12 @@ router.post("/createScreen", upload.single("image"), (req, res) => {
   } = req.body;
 
   const screen_pic = req.file ? req.file.filename : defaultImage;
+  const id = generateId();
   try {
     connection.query(
-      "INSERT INTO screens(system_id,project_id,screen_id,screen_name,screen_developer,screen_implementer,screen_status,screen_level,screen_start,screen_end,screen_manday,screen_pic) VALUES(?, ?, ? ,? ,?,?,?,?,?,?,?,?)",
+      "INSERT INTO screens(id,system_id,project_id,screen_id,screen_name,screen_developer,screen_implementer,screen_status,screen_level,screen_start,screen_end,screen_manday,screen_pic) VALUES(?,?, ?, ? ,? ,?,?,?,?,?,?,?,?)",
       [
+        id,
         system_id,
         project_id,
         screen_id,

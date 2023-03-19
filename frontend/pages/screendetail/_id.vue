@@ -8,13 +8,13 @@
       <v-divider class="mt-0 mb-1" inset vertical style="background-color: black"></v-divider>
       <template>
         <v-banner class="mt-0 ml-4" style="
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              height: 30px;
-              border-radius: 30px;
-              padding: 0 0px;
-            " outlined elevation="2">
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  height: 30px;
+                  border-radius: 30px;
+                  padding: 0 0px;
+                " outlined elevation="2">
           <form class="center">
             <v-icon color="purple">mdi-magnify</v-icon>
             <input class="mr-3" type="text" v-model="query" placeholder="Search some screen" />
@@ -47,11 +47,9 @@
               <v-progress-circular class="center" :size="70" :width="7" color="purple"
                 indeterminate></v-progress-circular>
             </div>
-            <v-img v-else-if="selectedImage" :src="selectedImage" max-height="482px" aspect-ratio="1"
-          contain></v-img>
-            <v-img v-else-if="screensID" :src="getImageUrl(screensID.screen_pic)" max-hight="482px" aspect-ratio="1"
-          contain
-              ></v-img>
+            <v-img v-else-if="selectedImage" :src="selectedImage" max-height="450px" aspect-ratio="1" contain></v-img>
+            <v-img v-else-if="screensID" :src="getImageUrl(screensID.screen_pic)" max-hight="450px" aspect-ratio="1"
+              contain></v-img>
           </v-card>
           <v-btn class="" elevation="2" color="primary" style="color: white; border-radius: 10px"
             @click="selectImage">Change Image...</v-btn>
@@ -72,7 +70,7 @@
 
                 <v-col class="col-12" sm="8" md="8">
                   <v-text-field style="text-align-last: center" v-model="screensID.screen_id" hide-details="auto" dense
-                    outlined></v-text-field>
+                    outlined :disabled="disabled"></v-text-field>
                 </v-col>
               </v-row>
               <v-row>
@@ -85,8 +83,8 @@
                   <h4 class="">Screen Name</h4>
                 </v-col>
                 <v-col class="col-12" sm="8" md="8">
-                  <v-text-field style="text-align-last: center" v-model="screenname" hide-details="auto" dense
-                    outlined></v-text-field>
+                  <v-text-field style="text-align-last: center" v-model="screenname" hide-details="auto" dense outlined
+                    :disabled="disabled"></v-text-field>
                 </v-col>
               </v-row>
               <v-row>
@@ -100,7 +98,7 @@
                 </v-col>
                 <v-col class="col-12" sm="8" md="8">
                   <v-text-field style="text-align-last: center" v-model="screensID.screen_developer" hide-details="auto"
-                    dense outlined></v-text-field>
+                    dense outlined :disabled="disabled"></v-text-field>
                 </v-col>
               </v-row>
               <v-row>
@@ -114,7 +112,7 @@
                 </v-col>
                 <v-col class="col-12" sm="8" md="8">
                   <v-text-field style="text-align-last: center" v-model="screensID.screen_implementer" hide-details="auto"
-                    dense outlined></v-text-field>
+                    dense outlined :disabled="disabled"></v-text-field>
                 </v-col>
               </v-row>
               <v-row>
@@ -126,25 +124,25 @@
                 </v-col>
               </v-row>
               <v-row>
-                <v-col class="hidden-xs-only" sm="2" md="2" style="place-self: center">
+                <v-col class="hidden-xs-only" sm="4" md="4" style="place-self: center">
                   <h4 class="">Status</h4>
                 </v-col>
                 <v-col sm="4" md="4">
                   <template>
                     <v-text-field style="text-align-last: center" v-model="screensID.screen_status" hide-details="auto"
-                      readonly dense outlined>
+                      disabled dense outlined>
                       <template v-slot:prepend-inner>
                         <v-icon :color="status === 'Complete' ? 'green' : 'red'">mdi-circle</v-icon>
                       </template>
                     </v-text-field>
                   </template>
                 </v-col>
-                <v-col class="hidden-xs-only" sm="2" md="2" style="place-self: center">
+                <v-col class="pl-6 hidden-xs-only" sm="2" md="2" style="place-self: center">
                   <h4 class="">Level</h4>
                 </v-col>
-                <v-col sm="4" md="4">
+                <v-col class="pl-0" sm="2" md="2">
                   <v-text-field style="text-align-last: center" v-model="screensID.screen_level" hide-details="auto" dense
-                    outlined></v-text-field>
+                    outlined :disabled="disabled"></v-text-field>
                 </v-col>
               </v-row>
               <v-row> </v-row>
@@ -154,29 +152,48 @@
                 </v-col>
               </v-row>
               <v-row>
-                <v-col class="hidden-xs-only" cols="3" style="place-self: center">
+                <v-col class="hidden-xs-only" cols="4" style="place-self: center">
                   <h4 class="">Manday</h4>
                 </v-col>
-                <v-col class="col-10" sm="4" md="4">
+                <v-col class="col-10" sm="6" md="6">
                   <v-text-field style="text-align-last: center" v-model="screensID.screen_manday" hide-details="auto"
-                    dense outlined></v-text-field>
+                    dense outlined :disabled="disabled"></v-text-field>
                 </v-col>
                 <v-col style="place-self: center">
                   <h4 class="">Days</h4>
                 </v-col>
               </v-row>
               <!--  -->
-              <v-row class="mb-4" style="justify-content: right">
-                <v-col class="col-auto" sm="9" md="9" style="text-align: right">
+              <v-row justify="space-between">
+                <v-col xs="12" sm="6" md="3">
                   <v-btn class="mr-0" elevation="2" color="error" style="color: white; border-radius: 10px"
-                    @click="deleteScreen">Delete
+                    @click="deleteScreen" :disabled="disabled">
+                    Delete
                   </v-btn>
                 </v-col>
-                <v-col class="col-auto" sm="3" md="3" style="text-align: right">
-                  <v-btn class="" elevation="2" color="primary" style="color: white; border-radius: 10px"
-                    @click="calculateManDay(screensID.screen_manday)">Update
+                <v-col xs="12" sm="6" md="9" class="d-flex justify-end">
+                  <v-btn @click="dialog_canEdit = true" class="mr-2" elevation="2" color="primary"
+                    style="color: white; border-radius: 10px">
+                    Edit
+                  </v-btn>
+                  <v-btn elevation="2" color="primary" style="color: white; border-radius: 10px"
+                    @click="calculateManDay(screensID.screen_manday)" :disabled="disabled">
+                    Update
                   </v-btn>
                 </v-col>
+                <v-dialog v-model="dialog_canEdit" max-width="350px">
+                  <v-card>
+                    <v-card-title>
+                      Now, you can edit and delete screen detail
+                    </v-card-title>
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
+                      <v-btn color="green darken-1" text @click="dialog_canEdit = false, disabled = false">
+                        OK
+                      </v-btn>
+                    </v-card-actions>
+                  </v-card>
+                </v-dialog>
               </v-row>
 
               <!--  -->
@@ -209,6 +226,8 @@ export default {
       selectedImage: null,
       today: new Date(),
       dateEnd: new Date(),
+      disabled: true,
+      dialog_canEdit: false,
     };
   },
   created() {

@@ -2,6 +2,13 @@ const express = require("express");
 const router = express.Router();
 const connection = require("../db");
 
+function generateId() {
+  const maxId = 999999999;
+  const minId = 100000000;
+  const id = Math.floor(Math.random() * (maxId - minId + 1)) + minId;
+  return id;
+}
+
 router.get("/test", async (req, res) => {
   try {
     return "Hello";
