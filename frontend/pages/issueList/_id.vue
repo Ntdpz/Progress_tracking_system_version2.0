@@ -52,8 +52,25 @@
         <!-- *content -->
         <v-expansion-panel-content class="mt-2">
           <v-row justify="center">
+            <v-btn
+              class="new-btn ma-2 text-left"
+              outlined
+              color="indigo"
+              dark
+              v-bind="attrs"
+              v-on="on"
+              block
+              @click="dialog = true"
+            >
+              <span
+                class="mdi mdi-plus-circle-outline"
+                style="font-size: 20px; color: black"
+              ></span>
+              <h4 style="color: black">Add New Issue</h4>
+            </v-btn>
+            <dialog-issue :dialog.sync="dialog" :projectName="projectName" :systemName="system.system_nameTH"/>
             <!-- *dialog -->
-            <v-dialog v-model="dialog" persistent max-width="600px">
+            <!-- <v-dialog v-model="dialog" persistent max-width="600px">
               <template v-slot:activator="{ on, attrs }">
                 <v-btn
                   class="new-btn ma-2 text-left"
@@ -291,7 +308,7 @@
                   </v-btn>
                 </v-card-actions>
               </v-card>
-            </v-dialog>
+            </v-dialog> -->
           </v-row>
           <!-- *tabs -->
           <v-tabs fixed-tabs color="primary" class="mt-5">
@@ -769,8 +786,9 @@
   <script>
 import Vue from "vue";
 import Searchbar from "~/components/Searchbar.vue";
+import DialogIssue from "../../components/DialogIssue.vue";
 export default {
-  components: { Searchbar },
+  components: { Searchbar, DialogIssue },
   layout: "admin",
   directives: {
     "remove-row-borders": {
