@@ -1,6 +1,22 @@
 <template>
   <div class="body">
-    <searchbar title="Manage User" />
+    <v-row>
+      <v-col> <searchbar title="Manage User" /></v-col>
+      <v-col
+        ><v-btn
+          @click="dialog = true"
+          class="mr-10"
+          elevation="2"
+          color="primary"
+          right
+          absolute
+          style="color: white; border-radius: 10px"
+        >
+          <v-icon left> mdi-plus-circle-outline </v-icon>
+          New User
+        </v-btn></v-col
+      >
+    </v-row>
     <v-divider></v-divider>
     <!-- class="green lighten-5" -->
     <v-container>
