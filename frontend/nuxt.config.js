@@ -21,6 +21,16 @@ export default {
   image: {
     // Options
   },
+  // ssr: false,
+  // target: "static",
+  // server: {
+  //   //port:80, //in server
+  //   port: 3000,
+  //   host: "0.0.0.0",
+  // },
+  // router: {
+  //   base: "/notemanagement/",
+  // },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: ["@fortawesome/fontawesome-free/css/all.css"],

@@ -1,11 +1,12 @@
 <template>
   <v-layout row justify-center>
-    <v-dialog v-model="dialog" persistent max-width="700">
+    <v-dialog v-model="dialog" persistent max-width="750">
       <v-card>
         <v-card-title>
           <v-col cols="12">
             <v-row>
-              <h5>Create Issue |</h5>
+              <h5 v-show="mode === 'create'">Create Issue |</h5>
+              <h5 v-show="mode === 'edit'">Edit Issue |</h5>
               <p style="font-size: 16px; margin-left: 2%">
                 {{ projectName }} > {{ systemName }}
               </p>
@@ -75,7 +76,6 @@
                   ref="menu"
                   v-model="menu"
                   :close-on-content-click="false"
-                  :return-value.sync="date"
                   transition="scale-transition"
                   offset-y
                   min-width="auto"
@@ -108,7 +108,7 @@
                   label="Dev"
                   dense
                   outlined
-                  v-mode="form.issue_assign"
+                  v-model="form.issue_assign"
                 ></v-select>
               </v-col>
               <v-col cols="12" sm="4" md="2">
@@ -145,21 +145,21 @@
                     <v-col>
                       <v-row>
                         <v-checkbox
-                          v-model="selected"
+                          v-model="form.issue_type_sa"
                           label="UI"
                           value="UI"
                         ></v-checkbox>
                       </v-row>
                       <v-row>
                         <v-checkbox
-                          v-model="selected"
+                          v-model="form.issue_type_sa"
                           label="Business"
                           value="Business"
                         ></v-checkbox>
                       </v-row>
                       <v-row>
                         <v-checkbox
-                          v-model="selected"
+                          v-model="form.issue_type_sa"
                           label="Data"
                           value="Data"
                         ></v-checkbox
@@ -168,21 +168,21 @@
                     <v-col>
                       <v-row>
                         <v-checkbox
-                          v-model="selected"
+                          v-model="form.issue_type_sa"
                           label="Servies"
                           value="Servies"
                         ></v-checkbox>
                       </v-row>
                       <v-row>
                         <v-checkbox
-                          v-model="selected"
+                          v-model="form.issue_type_sa"
                           label="Report"
                           value="Report"
                         ></v-checkbox>
                       </v-row>
                       <v-row>
                         <v-checkbox
-                          v-model="selected"
+                          v-model="form.issue_type_sa"
                           label="Training"
                           value="Training"
                         ></v-checkbox>
@@ -217,7 +217,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="primary" text @click.native="close"> Close </v-btn>
-          <v-btn color="primary" dark @click.native="close"> Create </v-btn>
+          <v-btn color="primary" dark @click="saveIssue()"> Create </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -229,6 +229,7 @@ export default {
   props: {
     projectName: String,
     systemName: String,
+    mode: String,
     dialog: {
       default: false,
     },
@@ -239,25 +240,112 @@ export default {
         .toISOString()
         .substr(0, 10),
       menu: false,
+      PNC: false,
+      Newreq: false,
+      priotity_select: ["Critical", "Hight", "Low"],
+      type_select: ["PNI", "PNC", "New Req"],
+      screen_select: ["Screen 1", "Screen 2"],
+      qc_select: ["QC1"],
+      dev_select: ["Dev1"],
+      selected: ["UI"],
       form: {
-        issue_id: "",
-        issue_name: "",
-        issue_type: "",
         screen_id: "",
-        issue_qc: "",
-        issue_priority: "",
+        system_id: "",
+        project_id: "",
+        issue_name: "",
+        issue_id: "",
+        issue_type: "",
         issue_informer: "",
+        issue_priority: "",
+        issue_end: "",
         issue_assign: "",
+        issue_qc: "",
+        issue_des: "",
+        issue_des_sa: "",
+        issue_type_sa: "",
         issue_doc_id: "",
         issue_customer: "",
-        issue_des_sa: "",
-        issue_des: "",
+        issue_filename: "",
+        issue_des_dev: "",
+        issue_des_implementer: "",
+        issue_start: "",
+        issue_expected: "",
+        issue_status: "",
+        issue_accepting: "",
+        issue_manday: "",
+        issue_complete: "",
       },
     };
+  },
+  updated() {
+    if (this.form.issue_type == "PNC") {
+      this.PNC = true;
+      this.Newreq = false;
+    } else if (this.form.issue_type == "PNI") {
+      this.PNC = false;
+      this.Newreq = false;
+    } else if (this.form.issue_type == "New Req") {
+      this.Newreq = true;
+      this.PNC = false;
+    } else {
+      this.PNC = false;
+      this.Newreq = false;
+    }
+    console.log(this.form);
   },
   methods: {
     close() {
       this.$emit("update:dialog", false);
+    },
+    async saveIssue() {
+      if (this.mode == "create") {
+        this.form.issue_end = this.date;
+        const data = {
+          screen_id: "1",
+          system_id: "1",
+          project_id: "1",
+          issue_name: this.form.issue_name,
+          issue_id: this.form.issue_id,
+          issue_type: this.form.issue_type,
+          issue_informer: this.form.issue_informer,
+          issue_priority: this.form.issue_priority,
+          issue_end: this.form.issue_end,
+          issue_assign: this.form.issue_assign,
+          issue_qc: this.form.issue_qc,
+          issue_des: this.form.issue_des,
+          issue_des_sa: this.form.issue_des_sa,
+          issue_type_sa: this.form.issue_type_sa,
+          issue_doc_id: this.form.issue_doc_id,
+          issue_customer: this.form.issue_customer,
+          issue_filename: this.form.issue_filename,
+          issue_des_dev: this.form.issue_des_dev,
+          issue_des_implementer: this.form.issue_des_implementer,
+          issue_start: "2023-02-14",
+          issue_expected: "2023-02-14",
+          issue_status: this.form.issue_status,
+          issue_accepting: "2023-02-14",
+          issue_manday: 1,
+          issue_complete: "2023-02-14",
+        };
+
+        try {
+          await this.$axios.post("/issues/createIssue", data);
+          console.log("post success");
+          window.location.reload();
+          const promise = new Promise((resolve, reject) => {
+            resolve();
+            this.close();
+          });
+          promise.then(() => {
+            setTimeout(() => {
+              alert("success");
+            }, 2000);
+          });
+        } catch (error) {
+          console.error(error);
+          alert("Error submitting form");
+        }
+      }
     },
   },
 };
