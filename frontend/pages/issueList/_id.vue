@@ -68,7 +68,7 @@
               ></span>
               <h4 style="color: black">Add New Issue</h4>
             </v-btn>
-            <dialog-issue :dialog.sync="dialog" :projectName="projectName" :systemName="system.system_nameTH"/>
+            <dialog-issue :dialog.sync="dialog" :projectName="projectName" :systemName="system.system_nameTH" :mode="'create'"/>
             <!-- *dialog -->
             <!-- <v-dialog v-model="dialog" persistent max-width="600px">
               <template v-slot:activator="{ on, attrs }">
