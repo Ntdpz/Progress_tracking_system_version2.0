@@ -510,13 +510,6 @@ export default {
         alert("Error submitting form");
       }
     },
-    // ดึง dev implementer ในระบบมาโชว์
-    getPosition_Developer(){
-      
-    },
-    getPosition_Implementer(){
-
-    },
   },
 };
 </script>

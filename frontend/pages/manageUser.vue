@@ -66,10 +66,13 @@
                     :items="data"
                     class="elevation-1"
                   >
+                    <template v-slot:[`item.id`]="{ index }">
+                      {{ index + 1 }}
+                    </template>
                     <template v-slot:[`item.name`]="{ item }">
                       {{ item.user_firstname }}
                     </template>
-                    <template v-slot:[`item.code`]="{ item }">
+                    <template v-slot:[`item.code`]="{ item}">
                       {{ item.user_id }}
                     </template>
                     <template v-slot:[`item.position`]="{ item }">
@@ -134,6 +137,9 @@
                     :items="data_position_Developer"
                     class="elevation-1"
                   >
+                    <template v-slot:[`item.id`]="{ index }">
+                      {{ index + 1 }}
+                    </template>
                     <template v-slot:[`item.name`]="{ item }">
                       {{ item.user_firstname }}
                     </template>
@@ -204,6 +210,9 @@
                     :items="data_position_Implementer"
                     class="elevation-1"
                   >
+                    <template v-slot:[`item.id`]="{ index }">
+                      {{ index + 1 }}
+                    </template>
                     <template v-slot:[`item.name`]="{ item }">
                       {{ item.user_firstname }}
                     </template>
@@ -276,6 +285,9 @@
                     :items="data_position_ProgramManagement"
                     class="elevation-1"
                   >
+                    <template v-slot:[`item.id`]="{ index }">
+                      {{ index + 1 }}
+                    </template>
                     <template v-slot:[`item.name`]="{ item }">
                       {{ item.user_firstname }}
                     </template>
@@ -350,6 +362,9 @@
                     :items="data_position_SystemAnalyst"
                     class="elevation-1"
                   >
+                    <template v-slot:[`item.id`]="{ index }">
+                      {{ index + 1 }}
+                    </template>
                     <template v-slot:[`item.name`]="{ item }">
                       {{ item.user_firstname }}
                     </template>
@@ -422,6 +437,9 @@
                     :items="data_position_ReportDeveloper"
                     class="elevation-1"
                   >
+                    <template v-slot:[`item.id`]="{ index }">
+                      {{ index + 1 }}
+                    </template>
                     <template v-slot:[`item.name`]="{ item }">
                       {{ item.user_firstname }}
                     </template>
@@ -1191,6 +1209,10 @@ export default {
     };
   },
   created() {
+    this.initialize();
+  },
+  methods: {
+    initialize(){
     this.getAll();
     this.getPosition_Developer();
     this.getPosition_Implementer();
@@ -1198,8 +1220,7 @@ export default {
     this.getPosition_SystemAnalyst();
     this.getPosition_ReportDeveloper();
     this.getAllDefault();
-  },
-  methods: {
+    },
     async getAll() {
       await this.$axios.get("/users/getAll").then((data) => {
         this.data = data.data;
