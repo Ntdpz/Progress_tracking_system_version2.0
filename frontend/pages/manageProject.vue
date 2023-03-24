@@ -6,26 +6,45 @@
       </v-text-title>
       <v-divider class="mt-3 mb-1" inset vertical style="background-color: black"></v-divider>
       <div style="
-            border-radius: 99px;
-            border: 2px solid #333;
-            height: 32px;
-            width: 15%;
-            margin-left: 1%;
-            margin-top: 0.8%;
-          ">
+                  border-radius: 99px;
+                  border: 2px solid #333;
+                  height: 32px;
+                  width: 25%;
+                  margin-left: 1%;
+                  margin-top: 0.8%;
+                ">
         <v-text-field placeholder="Search some project" prepend-icon="mdi-magnify" rounded dense color="primary"
           style="margin-top: 1px; margin-left: 3%"></v-text-field>
       </div>
     </v-row>
     <v-divider></v-divider>
-    <v-row class="mt-4 ml-2 mb-2">
-      <h4>Project</h4>
-      <p style="color: #b6b5b5; font-size: 16px" class="ml-2">2 Projects</p>
-      <v-spacer></v-spacer>
-      <h4 class="" style="margin-right: 13%">Code</h4>
-      <h4 class="" style="margin-right: 13%">Start</h4>
-      <h4 class="" style="margin-right: 10%">End</h4>
-      <h4 class="" style="margin-right: 24%">Agency</h4>
+    <v-row class="mt-4 ml-1 mb-2" no-gutters>
+      <v-col cols="3">
+
+        <h4>Project</h4>
+        <p style="color: #b6b5b5; font-size: 16px" class="">2 Projects</p>
+      </v-col>
+
+
+      <v-col cols="2">
+        <h4 class="">Code</h4>
+      </v-col>
+      <v-col cols="2">
+
+        <h4 class="">Start</h4>
+      </v-col>
+      <v-col cols="2">
+        <h4 class="">End</h4>
+
+      </v-col>
+      <v-col cols="2">
+        <h4 class="">Agency</h4>
+
+      </v-col>
+      <v-col cols="1"></v-col>
+      <!-- <v-col cols="1"></v-col> -->
+
+
     </v-row>
 
     <v-btn class="new-btn ma-2 text-left" outlined color="indigo" dark block @click="openDialog('create')">
@@ -44,7 +63,7 @@
               </p>
             </v-col>
             <v-col>
-              
+
             </v-col>
             <v-col cols="2">
               <h4>{{ project.project_id }}</h4>

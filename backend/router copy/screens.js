@@ -332,7 +332,6 @@ router.get("/getAll", async (req, res) => {
   try {
     const systemIDFilter = req.query.system_id;
     const idFilter = req.query.id;
-    const screenIDFilter = req.query.screen_id;
     let query = "SELECT * FROM screens";
     const queryParams = [];
     if (systemIDFilter) {
@@ -341,9 +340,6 @@ router.get("/getAll", async (req, res) => {
     } else if (idFilter) {
       query += " WHERE id = ?";
       queryParams.push(idFilter);
-    } else if (screenIDFilter) {
-      query += " WHERE screen_id = ?";
-      queryParams.push(screenIDFilter);
     }
     connection.query(query, queryParams, (err, results, fields) => {
       if (err) {
@@ -432,61 +428,6 @@ router.delete("/delete/:id", (req, res) => {
     }
   });
 });
-
-//* DELETE screen+image by system_id
-router.delete("/deleteScreen/:system_id", (req, res) => {
-  const system_id = req.params.system_id;
-
-  // get image
-  const sql = `SELECT screen_pic FROM screens WHERE system_id =${system_id}`;
-  connection.query(sql, (err, results, fields) => {
-    if (err) {
-      console.log(err);
-      res
-        .status(500)
-        .send(`Error retrieving image path from database: ${err}`);
-      return;
-    }
-    if (results.length === 0) {
-      console.log(`Image with ID ${id} not found in database.`);
-      res.status(404).send(`Image with ID ${id} not found in database.`);
-      return;
-    }
-
-    const imagePath = "../frontend/screenImages/" + results[0].screen_pic;
-
-    if (results[0].screen_pic !== "DefaultScreen.jpg") {
-      fs.unlink(imagePath, (err) => {
-        if (err) {
-          console.log(`Error deleting image file: ${err}`);
-          res.status(500).send(`Error deleting image file: ${err}`);
-          return;
-        }
-        console.log(`Image file ${imagePath} deleted successfully.`);
-      });
-    }
-
-    const deleteSql = `DELETE FROM screens WHERE system_id = ${system_id}`;
-    try {
-      connection.query(deleteSql, (err, results, fields) => {
-        if (err) {
-          console.log(err);
-          return res.status(400).send();
-        }
-        if (results.affectedRows === 0) {
-          return res.status(404).json({ message: "No screen with that id!" });
-        }
-        return res
-          .status(200)
-          .json({ message: "Screen deleted successfully!" });
-      });
-    } catch (err) {
-      console.log(err);
-      return res.status(500).send();
-    }
-  });
-});
-
 
 router.post("/addUserScreen", async (req, res) => {
   const { user_id, screen_ids } = req.body;

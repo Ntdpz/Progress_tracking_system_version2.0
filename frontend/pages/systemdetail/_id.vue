@@ -8,13 +8,13 @@
       <v-divider class="mt-0 mb-1" inset vertical style="background-color: black"></v-divider>
       <template>
         <v-banner class="mt-0 ml-4" style="
-                                display: flex;
-                                align-items: center;
-                                justify-content: center;
-                                height: 30px;
-                                border-radius: 30px;
-                                padding: 0 0px;
-                              " outlined elevation="2">
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 30px;
+                border-radius: 30px;
+                padding: 0 0px;
+              " outlined elevation="2">
           <form class="center" @submit.prevent="search">
             <v-icon color="purple">mdi-magnify</v-icon>
             <input class="mr-3" type="text" v-model="query" placeholder="Search some system" />
@@ -35,24 +35,21 @@
               </v-btn>
               {{ dataSystem.system_nameTH }}({{ dataSystem.system_shortname }})
               ของ Project: {{ projectName.project_name }} ●
-              <b class="ml-1" style="color: #b6b5b5;">
+              <b class="ml-1" style="color: #b6b5b5">
                 {{ count_screen }}
               </b>
               <!-- <v-avatar class="ml-4" color="primary" size="20"> </v-avatar>
               <v-avatar class="ml-4" color="error" size="20"> </v-avatar> -->
               <v-btn class="ml-3" icon color="primary" size="35px">
-                <v-icon size="35px" @click="(editSystem = true)">mdi mdi-square-edit-outline</v-icon>
+                <v-icon size="35px" @click="editSystem = true">mdi mdi-square-edit-outline</v-icon>
               </v-btn>
               <v-spacer></v-spacer>
               <v-btn @click="(dialog_newscreen = true), resetday()" elevation="2" color="primary"
-                style="color: white; border-radius: 10px; font-weight: bold;">
+                style="color: white; border-radius: 10px; font-weight: bold">
                 <v-icon left> mdi-plus-circle-outline </v-icon>New Screen
               </v-btn>
             </v-card-title>
-            <!-- button + dialog new sub system -->
-
-
-
+            <!-- button + dialog new screen -->
             <!--  -->
             <v-dialog v-model="dialog_newscreen" max-width="600px">
               <v-card>
@@ -63,14 +60,13 @@
                         <v-col>
                           <v-card style="border: none" class="mx-auto text-center" outlined tile height="100%">
                             <!--  -->
-
                             <form>
                               <div class="d-flex justify-center">
                                 <label class="mt-0 avatar-upload" style="
-                                                        display: flex;
-                                                        justify-content: center;
-                                                        align-items: center;
-                                                      ">
+                                        display: flex;
+                                        justify-content: center;
+                                        align-items: center;
+                                      ">
                                   <input type="file" ref="fileInput" @change="uploadFile" />
                                   <v-icon class="center mt-0" color="black" size="30px"
                                     v-if="!photo">mdi-cloud-upload-outline</v-icon>
@@ -94,7 +90,7 @@
                         </v-col>
 
                         <v-col class="col-12" sm="8" md="8">
-                          <v-text-field style="text-align-last: center" v-model="screenID" hide-details="auto" dense
+                          <v-text-field style="text-align-last: left" v-model="screenID" hide-details="auto" dense
                             outlined></v-text-field>
                         </v-col>
                       </v-row>
@@ -108,7 +104,7 @@
                           <h4 class="">Screen Name</h4>
                         </v-col>
                         <v-col class="col-12" sm="8" md="8">
-                          <v-text-field style="text-align-last: center" v-model="screenname" hide-details="auto" dense
+                          <v-text-field style="text-align-last: left" v-model="screenname" hide-details="auto" dense
                             outlined></v-text-field>
                         </v-col>
                       </v-row>
@@ -122,8 +118,13 @@
                           <h4 class="">Developer</h4>
                         </v-col>
                         <v-col class="col-12" sm="8" md="8">
-                          <v-text-field style="text-align-last: center" v-model="developer" hide-details="auto" dense
-                            outlined></v-text-field>
+                          <v-select style="text-align-last: left" v-model="user_id" :items="data_position_Developer"
+                            item-text="user_firstname" item-value="id" hide-details="auto" dense outlined chips multiple
+                            persistent-hint>
+                            <template v-slot:item="{ item }">
+                              {{ item.user_firstname }}
+                            </template>
+                          </v-select>
                         </v-col>
                       </v-row>
                       <v-row>
@@ -136,109 +137,102 @@
                           <h4 class="">Implementer</h4>
                         </v-col>
                         <v-col class="col-12" sm="8" md="8">
-                          <v-text-field style="text-align-last: center" v-model="implementer" hide-details="auto" dense
-                            outlined></v-text-field>
+                          <v-select style="text-align-last: left" v-model="user_id" :items="data_position_Implementer"
+                            item-text="user_firstname" item-value="id" hide-details="auto" dense outlined chips multiple
+                            persistent-hint>
+                            <template v-slot:item="{ item }">
+                              {{ item.user_firstname }}
+                            </template>
+                          </v-select>
                         </v-col>
                       </v-row>
                       <v-row>
-                        <v-col class="mb-0 pb-0 hidden-sm-and-up" style="place-self: center">
+                        <!-- <v-col class="mb-0 pb-0 hidden-sm-and-up" style="place-self: center">
                           <h4 class="">Status</h4>
-                        </v-col>
+                        </v-col> -->
                         <v-col class="mb-0 pb-0 hidden-sm-and-up" style="place-self: center">
                           <h4 class="">Level</h4>
                         </v-col>
                       </v-row>
                       <v-row>
-                        <v-col class="hidden-xs-only" sm="2" md="2" style="place-self: center">
-                          <h4 class="">Status</h4>
-                        </v-col>
-                        <v-col sm="4" md="4">
-                          <template>
-                            <v-text-field style="text-align-last: center" v-model="status" hide-details="auto" readonly
-                              dense outlined>
-                              <template v-slot:prepend-inner>
-                                <v-icon :color="
-                                  status === 'Complete' ? 'green' : 'red'
-                                ">mdi-circle</v-icon>
-                              </template>
-                            </v-text-field>
-                          </template>
-                        </v-col>
-                        <v-col class="hidden-xs-only" sm="2" md="2" style="place-self: center">
+                        <v-col class="hidden-xs-only" sm="4" md="4" style="place-self: center">
                           <h4 class="">Level</h4>
                         </v-col>
-                        <v-col sm="4" md="4">
-                          <v-text-field style="text-align-last: center" v-model="level" hide-details="auto" dense
-                            outlined></v-text-field>
+                        <v-col class="" sm="8" md="8">
+                          <v-select style="text-align-last: center" v-model="level" :items="selectlevel"
+                            hide-details="auto" dense outlined persistent-hint></v-select>
                         </v-col>
                       </v-row>
-                      <v-row> </v-row>
+                      <v-row>
+                        <v-col class="mb-0 pb-0 hidden-sm-and-up" style="place-self: center">
+                          <h4 class="">Start-End</h4>
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col class="hidden-xs-only" sm="4" md="4" style="place-self: center">
+                          <h4 class="">Start-End</h4>
+                        </v-col>
+                        <!-- ปุ่มเลือกวันที่-->
+                        <v-col cols="12" sm="4" md="4">
+                          <v-menu ref="menuDateStart" v-model="menuDateStart" :close-on-content-click="false"
+                            transition="scale-transition" offset-y min-width="290px">
+                            <template v-slot:activator="{ on, attrs }">
+                              <v-text-field v-model="newscreen_dateStart" label="Start"
+                                prepend-icon="mdi mdi-calendar-clock-outline" readonly v-bind="attrs"
+                                v-on="on"></v-text-field>
+                            </template>
+                            <v-date-picker v-model="newscreen_dateStart" no-title scrollable>
+                              <v-spacer></v-spacer>
+                              <v-btn text color="primary" @click="menuDateStart = false">Cancel</v-btn>
+                              <v-btn text color="primary" @click="
+                                $refs.menuDateStart.save(newscreen_dateStart)
+                              ">OK</v-btn>
+                            </v-date-picker>
+                          </v-menu>
+                        </v-col>
+                        <v-col cols="12" sm="4" md="4">
+                          <v-menu ref="menuDateEnd" v-model="menuDateEnd" :close-on-content-click="false"
+                            transition="scale-transition" offset-y min-width="290px">
+                            <template v-slot:activator="{ on, attrs }">
+                              <v-text-field v-model="newscreen_dateEnd" label="End"
+                                prepend-icon="mdi mdi-calendar-clock-outline" readonly v-bind="attrs"
+                                v-on="on"></v-text-field>
+                            </template>
+                            <v-date-picker v-model="newscreen_dateEnd" no-title scrollable>
+                              <v-spacer></v-spacer>
+                              <v-btn text color="primary" @click="menuDateEnd = false">Cancel</v-btn>
+                              <v-btn text color="primary" @click="
+                                $refs.menuDateEnd.save(newscreen_dateEnd)
+                              ">OK</v-btn>
+                            </v-date-picker>
+                          </v-menu>
+                        </v-col>
+                        <!--  -->
+                      </v-row>
                       <v-row>
                         <v-col class="mb-0 pb-0 hidden-sm-and-up" style="place-self: center">
                           <h4 class="">Manday</h4>
                         </v-col>
                       </v-row>
                       <v-row>
-                        <v-col class="hidden-xs-only" cols="3" style="place-self: center">
+                        <v-col class="hidden-xs-only" cols="4" style="place-self: center">
                           <h4 class="">Manday</h4>
                         </v-col>
-                        <v-col class="col-10" sm="4" md="4">
-                          <v-text-field style="text-align-last: center" v-model="manday" hide-details="auto" dense
-                            outlined type="number"></v-text-field>
+                        <v-col class="col-10" sm="6" md="6">
+                          <h4 class="">{{ manday }}</h4>
                         </v-col>
                         <v-col style="place-self: center">
                           <h4 class="">Days</h4>
                         </v-col>
                       </v-row>
                       <!--  -->
-                      <!-- <v-row>
-                                                <v-col cols="12" sm="6" md="6" v-show="mode == 'create'">
-                                                    <v-menu ref="menuDateStart" v-model="menuDateStart"
-                                                        :close-on-content-click="false" transition="scale-transition"
-                                                        offset-y min-width="290px">
-                                                        <template v-slot:activator="{ on, attrs }">
-                                                            <v-text-field v-model="dateStart" label="Screen Start"
-                                                                prepend-icon="mdi mdi-calendar-clock-outline" readonly
-                                                                v-bind="attrs" v-on="on"></v-text-field>
-                                                        </template>
-                                                        <v-date-picker v-model="dateStart" no-title scrollable>
-                                                            <v-spacer></v-spacer>
-                                                            <v-btn text color="primary"
-                                                                @click="menuDateStart = false">Cancel</v-btn>
-                                                            <v-btn text color="primary"
-                                                                @click="$refs.menuDateStart.save(dateStart)">OK</v-btn>
-                                                        </v-date-picker>
-                                                    </v-menu>
-                                                </v-col>
-                                                <v-col cols="12" sm="6" md="6" v-show="mode == 'create'">
-                                                    <v-menu ref="menuDateEnd" v-model="menuDateEnd"
-                                                        :close-on-content-click="false" transition="scale-transition"
-                                                        offset-y min-width="290px">
-                                                        <template v-slot:activator="{ on, attrs }">
-                                                            <v-text-field v-model="dateEnd" label="Screen End"
-                                                                prepend-icon="mdi mdi-calendar-clock-outline" readonly
-                                                                v-bind="attrs" v-on="on"></v-text-field>
-                                                        </template>
-                                                        <v-date-picker v-model="dateEnd" no-title scrollable>
-                                                            <v-spacer></v-spacer>
-                                                            <v-btn text color="primary"
-                                                                @click="menuDateEnd = false">Cancel</v-btn>
-                                                            <v-btn text color="primary"
-                                                                @click="$refs.menuDateEnd.save(dateEnd)">OK</v-btn>
-                                                        </v-date-picker>
-                                                    </v-menu>
-                                                </v-col>
-                                            </v-row> -->
-                      <!--  -->
                       <v-row class="" style="justify-content: right">
                         <v-btn @click="(dialog_newscreen = false), ClearText()" class="mr-2" elevation="2" color="error"
                           style="color: white; border-radius: 10px">Cancel
                         </v-btn>
 
-                        <v-btn @click="
-                          (dialog_newscreen = false),
-                          (calculateManDay(manday), ClearText())
-                        " class="mr-2" elevation="2" color="primary" style="color: white; border-radius: 10px">Create
+                        <v-btn @click="CreateAllScreen()" class="mr-2" elevation="2" color="primary"
+                          style="color: white; border-radius: 10px">Create
                         </v-btn>
                       </v-row>
                       <!--  -->
@@ -253,9 +247,7 @@
               <v-card class="mt-0" tile outlined style="box-shadow: none; border: none">
                 <!-- code text fields system  -->
                 <v-container fluid>
-                  <v-card-title>
-                    System Detail
-                  </v-card-title>
+                  <v-card-title> System Detail </v-card-title>
                   <!-- กล่องข้อความ 1 -->
                   <v-row>
                     <v-col>
@@ -268,7 +260,7 @@
                         <v-col class="hidden-xs-only" sm="4" md="4" style="place-self: center">
                           <v-card-text class="">System ID</v-card-text>
                         </v-col>
-                        <v-col class="col-12" sm="8" md="8" style="align-self: center;">
+                        <v-col class="col-12" sm="8" md="8" style="align-self: center">
                           <v-text-field style="text-align-last: center" v-model="system_id" hide-details="auto" dense
                             outlined></v-text-field>
                         </v-col>
@@ -287,7 +279,7 @@
                         <v-col class="hidden-xs-only" sm="4" md="4" style="place-self: center">
                           <v-card-text class="">System Name(TH)</v-card-text>
                         </v-col>
-                        <v-col class="col-12" sm="8" md="8" style="align-self: center;">
+                        <v-col class="col-12" sm="8" md="8" style="align-self: center">
                           <v-text-field style="text-align-last: center" v-model="system_nameTH" hide-details="auto" dense
                             outlined></v-text-field>
                         </v-col>
@@ -306,7 +298,7 @@
                         <v-col class="hidden-xs-only" sm="4" md="4" style="place-self: center">
                           <v-card-text class="">System Name(EN)</v-card-text>
                         </v-col>
-                        <v-col class="col-12" sm="8" md="8" style="align-self: center;">
+                        <v-col class="col-12" sm="8" md="8" style="align-self: center">
                           <v-text-field style="text-align-last: center" v-model="system_nameEN" hide-details="auto" dense
                             outlined></v-text-field>
                         </v-col>
@@ -325,7 +317,7 @@
                         <v-col class="hidden-xs-only" sm="4" md="4" style="place-self: center">
                           <v-card-text class="">Shot system name</v-card-text>
                         </v-col>
-                        <v-col class="col-12" sm="8" md="8" style="align-self: center;">
+                        <v-col class="col-12" sm="8" md="8" style="align-self: center">
                           <v-text-field style="text-align-last: center" v-model="short_system_name" hide-details="auto"
                             dense outlined></v-text-field>
                         </v-col>
@@ -342,28 +334,30 @@
                     <v-btn @click="editSystem = false" color="primary" text>
                       <h5>Close</h5>
                     </v-btn>
-                    <v-btn @click="(editSystem = false), (updateSystem())" color="primary" dark>
+                    <v-btn @click="(editSystem = false), updateSystem()" color="primary" dark>
                       <h5>update</h5>
                     </v-btn>
                   </v-card-actions>
                   <!--  -->
                   <v-dialog v-model="dialog_delete" max-width="400px">
                     <v-card>
-                      <div class="mt-2" style="text-align: center;">
+                      <div class="mt-2" style="text-align: center">
                         <v-icon size="70px" class="mt-2" color="error">mdi-alert-outline</v-icon>
                       </div>
                       <v-card-title>
-                        Are you such <b style="color:red;">&nbsp; delete &nbsp;</b> system?
+                        Are you such
+                        <b style="color: red">&nbsp; delete &nbsp;</b> system?
                       </v-card-title>
                       <v-card-text>
-                        If delete system, All screen in this system will also be deleted.
+                        If delete system, All screen in this system will also be
+                        deleted.
                       </v-card-text>
                       <v-card-actions>
                         <v-spacer></v-spacer>
                         <v-btn @click="(dialog_delete = false), (editSystem = false)" color="primary" text>
                           <h5>Cancle</h5>
                         </v-btn>
-                        <v-btn @click="deleteScreenByIdSystem()" color="primary" dark>
+                        <v-btn @click="deleteAll()" color="primary" dark>
                           <h5>Delete</h5>
                         </v-btn>
                       </v-card-actions>
@@ -416,6 +410,8 @@ export default {
   layout: "admin",
   data() {
     return {
+      newscreen_dateStart: new Date().toISOString().substr(0, 10),
+      newscreen_dateEnd: new Date().toISOString().substr(0, 10),
       id: this.$route.params.id,
       dataSystem: [],
       projectID: null,
@@ -426,10 +422,12 @@ export default {
       dialog_newscreen: false,
       screenID: "",
       screenname: "",
-      developer: "",
-      implementer: "",
+      developer: [],
+      implementer: [],
+      user_id: [],
       status: "Not Complete",
-      level: null,
+      level: ["1"],
+      selectlevel: ["1", "2", "3", "4", "5"],
       manday: null,
       mode: "create",
       today: new Date(),
@@ -445,15 +443,29 @@ export default {
       system_nameEN: "",
       short_system_name: "",
       count_screen: "",
-
+      menuDateStart: true,
+      menuDateEnd: true,
+      data_position_Developer: [],
+      data_position_Implementer: [],
+      name_Dev: [],
+      name_Implementer: [],
+      imageImplementer: null,
+      screen_idd: [],
     };
   },
   created() {
     this.getSystemID();
     this.getProject();
     this.getScreens();
+    this.getPosition_Developer();
+    this.getPosition_Implementer();
     // this.getProjectID();
     // this.calculateManDay();
+  },
+  updated() {
+    this.calculateManDay();
+    console.log(this.user_id);
+    // console.log(this.implementer);
   },
   methods: {
     async getScreens() {
@@ -462,12 +474,64 @@ export default {
         .then((data) => {
           this.AllScreens = data.data;
           console.log(this.AllScreens.length);
-          this.count_screens();
 
+          this.count_screens();
           // this.count_screen = this.AllScreens.length;
           // console.log(this.count_screen);
-
         });
+    },
+    async getNewScreenAndAddUserScreen() {
+      try {
+        this.getScreens();
+        await this.$axios
+          .get("/screens/getAll?screen_id=" + this.screenID)
+          .then((data) => {
+            this.screen_idd = data.data[0].id;
+            // this.addUser_Screen(screen_id);
+          });
+        console.log(this.screen_idd);
+        console.log("post User_Screen success!");
+      } catch (error) {
+        console.log(error);
+        alert(error);
+      }
+    },
+    async getPosition_Developer() {
+      await this.$axios
+        .get("/users/getAll?user_position=Developer")
+        .then((data) => {
+          this.data_position_Developer = data.data;
+          this.name_Dev = this.data_position_Developer.map(
+            (item) => item.user_firstname
+          );
+          console.log(data.data);
+        });
+    },
+    async getPosition_Implementer() {
+      await this.$axios
+        .get("/users/getAll?user_position=Implementer")
+        .then((data) => {
+          this.data_position_Implementer = data.data;
+          this.name_Implementer = this.data_position_Implementer.map(
+            (item) => item.user_firstname
+          );
+          console.log(this.name_Implementer);
+        });
+    },
+    async addUser_Screen(screenID) {
+      try {
+        await this.$axios.post("/user_screens/createUser_screen", {
+          user_id: this.user_id,
+          screen_id: screenID,
+          system_id: this.id,
+          project_id: this.projectID,
+        });
+        console.log("POST success for user ID: " + screenID);
+        alert("Success!!");
+      } catch (error) {
+        console.log(error);
+        alert("user_screen: " + error);
+      }
     },
     count_screens() {
       const c = this.AllScreens.length;
@@ -478,13 +542,33 @@ export default {
       }
       return;
     },
-    calculateManDay(manday) {
-      this.dateEnd = new Date(
-        this.today.getTime() + manday * 24 * 60 * 60 * 1000
+    async CreateAllScreen() {
+      try {
+        this.calculateManDay();
+        console.log("Man-day calculation completed successfully.");
+        await this.createScreen();
+        console.log("Screen creation completed successfully.");
+        await this.getNewScreenAndAddUserScreen();
+        console.log(
+          "New screen and user screen association completed successfully."
+        );
+        await this.addUser_Screen(this.screen_idd);
+        console.log("User screen creation completed successfully.");
+        this.ClearText();
+        this.dialog_newscreen = false;
+      } catch (error) {
+        console.log(error);
+        alert(error);
+      }
+    },
+    calculateManDay() {
+      const dateStart = new Date(this.newscreen_dateStart);
+      const dateEnd = new Date(this.newscreen_dateEnd);
+      const timeDiff = Math.abs(dateEnd.getTime() - dateStart.getTime());
+      this.manday = Math.ceil(timeDiff / (1000 * 3600 * 24)); // convert to days and round up
+      console.log(
+        `The difference between ${this.newscreen_dateStart} and ${this.newscreen_dateEnd} is ${this.manday} days`
       );
-      console.log(this.today.toISOString().substr(0, 10));
-      console.log(this.dateEnd.toISOString().substr(0, 10));
-      this.createScreen();
       return;
     },
     resetday() {
@@ -526,40 +610,72 @@ export default {
       });
     },
     async updateSystem() {
-      await this.$axios.put("/systems/updateSystem/" + this.id, {
-        project_id: this.projectID,
-        system_id: this.system_id,
-        system_nameTH: this.system_nameTH,
-        system_nameEN: this.system_nameEN,
-        system_shortname: this.short_system_name,
-        system_member: "dev1",
-      }).then((response) => {
-        console.log(response);
-        console.log("Update success");
-        alert("Update success");
-        window.location.reload();
-      }).catch((err) => {
+      await this.$axios
+        .put("/systems/updateSystem/" + this.id, {
+          project_id: this.projectID,
+          system_id: this.system_id,
+          system_nameTH: this.system_nameTH,
+          system_nameEN: this.system_nameEN,
+          system_shortname: this.short_system_name,
+          system_member: "dev1",
+        })
+        .then((response) => {
+          console.log(response);
+          console.log("Update success");
+          alert("Update success");
+          window.location.reload();
+        })
+        .catch((err) => {
+          console.log(err);
+          alert(err);
+        });
+    },
+    async deleteAll() {
+      await this.deleteUser_screens();
+      await this.deleteScreenByIdSystem();
+      await this.deleteSystem();
+    },
+    async deleteUser_screens() {
+      try {
+        await this.$axios
+          .delete("/user_screens/deleteSystemID/" + this.id)
+          .then((res) => {
+            console.log("delete success");
+            alert("delete user_screen success");
+            
+          })
+          .catch((err) => {
+            console.log(err);
+            alert(err);
+          });
+      } catch (err) {
         console.log(err);
         alert(err);
-      });
+      }
     },
     async deleteSystem() {
-      this.$axios.delete("/systems/delete/" + this.id).then((res) => {
-        alert("Detete System Success!");
-        this.$router.push("/manageProject");
-      }).catch((err) => {
-        console.log(err);
-        alert(err);
-      });
+      this.$axios
+        .delete("/systems/delete/" + this.id)
+        .then((res) => {
+          alert("Detete System Success!");
+          this.$router.push("/manageProject");
+        })
+        .catch((err) => {
+          console.log(err);
+          alert(err);
+        });
     },
     async deleteScreenByIdSystem() {
-      this.$axios.delete("/screens/deleteScreen/" + this.id).then((res) => {
-        alert("Detete ScreenAll Success!");
-        this.deleteSystem();
-      }).catch((err) => {
-        console.log(err);
-        alert(err);
-      });
+      this.$axios
+        .delete("/screens/deleteScreen/" + this.id)
+        .then((res) => {
+          alert("Detete ScreenAll Success!");
+          this.deleteSystem();
+        })
+        .catch((err) => {
+          console.log(err);
+          alert(err);
+        });
     },
     async getProject() {
       await this.$axios.get("/projects/getAll").then((res) => {
@@ -579,35 +695,34 @@ export default {
       this.photo = "";
       this.screenID = "";
       this.screenname = "";
-      this.developer = "";
-      this.implementer = "";
+      this.user_id = [];
       this.status = "Not Complete";
       this.level = null;
       this.manday = null;
     },
     async createScreen() {
       try {
-        const today = this.today.toISOString().substr(0, 10);
-        const dateEnd = this.dateEnd.toISOString().substr(0, 10);
+        const datestart = this.newscreen_dateStart;
+        const dateEnd = this.newscreen_dateEnd;
+        const id_screen = this.screenID;
         const formData = new FormData();
         formData.append("image", this.imageFileUpload);
         formData.append("system_id", this.id);
         formData.append("project_id", this.projectID);
         formData.append("screen_id", this.screenID);
         formData.append("screen_name", this.screenname);
-        formData.append("screen_developer", this.developer);
-        formData.append("screen_implementer", this.implementer);
+        formData.append("screen_developer", "");
+        formData.append("screen_implementer", "");
         formData.append("screen_status", this.status);
         formData.append("screen_level", this.level);
-        formData.append("screen_start", today);
+        formData.append("screen_start", datestart);
         formData.append("screen_end", dateEnd);
         formData.append("screen_manday", this.manday);
 
         if (
           this.screenID == "" ||
           this.screenname == "" ||
-          this.developer == "" ||
-          this.implementer == "" ||
+          this.user_id == [] ||
           this.status == "" ||
           this.level == null ||
           this.manday == null
@@ -619,15 +734,19 @@ export default {
               "Content-Type": "multipart/form-data",
             },
           });
-          console.log("post success");
+          console.log("create screen success");
+          this.getNewScreenAndAddUserScreen();
           const promise = new Promise((resolve, reject) => {
             resolve();
           });
           promise.then(() => {
             setTimeout(() => {
-              alert("success");
-              window.location.reload();
-            }, 1000);
+              alert("success!!");
+              // this.addUser_Screen(id_screen);
+              // this.ClearText();
+              // this.dialog_newscreen = false
+              // window.location.reload();
+            }, 2000);
           });
         }
       } catch (error) {
