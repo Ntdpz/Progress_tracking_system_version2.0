@@ -20,8 +20,19 @@ router.get("/test", async (req, res) => {
 
 // * GET All FROM issues
 router.get("/getAll", async (req, res) => {
+  const projectFilter = req.query.project_id;
+  const systemFilter = req.query.system_id;
+  let query = "SELECT * FROM issues";
+  const queryParams = [];
+  if (projectFilter) {
+    query += " WHERE project_id = ?";
+    queryParams.push(projectFilter);
+  } else if (systemFilter) {
+    query += " WHERE system_id = ?";
+    queryParams.push(systemFilter);
+  }
   try {
-    connection.query("SELECT * FROM issues", (err, results, fields) => {
+    connection.query(query, queryParams, (err, results, fields) => {
       if (err) {
         console.log(err);
         return res.status(400).send();

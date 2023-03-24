@@ -24,9 +24,9 @@
             <v-row no-gutters>
               <v-col cols="4">
                 <v-row style="margin-top: 1%">
-                  <h4>{{ system.system_nameTH }}</h4>
+                  <h4>{{ system.id }} {{ system.system_nameTH }}</h4>
                   <p style="color: #b6b5b5; font-size: 16px; margin-left: 5%">
-                    3 Issue
+                    <!-- 3 Issue -->
                   </p>
                 </v-row>
               </v-col>
@@ -68,7 +68,12 @@
               ></span>
               <h4 style="color: black">Add New Issue</h4>
             </v-btn>
-            <dialog-issue :dialog.sync="dialog" :projectName="projectName" :systemName="system.system_nameTH" :mode="'create'"/>
+            <dialog-issue
+              :dialog.sync="dialog"
+              :projectName="projectName"
+              :systemName="system.system_nameTH"
+              :mode="'create'"
+            />
             <!-- *dialog -->
             <!-- <v-dialog v-model="dialog" persistent max-width="600px">
               <template v-slot:activator="{ on, attrs }">
@@ -313,6 +318,9 @@
           <!-- *tabs -->
           <v-tabs fixed-tabs color="primary" class="mt-5">
             <v-tab>
+              <h3 style="color: black">All</h3>
+            </v-tab>
+            <v-tab>
               <h3 style="color: black">PNI</h3>
             </v-tab>
             <v-tab>
@@ -326,7 +334,7 @@
           <!-- *Table 1 -->
           <v-data-table
             :headers="headers"
-            :items="issue"
+            :items="system.assignedIssues"
             sort-by="calories"
             class="v-data-table elevation-1 mb-2"
             v-remove-row-borders
@@ -338,7 +346,7 @@
                     class="pa-1"
                     style="background-color: #1cff17; text-align: left"
                   >
-                    Own issue
+                    assignedIssues
                   </h5>
                 </v-toolbar-title>
               </v-toolbar>
@@ -347,17 +355,32 @@
               <v-icon>mdi-format-list-bulleted</v-icon>
               {{ item.issue_name }}
             </template>
+            <!-- <template v-slot:[`item.issue_type`]="{ item }">
+              {{ item.issue_type }}
+            </template> -->
+            <template v-slot:[`item.formattedDateEnd`]="{ item }">
+              {{ item.formattedDateEnd }}
+            </template>
             <template v-slot:[`item.issue_status`]="{ item }">
-              <v-icon style="color: #1cff17">mdi-circle</v-icon>
+              <v-icon
+                v-if="item.issue_status == 'active'"
+                style="color: #1cff17"
+                >mdi-circle</v-icon
+              >
+              <v-icon
+                v-if="item.issue_status == 'open'"
+                style="color: gainsboro"
+                >mdi-circle</v-icon
+              >
               {{ item.issue_status }}
             </template>
-            <template v-slot:[`item.issue_Priotity`]="{ item }">
+            <template v-slot:[`item.issue_priotity`]="{ item }">
               <v-icon style="color: #ff0000">mdi-flag-outline</v-icon>
-              {{ item.issue_Priotity }}
             </template>
             <template v-slot:[`item.issue_assignees`]>
               <v-icon style="color: black">mdi-account-circle</v-icon>
               <!-- {{ item.issue_assignees }} -->
+              <p v-show="item.issue_assign == ''">N/A</p>
             </template>
             <template v-slot:[`item.actions`]>
               <v-icon
@@ -373,7 +396,7 @@
           <v-dialog v-model="dialogInfo" width="80%">
             <v-card>
               <v-card-title class="text-h5">
-                Project Name > System 1 > Issue 1
+                <h5>Project Name > System 1 > Issue 1</h5>
               </v-card-title>
               <v-row class="pa-5">
                 <v-col>
@@ -464,7 +487,9 @@
                 <v-col
                   ><v-row class="ml-2">
                     <v-col>
-                      <v-row class="text-h6"> Developer Section 1 </v-row>
+                      <v-row class="text-h6">
+                        <h6>Developer Section 1</h6></v-row
+                      >
                       <v-row class="mt-5">
                         <v-col cols="6">
                           <v-row>
@@ -615,7 +640,9 @@
                         </v-col>
                       </v-row>
                       <v-divider></v-divider>
-                      <v-row class="text-h6 mt-2"> Developer Section 2 </v-row>
+                      <v-row class="text-h6 mt-2"
+                        ><h6>Developer Section 2</h6>
+                      </v-row>
                       <v-row>
                         <v-col cols="6">
                           <v-row>
@@ -732,7 +759,7 @@
           <!-- *Table 2 -->
           <v-data-table
             :headers="headers"
-            :items="issue"
+            :items="system.unassignedIssues"
             sort-by="calories"
             class="v-data-table elevation-1"
             v-remove-row-borders
@@ -744,7 +771,7 @@
                     class="pa-1"
                     style="background-color: #aaaaaa; text-align: left"
                   >
-                    No one assigned
+                    unassignedIssues
                   </h5>
                 </v-toolbar-title>
               </v-toolbar>
@@ -752,6 +779,9 @@
             <template v-slot:[`item.issue_name`]="{ item }">
               <v-icon>mdi-format-list-bulleted</v-icon>
               {{ item.issue_name }}
+            </template>
+            <template v-slot:[`item.issue_type`]="{ item }">
+              {{ item.issue_type }}
             </template>
             <template v-slot:[`item.issue_status`]="{ item }">
               <v-icon style="color: #1cff17">mdi-circle</v-icon>
@@ -761,10 +791,7 @@
               <v-icon style="color: #ff0000">mdi-flag-outline</v-icon>
               {{ item.issue_Priotity }}
             </template>
-            <template v-slot:[`item.issue_assignees`]>
-              <v-icon style="color: black">mdi-account-circle</v-icon>
-              <!-- {{ item.issue_assignees }} -->
-            </template>
+            <template #item.issue_assign="{ value }"> No assign </template>
             <template v-slot:[`item.actions`]>
               <v-icon
                 class="mr-2"
@@ -787,6 +814,7 @@
 import Vue from "vue";
 import Searchbar from "~/components/Searchbar.vue";
 import DialogIssue from "../../components/DialogIssue.vue";
+import moment from "moment";
 export default {
   components: { Searchbar, DialogIssue },
   layout: "admin",
@@ -809,22 +837,20 @@ export default {
         .toISOString()
         .substr(0, 10),
       menu: false,
-      type: "",
-      PNC: false,
-      Newreq: false,
       dialogInfo: false,
       headers: [
         {
-          text: "Issues No.",
+          text: "Issues ID",
           align: "start",
           sortable: false,
-          value: "issue_no",
+          value: "issue_id",
         },
-        { text: "Issues Name", value: "issue_name", sortable: false },
-        { text: "End Date", value: "issue_end_date" },
+        { text: "Issues Name", value: "issue_name" },
+        { text: "Issues Type", value: "issue_type" },
+        { text: "End Date", value: "formattedDateEnd" },
         { text: "Status", value: "issue_status" },
-        { text: "Priotity", value: "issue_Priotity" },
-        { text: "Assignees", value: "issue_assignees" },
+        { text: "Priotity", value: "issue_priority" },
+        { text: "Assigned To", value: "issue_assign" },
         { text: "Actions", value: "actions", sortable: false },
       ],
       issue: [],
@@ -832,78 +858,61 @@ export default {
       systems: [],
       projectName: "",
       systemslength: "",
-      priotity_select: ["Critical", "Hight", "Low"],
-      type_select: ["PNI", "PNC", "New Req"],
-      screen_select: ["Screen 1", "Screen 2"],
-      qc_select: ["QC1"],
-      dev_select: ["Dev1"],
-      selected: ["UI"],
     };
   },
   async created() {
     await this.initialize();
     await this.getProject();
     await this.getSystems();
+    await this.getIssue();
+    // await this.getIssues2();
   },
-  updated() {
-    if (this.type == "PNC") {
-      this.PNC = true;
-      this.Newreq = false;
-    } else if (this.type == "PNI") {
-      this.PNC = false;
-      this.Newreq = false;
-    } else if (this.type == "New Req") {
-      this.Newreq = true;
-      this.PNC = false;
-    } else {
-      this.PNC = false;
-      this.Newreq = false;
-    }
-  },
+  updated() {},
+  computed: {},
   methods: {
     initialize() {
-      this.issue = [
-        {
-          issue_no: "SP-123xx-PNI-21/10/22-0001",
-          issue_name: "Issue name",
-          issue_end_date: "Nov 31, 2023",
-          issue_status: "Finished",
-          issue_Priotity: "Critical",
-          issue_assignees: "Dev",
-        },
-        {
-          issue_no: "SP-123xx-PNI-21/10/22-0002",
-          issue_name: "Issue name",
-          issue_end_date: "Nov 31, 2023",
-          issue_status: "Finished",
-          issue_Priotity: "Critical",
-          issue_assignees: "Dev",
-        },
-        {
-          issue_no: "SP-123xx-PNI-21/10/22-0003",
-          issue_name: "Issue name",
-          issue_end_date: "Nov 31, 2023",
-          issue_status: "Finished",
-          issue_Priotity: "Critical",
-          issue_assignees: "Dev",
-        },
-        {
-          issue_no: "SP-123xx-PNI-21/10/22-0004",
-          issue_name: "Issue name",
-          issue_end_date: "Nov 31, 2023",
-          issue_status: "Finished",
-          issue_Priotity: "Critical",
-          issue_assignees: "Dev",
-        },
-        {
-          issue_no: "SP-123xx-PNI-21/10/22-0005",
-          issue_name: "Issue name",
-          issue_end_date: "Nov 31, 2023",
-          issue_status: "Finished",
-          issue_Priotity: "Critical",
-          issue_assignees: "Dev",
-        },
-      ];
+      // this.issue = [
+      //   {
+      //     issue_no: "SP-123xx-PNI-21/10/22-0001",
+      //     issue_name: "Issue name",
+      //     issue_end_date: "Nov 31, 2023",
+      //     issue_status: "Finished",
+      //     issue_Priotity: "Critical",
+      //     issue_assignees: "Dev",
+      //   },
+      //   {
+      //     issue_no: "SP-123xx-PNI-21/10/22-0002",
+      //     issue_name: "Issue name",
+      //     issue_end_date: "Nov 31, 2023",
+      //     issue_status: "Finished",
+      //     issue_Priotity: "Critical",
+      //     issue_assignees: "Dev",
+      //   },
+      //   {
+      //     issue_no: "SP-123xx-PNI-21/10/22-0003",
+      //     issue_name: "Issue name",
+      //     issue_end_date: "Nov 31, 2023",
+      //     issue_status: "Finished",
+      //     issue_Priotity: "Critical",
+      //     issue_assignees: "Dev",
+      //   },
+      //   {
+      //     issue_no: "SP-123xx-PNI-21/10/22-0004",
+      //     issue_name: "Issue name",
+      //     issue_end_date: "Nov 31, 2023",
+      //     issue_status: "Finished",
+      //     issue_Priotity: "Critical",
+      //     issue_assignees: "Dev",
+      //   },
+      //   {
+      //     issue_no: "SP-123xx-PNI-21/10/22-0005",
+      //     issue_name: "Issue name",
+      //     issue_end_date: "Nov 31, 2023",
+      //     issue_status: "Finished",
+      //     issue_Priotity: "Critical",
+      //     issue_assignees: "Dev",
+      //   },
+      // ];
     },
     infoItem() {
       console.log("SHow");
@@ -930,12 +939,47 @@ export default {
             res.data.filter((system) => system.project_id === project.id)
           );
         });
+        console.log(this.systems, "system");
       });
       this.systems = this.project[0].systems;
       this.systemslength = this.project[0].systems.length;
       console.log(this.project, "this.project");
       console.log(this.system, "this.system");
       console.log(this.systemslength, "this.systemslength");
+    },
+    async getIssue() {
+      try {
+        const res = await this.$axios.get(
+          "/issues/getAll?project_id=" + this.id
+        );
+        this.issue = res.data;
+        this.issue.forEach((issue) => {
+          const dateEnd = moment(issue.issue_end, "YYYY-MM-DDTHH:mm:ss.SSSZ");
+          issue.formattedDateEnd = dateEnd.format("YYYY-MM-DD");
+          // console.log(issue.formattedDateEnd);
+        });
+        this.systems.forEach((system) => {
+          Vue.set(
+            system,
+            "assignedIssues",
+            this.issue.filter(
+              (issue) =>
+                issue.system_id === system.id && issue.issue_assign !== ""
+            )
+          );
+          Vue.set(
+            system,
+            "unassignedIssues",
+            this.issue.filter(
+              (issue) =>
+                issue.system_id === system.id && issue.issue_assign === ""
+            )
+          );
+        });
+        console.log(this.systems, "system issue2");
+      } catch (err) {
+        console.error(err);
+      }
     },
   },
 };

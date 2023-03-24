@@ -4,14 +4,23 @@
       <v-card-text>
         <v-expansion-panels>
           <v-expansion-panel
-            v-for="(system, index) in projects[0].systems"
-            :key="index"
+            v-for="(system, index) in systems"
+            :key="system.id"
           >
             <v-expansion-panel-header>
-              {{ system.system_nameEN }}
+              {{ system.id }} / {{ system.system_nameTH }}
             </v-expansion-panel-header>
             <v-expansion-panel-content>
-              <div>{{ system.id }}</div>
+              <v-list>
+                <v-list-item-group>
+                  <v-list-item
+                    v-for="(issue, index) in system.issues"
+                    :key="issue.id"
+                  >
+                    {{ issue.id }} / {{ issue.issue_name }}
+                  </v-list-item>
+                </v-list-item-group>
+              </v-list>
             </v-expansion-panel-content>
           </v-expansion-panel>
         </v-expansion-panels>
@@ -25,35 +34,44 @@ import Vue from "vue";
 export default {
   data() {
     return {
-      projects: [],
+      id: 1,
+      systems: [],
     };
   },
   methods: {
-    async getProjects() {
-      await this.$axios.get("/projects/getOne/" + 1).then((res) => {
-        this.projects = res.data;
-
-        // Log the projects for debugging purposes
-        console.log(this.projects);
-      });
-    },
     async getSystems() {
-      await this.$axios.get("/systems/getAll").then((res) => {
-        // Loop through each project and assign the associated systems
-        this.projects.forEach((project) => {
+      try {
+        const res = await this.$axios.get("/systems/getAll");
+        this.systems = res.data;
+
+        // Log the systems for debugging purposes
+        console.log(this.systems);
+      } catch (err) {
+        console.error(err);
+      }
+    },
+    async getIssues() {
+      try {
+        const res = await this.$axios.get(
+          "/issues/getAll?project_id=" + this.id
+        );
+        // Loop through each system and assign the associated issues
+        this.systems.forEach((system) => {
           Vue.set(
-            project,
-            "systems",
-            res.data.filter((system) => system.project_id === project.id)
+            system,
+            "issues",
+            res.data.filter((issue) => issue.system_id === system.id)
           );
         });
-      });
-      console.log(this.projects);
+        console.log(this.systems);
+      } catch (err) {
+        console.error(err);
+      }
     },
   },
   mounted() {
-    this.getProjects();
     this.getSystems();
+    this.getIssues();
   },
 };
 </script>
