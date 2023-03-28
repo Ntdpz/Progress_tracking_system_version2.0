@@ -333,6 +333,7 @@ router.get("/getAll", async (req, res) => {
     const systemIDFilter = req.query.system_id;
     const idFilter = req.query.id;
     const screenIDFilter = req.query.screen_id;
+    const screen_project_system_Filter = req.query.screen_id;
     let query = "SELECT * FROM screens";
     const queryParams = [];
     if (systemIDFilter) {
@@ -344,7 +345,11 @@ router.get("/getAll", async (req, res) => {
     } else if (screenIDFilter) {
       query += " WHERE screen_id = ?";
       queryParams.push(screenIDFilter);
+    }else if (screen_project_system_Filter) {
+      query += " WHERE project_id = ? && system_id = ?";
+      queryParams.push(screen_project_system_Filter);
     }
+  
     connection.query(query, queryParams, (err, results, fields) => {
       if (err) {
         console.log(err);
@@ -527,5 +532,7 @@ router.post("/addUserScreen", async (req, res) => {
     return res.status(500).send();
   }
 });
+
+
 
 module.exports = router;

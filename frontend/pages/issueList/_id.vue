@@ -6,7 +6,7 @@
 
     <!-- *Header* -->
     <v-row class="mt-4 ml-2 mb-2">
-      <h4>{{ this.projectName }}</h4>
+      <h4>{{ this.projectName }} ({{ this.projectId }})</h4>
       <p style="color: #b6b5b5; font-size: 16px" class="ml-2">
         {{ this.systemslength }} Sub Systems
       </p>
@@ -72,6 +72,8 @@
               :dialog.sync="dialog"
               :projectName="projectName"
               :systemName="system.system_nameTH"
+              :projectId="projectId"
+              :systemId="system.id"
               :mode="'create'"
             />
             <!-- *dialog -->
@@ -856,7 +858,9 @@ export default {
       issue: [],
       project: [],
       systems: [],
+      default: [],
       projectName: "",
+      projectId: "",
       systemslength: "",
     };
   },
@@ -926,7 +930,9 @@ export default {
       await this.$axios.get("/projects/getOne/" + this.id).then((res) => {
         this.project = res.data;
         this.projectName = this.project[0].project_name;
-        console.log(this.project[0].project_name, "this.project");
+        this.projectId = this.project[0].id;
+        // console.log(this.project[0].project_name, "this.project");
+        console.log(this.project[0].id, "this.projectId");
       });
     },
     async getSystems() {
@@ -976,7 +982,7 @@ export default {
             )
           );
         });
-        console.log(this.systems, "system issue2");
+        // console.log(this.systems, "system issue2");
       } catch (err) {
         console.error(err);
       }

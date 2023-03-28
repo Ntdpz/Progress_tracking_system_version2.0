@@ -8,7 +8,9 @@
               <h5 v-show="mode === 'create'">Create Issue |</h5>
               <h5 v-show="mode === 'edit'">Edit Issue |</h5>
               <p style="font-size: 16px; margin-left: 2%">
-                {{ projectName }} > {{ systemName }}
+                {{ projectName }} ({{ projectId }})> {{ systemName }} ({{
+                  systemId
+                }})
               </p>
             </v-row>
           </v-col>
@@ -229,6 +231,8 @@ export default {
   props: {
     projectName: String,
     systemName: String,
+    projectId: String,
+    systemId: String,
     mode: String,
     dialog: {
       default: false,
@@ -242,12 +246,14 @@ export default {
       menu: false,
       PNC: false,
       Newreq: false,
-      priotity_select: ["Critical", "Hight", "Low"],
-      type_select: ["PNI", "PNC", "New Req"],
-      screen_select: ["Screen 1", "Screen 2"],
+      priotity_select: [],
+      type_select: [],
+      screen_select: [],
       qc_select: ["QC1"],
       dev_select: ["Dev1"],
       selected: ["UI"],
+      default: [],
+      screen_selectDefault: [],
       form: {
         screen_id: "",
         system_id: "",
@@ -292,6 +298,11 @@ export default {
       this.Newreq = false;
     }
     console.log(this.form);
+    console.log(this.systemId, "systemId");
+  },
+  async mounted() {
+    await this.getDefault();
+    await this.getScreenDefault();
   },
   methods: {
     close() {
@@ -302,8 +313,8 @@ export default {
         this.form.issue_end = this.date;
         const data = {
           screen_id: "1",
-          system_id: "1",
-          project_id: "1",
+          system_id: this.systemId,
+          project_id: this.projectId,
           issue_name: this.form.issue_name,
           issue_id: this.form.issue_id,
           issue_type: this.form.issue_type,
@@ -320,14 +331,13 @@ export default {
           issue_filename: this.form.issue_filename,
           issue_des_dev: this.form.issue_des_dev,
           issue_des_implementer: this.form.issue_des_implementer,
-          issue_start: "2023-02-14",
-          issue_expected: "2023-02-14",
+          issue_start: null,
+          issue_expected: null,
           issue_status: this.form.issue_status,
-          issue_accepting: "2023-02-14",
+          issue_accepting: null,
           issue_manday: 1,
-          issue_complete: "2023-02-14",
+          issue_complete: null,
         };
-
         try {
           await this.$axios.post("/issues/createIssue", data);
           console.log("post success");
@@ -345,6 +355,44 @@ export default {
           console.error(error);
           alert("Error submitting form");
         }
+      }
+    },
+    async getDefault() {
+      try {
+        const res = await this.$axios.get("/default_settings/getAll");
+        this.default = res.data;
+        console.log(this.default, "this.dataDefault");
+        this.default.forEach((item) => {
+          if (item.issue_type) {
+            this.type_select.push(item.issue_type);
+          }
+          if (item.issue_priotity) {
+            this.priotity_select.push(item.issue_priotity);
+          }
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    async getScreenDefault() {
+      try {
+        const res = await this.$axios.get(
+          "/screens/getAll?project_id=" +
+            this.projectId +
+            "&&system_id=" +
+            this.systemId
+        );
+        this.screen_selectDefault = res.data;
+        // console.log(this.screen_select, "this.screen_select");
+        this.screen_selectDefault.forEach((item) => {
+          if (item.screen_name) {
+            this.screen_select.push(item.screen_name);
+          }
+          console.log(this.screen_selectDefault, "this.screen_selectDefault");
+          console.log(this.screen_select, "this.screen_select");
+        });
+      } catch (error) {
+        console.error(error);
       }
     },
   },

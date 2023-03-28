@@ -5,15 +5,7 @@ const express = require("express");
 const session = require("express-session");
 const app = express();
 
-//import router
-const usersRouter = require("./router/users");
-const projectsRouter = require("./router/projects");
-const systemsRouter = require("./router/systems");
-const screensRouter = require("./router/screens");
-const issuesRouter = require("./router/issues");
-const notificationsRouter = require("./router/notifications");
-const default_settingsRouter = require("./router/default_settings");
-const user_screens = require("./router/user_screens");
+const router = require("./router");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -31,25 +23,18 @@ app.use(
   })
 );
 
-app.use("/users", usersRouter);
-app.use("/projects", projectsRouter);
-app.use("/systems", systemsRouter);
-app.use("/screens", screensRouter);
-app.use("/issues", issuesRouter);
-app.use("/notifications", notificationsRouter);
-app.use("/default_settings", default_settingsRouter);
-app.use("/user_screens", user_screens);
+app.use("/", router);
 
-app.get("/getAll", async (req, res) => {
+app.get("/backend", async (req, res) => {
   try {
-    console.log("Hello");
+    res.send({message: 'Backend Started!'})
   } catch (err) {
     console.log(err);
   }
 });
 
-// app.listen(8300, () => {
-//   console.log("Server listening on port 8300");
+// app.listen(8236, () => {
+//   console.log("Server listening on port 8236");
 // });
 
 app.listen(7777, () => {
