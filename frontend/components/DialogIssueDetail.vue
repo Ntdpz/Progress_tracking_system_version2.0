@@ -15,13 +15,17 @@
             <v-col
               ><p>Type {{ IssueType }}</p></v-col
             >
-            <v-col><p>Screen {{IssueScreenId}}</p></v-col>
-            <v-col><p>Status {{IssueStatus}}</p> </v-col>
+            <v-col
+              ><p>Screen {{ IssueScreenId }}</p></v-col
+            >
+            <v-col
+              ><p>Status {{ IssueStatus }}</p>
+            </v-col>
             <v-col>
-              <p>Priority {{IssuePriority}}</p>
+              <p>Priority {{ IssuePriority }}</p>
               <v-icon style="color: #ff0000">mdi-flag-outline</v-icon>
             </v-col>
-            <v-col> End Date {{IssueEndDate}}</v-col>
+            <v-col> End Date {{ IssueEndDate }}</v-col>
           </v-row>
 
           <v-row>
@@ -33,7 +37,7 @@
                   placeholder="Issue Name"
                   outlined
                   dense
-                  v-model="IssueNam"
+                  v-model="IssueName"
                 ></v-text-field>
               </v-row>
             </v-col>
@@ -71,7 +75,7 @@
                   <v-avatar left>
                     <v-icon>mdi-account-circle</v-icon>
                   </v-avatar>
-                 {{IssueAssign}}
+                  {{ IssueAssign }}
                 </v-chip>
               </v-row>
             </v-col>
@@ -84,7 +88,7 @@
                   <v-avatar left>
                     <v-icon>mdi-account-circle</v-icon>
                   </v-avatar>
-                  {{IssueQC}}
+                  {{ IssueQC }}
                 </v-chip>
               </v-row>
             </v-col>
@@ -106,7 +110,7 @@
               <v-row class="mt-5">
                 <v-col cols="6">
                   <v-row>
-                     <!-- Date of accepting-->
+                    <!-- Date of accepting-->
                     <p class="pa-2">Date of accepting</p>
                     <v-menu
                       ref="menu"
@@ -171,7 +175,7 @@
               <v-row>
                 <v-col cols="6">
                   <v-row>
-                     <!-- Start date -->
+                    <!-- Start date -->
                     <v-menu
                       ref="menu"
                       v-model="menu"
@@ -206,7 +210,7 @@
                         </v-btn>
                       </v-date-picker>
                     </v-menu>
-                     <!-- Expected completion Date -->
+                    <!-- Expected completion Date -->
                     <v-menu
                       ref="menu"
                       v-model="menu"
@@ -255,7 +259,7 @@
                       placeholder="Status"
                       outlined
                       dense
-                      v-mode="IssueStatus"
+                      v-model="IssueStatus"
                     ></v-text-field>
                   </v-row>
                 </v-col>
@@ -263,7 +267,7 @@
               <v-row>
                 <v-col cols="6">
                   <v-row>
-                     <!-- Completion date-->
+                    <!-- Completion date-->
                     <p class="pa-2">Completion date</p>
                     <v-menu
                       ref="menu"
@@ -305,7 +309,12 @@
               <v-row>
                 <v-col cols="6">
                   <p class="">Cause / Remedy</p>
-                  <v-textarea solo name="input-7-4" label="Note" v-mode="IssueDesDev"></v-textarea>
+                  <v-textarea
+                    solo
+                    name="input-7-4"
+                    label="Note"
+                    v-mode="IssueDesDev"
+                  ></v-textarea>
                 </v-col>
               </v-row>
               <v-row class="justify-center mr-16 mt-5">
@@ -330,7 +339,7 @@
                   placeholder="Status"
                   outlined
                   dense
-                  v-mode="IssueStatus"
+                  v-model="IssueStatus"
                 ></v-text-field>
               </v-row>
             </v-col>
@@ -342,7 +351,7 @@
                 solo
                 name="input-7-4"
                 label="Note"
-                v-model="IssueDesImplementer"
+                v-model="Issue"
               ></v-textarea>
             </v-col>
           </v-row>
@@ -390,7 +399,9 @@ export default {
     },
   },
   data() {
-    return {};
+    return {
+      test: "active",
+    };
   },
   updated() {
     console.log("form", this.form);
