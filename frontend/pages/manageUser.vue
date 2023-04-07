@@ -1288,7 +1288,7 @@ export default {
         });
     },
     getImageUrl(fileName) {
-      return require(`@/uploads/${fileName}`);
+      return require(`../uploads/${fileName}`);
     },
 
     editItem(item) {

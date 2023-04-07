@@ -14,6 +14,7 @@ const issuesRouter = require("./router/issues");
 const notificationsRouter = require("./router/notifications");
 const default_settingsRouter = require("./router/default_settings");
 const user_screens = require("./router/user_screens");
+const user_systems = require("./router/user_systems");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -39,6 +40,7 @@ app.use("/issues", issuesRouter);
 app.use("/notifications", notificationsRouter);
 app.use("/default_settings", default_settingsRouter);
 app.use("/user_screens", user_screens);
+app.use("/user_systems", user_systems);
 
 app.get("/getAll", async (req, res) => {
   try {

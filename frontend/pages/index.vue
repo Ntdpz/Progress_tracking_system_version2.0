@@ -166,7 +166,22 @@
     </v-container>
   </div>
 </template>
-
+<!-- 
+<script>
+export default{
+  data(){
+    return{
+      defaultImage: "Logo.png",
+    }
+  },
+  methods:{
+    getImageUrl(fileName) {
+      return require(`@/uploads/${fileName}`);
+    },
+  },
+}
+</script>
+ -->
 <script>
 import DialogCreateProject from "../components/DialogCreateProject.vue";
 import Searchbar from "../components/Searchbar.vue";
