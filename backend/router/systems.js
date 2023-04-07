@@ -21,12 +21,16 @@ function generateId() {
 // * GET All FROM systems
 router.get("/getAll", async (req, res) => {
   try {
+    const systemIdFilter = req.query.system_id;
     const projectFilter = req.query.project_id;
     let query = "SELECT * FROM systems";
     const queryParams = [];
     if (projectFilter) {
       query += " WHERE project_id = ?";
       queryParams.push(projectFilter);
+    } else if (systemIdFilter) {
+      query += " WHERE system_id = ?";
+      queryParams.push(systemIdFilter);
     }
     connection.query(query, queryParams, (err, results, fields) => {
       if (err) {

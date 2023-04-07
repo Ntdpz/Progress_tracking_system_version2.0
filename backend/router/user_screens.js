@@ -75,9 +75,9 @@ router.get("/getOneScreenID/:screen_id", async (req, res) => {
     }
 });
 
-// * POST FROM user_screen
+// * POST FROM user_screens
 router.post("/createUser_screen", async (req, res) => {
-    const { user_id, screen_id,system_id,project_id } = req.body;
+    const { user_id, screen_id, system_id, project_id } = req.body;
 
     try {
         for (let i = 0; i < user_id.length; i++) {
@@ -279,9 +279,34 @@ router.delete("/deleteSystemID/:system_id", async (req, res) => {
                 if (results.affectedRows === 0) {
                     return res.status(404).json({ message: "No system_id with that" });
                 }
+                return res.status(200).json({ message: "screen_id deleted successfully!" });
+            }
+        );
+    } catch (err) {
+        console.log(err);
+        return res.status(500).send();
+    }
+});
+
+//* DELETE user by project_id
+router.delete("/deleteSystemID/:project_id", async (req, res) => {
+    const project_id = req.params.project_id;
+
+    try {
+        connection.query(
+            "DELETE FROM user_screens WHERE project_id = ?",
+            [project_id],
+            (err, results, fields) => {
+                if (err) {
+                    console.log(err);
+                    return res.status(400).send();
+                }
+                if (results.affectedRows === 0) {
+                    return res.status(404).json({ message: "No project_id with that" });
+                }
                 return res
                     .status(200)
-                    .json({ message: "screen_id deleted successfully!" });
+                    .json({ message: "project_id deleted successfully!" });
             }
         );
     } catch (err) {

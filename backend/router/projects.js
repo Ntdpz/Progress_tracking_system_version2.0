@@ -21,10 +21,17 @@ function generateId() {
 // * GET All FROM projects
 router.get("/getAll", async (req, res) => {
   try {
-    connection.query("SELECT * FROM projects", (err, results, fields) => {
+    const projectIdFilter = req.query.project_id;
+    let query = "SELECT * FROM projects";
+    const queryParams = [];
+    if (projectIdFilter) {
+      query += " WHERE project_id = ?";
+      queryParams.push(projectIdFilter);
+    }
+    connection.query(query, queryParams, (err, results, fields) => {
       if (err) {
         console.log(err);
-        return res.status(400).send();
+        return res.status(500).send();
       }
       res.status(200).json(results);
     });
@@ -33,6 +40,8 @@ router.get("/getAll", async (req, res) => {
     return res.status(500).send();
   }
 });
+
+
 
 //* GET one by id
 router.get("/getOne/:id", async (req, res) => {
