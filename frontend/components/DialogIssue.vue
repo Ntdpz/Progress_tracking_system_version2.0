@@ -47,11 +47,13 @@
               </v-col>
               <v-col cols="12" sm="6" md="4">
                 <v-select
-                  :items="screen_select"
+                  :items="screen_selectDefault"
                   label="Screen No."
                   dense
                   outlined
-                  v-model="form.screen_id"
+                  v-model="selectedScreen"
+                  item-text="screen_name"
+                  return-object="false"
                 ></v-select>
               </v-col>
               <v-col cols="12" sm="6" md="4">
@@ -254,6 +256,7 @@ export default {
       selected: ["UI"],
       default: [],
       screen_selectDefault: [],
+      selectedScreen: null,
       form: {
         screen_id: "",
         system_id: "",
@@ -276,7 +279,7 @@ export default {
         issue_des_implementer: "",
         issue_start: "",
         issue_expected: "",
-        issue_status: "",
+        issue_status: "open",
         issue_accepting: "",
         issue_manday: "",
         issue_complete: "",
@@ -297,8 +300,6 @@ export default {
       this.PNC = false;
       this.Newreq = false;
     }
-    console.log(this.form);
-    console.log(this.systemId, "systemId");
   },
   async mounted() {
     await this.getDefault();
@@ -311,8 +312,12 @@ export default {
     async saveIssue() {
       if (this.mode == "create") {
         this.form.issue_end = this.date;
+        const selectedScreenId = this.selectedScreen
+          ? this.selectedScreen.id
+          : null;
+        console.log(selectedScreenId, "selectedScreenId");
         const data = {
-          screen_id: "1",
+          screen_id: selectedScreenId,
           system_id: this.systemId,
           project_id: this.projectId,
           issue_name: this.form.issue_name,
@@ -383,14 +388,7 @@ export default {
             this.systemId
         );
         this.screen_selectDefault = res.data;
-        // console.log(this.screen_select, "this.screen_select");
-        this.screen_selectDefault.forEach((item) => {
-          if (item.screen_name) {
-            this.screen_select.push(item.screen_name);
-          }
-          console.log(this.screen_selectDefault, "this.screen_selectDefault");
-          console.log(this.screen_select, "this.screen_select");
-        });
+        console.log(this.screen_selectDefault, "this.screen_selectDefault");
       } catch (error) {
         console.error(error);
       }

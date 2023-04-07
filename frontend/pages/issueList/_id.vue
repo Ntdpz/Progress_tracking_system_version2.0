@@ -68,6 +68,7 @@
               ></span>
               <h4 style="color: black">Add New Issue</h4>
             </v-btn>
+            <!-- *dialog -->
             <dialog-issue
               :dialog.sync="dialog"
               :projectName="projectName"
@@ -76,246 +77,6 @@
               :systemId="system.id"
               :mode="'create'"
             />
-            <!-- *dialog -->
-            <!-- <v-dialog v-model="dialog" persistent max-width="600px">
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn
-                  class="new-btn ma-2 text-left"
-                  outlined
-                  color="indigo"
-                  dark
-                  v-bind="attrs"
-                  v-on="on"
-                  block
-                >
-                  <span
-                    class="mdi mdi-plus-circle-outline"
-                    style="font-size: 20px; color: black"
-                  ></span>
-                  <h4 style="color: black">Add New Issue</h4>
-                </v-btn>
-              </template>
-              <v-card>
-                <v-card-title>
-                  <v-col cols="12">
-                    <v-row>
-                      <h5>Create Issue |</h5>
-                      <p style="font-size: 16px; margin-left: 2%">
-                        Project Name / Sub system name
-                      </p>
-                    </v-row>
-                  </v-col>
-                </v-card-title>
-                <v-card-text>
-                  <v-container>
-                    <v-row>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          label="Issue No."
-                          placeholder="Issue No."
-                          outlined
-                          dense
-                        ></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="8" md="8">
-                        <v-text-field
-                          label="Issue Name"
-                          placeholder="Issue Name"
-                          outlined
-                          dense
-                        ></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-select
-                          :items="type_select"
-                          label="PNI/PNC/New Req"
-                          dense
-                          outlined
-                          v-model="type"
-                        ></v-select>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-select
-                          :items="screen_select"
-                          label="Screen No."
-                          dense
-                          outlined
-                        ></v-select>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          label="Informer"
-                          placeholder="Implementer"
-                          outlined
-                          dense
-                        ></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-select
-                          :items="priotity_select"
-                          label="Priotity"
-                          dense
-                          outlined
-                          prepend-icon="mdi-flag-outline"
-                        ></v-select>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-menu
-                          ref="menu"
-                          v-model="menu"
-                          :close-on-content-click="false"
-                          :return-value.sync="date"
-                          transition="scale-transition"
-                          offset-y
-                          min-width="auto"
-                        >
-                          <template v-slot:activator="{ on, attrs }">
-                            <v-text-field
-                              v-model="date"
-                              label="Picker in menu"
-                              prepend-icon="mdi-calendar"
-                              readonly
-                              v-bind="attrs"
-                              v-on="on"
-                              class="pt-0"
-                            ></v-text-field>
-                          </template>
-                          <v-date-picker v-model="date" no-title scrollable>
-                            <v-spacer></v-spacer>
-                            <v-btn text color="primary" @click="menu = false">
-                              Cancel
-                            </v-btn>
-                            <v-btn
-                              text
-                              color="primary"
-                              @click="$refs.menu.save(date)"
-                            >
-                              OK
-                            </v-btn>
-                          </v-date-picker>
-                        </v-menu>
-                      </v-col>
-                      <v-col cols="12" sm="4" md="2">
-                        <v-select
-                          :items="dev_select"
-                          label="Dev"
-                          dense
-                          outlined
-                        ></v-select>
-                      </v-col>
-                      <v-col cols="12" sm="4" md="2">
-                        <v-select
-                          :items="qc_select"
-                          label="QC"
-                          dense
-                          outlined
-                        ></v-select>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="4" v-show="PNC">
-                        <v-text-field
-                          label="Document No."
-                          placeholder="Document No."
-                          outlined
-                          dense
-                        ></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="8" md="8" v-show="PNC">
-                        <v-text-field
-                          label="Customer Name"
-                          placeholder="Customer Name"
-                          outlined
-                          dense
-                        ></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="6" v-show="Newreq">
-                        <v-container fluid class="ma-0 pa-0">
-                          <p>Type Issue {{ selected }}</p>
-                          <v-row>
-                            <v-col>
-                              <v-row>
-                                <v-checkbox
-                                  v-model="selected"
-                                  label="UI"
-                                  value="UI"
-                                ></v-checkbox>
-                              </v-row>
-                              <v-row>
-                                <v-checkbox
-                                  v-model="selected"
-                                  label="Business"
-                                  value="Business"
-                                ></v-checkbox>
-                              </v-row>
-                              <v-row>
-                                <v-checkbox
-                                  v-model="selected"
-                                  label="Data"
-                                  value="Data"
-                                ></v-checkbox
-                              ></v-row>
-                            </v-col>
-                            <v-col>
-                              <v-row>
-                                <v-checkbox
-                                  v-model="selected"
-                                  label="Servies"
-                                  value="Servies"
-                                ></v-checkbox>
-                              </v-row>
-                              <v-row>
-                                <v-checkbox
-                                  v-model="selected"
-                                  label="Report"
-                                  value="Report"
-                                ></v-checkbox>
-                              </v-row>
-                              <v-row>
-                                <v-checkbox
-                                  v-model="selected"
-                                  label="Training"
-                                  value="Training"
-                                ></v-checkbox>
-                              </v-row>
-                            </v-col>
-                          </v-row>
-                        </v-container>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="6" v-show="Newreq">
-                        <p>Note for SA</p>
-                        <v-textarea
-                          solo
-                          name="input-7-4"
-                          label="Note for SA"
-                        ></v-textarea>
-                      </v-col>
-                      <v-col cols="12" class="mt-0">
-                        <v-textarea
-                          solo
-                          name="input-7-4"
-                          label="Description"
-                        ></v-textarea>
-                      </v-col>
-                      <v-col cols="12">
-                        <v-file-input
-                          label="File input"
-                          outlined
-                          dense
-                        ></v-file-input>
-                      </v-col>
-                    </v-row>
-                  </v-container>
-                </v-card-text>
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn color="primary" text @click="dialog = false">
-                    Close
-                  </v-btn>
-                  <v-btn color="primary" dark @click="dialog = false">
-                    Create
-                  </v-btn>
-                </v-card-actions>
-              </v-card>
-            </v-dialog> -->
           </v-row>
           <!-- *tabs -->
           <v-tabs fixed-tabs color="primary" class="mt-5">
@@ -333,7 +94,7 @@
             </v-tab>
           </v-tabs>
 
-          <!-- *Table 1 -->
+          <!-- *Table assignedIssues -->
           <v-data-table
             :headers="headers"
             :items="system.assignedIssues"
@@ -355,11 +116,8 @@
             </template>
             <template v-slot:[`item.issue_name`]="{ item }">
               <v-icon>mdi-format-list-bulleted</v-icon>
-              {{ item.issue_name }}
+              {{ item.issue_name }} /{{ item.issue_id }}
             </template>
-            <!-- <template v-slot:[`item.issue_type`]="{ item }">
-              {{ item.issue_type }}
-            </template> -->
             <template v-slot:[`item.formattedDateEnd`]="{ item }">
               {{ item.formattedDateEnd }}
             </template>
@@ -384,10 +142,36 @@
               <!-- {{ item.issue_assignees }} -->
               <p v-show="item.issue_assign == ''">N/A</p>
             </template>
-            <template v-slot:[`item.actions`]>
+            <template v-slot:item.actions="{ item }">
+              <!-- <v-btn icon @click="showIssueDetailDialog(item.issue_name)"
+                >Details</v-btn -->
               <v-icon
                 class="mr-2"
-                @click="infoItem()"
+                @click="
+                  showIssueDetailDialog(
+                    item.id,
+                    item.issue_id,
+                    item.issue_type,
+                    item.screen_id,
+                    item.issue_status,
+                    item.issue_priority,
+                    item.formattedDateEnd,
+                    item.issue_name,
+                    item.issue_des_sa,
+                    item.issue_informer,
+                    item.issue_assign,
+                    item.issue_qc,
+                    item.issue_filename,
+                    item.issue_accepting,
+                    item.issue_manday,
+                    item.issue_start,
+                    item.issue_expected,
+                    item.issue_complete,
+                    item.issue_des_implementer,
+                    item.issue_des_dev,
+                    item.issue_des
+                  )
+                "
                 size="20"
                 color="primary"
               >
@@ -395,370 +179,33 @@
               </v-icon>
             </template>
           </v-data-table>
-          <v-dialog v-model="dialogInfo" width="80%">
-            <v-card>
-              <v-card-title class="text-h5">
-                <h5>Project Name > System 1 > Issue 1</h5>
-              </v-card-title>
-              <v-row class="pa-5">
-                <v-col>
-                  <v-row>
-                    <v-col> No. 1 </v-col>
-                    <v-col> PNI </v-col>
-                    <v-col> Screen 1 </v-col>
-                    <v-col> Finished </v-col>
-                    <v-col>
-                      <v-icon style="color: #ff0000"
-                        >mdi-flag-outline</v-icon
-                      ></v-col
-                    >
-                    <v-col> Nov 31, 2022 </v-col>
-                  </v-row>
-
-                  <v-row>
-                    <v-col cols="6">
-                      <v-row>
-                        <p class="pa-2">Name</p>
-                        <v-text-field
-                          label="Issue No."
-                          placeholder="Issue No."
-                          outlined
-                          dense
-                        ></v-text-field>
-                      </v-row>
-                    </v-col>
-                  </v-row>
-                  <v-row>
-                    <v-col cols="12">
-                      <v-textarea
-                        solo
-                        name="input-7-4"
-                        label="Note for SA"
-                      ></v-textarea
-                    ></v-col>
-                  </v-row>
-                  <v-row>
-                    <v-col cols="6">
-                      <v-row>
-                        <p class="pa-2">Informer</p>
-                        <v-text-field
-                          label="Issue No."
-                          placeholder="Issue No."
-                          outlined
-                          dense
-                        ></v-text-field>
-                      </v-row>
-                    </v-col>
-                  </v-row>
-                  <v-row>
-                    <v-col cols="6">
-                      <v-row>
-                        <p class="pa-2">Assign To</p>
-                        <v-chip class="ma-2" color="primary" text-color="white">
-                          <v-avatar left>
-                            <v-icon>mdi-account-circle</v-icon>
-                          </v-avatar>
-                          Mike
-                        </v-chip>
-                      </v-row>
-                    </v-col>
-                  </v-row>
-                  <v-row>
-                    <v-col cols="6">
-                      <v-row>
-                        <p class="pa-2">QC</p>
-                        <v-chip class="ma-2" color="primary" text-color="white">
-                          <v-avatar left>
-                            <v-icon>mdi-account-circle</v-icon>
-                          </v-avatar>
-                          Mike
-                        </v-chip>
-                      </v-row>
-                    </v-col>
-                  </v-row>
-                  <v-row>
-                    <v-col cols="6">
-                      <v-row>
-                        <p class="pa-2">Attachments</p>
-                      </v-row>
-                    </v-col>
-                  </v-row>
-                </v-col>
-
-                <!-- col ใหญ่ฝั่งขวา -->
-                <v-col
-                  ><v-row class="ml-2">
-                    <v-col>
-                      <v-row class="text-h6">
-                        <h6>Developer Section 1</h6></v-row
-                      >
-                      <v-row class="mt-5">
-                        <v-col cols="6">
-                          <v-row>
-                            <p class="pa-2">Date of accepting</p>
-                            <v-menu
-                              ref="menu"
-                              v-model="menu"
-                              :close-on-content-click="false"
-                              :return-value.sync="date"
-                              transition="scale-transition"
-                              offset-y
-                              min-width="auto"
-                            >
-                              <template v-slot:activator="{ on, attrs }">
-                                <v-text-field
-                                  v-model="date"
-                                  label="Picker in menu"
-                                  prepend-icon="mdi-calendar"
-                                  readonly
-                                  v-bind="attrs"
-                                  v-on="on"
-                                  class="pt-0"
-                                ></v-text-field>
-                              </template>
-                              <v-date-picker v-model="date" no-title scrollable>
-                                <v-spacer></v-spacer>
-                                <v-btn
-                                  text
-                                  color="primary"
-                                  @click="menu = false"
-                                >
-                                  Cancel
-                                </v-btn>
-                                <v-btn
-                                  text
-                                  color="primary"
-                                  @click="$refs.menu.save(date)"
-                                >
-                                  OK
-                                </v-btn>
-                              </v-date-picker>
-                            </v-menu>
-                          </v-row>
-                        </v-col>
-                      </v-row>
-                      <v-row>
-                        <v-col cols="6">
-                          <v-row>
-                            <p class="pa-2">Manday</p>
-                            <v-text-field
-                              label="Manday"
-                              placeholder="Manday"
-                              outlined
-                              dense
-                            ></v-text-field>
-                          </v-row>
-                        </v-col>
-                      </v-row>
-                      <v-row>
-                        <v-col cols="6">
-                          <v-row>
-                            <p class="pa-2">Start date</p>
-                            <p class="pa-2">-</p>
-                            <p class="pa-2">Expected completion Date</p>
-                          </v-row>
-                        </v-col>
-                      </v-row>
-                      <v-row>
-                        <v-col cols="6">
-                          <v-row>
-                            <v-menu
-                              ref="menu"
-                              v-model="menu"
-                              :close-on-content-click="false"
-                              :return-value.sync="date"
-                              transition="scale-transition"
-                              offset-y
-                              min-width="auto"
-                            >
-                              <template v-slot:activator="{ on, attrs }">
-                                <v-text-field
-                                  v-model="date"
-                                  label="Picker in menu"
-                                  prepend-icon="mdi-calendar"
-                                  readonly
-                                  v-bind="attrs"
-                                  v-on="on"
-                                  class="pt-0"
-                                ></v-text-field>
-                              </template>
-                              <v-date-picker v-model="date" no-title scrollable>
-                                <v-spacer></v-spacer>
-                                <v-btn
-                                  text
-                                  color="primary"
-                                  @click="menu = false"
-                                >
-                                  Cancel
-                                </v-btn>
-                                <v-btn
-                                  text
-                                  color="primary"
-                                  @click="$refs.menu.save(date)"
-                                >
-                                  OK
-                                </v-btn>
-                              </v-date-picker>
-                            </v-menu>
-                            <v-menu
-                              ref="menu"
-                              v-model="menu"
-                              :close-on-content-click="false"
-                              :return-value.sync="date"
-                              transition="scale-transition"
-                              offset-y
-                              min-width="auto"
-                            >
-                              <template v-slot:activator="{ on, attrs }">
-                                <v-text-field
-                                  v-model="date"
-                                  label="Picker in menu"
-                                  prepend-icon="mdi-calendar"
-                                  readonly
-                                  v-bind="attrs"
-                                  v-on="on"
-                                  class="pt-0"
-                                ></v-text-field>
-                              </template>
-                              <v-date-picker v-model="date" no-title scrollable>
-                                <v-spacer></v-spacer>
-                                <v-btn
-                                  text
-                                  color="primary"
-                                  @click="menu = false"
-                                >
-                                  Cancel
-                                </v-btn>
-                                <v-btn
-                                  text
-                                  color="primary"
-                                  @click="$refs.menu.save(date)"
-                                >
-                                  OK
-                                </v-btn>
-                              </v-date-picker>
-                            </v-menu>
-                          </v-row>
-                        </v-col>
-                      </v-row>
-                      <v-divider></v-divider>
-                      <v-row class="text-h6 mt-2"
-                        ><h6>Developer Section 2</h6>
-                      </v-row>
-                      <v-row>
-                        <v-col cols="6">
-                          <v-row>
-                            <p class="pa-2">Status</p>
-                            <v-text-field
-                              label="Status"
-                              placeholder="Status"
-                              outlined
-                              dense
-                            ></v-text-field>
-                          </v-row>
-                        </v-col>
-                      </v-row>
-                      <v-row>
-                        <v-col cols="6">
-                          <v-row>
-                            <p class="pa-2">Completion date</p>
-                            <v-menu
-                              ref="menu"
-                              v-model="menu"
-                              :close-on-content-click="false"
-                              :return-value.sync="date"
-                              transition="scale-transition"
-                              offset-y
-                              min-width="auto"
-                            >
-                              <template v-slot:activator="{ on, attrs }">
-                                <v-text-field
-                                  v-model="date"
-                                  label="Picker in menu"
-                                  prepend-icon="mdi-calendar"
-                                  readonly
-                                  v-bind="attrs"
-                                  v-on="on"
-                                  class="pt-0"
-                                ></v-text-field>
-                              </template>
-                              <v-date-picker v-model="date" no-title scrollable>
-                                <v-spacer></v-spacer>
-                                <v-btn
-                                  text
-                                  color="primary"
-                                  @click="menu = false"
-                                >
-                                  Cancel
-                                </v-btn>
-                                <v-btn
-                                  text
-                                  color="primary"
-                                  @click="$refs.menu.save(date)"
-                                >
-                                  OK
-                                </v-btn>
-                              </v-date-picker>
-                            </v-menu>
-                          </v-row>
-                        </v-col>
-                      </v-row>
-                      <v-row>
-                        <v-col cols="6">
-                          <p class="">Cause / Remedy</p>
-                          <v-textarea
-                            solo
-                            name="input-7-4"
-                            label="Note for SA"
-                          ></v-textarea>
-                        </v-col>
-                      </v-row>
-                      <v-row class="justify-center mr-16 mt-5">
-                        <v-btn color="primary" @click="dialogInfo = false"
-                          >Update</v-btn
-                        >
-                      </v-row>
-                    </v-col>
-                  </v-row>
-                </v-col>
-              </v-row>
-              <v-divider width="50%"></v-divider>
-              <v-row class="pa-5">
-                <v-col>
-                  <v-row class="text-h6"> Implements Section </v-row>
-                  <v-row class="mt-5">
-                    <v-col cols="6">
-                      <v-row>
-                        <p class="pa-2">Status</p>
-                        <v-text-field
-                          label="Status"
-                          placeholder="Status"
-                          outlined
-                          dense
-                        ></v-text-field>
-                      </v-row>
-                    </v-col>
-                  </v-row>
-                  <v-row>
-                    <v-col cols="6">
-                      <p class="">Cause / Remedy</p>
-                      <v-textarea
-                        solo
-                        name="input-7-4"
-                        label="Note for SA"
-                      ></v-textarea>
-                    </v-col>
-                  </v-row>
-                  <v-row class="justify-center mr-16">
-                    <v-btn color="primary" @click="dialogInfo = false"
-                      >Close</v-btn
-                    >
-                  </v-row>
-                </v-col>
-              </v-row>
-            </v-card>
-          </v-dialog>
-          <!-- *Table 2 -->
+          <dialog-issue-detail
+            :dialog.sync="dialogIssueDetail"
+            :ProjectName="projectName"
+            :SystemName="system.system_nameTH"
+            :id="selected.Id"
+            :IssueId="selected.issue_id"
+            :IssueType="selected.issue_type"
+            :IssueScreenId="selected.screen_id"
+            :IssueStatus="selected.issue_status"
+            :IssuePriority="selected.issue_priority"
+            :IssueEndDate="selected.formattedDateEnd"
+            :IssueName="selected.issue_name"
+            :IssueDesSA="selected.issue_des_sa"
+            :IssueInformer="selected.issue_informer"
+            :IssueAssign="selected.issue_assign"
+            :IssueQC="selected.issue_qc"
+            :IssueFilename="selected.issue_filename"
+            :IssueAccepting="selected.issue_accepting"
+            :IssueManday="selected.issue_manday"
+            :IssueStart="selected.issue_start"
+            :IssueExpected="selected.issue_expected"
+            :IssueComplete="selected.issue_complete"
+            :IssueDesImplementer="selected.issue_des_implementer"
+            :IssueDesDev="selected.issue_des_dev"
+            :IssueDes="selected.issue_des"
+          />
+          <!-- *Table 2 unassignedIssues-->
           <v-data-table
             :headers="headers"
             :items="system.unassignedIssues"
@@ -812,13 +259,14 @@
   </div>
 </template>
   
-  <script>
+<script>
 import Vue from "vue";
 import Searchbar from "~/components/Searchbar.vue";
 import DialogIssue from "../../components/DialogIssue.vue";
 import moment from "moment";
+import DialogIssueDetail from "../../components/DialogIssueDetail.vue";
 export default {
-  components: { Searchbar, DialogIssue },
+  components: { Searchbar, DialogIssue, DialogIssueDetail },
   layout: "admin",
   directives: {
     "remove-row-borders": {
@@ -840,6 +288,36 @@ export default {
         .substr(0, 10),
       menu: false,
       dialogInfo: false,
+      dialogIssueDetail: false,
+      selected: {
+        Id: "",
+        screen_id: "",
+        system_id: "",
+        project_id: "",
+        issue_name: "",
+        issue_id: "",
+        issue_type: "",
+        issue_informer: "",
+        issue_priority: "",
+        issue_end: "",
+        issue_assign: "",
+        issue_qc: "",
+        issue_des: "",
+        issue_des_sa: "",
+        issue_type_sa: "",
+        issue_doc_id: "",
+        issue_customer: "",
+        issue_filename: "",
+        issue_des_dev: "",
+        issue_des_implementer: "",
+        issue_start: "",
+        issue_expected: "",
+        issue_status: "open",
+        issue_accepting: "",
+        issue_manday: "",
+        issue_complete: "",
+        formattedDateEnd: "",
+      },
       headers: [
         {
           text: "Issues ID",
@@ -871,8 +349,6 @@ export default {
     await this.getIssue();
     // await this.getIssues2();
   },
-  updated() {},
-  computed: {},
   methods: {
     initialize() {
       // this.issue = [
@@ -918,13 +394,10 @@ export default {
       //   },
       // ];
     },
-    infoItem() {
-      console.log("SHow");
-      this.dialogInfo = true;
-      console.log(this.dialogInfo);
-    },
-    showDialog() {
-      console.log("SHow");
+    showIssueDetailDialog(issue_name) {
+      console.log("item:", this.item);
+      console.log("assignedIssues:", this.system.assignedIssues);
+      this.dialogIssueDetail = true;
     },
     async getProject() {
       await this.$axios.get("/projects/getOne/" + this.id).then((res) => {
@@ -987,14 +460,61 @@ export default {
         console.error(err);
       }
     },
+    showIssueDetailDialog(
+      issueid,
+      issueId,
+      issueType,
+      issueScreenid,
+      issueStatus,
+      issuePriority,
+      issueFormattedDateEnd,
+      issueName,
+      issueDesSA,
+      issueInformer,
+      issueAssign,
+      issueQc,
+      issueFilename,
+      issueAccepting,
+      issueManday,
+      issueStart,
+      issueExpected,
+      issueComplete,
+      issueDesImplementer,
+      issueDesDev,
+      issueDes
+    ) {
+      this.selected.Id = issueid;
+      this.selected.issue_id = issueId;
+      this.selected.issue_type = issueType;
+      this.selected.screen_id = issueScreenid;
+      this.selected.issue_status = issueStatus;
+      this.selected.issue_priority = issuePriority;
+      this.selected.formattedDateEnd = issueFormattedDateEnd;
+      this.selected.issue_name = issueName;
+      this.selected.issue_des_sa = issueDesSA;
+      this.selected.issue_informer = issueInformer;
+      this.selected.issue_assign = issueAssign;
+      this.selected.issue_qc = issueQc;
+      this.selected.issue_filename = issueFilename;
+      this.selected.issue_accepting = issueAccepting;
+      this.selected.issue_manday = issueManday;
+      this.selected.issue_start = issueStart;
+      this.selected.issue_expected = issueExpected;
+      this.selected.issue_complete = issueComplete;
+      this.selected.issue_des_implementer = issueDesImplementer;
+      this.selected.issue_des_dev = issueDesDev;
+      this.selected.issue_des = issueDes;
+      this.dialogIssueDetail = true;
+    },
   },
 };
 </script>
   
-  <style scoped>
+<style scoped>
 * {
   font-family: "Lato", sans-serif;
 }
+
 .new-btn {
   display: flex;
   justify-content: flex-start;
@@ -1011,7 +531,7 @@ input[type="text"] {
 }
 </style>
   
-  <style scoped>
+<style scoped>
 * {
   font-family: "Lato", sans-serif;
 }
