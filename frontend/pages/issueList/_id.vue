@@ -530,9 +530,3 @@ input[type="text"] {
   outline: black;
 }
 </style>
-  
-<style scoped>
-* {
-  font-family: "Lato", sans-serif;
-}
-</style>

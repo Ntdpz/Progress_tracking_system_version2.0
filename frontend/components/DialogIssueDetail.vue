@@ -103,153 +103,140 @@
         </v-col>
 
         <!-- col ใหญ่ฝั่งขวา -->
-        <v-col
-          ><v-row class="ml-2">
+        <v-col style="width: 100%">
+          <v-row class="ml-2">
             <v-col>
               <v-row class="text-h6"> <h6>Developer Section 1</h6></v-row>
               <v-row class="mt-5">
                 <v-col cols="6">
                   <v-row>
                     <!-- Date of accepting-->
-                    <p class="pa-2">Date of accepting</p>
+                    <p class="pa-2">
+                      Date of accepting / {{ dateOfAccepting }}
+                    </p>
                     <v-menu
-                      ref="menu"
-                      v-model="menu"
+                      v-model="acceptMenu"
                       :close-on-content-click="false"
-                      :return-value.sync="date"
+                      :nudge-right="40"
                       transition="scale-transition"
-                      offset-y
                       min-width="auto"
                     >
                       <template v-slot:activator="{ on, attrs }">
                         <v-text-field
-                          v-model="date"
-                          label="Picker in menu"
+                          v-model="dateOfAccepting"
+                          label="Date of Accepting"
                           prepend-icon="mdi-calendar"
                           readonly
                           v-bind="attrs"
                           v-on="on"
-                          class="pt-0"
                         ></v-text-field>
                       </template>
-                      <v-date-picker v-model="date" no-title scrollable>
-                        <v-spacer></v-spacer>
-                        <v-btn text color="primary" @click="menu = false">
-                          Cancel
-                        </v-btn>
-                        <v-btn
-                          text
-                          color="primary"
-                          @click="$refs.menu.save(date)"
-                        >
-                          OK
-                        </v-btn>
-                      </v-date-picker>
+                      <v-date-picker
+                        v-model="dateOfAccepting"
+                        @input="acceptMenu = false"
+                      ></v-date-picker>
                     </v-menu>
                   </v-row>
                 </v-col>
               </v-row>
+              <v-row> </v-row>
               <v-row>
                 <v-col cols="6">
                   <v-row>
-                    <p class="pa-2">Manday</p>
-                    <v-text-field
-                      label="Manday"
-                      placeholder="Manday"
-                      outlined
-                      dense
-                      v-model="IssueManday"
-                    ></v-text-field>
+                    <v-col>
+                      <p class="pa-2">Start date / {{ startDate }}</p>
+                    </v-col>
+                    <v-col>
+                      <p class="pa-2">-</p>
+                    </v-col>
+                    <v-col>
+                      <p class="pa-2">
+                        Expected completion Date / {{ expectedCompletionDate }}
+                      </p>
+                    </v-col>
                   </v-row>
                 </v-col>
               </v-row>
               <v-row>
-                <v-col cols="6">
-                  <v-row>
-                    <p class="pa-2">Start date</p>
-                    <p class="pa-2">-</p>
-                    <p class="pa-2">Expected completion Date</p>
-                  </v-row>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col cols="6">
+                <v-col cols="6" class="mb-5">
                   <v-row>
                     <!-- Start date -->
                     <v-menu
-                      ref="menu"
-                      v-model="menu"
+                      v-model="startMenu"
                       :close-on-content-click="false"
-                      :return-value.sync="date"
+                      :nudge-right="40"
                       transition="scale-transition"
-                      offset-y
                       min-width="auto"
+                      @change="calculateManday()"
                     >
                       <template v-slot:activator="{ on, attrs }">
                         <v-text-field
-                          v-model="date"
-                          label="Picker in menu"
+                          v-model="startDate"
+                          label="Start Date"
                           prepend-icon="mdi-calendar"
                           readonly
                           v-bind="attrs"
                           v-on="on"
-                          class="pt-0"
                         ></v-text-field>
                       </template>
-                      <v-date-picker v-model="date" no-title scrollable>
-                        <v-spacer></v-spacer>
-                        <v-btn text color="primary" @click="menu = false">
-                          Cancel
-                        </v-btn>
-                        <v-btn
-                          text
-                          color="primary"
-                          @click="$refs.menu.save(date)"
-                        >
-                          OK
-                        </v-btn>
-                      </v-date-picker>
+                      <v-date-picker
+                        v-model="startDate"
+                        @input="startMenu = false"
+                        @change="calculateManday()"
+                      ></v-date-picker>
                     </v-menu>
                     <!-- Expected completion Date -->
                     <v-menu
-                      ref="menu"
-                      v-model="menu"
+                      v-model="expectedMenu"
                       :close-on-content-click="false"
-                      :return-value.sync="date"
+                      :nudge-right="40"
                       transition="scale-transition"
-                      offset-y
                       min-width="auto"
+                      @change="calculateManday()"
                     >
                       <template v-slot:activator="{ on, attrs }">
                         <v-text-field
-                          v-model="date"
-                          label="Picker in menu"
+                          v-model="expectedCompletionDate"
+                          label="Expected Completion Date"
                           prepend-icon="mdi-calendar"
                           readonly
                           v-bind="attrs"
                           v-on="on"
-                          class="pt-0"
                         ></v-text-field>
                       </template>
-                      <v-date-picker v-model="date" no-title scrollable>
-                        <v-spacer></v-spacer>
-                        <v-btn text color="primary" @click="menu = false">
-                          Cancel
-                        </v-btn>
-                        <v-btn
-                          text
-                          color="primary"
-                          @click="$refs.menu.save(date)"
-                        >
-                          OK
-                        </v-btn>
-                      </v-date-picker>
+                      <v-date-picker
+                        v-model="expectedCompletionDate"
+                        @input="expectedMenu = false"
+                        @change="calculateManday()"
+                      ></v-date-picker>
                     </v-menu>
                   </v-row>
                 </v-col>
               </v-row>
+              <v-col cols="6">
+                <v-row v-if="mandayProps">
+                  <p class="pa-2">Manday</p>
+                  <v-text-field
+                    label="Manday"
+                    placeholder="Manday"
+                    outlined
+                    dense
+                    v-model="IssueManday"
+                  ></v-text-field>
+                </v-row>
+                <v-row v-if="mandaySeleted">
+                  <p class="pa-2">Manday (Edit)</p>
+                  <v-text-field
+                    label="Manday"
+                    placeholder="Manday"
+                    outlined
+                    dense
+                    v-model="manday"
+                  ></v-text-field>
+                </v-row>
+              </v-col>
               <v-divider></v-divider>
-              <v-row class="text-h6 mt-2"><h6>Developer Section 2</h6> </v-row>
+              <v-row class="text-h6 mt-2 mb-2"><h6>Developer Section 2</h6> </v-row>
               <v-row>
                 <v-col cols="6">
                   <v-row>
@@ -351,7 +338,7 @@
                 solo
                 name="input-7-4"
                 label="Note"
-                v-model="Issue"
+                v-model="IssueDesImplementer"
               ></v-textarea>
             </v-col>
           </v-row>
@@ -365,6 +352,7 @@
 </template>
   
   <script>
+import moment from "moment";
 export default {
   props: {
     ProjectName: String,
@@ -400,13 +388,31 @@ export default {
   },
   data() {
     return {
-      test: "active",
+      mandayProps: true,
+      mandaySeleted: false,
+      //menu
+      acceptMenu: false,
+      startMenu: false,
+      expectedMenu: false,
+      //date
+      dateOfAccepting: null,
+      startDate: null,
+      expectedCompletionDate: null,
+      manday: null,
     };
   },
   updated() {
     console.log("form", this.form);
   },
   methods: {
+    calculateManday() {
+      const start = moment(this.startDate);
+      const end = moment(this.expectedCompletionDate);
+      const days = end.diff(start, "days");
+      this.mandaySeleted = true;
+      this.mandayProps = false;
+      this.manday = days;
+    },
     handleClose() {
       this.$emit("update:dialog", false);
     },

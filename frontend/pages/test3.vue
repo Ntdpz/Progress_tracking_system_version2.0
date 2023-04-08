@@ -1,14 +1,10 @@
 <template>
   <div>
-    <v-btn @click="dialog = true">open</v-btn>
+    <v-btn @click="dialog = true">Open</v-btn>
     <v-dialog v-model="dialog">
       <v-card>
         <v-card-title>
           <span class="headline">Select Dates</span>
-          <h6>
-            {{ dateOfAccepting }} / {{ startDate }} /
-            {{ expectedCompletionDate }}
-          </h6>
           <v-spacer></v-spacer>
           <v-btn icon @click="closeDialog">
             <v-icon>mdi-close</v-icon>
@@ -55,11 +51,13 @@
                       readonly
                       v-bind="attrs"
                       v-on="on"
+                      @change="calculateManday()"
                     ></v-text-field>
                   </template>
                   <v-date-picker
                     v-model="startDate"
                     @input="startMenu = false"
+                    @change="calculateManday()"
                   ></v-date-picker>
                 </v-menu>
               </v-col>
@@ -71,6 +69,7 @@
                   :close-on-content-click="false"
                   :nudge-right="40"
                   transition="scale-transition"
+                  @change="calculateManday()"
                 >
                   <template v-slot:activator="{ on, attrs }">
                     <v-text-field
@@ -85,8 +84,18 @@
                   <v-date-picker
                     v-model="expectedCompletionDate"
                     @input="expectedMenu = false"
+                    @change="calculateManday()"
                   ></v-date-picker>
                 </v-menu>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col>
+                <v-text-field
+                  label="Man-days"
+                  v-model="manday"
+                  readonly
+                ></v-text-field>
               </v-col>
             </v-row>
           </v-container>
@@ -102,6 +111,8 @@
 </template>
 
 <script>
+import moment from "moment";
+
 export default {
   data() {
     return {
@@ -112,9 +123,9 @@ export default {
       dateOfAccepting: null,
       startDate: null,
       expectedCompletionDate: null,
+      manday: null,
     };
   },
-  updated() {},
   methods: {
     openDialog() {
       this.dialog = true;
@@ -122,8 +133,23 @@ export default {
     closeDialog() {
       this.dialog = false;
     },
+    calculateManday() {
+      const start = moment(this.startDate);
+      const end = moment(this.expectedCompletionDate);
+      const days = end.diff(start, "days");
+      this.manday = days;
+    },
     saveDates() {
-      // your code to save the dates goes here
+      // Validate dates before saving
+      if (
+        !this.dateOfAccepting ||
+        !this.startDate ||
+        !this.expectedCompletionDate
+      ) {
+        alert("Please select all dates");
+        return;
+      }
+      this.calculateManday(); // Call the calculateManday() method here
       this.dialog = false;
     },
   },
