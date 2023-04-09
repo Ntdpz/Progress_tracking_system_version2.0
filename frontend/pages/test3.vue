@@ -140,7 +140,6 @@ export default {
       this.manday = days;
     },
     saveDates() {
-      // Validate dates before saving
       if (
         !this.dateOfAccepting ||
         !this.startDate ||

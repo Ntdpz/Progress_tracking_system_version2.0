@@ -1,7 +1,7 @@
 <template>
-  <v-dialog v-model="dialog" width="80%" :key="dialogKey">
+  <v-dialog v-model="dialog" width="90%">
     <v-card v-if="loading"><h1>Loading.....</h1></v-card>
-    <v-card v-else>
+    <v-card v-else width="99%" class="pa-0 ma-0">
       <v-card-title class="text-h5">
         <!-- <h5>{{ ProjectName }} > {{ SystemName }} > {{ IssueName }}</h5> -->
         <h5>{{ ProjectName }} > {{ SystemName }}</h5>
@@ -64,6 +64,59 @@
                   dense
                   v-model="IssueInformer"
                 ></v-text-field>
+              </v-row>
+            </v-col>
+          </v-row>
+          <!-- Type PNC option -->
+          <v-row v-if="IssueType == 'PNC'">
+            <v-col cols="6">
+              <v-row>
+                <p class="pa-2">Document No.</p>
+                <v-text-field
+                  label="Issue Informer"
+                  placeholder="Issue Informer"
+                  outlined
+                  dense
+                  v-model="IssueDocId"
+                ></v-text-field>
+              </v-row>
+            </v-col>
+            <v-col cols="6">
+              <v-row>
+                <p class="pa-2">Customer Name</p>
+                <v-text-field
+                  label="Issue Informer"
+                  placeholder="Issue Informer"
+                  outlined
+                  dense
+                  v-model="IssueCustomer"
+                ></v-text-field>
+              </v-row>
+            </v-col>
+          </v-row>
+          <!-- Type New Req option -->
+          <v-row v-if="IssueType == 'New Rep'">
+            <v-col cols="6">
+              <v-row>
+                <p class="pa-2">Type New Req</p>
+                <v-text-field
+                  label="Issue Informer"
+                  placeholder="Issue Informer"
+                  outlined
+                  dense
+                  v-model="IssueTypeSA"
+                ></v-text-field>
+              </v-row>
+            </v-col>
+            <v-col cols="6">
+              <v-row>
+                <p class="pa-2">Note to SA</p>
+                <v-textarea
+                  solo
+                  name="input-7-4"
+                  label="Note"
+                  v-model="IssueDesSA"
+                ></v-textarea>
               </v-row>
             </v-col>
           </v-row>
@@ -236,7 +289,9 @@
                 </v-row>
               </v-col>
               <v-divider></v-divider>
-              <v-row class="text-h6 mt-2 mb-2"><h6>Developer Section 2</h6> </v-row>
+              <v-row class="text-h6 mt-2 mb-2"
+                ><h6>Developer Section 2</h6>
+              </v-row>
               <v-row>
                 <v-col cols="6">
                   <v-row>
@@ -257,38 +312,26 @@
                     <!-- Completion date-->
                     <p class="pa-2">Completion date</p>
                     <v-menu
-                      ref="menu"
-                      v-model="menu"
+                      v-model="completionMenu"
                       :close-on-content-click="false"
-                      :return-value.sync="date"
+                      :nudge-right="40"
                       transition="scale-transition"
-                      offset-y
                       min-width="auto"
                     >
                       <template v-slot:activator="{ on, attrs }">
                         <v-text-field
-                          v-model="date"
-                          label="Picker in menu"
+                          v-model="completionDate"
+                          label="Completion date"
                           prepend-icon="mdi-calendar"
                           readonly
                           v-bind="attrs"
                           v-on="on"
-                          class="pt-0"
                         ></v-text-field>
                       </template>
-                      <v-date-picker v-model="date" no-title scrollable>
-                        <v-spacer></v-spacer>
-                        <v-btn text color="primary" @click="menu = false">
-                          Cancel
-                        </v-btn>
-                        <v-btn
-                          text
-                          color="primary"
-                          @click="$refs.menu.save(date)"
-                        >
-                          OK
-                        </v-btn>
-                      </v-date-picker>
+                      <v-date-picker
+                        v-model="completionDate"
+                        @input="completionMenu = false"
+                      ></v-date-picker>
                     </v-menu>
                   </v-row>
                 </v-col>
@@ -304,11 +347,9 @@
                   ></v-textarea>
                 </v-col>
               </v-row>
-              <v-row class="justify-center mr-16 mt-5">
-                <v-btn color="primary" @click="dialogInfo = false"
-                  >Update</v-btn
-                >
-              </v-row>
+              <!-- <v-row class="justify-center mr-16 mt-5">
+                <v-btn color="primary" @click="handleClose()">Update</v-btn>
+              </v-row> -->
             </v-col>
           </v-row>
         </v-col>
@@ -342,9 +383,15 @@
               ></v-textarea>
             </v-col>
           </v-row>
-          <v-row class="justify-center mr-16">
-            <v-btn color="primary" @click="handleClose()">Close</v-btn>
-          </v-row>
+        </v-col>
+      </v-row>
+      <v-row justify-center>
+        <v-col class="" style="margin-left: 20%">
+          <v-btn color="primary" @click="saveIssue()">Update</v-btn>
+        </v-col>
+        <v-spacer></v-spacer>
+        <v-col>
+          <v-btn color="primary" @click="handleClose()">Cancel</v-btn>
         </v-col>
       </v-row>
     </v-card>
@@ -356,7 +403,9 @@ import moment from "moment";
 export default {
   props: {
     ProjectName: String,
+    ProjectId: Number,
     SystemName: String,
+    SystemId: Number,
     id: {
       type: String,
       required: true,
@@ -381,6 +430,9 @@ export default {
     IssueDesImplementer: String,
     IssueDesDev: String,
     IssueDes: String,
+    IssueDocId: String,
+    IssueCustomer: String,
+    IssueTypeSA: String,
     dialog: {
       type: Boolean,
       default: false,
@@ -390,6 +442,7 @@ export default {
     return {
       mandayProps: true,
       mandaySeleted: false,
+      completionMenu: false,
       //menu
       acceptMenu: false,
       startMenu: false,
@@ -398,11 +451,19 @@ export default {
       dateOfAccepting: null,
       startDate: null,
       expectedCompletionDate: null,
+      completionDate: null,
       manday: null,
+      //data for update
+      updateManday: "",
+      updateStart: "",
+      updateExpected: "",
+      updatedateOfAccepting: "",
+      updateCompletion: "",
     };
   },
   updated() {
-    console.log("form", this.form);
+    console.log("form", this.updateStart, this.updateExpected);
+    // console.log("form", this.form);
   },
   methods: {
     calculateManday() {
@@ -412,6 +473,70 @@ export default {
       this.mandaySeleted = true;
       this.mandayProps = false;
       this.manday = days;
+    },
+    async saveIssue() {
+      this.updateManday = this.manday === null ? this.IssueManday : this.manday;
+      this.updateStart =
+        this.start === null
+          ? moment(this.IssueStart).format("YYYY-MM-DD")
+          : this.startDate;
+      this.updateExpected =
+        this.start === null
+          ? moment(this.IssueExpected).format("YYYY-MM-DD")
+          : this.expectedCompletionDate;
+      this.updatedateOfAccepting =
+        this.dateOfAccepting === null
+          ? moment(this.IssueAccepting).format("YYYY-MM-DD")
+          : this.dateOfAccepting;
+      this.updateCompletion =
+        this.completionDate === null
+          ? moment(this.IssueComplete).format("YYYY-MM-DD")
+          : this.completionDate;
+
+      const data = {
+        screen_id: this.IssueScreenId,
+        system_id: this.SystemId,
+        project_id: this.ProjectId,
+        issue_name: this.IssueName,
+        issue_id: this.IssueId,
+        issue_type: this.IssueType,
+        issue_informer: this.IssueInformer,
+        issue_priority: this.IssuePriority,
+        issue_end: this.IssueEndDate,
+        issue_assign: this.IssueAssign,
+        issue_qc: this.IssueQC,
+        issue_des: this.IssueDes,
+        issue_des_sa: this.IssueDesSA,
+        issue_type_sa: this.IssueTypeSA,
+        issue_doc_id: this.IssueDocId,
+        issue_customer: this.IssueCustomer,
+        issue_filename: this.IssueFilename,
+        issue_des_dev: this.IssueDesDev,
+        issue_des_implementer: this.IssueDesImplementer,
+        issue_start: this.updateStart,
+        issue_expected: this.updateExpected,
+        issue_status: this.IssueStatus,
+        issue_accepting: this.updatedateOfAccepting,
+        issue_manday: this.updateManday,
+        issue_complete: "2022-04-04",
+      };
+      try {
+        await this.$axios.put("/issues/updateIssueAdmin/" + this.id, data);
+        console.log("pout success");
+        window.location.reload();
+        const promise = new Promise((resolve, reject) => {
+          resolve();
+          this.close();
+        });
+        promise.then(() => {
+          setTimeout(() => {
+            alert("success");
+          }, 2000);
+        });
+      } catch (error) {
+        console.error(error);
+        alert("Error submitting form");
+      }
     },
     handleClose() {
       this.$emit("update:dialog", false);
