@@ -214,7 +214,7 @@
                           <v-select
                             style="text-align-last: left"
                             v-model="user_id"
-                            :items="data_position_Developer"
+                            :items="position_Developers"
                             item-text="user_firstname"
                             item-value="id"
                             hide-details="auto"
@@ -251,7 +251,7 @@
                           <v-select
                             style="text-align-last: left"
                             v-model="user_id"
-                            :items="data_position_Implementer"
+                            :items="position_Implementers"
                             item-text="user_firstname"
                             item-value="id"
                             hide-details="auto"
@@ -491,7 +491,7 @@
                           style="align-self: center"
                         >
                           <v-text-field
-                            style="text-align-last: center"
+                            style="text-align-last: left"
                             v-model="system_id"
                             hide-details="auto"
                             dense
@@ -528,7 +528,7 @@
                           style="align-self: center"
                         >
                           <v-text-field
-                            style="text-align-last: center"
+                            style="text-align-last: left"
                             v-model="system_nameTH"
                             hide-details="auto"
                             dense
@@ -565,7 +565,7 @@
                           style="align-self: center"
                         >
                           <v-text-field
-                            style="text-align-last: center"
+                            style="text-align-last: left"
                             v-model="system_nameEN"
                             hide-details="auto"
                             dense
@@ -602,7 +602,7 @@
                           style="align-self: center"
                         >
                           <v-text-field
-                            style="text-align-last: center"
+                            style="text-align-last: left"
                             v-model="short_system_name"
                             hide-details="auto"
                             dense
@@ -639,7 +639,7 @@
                           style="align-self: center"
                         >
                           <v-select
-                            style="text-align-last: center"
+                            style="text-align-last: left"
                             v-model="user_developer"
                             :items="develop_system"
                             item-text="user_firstname"
@@ -686,7 +686,7 @@
                           style="align-self: center"
                         >
                           <v-select
-                            style="text-align-last: center"
+                            style="text-align-last: left"
                             v-model="user_implementer"
                             :items="implementer_system"
                             item-text="user_firstname"
@@ -717,7 +717,7 @@
                       <h5>Close</h5>
                     </v-btn>
                     <v-btn
-                      @click="(editSystem = false), updateSystem()"
+                      @click="(editSystem = false), AllUpdate()"
                       color="primary"
                       dark
                     >
@@ -835,11 +835,11 @@ export default {
       user_id: [],
       user_developer: [],
       user_implementer: [],
-      sumUserIds:[],
-      sumUser:[],
+      sumUserIds: [],
+      sumUser: [],
       status: "Not Complete",
       level: ["1"],
-      selectlevel: ["1", "2", "3", "4", "5"],
+      selectlevel: [],
       manday: null,
       mode: "create",
       today: new Date(),
@@ -865,9 +865,13 @@ export default {
       name_Implementer: [],
       imageImplementer: null,
       screen_idd: [],
+      position_Implementers: [],
+      position_Developers: [],
+      dataDefault:[],
     };
   },
   created() {
+    this.getAllDefault();
     this.getSystemID();
     this.getProject();
     this.getScreens();
@@ -941,22 +945,21 @@ export default {
       await this.$axios
         .get("/user_systems/getOneScreenID/" + this.id)
         .then((data) => {
-          this.data_position_Implementer = data.data.filter(
+          this.data_position_Implementer = data.data
+            .filter((item) => item.user_position === "Implementer")
+            .map((user) => user.id);
+          this.data_position_Developer = data.data
+            .filter((item) => item.user_position === "Developer")
+            .map((user) => user.id);
+          this.position_Implementers = data.data.filter(
             (item) => item.user_position === "Implementer"
-          ).map((user) => user.id);
-          this.data_position_Developer = data.data.filter(
+          );
+          this.position_Developers = data.data.filter(
             (item) => item.user_position === "Developer"
-          ).map((user) => user.id);
+          );
+
           this.user_developer = this.data_position_Developer;
           this.user_implementer = this.data_position_Implementer;
-          // this.sumUser = this.user_developer.concat(this.user_implementer);
-          // console.log(this.data_position_Implementer);
-          // console.log(this.data_position_Developer);
-        
-        // extract id from each object in sumUser
-        //   this.sumUserIds = this.sumUser.map((user) => user.id);
-        //   console.clear();
-        // console.log(this.sumUserIds);
         });
     },
     async addUser_Screen(screenID) {
@@ -1050,6 +1053,14 @@ export default {
         this.getProjectID();
       });
     },
+    async AllUpdate() {
+      await this.deleteUserSystem();
+      console.log("successfully deleted 1");
+      await this.addUser_system(this.id);
+      console.log("successfully deleted 2");
+      await this.updateSystem();
+      console.log("successfully update");
+    },
     async updateSystem() {
       await this.$axios
         .put("/systems/updateSystem/" + this.id, {
@@ -1064,18 +1075,57 @@ export default {
           console.log(response);
           console.log("Update success");
           alert("Update success");
-          window.location.reload();
+          // window.location.reload();
         })
         .catch((err) => {
           console.log(err);
           alert(err);
         });
     },
+    async deleteUserSystem() {
+      try {
+        const response = await this.$axios.delete(
+          "/user_systems/deleteScreenID/" + this.id
+        );
+        if (response.status === 200) {
+          alert("delete user_system success");
+          // window.location.reload();
+        } else if (response.status === 404) {
+          const responseData = response.data;
+          if (responseData) {
+            alert("user_system no have data");
+          } else if (responseData.error && response.status != 404) {
+            alert(responseData.error);
+          }
+          // window.location.reload();
+        }
+      } catch (err) {
+        console.log(err);
+        alert(err);
+      }
+    },
+
+    async addUser_system(systemID) {
+      try {
+        await this.$axios.post("/user_systems/createUser_system", {
+          user_id: this.sumUser,
+          system_id: systemID,
+          project_id: this.projectID,
+        });
+        console.log("POST success for system ID: " + systemID);
+        alert("Post Success!!");
+      } catch (error) {
+        console.log(error);
+        alert("user_system: " + error);
+      }
+    },
     async deleteAll() {
       await this.deleteUser_screens();
       console.log("successfully deleted");
       await this.deleteScreenByIdSystem();
       console.log("successfully deleted");
+      await this.deleteUserSystem();
+      console.log("successfully deleted ");
       await this.deleteSystem();
       console.log("successfully deleted");
     },
@@ -1152,6 +1202,18 @@ export default {
           console.log(res.data);
         });
     },
+    async getAllDefault() {
+      await this.$axios.get("/default_settings/getAll").then((data) => {
+        this.dataDefault = data.data;
+        console.clear();
+        console.log(this.dataDefault);
+        this.dataDefault.forEach((item) => {
+          if (item.level) {
+            this.selectlevel.push(item.level);
+          }
+        });
+      });
+    },
     ClearText() {
       this.photo = "";
       this.screenID = "";
@@ -1196,19 +1258,19 @@ export default {
             },
           });
           console.log("create screen success");
-          this.getNewScreenAndAddUserScreen();
-          const promise = new Promise((resolve, reject) => {
-            resolve();
-          });
-          promise.then(() => {
-            setTimeout(() => {
-              alert("success!!");
-              // this.addUser_Screen(id_screen);
-              // this.ClearText();
-              // this.dialog_newscreen = false
-              // window.location.reload();
-            }, 2000);
-          });
+          // this.getNewScreenAndAddUserScreen();
+          // const promise = new Promise((resolve, reject) => {
+          //   resolve();
+          // });
+          // promise.then(() => {
+          //   setTimeout(() => {
+          //     alert("success!!");
+          //     // this.addUser_Screen(id_screen);
+          //     // this.ClearText();
+          //     // this.dialog_newscreen = false
+          //     // window.location.reload();
+          //   }, 4000);
+          // });
         }
       } catch (error) {
         console.error(error);
