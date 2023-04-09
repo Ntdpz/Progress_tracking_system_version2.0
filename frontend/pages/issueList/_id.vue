@@ -169,7 +169,10 @@
                     item.issue_complete,
                     item.issue_des_implementer,
                     item.issue_des_dev,
-                    item.issue_des
+                    item.issue_des,
+                    item.issue_customer,
+                    item.issue_doc_id,
+                    item.issue_type_sa
                   )
                 "
                 size="20"
@@ -182,7 +185,9 @@
           <dialog-issue-detail
             :dialog.sync="dialogIssueDetail"
             :ProjectName="projectName"
+            :ProjectId="projectId"
             :SystemName="system.system_nameTH"
+            :SystemId="system.id"
             :id="selected.Id"
             :IssueId="selected.issue_id"
             :IssueType="selected.issue_type"
@@ -204,6 +209,9 @@
             :IssueDesImplementer="selected.issue_des_implementer"
             :IssueDesDev="selected.issue_des_dev"
             :IssueDes="selected.issue_des"
+            :IssueDocId="selected.issue_doc_id"
+            :IssueCustomer="selected.issue_customer"
+            :IssueTypeSA="selected.issue_type_sa"
           />
           <!-- *Table 2 unassignedIssues-->
           <v-data-table
@@ -481,7 +489,10 @@ export default {
       issueComplete,
       issueDesImplementer,
       issueDesDev,
-      issueDes
+      issueDes,
+      issueCustomer,
+      issueDocId,
+      issueTypeSA
     ) {
       this.selected.Id = issueid;
       this.selected.issue_id = issueId;
@@ -504,6 +515,9 @@ export default {
       this.selected.issue_des_implementer = issueDesImplementer;
       this.selected.issue_des_dev = issueDesDev;
       this.selected.issue_des = issueDes;
+      this.selected.issue_customer = issueCustomer;
+      this.selected.issue_doc_id = issueDocId;
+      this.selected.issue_type_sa = issueTypeSA;
       this.dialogIssueDetail = true;
     },
   },

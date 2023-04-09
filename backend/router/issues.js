@@ -181,6 +181,75 @@ router.put("/updateIssueDev/:id", async (req, res) => {
   }
 });
 
+//* Update issue by Admin
+router.put("/updateIssueAdmin/:id", async (req, res) => {
+  const id = req.params.id;
+  const {
+    screen_id,
+    issue_name,
+    issue_id,
+    issue_type,
+    issue_informer,
+    issue_priority,
+    issue_end,
+    issue_assign,
+    issue_qc,
+    issue_des,
+    issue_des_sa,
+    issue_doc_id,
+    issue_customer,
+    issue_filename,
+    issue_des_implementer,
+    issue_accepting,
+    issue_manday,
+    issue_start,
+    issue_expected,
+    issue_status,
+    issue_complete,
+    issue_des_dev,
+  } = req.body;
+  try {
+    connection.query(
+      "UPDATE issues SET  screen_id = ?, issue_name = ?, issue_id = ?,  issue_type = ?, issue_informer = ?, issue_priority = ?, issue_end = ?, issue_assign = ? , issue_qc = ?, issue_des = ?, issue_des_sa = ? , issue_doc_id=? , issue_customer=?, issue_filename=? ,issue_des_implementer=?,issue_accepting=?,issue_manday=?, issue_start=?,issue_expected=?,issue_status=?,issue_complete=?,  issue_des_dev=?    WHERE id = ?",
+      [
+        screen_id,
+        issue_name,
+        issue_id,
+        issue_type,
+        issue_informer,
+        issue_priority,
+        issue_end,
+        issue_assign,
+        issue_qc,
+        issue_des,
+        issue_des_sa,
+        issue_doc_id,
+        issue_customer,
+        issue_filename,
+        issue_des_implementer,
+        issue_accepting,
+        issue_manday,
+        issue_start,
+        issue_expected,
+        issue_status,
+        issue_complete,
+        issue_des_dev,
+        id,
+      ],
+      (err, results, fields) => {
+        if (err) {
+          console.log(err);
+          return res.status(400).send();
+        }
+        res.status(200).json({ message: "Issue updated successfully!" });
+      }
+    );
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send();
+  }
+});
+
 //* Update issue by implementer
 router.put("/updateIssueImplementer/:id", async (req, res) => {
   const id = req.params.id;
