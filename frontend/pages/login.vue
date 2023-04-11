@@ -125,8 +125,8 @@
 export default {
   data() {
     return {
-      user_id: "1",
-      user_password: "test",
+      user_id: "",
+      user_password: "",
       checkbox: false,
       dialog: false,
       countlogin: 0,
