@@ -27,7 +27,7 @@ app.use("/", router);
 
 app.get("/backend", async (req, res) => {
   try {
-    res.send({message: 'Backend Started!'})
+    res.send({ message: "Backend Started!" });
   } catch (err) {
     console.log(err);
   }

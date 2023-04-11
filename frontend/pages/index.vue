@@ -5,6 +5,7 @@
     <v-divider></v-divider>
     <!-- *Profile bar -->
     <v-row class="mb-6" no-gutters justify-start>
+      <p>User ID: {{ userId }}</p>
       <v-col class="mr-10" style="flex-grow: 0 !important">
         <v-avatar class="ml-6 mt-4" style="width: 100px; height: 100px">
           <!-- <img src="https://cdn.vuetifyjs.com/images/john.jpg" alt="John" /> -->
@@ -160,8 +161,10 @@
               </v-btn>
             </v-card-actions>
           </v-card>
-          <!--  -->
         </v-dialog>
+        <v-btn color="error" class="mt-5" dark @click="logout">
+          <h5>Logout</h5>
+        </v-btn>
       </v-card>
     </v-container>
   </div>
@@ -207,24 +210,42 @@ export default {
   mounted() {
     this.getUser();
   },
+  computed: {
+    userId() {
+      if (typeof window !== "undefined") {
+        return window.localStorage.getItem("userId");
+      }
+      return null; // or some default value if localStorage is not available
+    },
+  },
+  updated() {
+    console.log("this.userId", this.userId);
+  },
   methods: {
     async getUser() {
-      await this.$axios
-        .get("/users/getAll?user_id=" + this.$store.state.user_id)
-        .then((res) => {
-          console.log(res.data);
-          this.user_id = res.data[0].user_id;
-          this.user_firstname = res.data[0].user_firstname;
-          this.user_lastname = res.data[0].user_lastname;
-          this.user_status = res.data[0].user_status;
-          this.user_pic = res.data[0].user_pic;
-        });
+      await this.$axios.get("/users/getOne/" + this.userId).then((res) => {
+        this.user_id = res.data[0].user_id;
+        this.user_firstname = res.data[0].user_firstname;
+        this.user_lastname = res.data[0].user_lastname;
+        this.user_status = res.data[0].user_status;
+        this.user_pic = res.data[0].user_pic;
+      });
     },
     getImageUrl(fileName) {
       return require(`@/uploads/${fileName}`);
     },
     getdefaultImageUrl(fileName) {
       return require(`@/defaultimage/${fileName}`);
+    },
+    async logout() {
+      const response = await this.$axios.post("/auth/api/logout");
+
+      if (response.status === 200) {
+        // Clear the user data from Vuex store and localStorage
+        this.$store.commit("clearUser");
+        localStorage.removeItem("userId");
+        this.$router.push("/login");
+      }
     },
   },
 };
