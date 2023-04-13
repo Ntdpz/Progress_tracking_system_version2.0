@@ -28,7 +28,11 @@
           <v-icon class="mb-1" color="success" style="font-size: small"
             >mdi-circle</v-icon
           >
-          <v-text style="font-size: 20px">{{ this.user_status }}</v-text></v-col
+          <v-text style="font-size: 20px">{{ this.user_status }}</v-text>
+          <br />
+          <v-text style="font-size: 20px"
+            >User role: {{ this.user_role }}</v-text
+          ></v-col
         >
       </v-col>
       <v-col class="mt-6 align-self-center" col="7" sm="5" md="7">
@@ -62,11 +66,18 @@
             </v-btn> -->
           </v-col>
         </v-row>
-        <v-row>
-          <v-col v-for="index in 1" :key="index" col="3" sm="3" md="3" lg="2">
+        <v-row v-show="user_role == 'Admin'">
+          <v-col
+            v-for="(project, index) in projects"
+            :key="index"
+            col="3"
+            sm="3"
+            md="3"
+            lg="2"
+          >
             <template>
               <v-card
-                to="issueList"
+                :to="`issueList/${project.id}`"
                 width="280px"
                 height="145px"
                 outlined
@@ -77,26 +88,35 @@
                   class="mb-1"
                   style="font-size: 18px; color: white"
                 >
-                  Stock Product
+                  {{ project.project_name }}
                 </v-card-subtitle>
               </v-card>
             </template>
           </v-col>
-          <v-col v-for="index in 1" :key="index" col="3" sm="3" md="3" lg="2">
+        </v-row>
+        <v-row v-show="user_role == 'User'">
+          <v-col
+            v-for="(project, index) in projectDetails"
+            :key="index"
+            col="3"
+            sm="3"
+            md="3"
+            lg="2"
+          >
             <template>
               <v-card
-                to="issueList"
+                :to="`issueList/${project[0].id}`"
                 width="280px"
                 height="145px"
                 outlined
                 absolute
-                color="orange"
+                color="primary"
               >
                 <v-card-subtitle
                   class="mb-1"
                   style="font-size: 18px; color: white"
                 >
-                  Market System
+                  {{ project[0].project_name }}
                 </v-card-subtitle>
               </v-card>
             </template>
@@ -104,7 +124,6 @@
         </v-row>
         <!-- persistent คือ การที่คลิกนอก dialog แล้ว dialog จะไม่ปิด -->
         <v-dialog v-model="dialog_newproject" max-width="700px">
-          <!--  -->
           <v-card>
             <v-card-title>
               <v-col cols="12">
@@ -201,11 +220,20 @@ export default {
       user_lastname: "",
       user_status: "",
       user_pic: null,
+      user_role: "",
       defaultImage: "Avatar.jpg",
+      ownProject: [],
+      projectIds: [],
+      projectDetails: [],
+
+      //test
+      projects: [],
     };
   },
   created() {
     this.getUser();
+    this.getOwnProject();
+    this.getProject();
   },
   mounted() {
     this.getUser();
@@ -229,6 +257,50 @@ export default {
         this.user_lastname = res.data[0].user_lastname;
         this.user_status = res.data[0].user_status;
         this.user_pic = res.data[0].user_pic;
+        this.user_role = res.data[0].user_role;
+      });
+    },
+    async getOwnProject() {
+      await this.$axios
+        .get("/user_projects/getOneUserID/" + this.userId)
+        .then((res) => {
+          this.ownProject = res.data;
+          console.log("ownProject", this.ownProject);
+
+          // Extract the project IDs from the userProjects array
+          this.projectIds = this.ownProject.map(
+            (project) => project.project_id
+          );
+          console.log("this.projectIds", this.projectIds);
+
+          // Fetch project details for each project ID
+          const requests = this.projectIds.map((projectId) => {
+            return this.$axios.get("/projects/getOne/" + projectId);
+          });
+          Promise.all(requests).then((responses) => {
+            this.projectDetails = responses.map((res) => res.data);
+            console.log("projectDetails", this.projectDetails);
+          });
+        });
+    },
+    async getProject() {
+      await this.$axios.get("/projects/getAll").then((res) => {
+        this.projects = res.data;
+        console.log(this.projects, "projects");
+        this.projects.forEach((project) => {
+          const date = moment(
+            project.project_start,
+            "YYYY-MM-DDTHH:mm:ss.SSSZ"
+          );
+          project.formattedDateStart = date.format("YYYY-MM-DD");
+          // console.log(project.formattedDateStart);
+          const dateEnd = moment(
+            project.project_end,
+            "YYYY-MM-DDTHH:mm:ss.SSSZ"
+          );
+          project.formattedDateEnd = dateEnd.format("YYYY-MM-DD");
+          // console.log(project.formattedDateEnd);
+        });
       });
     },
     getImageUrl(fileName) {

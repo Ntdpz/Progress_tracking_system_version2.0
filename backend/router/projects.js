@@ -41,8 +41,6 @@ router.get("/getAll", async (req, res) => {
   }
 });
 
-
-
 //* GET one by id
 router.get("/getOne/:id", async (req, res) => {
   const id = req.params.id;
@@ -172,15 +170,15 @@ router.post("/addUserProject", async (req, res) => {
     const createUserProjects = (user_id, project_ids) => {
       // Check that project_ids is an array
       if (!Array.isArray(project_ids)) {
-        console.log('Error: project_ids is not an array');
+        console.log("Error: project_ids is not an array");
         return;
       }
 
-    // http://localhost:7777/projects/addUserProject
-    //   {
-    //     "user_id": 15, //user_id
-    //     "project_ids": [1] //project_id in array
-    // }
+      // http://localhost:7777/projects/addUserProject
+      //   {
+      //     "user_id": 15, //user_id
+      //     "project_ids": [1] //project_id in array
+      // }
 
       // Map over the project IDs and insert a new row into the user_projects table for each one
       project_ids.map((project_id) => {
