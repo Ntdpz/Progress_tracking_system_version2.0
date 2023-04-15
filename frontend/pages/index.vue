@@ -287,20 +287,6 @@ export default {
       await this.$axios.get("/projects/getAll").then((res) => {
         this.projects = res.data;
         console.log(this.projects, "projects");
-        this.projects.forEach((project) => {
-          const date = moment(
-            project.project_start,
-            "YYYY-MM-DDTHH:mm:ss.SSSZ"
-          );
-          project.formattedDateStart = date.format("YYYY-MM-DD");
-          // console.log(project.formattedDateStart);
-          const dateEnd = moment(
-            project.project_end,
-            "YYYY-MM-DDTHH:mm:ss.SSSZ"
-          );
-          project.formattedDateEnd = dateEnd.format("YYYY-MM-DD");
-          // console.log(project.formattedDateEnd);
-        });
       });
     },
     getImageUrl(fileName) {

@@ -37,7 +37,9 @@
     <v-row class="mt-4 ml-1 mb-2" no-gutters>
       <v-col cols="3">
         <h4>Project</h4>
-        <p style="color: #b6b5b5; font-size: 16px" class="">2 Projects</p>
+        <p style="color: #b6b5b5; font-size: 16px" class="">
+          {{ this.projectList.length }} Projects
+        </p>
       </v-col>
 
       <v-col cols="2">
