@@ -2,8 +2,8 @@
   <div class="body">
     <v-row>
       <v-col> <searchbar title="Manage User" /></v-col>
-      <v-col
-        ><v-btn
+      <v-col>
+        <v-btn v-if="check_role == 'Admin'"
           @click="dialog = true"
           class="mr-10"
           elevation="2"
@@ -14,8 +14,18 @@
         >
           <v-icon left> mdi-plus-circle-outline </v-icon>
           New User
-        </v-btn></v-col
-      >
+        </v-btn>
+        <v-btn v-else
+          class="mr-10"
+          elevation="2"
+          right
+          absolute
+          style="color: white; border-radius: 10px"
+          disabled
+        >
+          Addmin Only
+        </v-btn>
+      </v-col>
     </v-row>
     <v-divider></v-divider>
     <!-- class="green lighten-5" -->
@@ -106,13 +116,21 @@
                       {{ item.user_status }}
                     </template>
                     <!-- ปุ่ม Manage -->
-                    <template v-slot:[`item.actions`]="{ item }">
+                    <template v-if="check_role == 'Admin'" v-slot:[`item.actions`]="{ item }">
                       <v-btn
                         @click="(dialog_manage = true), editItem(item)"
                         color="primary"
                         style="color: white; border-radius: 20px"
                       >
                         Manage
+                      </v-btn>
+                    </template>
+                    <template v-else v-slot:[`item.actions`]>
+                      <v-btn
+                        style="color: white; border-radius: 20px"
+                        disabled
+                      >
+                        Admin Only
                       </v-btn>
                     </template>
                     <!--  -->
@@ -179,16 +197,24 @@
                       {{ item.user_status }}
                     </template>
                     <!-- ปุ่ม Manage -->
-                    <template v-slot:[`item.actions`]="{ item }">
-                      <v-btn
-                        @click="(dialog_manage = true), editItem(item)"
-                        color="primary"
-                        style="color: white; border-radius: 20px"
-                      >
-                        Manage
-                      </v-btn>
-                    </template>
-                    <!--  -->
+                      <template v-if="check_role == 'Admin'" v-slot:[`item.actions`]="{ item }">
+                        <v-btn
+                          @click="(dialog_manage = true), editItem(item)"
+                          color="primary"
+                          style="color: white; border-radius: 20px"
+                        >
+                          Manage
+                        </v-btn>
+                      </template>
+                      <template v-else v-slot:[`item.actions`]>
+                        <v-btn
+                          style="color: white; border-radius: 20px"
+                          disabled
+                        >
+                          Admin Only
+                        </v-btn>
+                      </template>
+                      <!--  -->
                     <template v-slot:no-data>
                       <v-col>No Data</v-col>
                       <v-btn class="mb-4" color="primary" @click="initialize">
@@ -254,16 +280,24 @@
                       {{ item.user_status }}
                     </template>
                     <!-- ปุ่ม Manage -->
-                    <template v-slot:[`item.actions`]="{ item }">
-                      <v-btn
-                        @click="(dialog_manage = true), editItem(item)"
-                        color="primary"
-                        style="color: white; border-radius: 20px"
-                      >
-                        Manage
-                      </v-btn>
-                    </template>
-                    <!--  -->
+                      <template v-if="check_role == 'Admin'" v-slot:[`item.actions`]="{ item }">
+                        <v-btn
+                          @click="(dialog_manage = true), editItem(item)"
+                          color="primary"
+                          style="color: white; border-radius: 20px"
+                        >
+                          Manage
+                        </v-btn>
+                      </template>
+                      <template v-else v-slot:[`item.actions`]>
+                        <v-btn
+                          style="color: white; border-radius: 20px"
+                          disabled
+                        >
+                          Admin Only
+                        </v-btn>
+                      </template>
+                      <!--  -->
                     <template v-slot:no-data>
                       <v-col>No Data</v-col>
                       <v-btn class="mb-4" color="primary" @click="initialize">
@@ -331,16 +365,24 @@
                       {{ item.user_status }}
                     </template>
                     <!-- ปุ่ม Manage -->
-                    <template v-slot:[`item.actions`]="{ item }">
-                      <v-btn
-                        @click="(dialog_manage = true), editItem(item)"
-                        color="primary"
-                        style="color: white; border-radius: 20px"
-                      >
-                        Manage
-                      </v-btn>
-                    </template>
-                    <!--  -->
+                      <template v-if="check_role == 'Admin'" v-slot:[`item.actions`]="{ item }">
+                        <v-btn
+                          @click="(dialog_manage = true), editItem(item)"
+                          color="primary"
+                          style="color: white; border-radius: 20px"
+                        >
+                          Manage
+                        </v-btn>
+                      </template>
+                      <template v-else v-slot:[`item.actions`]>
+                        <v-btn
+                          style="color: white; border-radius: 20px"
+                          disabled
+                        >
+                          Admin Only
+                        </v-btn>
+                      </template>
+                      <!--  -->
                     <template v-slot:no-data>
                       <v-col>No Data</v-col>
                       <v-btn class="mb-4" color="primary" @click="initialize">
@@ -406,16 +448,24 @@
                       {{ item.user_status }}
                     </template>
                     <!-- ปุ่ม Manage -->
-                    <template v-slot:[`item.actions`]="{ item }">
-                      <v-btn
-                        @click="(dialog_manage = true), editItem(item)"
-                        color="primary"
-                        style="color: white; border-radius: 20px"
-                      >
-                        Manage
-                      </v-btn>
-                    </template>
-                    <!--  -->
+                      <template v-if="check_role == 'Admin'" v-slot:[`item.actions`]="{ item }">
+                        <v-btn
+                          @click="(dialog_manage = true), editItem(item)"
+                          color="primary"
+                          style="color: white; border-radius: 20px"
+                        >
+                          Manage
+                        </v-btn>
+                      </template>
+                      <template v-else v-slot:[`item.actions`]>
+                        <v-btn
+                          style="color: white; border-radius: 20px"
+                          disabled
+                        >
+                          Admin Only
+                        </v-btn>
+                      </template>
+                      <!--  -->
                     <template v-slot:no-data>
                       <v-col>No Data</v-col>
                       <v-btn class="mb-4" color="primary" @click="initialize">
@@ -481,16 +531,24 @@
                       {{ item.user_status }}
                     </template>
                     <!-- ปุ่ม Manage -->
-                    <template v-slot:[`item.actions`]="{ item }">
-                      <v-btn
-                        @click="(dialog_manage = true), editItem(item)"
-                        color="primary"
-                        style="color: white; border-radius: 20px"
-                      >
-                        Manage
-                      </v-btn>
-                    </template>
-                    <!--  -->
+                      <template v-if="check_role == 'Admin'" v-slot:[`item.actions`]="{ item }">
+                        <v-btn
+                          @click="(dialog_manage = true), editItem(item)"
+                          color="primary"
+                          style="color: white; border-radius: 20px"
+                        >
+                          Manage
+                        </v-btn>
+                      </template>
+                      <template v-else v-slot:[`item.actions`]>
+                        <v-btn
+                          style="color: white; border-radius: 20px"
+                          disabled
+                        >
+                          Admin Only
+                        </v-btn>
+                      </template>
+                      <!--  -->
                     <template v-slot:no-data>
                       <v-col>No Data</v-col>
                       <v-btn class="mb-4" color="primary" @click="initialize">
@@ -505,13 +563,6 @@
               <!-- จบ Tab ทั้ง 6 -->
             </v-tabs-items>
             <!-- ปุ่มสร้าง User + Dialog -->
-            <!-- <template>
-              <v-btn @click="dialog = true" class="ml-2 mb-0 mt-9" elevation="2" color="primary" bottom right absolute
-                style="color: white; border-radius: 10px">
-                <v-icon left> mdi-plus-circle-outline </v-icon>
-                New User
-              </v-btn>
-            </template> -->
             <v-dialog v-model="dialog" width="900px" max-height="100%">
               <v-card class="mx-auto" height="580px" max-height="100%">
                 <v-card-title>
@@ -1206,13 +1257,27 @@ export default {
       dataDefault_status_user: [],
       dataDefault_issue_type: [],
       dataDefault_issue_priotity: [],
+      check_role:"",
     };
   },
   created() {
+    this.getUser();
     this.initialize();
+  },
+    mounted() {
+    this.getUser();
+  },
+    computed: {
+    userId() {
+      if (typeof window !== "undefined") {
+        return window.localStorage.getItem("userId");
+      }
+      return null; // or some default value if localStorage is not available
+    },
   },
   methods: {
     initialize(){
+    this.getUser();
     this.getAll();
     this.getPosition_Developer();
     this.getPosition_Implementer();
@@ -1220,6 +1285,16 @@ export default {
     this.getPosition_SystemAnalyst();
     this.getPosition_ReportDeveloper();
     this.getAllDefault();
+    },
+    async getUser() {
+      await this.$axios.get("/users/getOne/" + this.userId).then((res) => {
+        // this.user_id = res.data[0].user_id;
+        // this.user_firstname = res.data[0].user_firstname;
+        // this.user_lastname = res.data[0].user_lastname;
+        // this.user_position = res.data[0].user_position;
+        this.check_role = res.data[0].user_role;
+        console.log(this.check_role);
+      });
     },
     async getAll() {
       await this.$axios.get("/users/getAll").then((data) => {

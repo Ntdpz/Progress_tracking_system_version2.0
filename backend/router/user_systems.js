@@ -187,6 +187,33 @@ router.delete("/deleteScreenID/:system_id", async (req, res) => {
     }
 });
 
+//* DELETE user by project_id
+router.delete("/deleteProjectID/:project_id", async (req, res) => {
+    const project_id = req.params.project_id;
+
+    try {
+        connection.query(
+            "DELETE FROM user_systems WHERE project_id = ?",
+            [project_id],
+            (err, results, fields) => {
+                if (err) {
+                    console.log(err);
+                    return res.status(400).send();
+                }
+                if (results.affectedRows === 0) {
+                    return res.status(404).json({ message: "No system_id with that" });
+                }
+                return res
+                    .status(200)
+                    .json({ message: "project_id deleted successfully!" });
+            }
+        );
+    } catch (err) {
+        console.log(err);
+        return res.status(500).send();
+    }
+});
+
 
 
 

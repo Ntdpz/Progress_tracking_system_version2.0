@@ -1,6 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const connection = require("../db");
+const multer = require("multer");
+const fs = require("fs");
+const path = require("path");
 
 function generateId() {
   const maxId = 999999999;
@@ -17,6 +20,27 @@ router.get("/test", async (req, res) => {
     return res.status(500).send();
   }
 });
+
+function generateId() {
+  const maxId = 999999999;
+  const minId = 100000000;
+  const id = Math.floor(Math.random() * (maxId - minId + 1)) + minId;
+  return id;
+}
+
+// configure Multer to handle file uploads
+const storage = multer.diskStorage({
+  destination(req, file, cb) {
+    cb(null, "../frontend/uploadfiles/");
+  },
+  filename(req, file, cb) {
+    const originalname = file.originalname;
+    const filename = originalname.substring(originalname.lastIndexOf("/") + 1);
+    cb(null, filename);
+  },
+});
+
+const upload = multer({ storage });
 
 // * GET All FROM issues
 router.get("/getAll", async (req, res) => {
@@ -67,7 +91,7 @@ router.get("/getOne/:id", async (req, res) => {
 });
 
 // * POST FROM issues
-router.post("/createIssue", async (req, res) => {
+router.post("/createIssue", upload.single("file"), (req, res) => {
   const {
     screen_id,
     system_id,
@@ -85,7 +109,6 @@ router.post("/createIssue", async (req, res) => {
     issue_type_sa,
     issue_doc_id,
     issue_customer,
-    issue_filename,
     issue_des_dev,
     issue_des_implementer,
     issue_start,
@@ -95,6 +118,8 @@ router.post("/createIssue", async (req, res) => {
     issue_manday,
     issue_complete,
   } = req.body;
+
+  const issue_filename = req.file ? req.file.filename : null;
 
   try {
     connection.query(
@@ -142,8 +167,8 @@ router.post("/createIssue", async (req, res) => {
   }
 });
 
-//* Update issue by dev
-router.put("/updateIssueDev/:id", async (req, res) => {
+//* Update issue by dev แก้ตรงนี้ File
+router.put("/updateIssueDev/:id", upload.single("file"), (req, res) => {
   const id = req.params.id;
   const {
     issue_accepting,
@@ -154,35 +179,50 @@ router.put("/updateIssueDev/:id", async (req, res) => {
     issue_complete,
     issue_des_dev,
   } = req.body;
-  try {
-    connection.query(
-      "UPDATE issues SET issue_accepting = ?, issue_manday = ?, issue_start = ?, issue_expected = ?, issue_status = ?, issue_complete = ?, issue_des_dev = ? WHERE id = ?",
-      [
-        issue_accepting,
-        issue_manday,
-        issue_start,
-        issue_expected,
-        issue_status,
-        issue_complete,
-        issue_des_dev,
-        id,
-      ],
-      (err, results, fields) => {
-        if (err) {
-          console.log(err);
-          return res.status(400).send();
+  connection.query("SELECT issues FROM issue_filename WHERE id = ?", [id], (err, results) => {
+    if (err) {
+      console.log("Error database", err);
+      return res.status(400).send();
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: "File not found" });
+    }
+
+    const issue_filename = results[0].issue_filename;
+
+    // Update the text1 field in the database
+    try {
+      connection.query(
+        "UPDATE issues SET issue_accepting = ?, issue_manday = ?, issue_start = ?, issue_expected = ?, issue_status = ?, issue_complete = ?, issue_des_dev = ? WHERE id = ?",
+        [
+          issue_accepting,
+          issue_manday,
+          issue_start,
+          issue_expected,
+          issue_status,
+          issue_complete,
+          issue_des_dev,
+          id,
+        ],
+        (err, results, fields) => {
+          if (err) {
+            console.log(err);
+            return res.status(400).send();
+          }
+          res.status(200).json({ message: "Issue updated successfully!" });
         }
-        res.status(200).json({ message: "Issue updated successfully!" });
-      }
-    );
-  } catch (err) {
-    console.log(err);
-    return res.status(500).send();
-  }
+      );
+    } catch (err) {
+      console.log(err);
+      return res.status(500).send();
+    }
+  });
+
 });
 
 //* Update issue by Admin
-router.put("/updateIssueAdmin/:id", async (req, res) => {
+router.put("/updateIssueAdmin/:id", upload.single("file"), (req, res) => {
   const id = req.params.id;
   const {
     screen_id,
@@ -198,7 +238,6 @@ router.put("/updateIssueAdmin/:id", async (req, res) => {
     issue_des_sa,
     issue_doc_id,
     issue_customer,
-    issue_filename,
     issue_des_implementer,
     issue_accepting,
     issue_manday,
@@ -208,46 +247,59 @@ router.put("/updateIssueAdmin/:id", async (req, res) => {
     issue_complete,
     issue_des_dev,
   } = req.body;
-  try {
-    connection.query(
-      "UPDATE issues SET  screen_id = ?, issue_name = ?, issue_id = ?,  issue_type = ?, issue_informer = ?, issue_priority = ?, issue_end = ?, issue_assign = ? , issue_qc = ?, issue_des = ?, issue_des_sa = ? , issue_doc_id=? , issue_customer=?, issue_filename=? ,issue_des_implementer=?,issue_accepting=?,issue_manday=?, issue_start=?,issue_expected=?,issue_status=?,issue_complete=?,  issue_des_dev=?    WHERE id = ?",
-      [
-        screen_id,
-        issue_name,
-        issue_id,
-        issue_type,
-        issue_informer,
-        issue_priority,
-        issue_end,
-        issue_assign,
-        issue_qc,
-        issue_des,
-        issue_des_sa,
-        issue_doc_id,
-        issue_customer,
-        issue_filename,
-        issue_des_implementer,
-        issue_accepting,
-        issue_manday,
-        issue_start,
-        issue_expected,
-        issue_status,
-        issue_complete,
-        issue_des_dev,
-        id,
-      ],
-      (err, results, fields) => {
-        if (err) {
-          console.log(err);
-          return res.status(400).send();
+  connection.query("SELECT issue_filename FROM issues WHERE id = ?", [id], (err, results) => {
+    if (err) {
+      console.log("Error database", err);
+      return res.status(400).send();
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: "File not found" });
+    }
+
+    const issue_filename = results[0].issue_filename;
+    // Update the text1 field in the database
+    try {
+      connection.query(
+        "UPDATE issues SET  screen_id = ?, issue_name = ?, issue_id = ?,  issue_type = ?, issue_informer = ?, issue_priority = ?, issue_end = ?, issue_assign = ? , issue_qc = ?, issue_des = ?, issue_des_sa = ? , issue_doc_id=? , issue_customer=?,issue_des_implementer=?,issue_accepting=?,issue_manday=?, issue_start=?,issue_expected=?,issue_status=?,issue_complete=?,  issue_des_dev=?    WHERE id = ?",
+        [
+          screen_id,
+          issue_name,
+          issue_id,
+          issue_type,
+          issue_informer,
+          issue_priority,
+          issue_end,
+          issue_assign,
+          issue_qc,
+          issue_des,
+          issue_des_sa,
+          issue_doc_id,
+          issue_customer,
+          issue_des_implementer,
+          issue_accepting,
+          issue_manday,
+          issue_start,
+          issue_expected,
+          issue_status,
+          issue_complete,
+          issue_des_dev,
+          id,
+        ],
+        (err, results, fields) => {
+          if (err) {
+            console.log(err);
+            return res.status(400).send();
+          }
+          res.status(200).json({ message: "Issue updated successfully!" });
         }
-        res.status(200).json({ message: "Issue updated successfully!" });
-      }
-    );
-  } catch (err) {
-    console.log(err);
-    return res.status(500).send();
-  }
+      );
+    } catch (err) {
+      console.log(err);
+      return res.status(500).send();
+    }
+  });
+
 });
 
 //* Update issue by implementer
@@ -270,64 +322,107 @@ router.put("/updateIssueImplementer/:id", async (req, res) => {
     issue_filename,
     issue_des_implementer,
   } = req.body;
-  try {
-    connection.query(
-      "UPDATE issues SET screen_id = ?, issue_name = ?, issue_id = ?, issue_type = ?, issue_informer = ?, issue_priority = ?, issue_end = ?, issue_assign = ?, issue_qc = ?, issue_des = ?, issue_des_sa = ?, issue_doc_id = ?, issue_customer = ?, issue_filename = ?, issue_des_implementer = ? WHERE id = ?",
-      [
-        screen_id,
-        issue_name,
-        issue_id,
-        issue_type,
-        issue_informer,
-        issue_priority,
-        issue_end,
-        issue_assign,
-        issue_qc,
-        issue_des,
-        issue_des_sa,
-        issue_doc_id,
-        issue_customer,
-        issue_filename,
-        issue_des_implementer,
-        id,
-      ],
-      (err, results, fields) => {
-        if (err) {
-          console.log(err);
-          return res.status(400).send();
+
+  connection.query("SELECT issues FROM issue_filename WHERE id = ?", [id], (err, results) => {
+    if (err) {
+      console.log("Error database", err);
+      return res.status(400).send();
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: "File not found" });
+    }
+
+    const issue_filename = results[0].issue_filename;
+    // Update the text1 field in the database
+    try {
+      connection.query(
+        "UPDATE issues SET screen_id = ?, issue_name = ?, issue_id = ?, issue_type = ?, issue_informer = ?, issue_priority = ?, issue_end = ?, issue_assign = ?, issue_qc = ?, issue_des = ?, issue_des_sa = ?, issue_doc_id = ?, issue_customer = ?, issue_filename = ?, issue_des_implementer = ? WHERE id = ?",
+        [
+          screen_id,
+          issue_name,
+          issue_id,
+          issue_type,
+          issue_informer,
+          issue_priority,
+          issue_end,
+          issue_assign,
+          issue_qc,
+          issue_des,
+          issue_des_sa,
+          issue_doc_id,
+          issue_customer,
+          issue_filename,
+          issue_des_implementer,
+          id,
+        ],
+        (err, results, fields) => {
+          if (err) {
+            console.log(err);
+            return res.status(400).send();
+          }
+          res.status(200).json({ message: "Issue updated successfully!" });
         }
-        res.status(200).json({ message: "Issue updated successfully!" });
-      }
-    );
-  } catch (err) {
-    console.log(err);
-    return res.status(500).send();
-  }
+      );
+    } catch (err) {
+      console.log(err);
+      return res.status(500).send();
+    }
+  });
+
 });
 
 //* DELETE issue by ID
 router.delete("/delete/:id", async (req, res) => {
   const id = req.params.id;
-
-  try {
-    connection.query(
-      "DELETE FROM issues WHERE id = ?",
-      [id],
-      (err, results, fields) => {
-        if (err) {
-          console.log(err);
-          return res.status(400).send();
-        }
-        if (results.affectedRows === 0) {
-          return res.status(404).json({ message: "No issue with that id!" });
-        }
-        return res.status(200).json({ message: "System issue successfully!" });
+  connection.query(
+    "SELECT issues FROM issue_filename WHERE id = ?",
+    [id],
+    (err, results, fields) => {
+      if (err) {
+        console.log("Error database", err);
+        return res.status(400).send();
       }
-    );
-  } catch (err) {
-    console.log(err);
-    return res.status(500).send();
-  }
+      if (results.length === 0) {
+        return res.status(404).json({ message: "File not found" });
+      }
+      const issue_filename = results[0].issue_filename;
+      if (!issue_filename) {
+        return connection.query(
+          "DELETE FROM issues WHERE id = ?",
+          [id],
+          (err, results, fields) => {
+            if (err) {
+              console.log("Error database", err);
+              return res.status(400).send();
+            }
+            return res
+              .status(200)
+              .json({ message: "successfully deleted!" });
+          }
+        );
+      }
+      const filePath = path.join("../frontend/uploadfiles/", pdf);
+      try {
+        fs.unlinkSync(filePath);
+        connection.query(
+          "DELETE FROM issues WHERE issue_filename = ?",
+          [id],
+          (err, results, fields) => {
+            if (err) {
+              console.log("Error database", err);
+              return res.status(400).send();
+            }
+            return res
+              .status(200)
+              .json({ message: "successfully deleted!" });
+          }
+        );
+      } catch (err) {
+        console.log(err);
+        return res.status(500).send();
+      }
+    });
 });
 
 router.post("/addUserIssue", async (req, res) => {
@@ -367,6 +462,36 @@ router.post("/addUserIssue", async (req, res) => {
     console.log("Error while creating user-issues mappings", err);
     return res.status(500).send();
   }
+});
+
+// GET endpoint to download a file
+router.get("/downloadfile/:issue_filename", (req, res) => {
+  const issue_filename = req.params.issue_filename;
+  connection.query(
+    "SELECT issues FROM issue_filename WHERE issue_filename = ?",
+    [issue_filename],
+    (err, results, fields) => {
+      if (err) {
+        console.log("Error database", err);
+        return res.status(400).send();
+      }
+      const file = results[0].issue_filename;
+      const filePath = path.join("../frontend/uploadfiles/", file);
+      const fileStream = fs.createReadStream(filePath);
+
+      // Set the Content-Disposition header to force a download
+      res.setHeader(
+        "Content-Disposition",
+        `attachment; filename="${file}"`
+      );
+
+      // Set the content type header to match the file type
+      res.setHeader("Content-Type", "application/pdf");
+
+      // Send the file to the client for download
+      fileStream.pipe(res);
+    }
+  );
 });
 
 module.exports = router;

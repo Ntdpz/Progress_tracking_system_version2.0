@@ -72,48 +72,7 @@
       ></span>
       <h4 style="color: black">Add New Project</h4>
     </v-btn>
-    <br />
-    <v-expansion-panels
-      v-for="(project, index) in projectList"
-      :key="index"
-      class="mb-5"
-      :items="projectList"
-    >
-      <v-expansion-panel>
-        <v-expansion-panel-header disable-icon-rotate>
-          <v-row no-gutters>
-            <v-col cols="3">
-              <h4>{{ project.project_name }}</h4>
-              <p class="mt-1" style="color: #b6b5b5; font-size: 16px">
-                {{ getSystemCount(project) }} Sub System
-              </p>
-            </v-col>
-            <v-col> </v-col>
-            <v-col cols="2">
-              <h4>{{ project.project_id }}</h4>
-            </v-col>
-            <v-col cols="2">
-              <h4>{{ project.formattedDateStart }}</h4>
-            </v-col>
-            <v-col cols="2">
-              <h4>{{ project.formattedDateEnd }}</h4>
-            </v-col>
-            <v-col cols="2">
-              <h4>{{ project.project_agency }}</h4>
-            </v-col>
-            <v-col cols="1">
-              <v-btn
-                color="primary"
-                icon
-                @click="openDialog('edit', projectList[index])"
-              >
-                <v-icon class="pa-0" size="25" color="primary"
-                  >mdi mdi-square-edit-outline</v-icon
-                >
-              </v-btn>
-            </v-col>
-          </v-row>
-          <v-dialog v-model="dialog" max-width="500px" :retain-focus="false">
+    <v-dialog v-model="dialog" max-width="500px" :retain-focus="false">
             <v-card>
               <v-card-title>
                 <v-col cols="12">
@@ -262,7 +221,7 @@
                 <v-btn
                   color="error"
                   dark
-                  @click="deleteProject()"
+                  @click="DeleteAllProject()"
                   v-show="mode == 'edit'"
                 >
                   <h5>Delete</h5>
@@ -277,7 +236,52 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
+    <br />
+    <v-expansion-panels
+      v-for="(project, index) in projectList"
+      :key="index"
+      class="mb-5"
+      :items="projectList"
+    >
+      <v-expansion-panel>
+        <v-expansion-panel-header disable-icon-rotate>
+          <v-row no-gutters>
+            <v-col cols="3">
+              <h4>{{ project.project_name }}</h4>
+              <p class="mt-1" style="color: #b6b5b5; font-size: 16px">
+                {{ getSystemCount(project) }} Sub System
+              </p>
+            </v-col>
+            <v-col> </v-col>
+            <v-col cols="2">
+              <h4>{{ project.project_id }}</h4>
+            </v-col>
+            <v-col cols="2">
+              <h4>{{ project.formattedDateStart }}</h4>
+            </v-col>
+            <v-col cols="2">
+              <h4>{{ project.formattedDateEnd }}</h4>
+            </v-col>
+            <v-col cols="2">
+              <h4>{{ project.project_agency }}</h4>
+            </v-col>
+            <v-col cols="1">
+              <v-btn
+                color="primary"
+                icon
+                @click="openDialog('edit', projectList[index])"
+              >
+                <v-icon class="pa-0" size="25" color="primary"
+                  >mdi mdi-square-edit-outline</v-icon
+                >
+              </v-btn>
+            </v-col>
+          </v-row>
+          
         </v-expansion-panel-header>
+        <!--  -->
+        
+        <!--  -->
         <v-expansion-panel-content>
           <v-row justify="center" class="ml-5 mr-5 mt-0">
             <!-- *dialog -->
@@ -551,8 +555,8 @@ export default {
     },
   },
   mounted() {
-    this.getSystems();
-    this.getProject();
+    // this.getSystems();
+    // this.getProject();
   },
   methods: {
     initialize() {
@@ -576,7 +580,6 @@ export default {
           console.log(this.systemId);
         });
     },
-    // ถึงตรงนี้ post in user system แล้วดึงมาโชในหน้า systemdetail แล้วแก้หาร post ของหน้า systemdetail ไป user_screen ให้เลือกคนจาก user_system เท่านั้น
     async addUser_system(systemID) {
       try {
         await this.$axios.post("/user_systems/createUser_system", {
@@ -708,25 +711,132 @@ export default {
         }
       }
     },
+    async DeleteAllProject(){
+      await this.deleteUser_screens();
+      console.log("success User_screen");
+      await this.deleteUserSystem();
+      console.log("success User_system");
+      await this.deleteScreenByIdProject();
+      console.log("success screen");
+      await this.deleteSystem();
+      console.log("success system");
+      await this.deleteProject();
+      console.log("success project");
+      alert("success delete all");
+      // window.location.reload();
+      await this.initialize();
+      await this.getProject();
+      await this.getSystems();
+      await this.getPosition_Developer();
+      await this.getPosition_Implementer();
+      this.dialog = false;
+    },
     async deleteProject() {
       try {
-        await this.$axios.delete(`/projects/delete/${this.editedItem.id}`);
+        await this.$axios.delete("/projects/delete/"+ this.editedItem.id);
         console.log("delete success");
-        window.location.reload();
+        // window.location.reload();
+        // await this.initialize();
+        // await this.getProject();
+        // await this.getSystems();
+        // const promise = new Promise((resolve, reject) => {
+        //   resolve();
+        //   this.dialog = false;
 
-        const promise = new Promise((resolve, reject) => {
-          resolve();
-          this.dialog = false;
-        });
-        promise.then(() => {
-          setTimeout(() => {
-            alert("delete success");
-          }, 2000);
-        });
+        // });
+        // promise.then(() => {
+        //   setTimeout(() => {
+        //     alert("delete success");
+        //   }, 2000);
+        // });
       } catch (error) {
         console.error(error);
         alert("Error delete form");
       }
+    },
+    async deleteUser_screens() {
+      try {
+        const response = await this.$axios.delete(
+          "/user_screens/deleteProjectID/" + this.editedItem.id
+        );
+        console.log("delete success");
+        if (response.status === 200 || response.status === 404) {
+          // alert("delete user_screen success");
+          // window.location.reload();
+          console.log("delete user_screen success");
+        }
+      } catch (err) {
+        if (err.response && err.response.status === 404) {
+          // do nothing when 404 error occurs
+          console.log(err.response);
+        }
+        console.log(err);
+      }
+    },
+    async deleteUserSystem() {
+      try {
+        const response = await this.$axios.delete(
+          "/user_systems/deleteProjectID/" + this.editedItem.id
+        );
+        if (response.status === 200 ) {
+          // alert("delete user_system success");
+          // window.location.reload();
+        } else if (response.status === 404) {
+          const responseData = response.data;
+          if (responseData) {
+            // alert("user_system no have data");
+          } else if (responseData.error && response.status != 404) {
+            // alert(responseData.error);
+            console.log(responseData.error);
+          }
+          // window.location.reload();
+        }
+      } catch (err) {
+        console.log(err);
+        alert(err);
+      }
+    },
+    async deleteSystem() {
+      await this.$axios
+        .delete("/systems/deleteProjectId/" + this.editedItem.id)
+        .then((res) => {
+          // alert("Detete system Success!");
+          
+          // this.$router.push("/manageProject");
+        })
+        .then((response) => {
+          console.log(response);
+          console.log("Update success");
+          // alert("Update success");
+          
+          // window.location.reload();
+        })
+        .catch((err) => {
+          console.log(err);
+          // alert(err);
+        });
+    },
+    async deleteScreenByIdProject() {
+      await this.$axios
+        .delete("/screens/deleteScreenProjectId/" + this.editedItem.id)
+        .then((res) => {
+          // alert("Delete Screen Success!");
+          // this.deleteSystem();
+        })
+        .then((response) => {
+          console.log(response);
+          console.log("delete success");
+          // alert("delete success");
+          // window.location.reload();
+        })
+        .catch((err) => {
+          if (err.response && err.response.status === 404) {
+            // do nothing when 404 error occurs
+          } else {
+            console.log(err);
+            // alert(err);
+          }
+        });
     },
     openDialog(mode, projectList) {
       this.mode = mode;

@@ -4,7 +4,7 @@ const connection = require("../db");
 
 router.get("/test", async (req, res) => {
   try {
-    return "Hello";
+    return res.send("Hello");
   } catch (err) {
     console.log(err);
     return res.status(500).send();
@@ -149,6 +149,33 @@ router.delete("/delete/:id", async (req, res) => {
     connection.query(
       "DELETE FROM systems WHERE id = ?",
       [id],
+      (err, results, fields) => {
+        if (err) {
+          console.log(err);
+          return res.status(400).send();
+        }
+        if (results.affectedRows === 0) {
+          return res.status(404).json({ message: "No system with that id!" });
+        }
+        return res
+          .status(200)
+          .json({ message: "System deleted successfully!" });
+      }
+    );
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send();
+  }
+});
+
+//* DELETE system by project_id
+router.delete("/deleteProjectId/:project_id", async (req, res) => {
+  const project_id = req.params.project_id;
+
+  try {
+    connection.query(
+      "DELETE FROM systems WHERE project_id = ?",
+      [project_id],
       (err, results, fields) => {
         if (err) {
           console.log(err);

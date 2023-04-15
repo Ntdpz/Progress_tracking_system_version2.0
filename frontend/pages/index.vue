@@ -35,7 +35,7 @@
           ></v-col
         >
       </v-col>
-      <v-col class="mt-6 align-self-center" col="7" sm="5" md="7">
+      <v-col class="mt-6 align-self-center" col="5" sm="5" md="5" xs="5">
         <v-btn icon to="/profile">
           <v-icon class="mb-1" color="black" size="25px">mdi-pencil</v-icon>
         </v-btn>
@@ -120,7 +120,7 @@
                 </v-card-subtitle>
               </v-card>
             </template>
-          </v-col>
+          </v-col> -->
         </v-row>
         <!-- persistent คือ การที่คลิกนอก dialog แล้ว dialog จะไม่ปิด -->
         <v-dialog v-model="dialog_newproject" max-width="700px">

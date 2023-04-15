@@ -190,7 +190,7 @@
                     v-model="developer"
                     item-text="user_firstname"
                     item-value="id"
-                    :items="data_position_Developer"
+                    :items="position_Developers"
                     hide-details="auto"
                     dense
                     outlined
@@ -228,7 +228,7 @@
                     v-model="implementer"
                     item-text="user_firstname"
                     item-value="id"
-                    :items="data_position_Implementer"
+                    :items="position_Implementers"
                     hide-details="auto"
                     dense
                     outlined
@@ -266,20 +266,12 @@
                 </v-col>
                 <v-col sm="8" md="8">
                   <template>
-                    <v-text-field
-                      style="text-align-last: left"
-                      v-model="screensID.screen_status"
-                      hide-details="auto"
-                      disabled
-                      dense
-                      outlined
-                    >
-                      <template v-slot:prepend-inner>
-                        <v-icon :color="status === 'Complete' ? 'green' : 'red'"
-                          >mdi-circle</v-icon
-                        >
-                      </template>
-                    </v-text-field>
+                    <span>
+                      <v-icon :color="status === 'Complete' ? 'green' : 'red'"
+                        >mdi-circle</v-icon
+                      >
+                      {{ screensID.screen_status }}
+                    </span>
                   </template>
                 </v-col>
                 <v-col
@@ -418,9 +410,7 @@
                 </v-col>
                 <v-col class="col-10" sm="6" md="6">
                   <h4 class="">
-                    {{
-                      screensID.screen_manday
-                    }}
+                    {{ screensID.screen_manday }}
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Day
                   </h4>
                 </v-col>
@@ -517,16 +507,20 @@ export default {
       dialog_canEdit: false,
       menuDateStart: false,
       menuDateEnd: false,
-      selectlevel: ["1", "2", "3", "4", "5"],
+      selectlevel: [],
       userScreens: [],
       developer: [],
       implementer: [],
       data_position_Developer: [],
       data_position_Implementer: [],
       user_id: [],
+      position_Implementers: [],
+      position_Developers: [],
+      dataDefault: [],
     };
   },
   created() {
+    this.getAllDefault();
     this.getScreenID();
     this.getUser_screen();
     this.getPosition_Developer();
@@ -545,6 +539,7 @@ export default {
         this.screenname = data.data[0].screen_name;
         this.IDdelete = this.screensID.system_id;
         console.log(this.screensID);
+        this.getUserSystems();
         const date = moment(
           this.screensID.screen_start,
           "YYYY-MM-DDTHH:mm:ss.SSSZ"
@@ -595,7 +590,27 @@ export default {
           console.log(this.name_Implementer);
         });
     },
+    async getUserSystems() {
+      await this.$axios
+        .get("/user_systems/getOneScreenID/" + this.screensID.system_id)
+        .then((data) => {
+          // this.data_position_Implementer = data.data
+          //   .filter((item) => item.user_position === "Implementer")
+          //   .map((user) => user.id);
+          // this.data_position_Developer = data.data
+          //   .filter((item) => item.user_position === "Developer")
+          //   .map((user) => user.id);
+          this.position_Implementers = data.data.filter(
+            (item) => item.user_position === "Implementer"
+          );
+          this.position_Developers = data.data.filter(
+            (item) => item.user_position === "Developer"
+          );
 
+          this.user_developer = this.data_position_Developer;
+          this.user_implementer = this.data_position_Implementer;
+        });
+    },
     calculateManDay() {
       const dateStart = new Date(this.screensID.screen_start);
       const dateEnd = new Date(this.screensID.screen_end);
@@ -663,7 +678,6 @@ export default {
           .then((res) => {
             console.log("delete success");
             alert("delete user_screen success");
-            
           })
           .catch((err) => {
             console.log(err);
@@ -681,7 +695,7 @@ export default {
             user_id: this.user_id,
             screen_id: this.$route.params.id,
             system_id: this.screensID.system_id,
-            project_id:this.screensID.project_id, 
+            project_id: this.screensID.project_id,
           })
           .then((res) => {
             console.log("POST success for user ID: " + this.$route.params.id);
@@ -723,6 +737,18 @@ export default {
           alert(err);
         });
     },
+    async getAllDefault() {
+      await this.$axios.get("/default_settings/getAll").then((data) => {
+        this.dataDefault = data.data;
+        console.clear();
+        console.log(this.dataDefault);
+        this.dataDefault.forEach((item) => {
+          if (item.level) {
+            this.selectlevel.push(item.level);
+          }
+        });
+      });
+    },
   },
 };
 </script>
@@ -751,5 +777,12 @@ input[type="text"] {
 
 .select-with-margin .v-chip {
   margin-bottom: 5px;
+}
+span {
+  border: none;
+  outline: none;
+}
+.no-border .v-input--is-disabled .v-text-field__slot::before {
+  border: none !important;
 }
 </style>

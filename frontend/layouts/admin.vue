@@ -63,23 +63,23 @@
       </v-list>
       <v-divider></v-divider>
       <v-list>
-        <v-list-item
-          v-for="(item, i) in items2"
-          :key="i"
-          :to="item.to"
-          router
-          color="primary"
-          exact
-        >
-          <v-list-item-action>
-            <v-icon>{{ item.icon }}</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title v-text="item.title" />
-          </v-list-item-content>
-        </v-list-item>
-        <v-divider></v-divider>
-      </v-list>
+    <v-list-item
+      v-for="(item, i) in filteredItems"
+      :key="i"
+      :to="item.to"
+      router
+      color="primary"
+      exact
+    >
+      <v-list-item-action>
+        <v-icon>{{ item.icon }}</v-icon>
+      </v-list-item-action>
+      <v-list-item-content>
+        <v-list-item-title v-text="item.title" />
+      </v-list-item-content>
+    </v-list-item>
+    <v-divider></v-divider>
+  </v-list>
     </v-navigation-drawer>
     <v-app-bar
       :clipped-left="clipped"
@@ -105,12 +105,13 @@
   </v-app>
 </template>
     
-    <script>
+<script>
 export default {
   data() {
     return {
       clipped: false,
       drawer: false,
+      user_role:"",
       items: [
         {
           icon: "mdi-home",
@@ -142,11 +143,11 @@ export default {
           title: "Schedule",
           to: "/schedule",
         },
-        {
-          icon: "mdi-account",
-          title: "Manage User",
-          to: "/manageUser",
-        },
+        // {
+        //   icon: "mdi-account",
+        //   title: "Manage User",
+        //   to: "/manageUser",
+        // },
         {
           icon: "mdi-view-list",
           title: "Manage Project",
@@ -171,7 +172,32 @@ export default {
       this.items3[0].projectList = res.data;
       console.log(this.items3[0].projectList, "this.items[0].projectList");
     });
+    await this.getUser();
   },
+  async created() {
+    await this.getUser();
+  },
+    computed: {
+        userId() {
+          if (typeof window !== "undefined") {
+            return window.localStorage.getItem("userId");
+          }
+          return null; // or some default value if localStorage is not available
+      },
+      filteredItems() {
+      if (this.user_role == 'Admin') {
+        const items = this.items2.filter(item => item.title !== "Manage User");
+        items.splice(1, 0, {
+          icon: "mdi-account",
+          title: "Manage User",
+          to: "/manageUser",
+        });
+        return items;
+      } else {
+        return this.items2;
+      }
+    },
+      },
   methods: {
     goToPage(route) {
       this.$router.push(route);
@@ -181,6 +207,26 @@ export default {
         this.items3.items = res.data;
       });
     },
+    async getUser() {
+          await this.$axios.get("/users/getOne/" + this.userId).then((res) => {
+            this.user_role = res.data[0].user_role;
+            console.log(this.user_position);
+            // this.filteredItems();
+          });
+    },
+    // filteredItems() {
+    //   if (this.user_role === "Admin") {
+    //     const items = this.items2.filter(item => item.title !== "Manage User");
+    //     items.splice(2, 0, {
+    //       icon: "mdi-account",
+    //       title: "Manage User",
+    //       to: "/manageUser",
+    //     });
+    //     return items;
+    //   } else {
+    //     return this.items2;
+    //   }
+    // },
   },
 };
 </script>

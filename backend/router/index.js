@@ -10,7 +10,7 @@ const default_settingsRouter = require("./default_settings");
 const user_projectsRouter = require("./user_projects");
 const user_screensRouter = require("./user_screens");
 const user_systemsRouter = require("./user_systems");
-// const pdfRouter = require("./pdf");
+const pdfRouter = require("./pdf");
 const authRouter = require("./auth");
 
 router.use("/users", usersRouter);
@@ -23,7 +23,7 @@ router.use("/default_settings", default_settingsRouter);
 router.use("/user_projects", user_projectsRouter);
 router.use("/user_screens", user_screensRouter);
 router.use("/user_systems", user_systemsRouter);
-// router.use("/pdf", pdfRouter);
+router.use("/pdf", pdfRouter);
 router.use("/auth", authRouter);
 
 module.exports = router;
