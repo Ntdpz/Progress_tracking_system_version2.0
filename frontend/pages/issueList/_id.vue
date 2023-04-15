@@ -6,7 +6,7 @@
 
     <!-- *Header* -->
     <v-row class="mt-4 ml-2 mb-2">
-      <h4>{{ this.projectName }} ({{ this.projectId }})</h4>
+      <h4>UserID {{userId}} : {{ this.projectName }} ({{ this.projectId }})</h4>
       <p style="color: #b6b5b5; font-size: 16px" class="ml-2">
         {{ this.systemslength }} Sub Systems
       </p>
@@ -142,7 +142,7 @@
               <!-- {{ item.issue_assignees }} -->
               <p v-show="item.issue_assign == ''">N/A</p>
             </template>
-            <template v-slot:item.actions="{ item }">
+            <template v-slot:[`item.actions`]="{ item }">
               <!-- <v-btn icon @click="showIssueDetailDialog(item.issue_name)"
                 >Details</v-btn -->
               <v-icon
@@ -182,7 +182,7 @@
               </v-icon>
             </template>
           </v-data-table>
-          <dialog-issue-detail
+          <!-- <dialog-issue-detail
             :dialog.sync="dialogIssueDetail"
             :ProjectName="projectName"
             :ProjectId="projectId"
@@ -212,6 +212,68 @@
             :IssueDocId="selected.issue_doc_id"
             :IssueCustomer="selected.issue_customer"
             :IssueTypeSA="selected.issue_type_sa"
+          /> -->
+          <dialog-issue-imple
+              :dialog.sync="dialogIssueImple"
+              :ProjectName="projectName"
+              :ProjectId="projectId"
+              :SystemName="system.system_nameTH"
+              :SystemId="system.id"
+              :id="selected.Id"
+              :IssueId="selected.issue_id"
+              :IssueType="selected.issue_type"
+              :IssueScreenId="selected.screen_id"
+              :IssueStatus="selected.issue_status"
+              :IssuePriority="selected.issue_priority"
+              :IssueEndDate="selected.formattedDateEnd"
+              :IssueName="selected.issue_name"
+              :IssueDesSA="selected.issue_des_sa"
+              :IssueInformer="selected.issue_informer"
+              :IssueAssign="selected.issue_assign"
+              :IssueQC="selected.issue_qc"
+              :IssueFilename="selected.issue_filename"
+              :IssueAccepting="selected.issue_accepting"
+              :IssueManday="selected.issue_manday"
+              :IssueStart="selected.issue_start"
+              :IssueExpected="selected.issue_expected"
+              :IssueComplete="selected.issue_complete"
+              :IssueDesImplementer="selected.issue_des_implementer"
+              :IssueDesDev="selected.issue_des_dev"
+              :IssueDes="selected.issue_des"
+              :IssueDocId="selected.issue_doc_id"
+              :IssueCustomer="selected.issue_customer"
+              :IssueTypeSA="selected.issue_type_sa"
+          />
+          <dialog-issue-dev 
+              :dialog.sync="dialogIssueDev"
+              :ProjectName="projectName"
+              :ProjectId="projectId"
+              :SystemName="system.system_nameTH"
+              :SystemId="system.id"
+              :id="selected.Id"
+              :IssueId="selected.issue_id"
+              :IssueType="selected.issue_type"
+              :IssueScreenId="selected.screen_id"
+              :IssueStatus="selected.issue_status"
+              :IssuePriority="selected.issue_priority"
+              :IssueEndDate="selected.formattedDateEnd"
+              :IssueName="selected.issue_name"
+              :IssueDesSA="selected.issue_des_sa"
+              :IssueInformer="selected.issue_informer"
+              :IssueAssign="selected.issue_assign"
+              :IssueQC="selected.issue_qc"
+              :IssueFilename="selected.issue_filename"
+              :IssueAccepting="selected.issue_accepting"
+              :IssueManday="selected.issue_manday"
+              :IssueStart="selected.issue_start"
+              :IssueExpected="selected.issue_expected"
+              :IssueComplete="selected.issue_complete"
+              :IssueDesImplementer="selected.issue_des_implementer"
+              :IssueDesDev="selected.issue_des_dev"
+              :IssueDes="selected.issue_des"
+              :IssueDocId="selected.issue_doc_id"
+              :IssueCustomer="selected.issue_customer"
+              :IssueTypeSA="selected.issue_type_sa"
           />
           <!-- *Table 2 unassignedIssues-->
           <v-data-table
@@ -249,10 +311,35 @@
               {{ item.issue_Priotity }}
             </template>
             <template #item.issue_assign="{ value }"> No assign </template>
-            <template v-slot:[`item.actions`]>
+            <template v-slot:item.actions="{ item }">
               <v-icon
                 class="mr-2"
-                @click="infoItem()"
+                @click="showIssueDetailDialog(
+                  item.id,
+                  item.issue_id,
+                  item.issue_type,
+                  item.screen_id,
+                  item.issue_status,
+                  item.issue_priority,
+                  item.formattedDateEnd,
+                  item.issue_name,
+                  item.issue_des_sa,
+                  item.issue_informer,
+                  item.issue_assign,
+                  item.issue_qc,
+                  item.issue_filename,
+                  item.issue_accepting,
+                  item.issue_manday,
+                  item.issue_start,
+                  item.issue_expected,
+                  item.issue_complete,
+                  item.issue_des_implementer,
+                  item.issue_des_dev,
+                  item.issue_des,
+                  item.issue_customer,
+                  item.issue_doc_id,
+                  item.issue_type_sa
+                                    )"
                 size="20"
                 color="primary"
               >
@@ -260,6 +347,7 @@
               </v-icon>
             </template>
           </v-data-table>
+          
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
@@ -273,8 +361,9 @@ import Searchbar from "~/components/Searchbar.vue";
 import DialogIssue from "../../components/DialogIssue.vue";
 import moment from "moment";
 import DialogIssueDetail from "../../components/DialogIssueDetail.vue";
+import DialogIssueImple from "../../components/DialogIssueImple.vue";
 export default {
-  components: { Searchbar, DialogIssue, DialogIssueDetail },
+  components: { Searchbar, DialogIssue, DialogIssueDetail, DialogIssueImple },
   layout: "admin",
   directives: {
     "remove-row-borders": {
@@ -297,6 +386,8 @@ export default {
       menu: false,
       dialogInfo: false,
       dialogIssueDetail: false,
+      dialogIssueImple: false,
+      dialogIssueDev: false,
       selected: {
         Id: "",
         screen_id: "",
@@ -348,16 +439,44 @@ export default {
       projectName: "",
       projectId: "",
       systemslength: "",
+      user_id: "",
+      user_firstname: "",
+      user_lastname: "",
+      user_position: "",
+      user_role: "",
+
     };
   },
   async created() {
+    await this.getUser();
     await this.initialize();
     await this.getProject();
     await this.getSystems();
     await this.getIssue();
     // await this.getIssues2();
   },
+  mounted() {
+    this.getUser();
+  },
+  computed: {
+    userId() {
+      if (typeof window !== "undefined") {
+        return window.localStorage.getItem("userId");
+      }
+      return null; // or some default value if localStorage is not available
+    },
+  },
   methods: {
+    async getUser() {
+      await this.$axios.get("/users/getOne/" + this.userId).then((res) => {
+        this.user_id = res.data[0].user_id;
+        this.user_firstname = res.data[0].user_firstname;
+        this.user_lastname = res.data[0].user_lastname;
+        this.user_position = res.data[0].user_position;
+        this.user_role = res.data[0].user_role;
+        console.log(this.user_position);
+      });
+    },
     initialize() {
       // this.issue = [
       //   {
@@ -405,7 +524,14 @@ export default {
     showIssueDetailDialog(issue_name) {
       console.log("item:", this.item);
       console.log("assignedIssues:", this.system.assignedIssues);
-      this.dialogIssueDetail = true;
+        // this.dialogIssueDetail = true;
+      if (this.user_position == "Implementer") {
+        this.dialogIssueImple = true;
+      }
+      else if(this.user_position == "Developer"){
+        this.dialogIssueDev = true;
+      }
+      
     },
     async getProject() {
       await this.$axios.get("/projects/getOne/" + this.id).then((res) => {
@@ -518,7 +644,12 @@ export default {
       this.selected.issue_customer = issueCustomer;
       this.selected.issue_doc_id = issueDocId;
       this.selected.issue_type_sa = issueTypeSA;
-      this.dialogIssueDetail = true;
+      if (this.user_position == "Implementer") {
+        this.dialogIssueImple = true;
+      }
+      if (this.user_position == "Developer") {
+        this.dialogIssueDev = true;
+      }
     },
   },
 };

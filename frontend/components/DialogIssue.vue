@@ -213,7 +213,7 @@
                 ></v-textarea>
               </v-col>
               <v-col cols="12">
-                <v-file-input label="File input" outlined dense></v-file-input>
+                <v-file-input v-model="form.issue_filename" ref="fileInput" @change="uploadFile()" label="File input" outlined dense></v-file-input>
               </v-col>
             </v-row>
           </v-container>
@@ -284,6 +284,8 @@ export default {
         issue_manday: "",
         issue_complete: "",
       },
+      URI: "http://localhost:7777",
+      dataDefault: [],
     };
   },
   updated() {
@@ -306,6 +308,17 @@ export default {
     await this.getScreenDefault();
   },
   methods: {
+    uploadFile(){
+      let formData = new FormData()
+      if (this.form.issue_filename) {
+        formData.append("file", this.form.issue_filename);
+        console.log(formData.getAll("file"));
+        console.log(this.form.issue_filename); //ไว้ post
+        console.log(this.form.issue_filename.name); //ชื่อไฟล์
+      } else {
+        console.log("No file");
+      }
+    },
     close() {
       this.$emit("update:dialog", false);
     },
@@ -315,36 +328,36 @@ export default {
         const selectedScreenId = this.selectedScreen
           ? this.selectedScreen.id
           : null;
-        console.log(selectedScreenId, "selectedScreenId");
-        const data = {
-          screen_id: selectedScreenId,
-          system_id: this.systemId,
-          project_id: this.projectId,
-          issue_name: this.form.issue_name,
-          issue_id: this.form.issue_id,
-          issue_type: this.form.issue_type,
-          issue_informer: this.form.issue_informer,
-          issue_priority: this.form.issue_priority,
-          issue_end: this.form.issue_end,
-          issue_assign: this.form.issue_assign,
-          issue_qc: this.form.issue_qc,
-          issue_des: this.form.issue_des,
-          issue_des_sa: this.form.issue_des_sa,
-          issue_type_sa: this.form.issue_type_sa,
-          issue_doc_id: this.form.issue_doc_id,
-          issue_customer: this.form.issue_customer,
-          issue_filename: this.form.issue_filename,
-          issue_des_dev: this.form.issue_des_dev,
-          issue_des_implementer: this.form.issue_des_implementer,
-          issue_start: null,
-          issue_expected: null,
-          issue_status: this.form.issue_status,
-          issue_accepting: null,
-          issue_manday: 1,
-          issue_complete: null,
-        };
+        const formData = new FormData();
+        formData.append('screen_id', selectedScreenId);
+        formData.append('system_id', this.systemId);
+        formData.append('project_id', this.projectId);
+        formData.append('issue_name', this.form.issue_name);
+        formData.append('issue_id', this.form.issue_id);
+        formData.append('issue_type', this.form.issue_type);
+        formData.append('issue_informer', this.form.issue_informer);
+        formData.append('issue_priority', this.form.issue_priority);
+        formData.append('issue_end', this.form.issue_end);
+        formData.append('issue_assign', this.form.issue_assign);
+        formData.append('issue_qc', this.form.issue_qc);
+        formData.append('issue_des', this.form.issue_des);
+        formData.append('issue_des_sa', this.form.issue_des_sa);
+        formData.append('issue_type_sa', this.form.issue_type_sa);
+        formData.append('issue_doc_id', this.form.issue_doc_id);
+        formData.append('issue_customer', this.form.issue_customer);
+        if (this.form.issue_filename) {
+          formData.append('file', this.form.issue_filename);
+        }
+        formData.append('issue_des_dev', this.form.issue_des_dev);
+        formData.append('issue_des_implementer', this.form.issue_des_implementer);
+        formData.append('issue_start', null);
+        formData.append('issue_expected', null);
+        formData.append('issue_status', this.form.issue_status);
+        formData.append('issue_accepting', null);
+        formData.append('issue_manday', 1);
+        formData.append('issue_complete', null);
         try {
-          await this.$axios.post("/issues/createIssue", data);
+          await this.$axios.post("/issues/createIssue", formData);
           console.log("post success");
           window.location.reload();
           const promise = new Promise((resolve, reject) => {

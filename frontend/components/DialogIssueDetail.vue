@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" width="90%">
+  <v-dialog v-model="dialog" width="90%" persistent>
     <v-card v-if="loading"><h1>Loading.....</h1></v-card>
     <v-card v-else width="99%" class="pa-0 ma-0">
       <v-card-title class="text-h5">
@@ -173,6 +173,7 @@
                       :nudge-right="40"
                       transition="scale-transition"
                       min-width="auto"
+                      
                     >
                       <template v-slot:activator="{ on, attrs }">
                         <v-text-field
@@ -493,35 +494,34 @@ export default {
           ? moment(this.IssueComplete).format("YYYY-MM-DD")
           : this.completionDate;
 
-      const data = {
-        screen_id: this.IssueScreenId,
-        system_id: this.SystemId,
-        project_id: this.ProjectId,
-        issue_name: this.IssueName,
-        issue_id: this.IssueId,
-        issue_type: this.IssueType,
-        issue_informer: this.IssueInformer,
-        issue_priority: this.IssuePriority,
-        issue_end: this.IssueEndDate,
-        issue_assign: this.IssueAssign,
-        issue_qc: this.IssueQC,
-        issue_des: this.IssueDes,
-        issue_des_sa: this.IssueDesSA,
-        issue_type_sa: this.IssueTypeSA,
-        issue_doc_id: this.IssueDocId,
-        issue_customer: this.IssueCustomer,
-        issue_filename: this.IssueFilename,
-        issue_des_dev: this.IssueDesDev,
-        issue_des_implementer: this.IssueDesImplementer,
-        issue_start: this.updateStart,
-        issue_expected: this.updateExpected,
-        issue_status: this.IssueStatus,
-        issue_accepting: this.updatedateOfAccepting,
-        issue_manday: this.updateManday,
-        issue_complete: "2022-04-04",
-      };
+      let formData = new FormData();
+        formData.append("screen_id", this.IssueScreenId);
+        formData.append("system_id", this.SystemId);
+        formData.append("project_id", this.ProjectId);
+        formData.append("issue_name", this.IssueName);
+        formData.append("issue_id", this.IssueId);
+        formData.append("issue_type", this.IssueType);
+        formData.append("issue_informer", this.IssueInformer);
+        formData.append("issue_priority", this.IssuePriority);
+        formData.append("issue_end", this.IssueEndDate);
+        formData.append("issue_assign", this.IssueAssign);
+        formData.append("issue_qc", this.IssueQC);
+        formData.append("issue_des", this.IssueDes);
+        formData.append("issue_des_sa", this.IssueDesSA);
+        formData.append("issue_type_sa", this.IssueTypeSA);
+        formData.append("issue_doc_id", this.IssueDocId);
+        formData.append("issue_customer", this.IssueCustomer);
+        formData.append("issue_filename", this.IssueFilename);
+        formData.append("issue_des_dev", this.IssueDesDev);
+        formData.append("issue_des_implementer", this.IssueDesImplementer);
+        formData.append("issue_start", this.updateStart);
+        formData.append("issue_expected", this.updateExpected);
+        formData.append("issue_status", this.IssueStatus);
+        formData.append("issue_accepting", this.updatedateOfAccepting);
+        formData.append("issue_manday", this.updateManday);
+        formData.append("issue_complete", "2022-04-04");
       try {
-        await this.$axios.put("/issues/updateIssueAdmin/" + this.id, data);
+        await this.$axios.put("/issues/updateIssueAdmin/" + this.id, formData);
         console.log("pout success");
         window.location.reload();
         const promise = new Promise((resolve, reject) => {
