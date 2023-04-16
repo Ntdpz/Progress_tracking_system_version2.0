@@ -47,6 +47,7 @@
               </v-col>
               <v-col cols="12" sm="6" md="4">
                 <v-select
+                  @change="getUserSystems(selectedScreen.id)"
                   :items="screen_selectDefault"
                   label="Screen No."
                   dense
@@ -108,11 +109,13 @@
               </v-col>
               <v-col cols="12" sm="4" md="2">
                 <v-select
-                  :items="dev_select"
+                  :items="position_Developers"
                   label="Dev"
                   dense
                   outlined
+                  item-text="user_firstname"
                   v-model="form.issue_assign"
+                  return-object="false"
                 ></v-select>
               </v-col>
               <v-col cols="12" sm="4" md="2">
@@ -242,6 +245,7 @@ export default {
   },
   data() {
     return {
+      position_Developers: [],
       date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
         .toISOString()
         .substr(0, 10),
@@ -322,6 +326,16 @@ export default {
     close() {
       this.$emit("update:dialog", false);
     },
+    async getUserSystems(selectedScreenID) {
+      await this.$axios
+        .get("/user_screens/getOneScreenID/" + selectedScreenID)
+        .then((data) => {
+          this.position_Developers = data.data.filter(
+            (item) => item.user_position === "Developer"
+          );
+          console.log(this.position_Developers);
+        });
+    },
     async saveIssue() {
       if (this.mode == "create") {
         this.form.issue_end = this.date;
@@ -338,7 +352,11 @@ export default {
         formData.append('issue_informer', this.form.issue_informer);
         formData.append('issue_priority', this.form.issue_priority);
         formData.append('issue_end', this.form.issue_end);
-        formData.append('issue_assign', this.form.issue_assign);
+        if (this.form.issue_assign.user_firstname) {
+        formData.append('issue_assign', this.form.issue_assign.user_firstname);
+        } else{
+          formData.append('issue_assign', "");
+        }
         formData.append('issue_qc', this.form.issue_qc);
         formData.append('issue_des', this.form.issue_des);
         formData.append('issue_des_sa', this.form.issue_des_sa);
