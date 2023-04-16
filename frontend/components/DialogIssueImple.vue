@@ -34,21 +34,22 @@
                         <v-col cols="6">
                             <v-row>
                                 <p class="pa-2">Name</p>
-                                <v-text-field label="Issue Name" placeholder="Issue Name" outlined dense
-                                    v-model="IssueName"></v-text-field>
+                                <v-text-field label="Issue Name" placeholder="Issue Name" outlined dense v-model="IssueName"
+                                    disabled></v-text-field>
                             </v-row>
                         </v-col>
                     </v-row>
                     <v-row>
                         <v-col cols="12">
-                            <v-textarea solo name="input-7-4" label="Note" v-model="IssueDes" style=""></v-textarea></v-col>
+                            <v-textarea solo name="input-7-4" label="Note" v-model="IssueDes" style=""
+                                disabled></v-textarea></v-col>
                     </v-row>
                     <v-row>
                         <v-col cols="6">
                             <v-row>
                                 <p class="pa-2">Informer</p>
                                 <v-text-field label="Issue Informer" placeholder="Issue Informer" outlined dense
-                                    v-model="IssueInformer"></v-text-field>
+                                    v-model="IssueInformer" disabled></v-text-field>
                             </v-row>
                         </v-col>
                     </v-row>
@@ -58,14 +59,14 @@
                             <v-row>
                                 <p class="pa-2">Document No.</p>
                                 <v-text-field label="Issue Informer" placeholder="Issue Informer" outlined dense
-                                    v-model="IssueDocId"></v-text-field>
+                                    v-model="IssueDocId" disabled></v-text-field>
                             </v-row>
                         </v-col>
                         <v-col cols="6">
                             <v-row>
                                 <p class="pa-2">Customer Name</p>
                                 <v-text-field label="Issue Informer" placeholder="Issue Informer" outlined dense
-                                    v-model="IssueCustomer"></v-text-field>
+                                    v-model="IssueCustomer" disabled></v-text-field>
                             </v-row>
                         </v-col>
                     </v-row>
@@ -75,13 +76,13 @@
                             <v-row>
                                 <p class="pa-2">Type New Req</p>
                                 <v-text-field label="Issue Informer" placeholder="Issue Informer" outlined dense
-                                    v-model="IssueTypeSA"></v-text-field>
+                                    v-model="IssueTypeSA" disabled></v-text-field>
                             </v-row>
                         </v-col>
                         <v-col cols="6">
                             <v-row>
                                 <p class="pa-2">Note to SA</p>
-                                <v-textarea solo name="input-7-4" label="Note" v-model="IssueDesSA"></v-textarea>
+                                <v-textarea solo name="input-7-4" label="Note" v-model="IssueDesSA" disabled></v-textarea>
                             </v-row>
                         </v-col>
                     </v-row>
@@ -121,7 +122,7 @@
                 </v-col>
 
                 <!-- col ใหญ่ฝั่งขวา -->
-                <v-col style="width: 100%" >
+                <v-col style="width: 100%">
                     <v-row class="ml-2">
                         <v-col>
                             <v-row class="text-h6">
@@ -132,14 +133,15 @@
                                     <v-row>
                                         <!-- Date of accepting-->
                                         <p class="pa-2">
-                                            Date of accepting / {{ dateOfAccepting }}
+                                            Date of accepting / {{ dateOfAccepting != null ? dateOfAccepting :
+                                                IssueAccepting }}
                                         </p>
-                                        <v-menu v-model="acceptMenu" :close-on-content-click="false" :nudge-right="40"
-                                            transition="scale-transition" min-width="auto" disabled>
+                                        <v-menu disabled v-model="acceptMenu" :close-on-content-click="false" :nudge-right="40"
+                                            transition="scale-transition" min-width="auto">
                                             <template v-slot:activator="{ on, attrs }">
                                                 <v-text-field v-model="dateOfAccepting" label="Date of Accepting"
                                                     prepend-icon="mdi-calendar" readonly v-bind="attrs"
-                                                    v-on="on" ></v-text-field>
+                                                    v-on="on"></v-text-field>
                                             </template>
                                             <v-date-picker v-model="dateOfAccepting"
                                                 @input="acceptMenu = false"></v-date-picker>
@@ -152,14 +154,15 @@
                                 <v-col cols="6">
                                     <v-row>
                                         <v-col>
-                                            <p class="pa-2">Start date / {{ startDate }}</p>
+                                            <p class="pa-2">Start date /{{ startDate != null ? startDate : IssueStart }}</p>
                                         </v-col>
                                         <v-col>
                                             <p class="pa-2">-</p>
                                         </v-col>
                                         <v-col>
                                             <p class="pa-2">
-                                                Expected completion Date / {{ expectedCompletionDate }}
+                                                Expected completion Date / {{ expectedCompletionDate != null ?
+                                                    expectedCompletionDate : IssueExpected }}
                                             </p>
                                         </v-col>
                                     </v-row>
@@ -169,8 +172,8 @@
                                 <v-col cols="6" class="mb-5">
                                     <v-row>
                                         <!-- Start date -->
-                                        <v-menu v-model="startMenu" :close-on-content-click="false" :nudge-right="40"
-                                            transition="scale-transition" min-width="auto" @change="calculateManday()" disabled>
+                                        <v-menu disabled v-model="startMenu" :close-on-content-click="false" :nudge-right="40"
+                                            transition="scale-transition" min-width="auto" @change="calculateManday()">
                                             <template v-slot:activator="{ on, attrs }">
                                                 <v-text-field v-model="startDate" label="Start Date"
                                                     prepend-icon="mdi-calendar" readonly v-bind="attrs"
@@ -180,8 +183,8 @@
                                                 @change="calculateManday()"></v-date-picker>
                                         </v-menu>
                                         <!-- Expected completion Date -->
-                                        <v-menu v-model="expectedMenu" :close-on-content-click="false" :nudge-right="40"
-                                            transition="scale-transition" min-width="auto" @change="calculateManday()" disabled>
+                                        <v-menu disabled v-model="expectedMenu" :close-on-content-click="false" :nudge-right="40"
+                                            transition="scale-transition" min-width="auto" @change="calculateManday()">
                                             <template v-slot:activator="{ on, attrs }">
                                                 <v-text-field v-model="expectedCompletionDate"
                                                     label="Expected Completion Date" prepend-icon="mdi-calendar" readonly
@@ -196,13 +199,13 @@
                             <v-col cols="6">
                                 <v-row v-if="mandayProps">
                                     <p class="pa-2">Manday</p>
-                                    <v-text-field label="Manday" placeholder="Manday" outlined dense
-                                        v-model="IssueManday" disabled></v-text-field>
+                                    <v-text-field disabled label="Manday" placeholder="Manday" outlined dense
+                                        v-model="IssueManday"></v-text-field>
                                 </v-row>
                                 <v-row v-if="mandaySeleted">
                                     <p class="pa-2">Manday (Edit)</p>
-                                    <v-text-field label="Manday" placeholder="Manday" outlined dense
-                                        v-model="manday" disabled></v-text-field>
+                                    <v-text-field disabled label="Manday" placeholder="Manday" outlined dense
+                                        v-model="manday"></v-text-field>
                                 </v-row>
                             </v-col>
                             <v-divider></v-divider>
@@ -213,8 +216,8 @@
                                 <v-col cols="6">
                                     <v-row>
                                         <p class="pa-2">Status</p>
-                                        <v-text-field label="Status" placeholder="Status" outlined dense
-                                            v-model="IssueStatus" disabled></v-text-field>
+                                        <v-text-field disabled label="Status" placeholder="Status" outlined dense
+                                            v-model="IssueStatus"></v-text-field>
                                     </v-row>
                                 </v-col>
                             </v-row>
@@ -223,8 +226,8 @@
                                     <v-row>
                                         <!-- Completion date-->
                                         <p class="pa-2">Completion date</p>
-                                        <v-menu v-model="completionMenu" :close-on-content-click="false" :nudge-right="40"
-                                            transition="scale-transition" min-width="auto" disabled>
+                                        <v-menu disabled v-model="completionMenu" :close-on-content-click="false" :nudge-right="40"
+                                            transition="scale-transition" min-width="auto">
                                             <template v-slot:activator="{ on, attrs }">
                                                 <v-text-field v-model="completionDate" label="Completion date"
                                                     prepend-icon="mdi-calendar" readonly v-bind="attrs"
@@ -239,12 +242,12 @@
                             <v-row>
                                 <v-col cols="6">
                                     <p class="">Cause / Remedy</p>
-                                    <v-textarea solo name="input-7-4" label="Note" v-mode="IssueDesDev" disabled></v-textarea>
+                                    <v-textarea disabled solo name="input-7-4" label="Note" v-mode="IssueDesDev"></v-textarea>
                                 </v-col>
                             </v-row>
-                            <!-- <v-row class="justify-center mr-16 mt-5">
-                <v-btn color="primary" @click="handleClose()">Update</v-btn>
-                </v-row> -->
+                            <v-row class="justify-center mr-16 mt-5">
+                                <v-btn color="primary" @click="handleClose()">Update</v-btn>
+                            </v-row>
                         </v-col>
                     </v-row>
                 </v-col>
@@ -259,15 +262,16 @@
                         <v-col cols="6">
                             <v-row>
                                 <p class="pa-2">Status</p>
-                                <v-text-field label="Status" placeholder="Status" outlined dense
-                                    v-model="IssueStatus"></v-text-field>
+                                <v-text-field label="Status" placeholder="Status" outlined dense v-model="IssueStatus"
+                                    disabled></v-text-field>
                             </v-row>
                         </v-col>
                     </v-row>
                     <v-row>
                         <v-col cols="6">
                             <p class="">Cause / Remedy</p>
-                            <v-textarea solo name="input-7-4" label="Note" v-model="IssueDesImplementer"></v-textarea>
+                            <v-textarea solo name="input-7-4" label="Note" v-model="IssueDesImplementer"
+                                disabled></v-textarea>
                         </v-col>
                     </v-row>
                 </v-col>
@@ -345,6 +349,8 @@ export default {
             updateStart: "",
             updateExpected: "",
             updatedateOfAccepting: "",
+            updatedateOfStart: "",
+            updatedateOfExpectedCompletion: "",
             updateCompletion: "",
         };
     },
@@ -375,6 +381,14 @@ export default {
                 this.dateOfAccepting === null
                     ? moment(this.IssueAccepting).format("YYYY-MM-DD")
                     : this.dateOfAccepting;
+            this.updatedateOfStart =
+                this.startDate === null
+                    ? moment(this.IssueStart).format("YYYY-MM-DD")
+                    : this.startDate;
+            this.updatedateOfExpectedCompletion =
+                this.expectedCompletionDate === null
+                    ? moment(this.IssueExpected).format("YYYY-MM-DD")
+                    : this.expectedCompletionDate;
             this.updateCompletion =
                 this.completionDate === null
                     ? moment(this.IssueComplete).format("YYYY-MM-DD")
@@ -400,12 +414,12 @@ export default {
             formData.append("issue_filename", this.IssueFilename);
             formData.append("issue_des_dev", this.IssueDesDev);
             formData.append("issue_des_implementer", this.IssueDesImplementer);
-            formData.append("issue_start", this.updateStart);
-            formData.append("issue_expected", this.updateExpected);
+            formData.append("issue_start", this.updatedateOfStart);
+            formData.append("issue_expected", this.updatedateOfExpectedCompletion);
             formData.append("issue_status", this.IssueStatus);
             formData.append("issue_accepting", this.updatedateOfAccepting);
             formData.append("issue_manday", this.updateManday);
-            formData.append("issue_complete", "2022-04-04");
+            formData.append("issue_complete", this.updateCompletion);
             try {
                 await this.$axios.put("/issues/updateIssueAdmin/" + this.id, formData);
                 console.log("pout success");
@@ -431,8 +445,6 @@ export default {
 };
 </script>
 
-<style scoped>
-* {
+<style scoped>* {
     font-family: "Lato", sans-serif;
-}
-</style>
+}</style>
