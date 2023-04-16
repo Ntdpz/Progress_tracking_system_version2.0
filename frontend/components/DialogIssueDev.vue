@@ -132,7 +132,7 @@
                                     <v-row>
                                         <!-- Date of accepting-->
                                         <p class="pa-2">
-                                            Date of accepting / {{ dateOfAccepting }}
+                                            Date of accepting / {{dateOfAccepting != null ? dateOfAccepting : IssueAccepting}}
                                         </p>
                                         <v-menu v-model="acceptMenu" :close-on-content-click="false" :nudge-right="40"
                                             transition="scale-transition" min-width="auto">
@@ -152,14 +152,14 @@
                                 <v-col cols="6">
                                     <v-row>
                                         <v-col>
-                                            <p class="pa-2">Start date / {{ startDate }}</p>
+                                            <p class="pa-2">Start date /{{ startDate != null ? startDate : IssueStart }}</p>
                                         </v-col>
                                         <v-col>
                                             <p class="pa-2">-</p>
                                         </v-col>
                                         <v-col>
                                             <p class="pa-2">
-                                                Expected completion Date / {{ expectedCompletionDate }}
+                                                Expected completion Date / {{ expectedCompletionDate != null ? expectedCompletionDate : IssueExpected }}
                                             </p>
                                         </v-col>
                                     </v-row>
@@ -273,9 +273,9 @@
                 </v-col>
             </v-row>
             <v-row justify-center>
-                <!-- <v-col class="" style="margin-left: 20%">
+                <v-col class="" style="margin-left: 20%">
                     <v-btn color="primary" @click="saveIssue()">Update</v-btn>
-                </v-col> -->
+                </v-col>
                 <v-spacer></v-spacer>
                 <v-col>
                     <v-btn color="primary" @click="handleClose()">Cancel</v-btn>
@@ -345,6 +345,8 @@ export default {
             updateStart: "",
             updateExpected: "",
             updatedateOfAccepting: "",
+            updatedateOfStart: "",
+            updatedateOfExpectedCompletion: "",
             updateCompletion: "",
         };
     },
@@ -375,6 +377,14 @@ export default {
                 this.dateOfAccepting === null
                     ? moment(this.IssueAccepting).format("YYYY-MM-DD")
                     : this.dateOfAccepting;
+            this.updatedateOfStart =
+                this.startDate === null
+                    ? moment(this.IssueStart).format("YYYY-MM-DD")
+                    : this.startDate;
+            this.updatedateOfExpectedCompletion =
+                this.expectedCompletionDate === null
+                    ? moment(this.IssueExpected).format("YYYY-MM-DD")
+                    : this.expectedCompletionDate;
             this.updateCompletion =
                 this.completionDate === null
                     ? moment(this.IssueComplete).format("YYYY-MM-DD")
@@ -400,12 +410,12 @@ export default {
             formData.append("issue_filename", this.IssueFilename);
             formData.append("issue_des_dev", this.IssueDesDev);
             formData.append("issue_des_implementer", this.IssueDesImplementer);
-            formData.append("issue_start", this.updateStart);
-            formData.append("issue_expected", this.updateExpected);
+            formData.append("issue_start", this.updatedateOfStart);
+            formData.append("issue_expected", this.updatedateOfExpectedCompletion);
             formData.append("issue_status", this.IssueStatus);
             formData.append("issue_accepting", this.updatedateOfAccepting);
             formData.append("issue_manday", this.updateManday);
-            formData.append("issue_complete", "2022-04-04");
+            formData.append("issue_complete", this.updateCompletion);
             try {
                 await this.$axios.put("/issues/updateIssueAdmin/" + this.id, formData);
                 console.log("pout success");

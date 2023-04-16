@@ -162,10 +162,10 @@
                     item.issue_assign,
                     item.issue_qc,
                     item.issue_filename,
-                    item.issue_accepting,
+                    item.formattedDateAccepting,
                     item.issue_manday,
-                    item.issue_start,
-                    item.issue_expected,
+                    item.formattedDateStart,
+                    item.formattedDateExpected,
                     item.issue_complete,
                     item.issue_des_implementer,
                     item.issue_des_dev,
@@ -232,10 +232,10 @@
               :IssueAssign="selected.issue_assign"
               :IssueQC="selected.issue_qc"
               :IssueFilename="selected.issue_filename"
-              :IssueAccepting="selected.issue_accepting"
+              :IssueAccepting="selected.formattedDateAccepting"
               :IssueManday="selected.issue_manday"
-              :IssueStart="selected.issue_start"
-              :IssueExpected="selected.issue_expected"
+              :IssueStart="selected.formattedDateStart"
+              :IssueExpected="selected.formattedDateExpected"
               :IssueComplete="selected.issue_complete"
               :IssueDesImplementer="selected.issue_des_implementer"
               :IssueDesDev="selected.issue_des_dev"
@@ -263,10 +263,10 @@
               :IssueAssign="selected.issue_assign"
               :IssueQC="selected.issue_qc"
               :IssueFilename="selected.issue_filename"
-              :IssueAccepting="selected.issue_accepting"
+              :IssueAccepting="selected.formattedDateAccepting"
               :IssueManday="selected.issue_manday"
-              :IssueStart="selected.issue_start"
-              :IssueExpected="selected.issue_expected"
+              :IssueStart="selected.formattedDateStart"
+              :IssueExpected="selected.formattedDateExpected"
               :IssueComplete="selected.issue_complete"
               :IssueDesImplementer="selected.issue_des_implementer"
               :IssueDesDev="selected.issue_des_dev"
@@ -328,10 +328,10 @@
                   item.issue_assign,
                   item.issue_qc,
                   item.issue_filename,
-                  item.issue_accepting,
+                  item.formattedDateAccepting,
                   item.issue_manday,
-                  item.issue_start,
-                  item.issue_expected,
+                  item.formattedDateStart,
+                  item.formattedDateExpected,
                   item.issue_complete,
                   item.issue_des_implementer,
                   item.issue_des_dev,
@@ -416,6 +416,9 @@ export default {
         issue_manday: "",
         issue_complete: "",
         formattedDateEnd: "",
+        formattedDateAccepting: "",
+        formattedDateExpected: "",
+        formattedDateStart: "",
       },
       headers: [
         {
@@ -443,13 +446,12 @@ export default {
       user_firstname: "",
       user_lastname: "",
       user_position: "",
-      user_role: "",
+      
 
     };
   },
   async created() {
     await this.getUser();
-    await this.initialize();
     await this.getProject();
     await this.getSystems();
     await this.getIssue();
@@ -473,53 +475,8 @@ export default {
         this.user_firstname = res.data[0].user_firstname;
         this.user_lastname = res.data[0].user_lastname;
         this.user_position = res.data[0].user_position;
-        this.user_role = res.data[0].user_role;
         console.log(this.user_position);
       });
-    },
-    initialize() {
-      // this.issue = [
-      //   {
-      //     issue_no: "SP-123xx-PNI-21/10/22-0001",
-      //     issue_name: "Issue name",
-      //     issue_end_date: "Nov 31, 2023",
-      //     issue_status: "Finished",
-      //     issue_Priotity: "Critical",
-      //     issue_assignees: "Dev",
-      //   },
-      //   {
-      //     issue_no: "SP-123xx-PNI-21/10/22-0002",
-      //     issue_name: "Issue name",
-      //     issue_end_date: "Nov 31, 2023",
-      //     issue_status: "Finished",
-      //     issue_Priotity: "Critical",
-      //     issue_assignees: "Dev",
-      //   },
-      //   {
-      //     issue_no: "SP-123xx-PNI-21/10/22-0003",
-      //     issue_name: "Issue name",
-      //     issue_end_date: "Nov 31, 2023",
-      //     issue_status: "Finished",
-      //     issue_Priotity: "Critical",
-      //     issue_assignees: "Dev",
-      //   },
-      //   {
-      //     issue_no: "SP-123xx-PNI-21/10/22-0004",
-      //     issue_name: "Issue name",
-      //     issue_end_date: "Nov 31, 2023",
-      //     issue_status: "Finished",
-      //     issue_Priotity: "Critical",
-      //     issue_assignees: "Dev",
-      //   },
-      //   {
-      //     issue_no: "SP-123xx-PNI-21/10/22-0005",
-      //     issue_name: "Issue name",
-      //     issue_end_date: "Nov 31, 2023",
-      //     issue_status: "Finished",
-      //     issue_Priotity: "Critical",
-      //     issue_assignees: "Dev",
-      //   },
-      // ];
     },
     showIssueDetailDialog(issue_name) {
       console.log("item:", this.item);
@@ -569,7 +526,16 @@ export default {
         this.issue.forEach((issue) => {
           const dateEnd = moment(issue.issue_end, "YYYY-MM-DDTHH:mm:ss.SSSZ");
           issue.formattedDateEnd = dateEnd.format("YYYY-MM-DD");
-          // console.log(issue.formattedDateEnd);
+
+          const dateAccepting = moment(issue.issue_accepting, "YYYY-MM-DDTHH:mm:ss.SSSZ");
+          issue.formattedDateAccepting = dateAccepting.format("YYYY-MM-DD");
+
+          const dateStart = moment(issue.issue_start, "YYYY-MM-DDTHH:mm:ss.SSSZ");
+          issue.formattedDateStart = dateStart.format("YYYY-MM-DD");
+
+          const dateExpected = moment(issue.issue_expected, "YYYY-MM-DDTHH:mm:ss.SSSZ");
+          issue.formattedDateExpected = dateExpected.format("YYYY-MM-DD");
+          // console.log(issue.formattedDateAccepting);
         });
         this.systems.forEach((system) => {
           Vue.set(
@@ -608,10 +574,10 @@ export default {
       issueAssign,
       issueQc,
       issueFilename,
-      issueAccepting,
+      issueformattedDateAccepting,
       issueManday,
-      issueStart,
-      issueExpected,
+      issueformattedDateStart,
+      issueformattedDateExpected,
       issueComplete,
       issueDesImplementer,
       issueDesDev,
@@ -633,10 +599,10 @@ export default {
       this.selected.issue_assign = issueAssign;
       this.selected.issue_qc = issueQc;
       this.selected.issue_filename = issueFilename;
-      this.selected.issue_accepting = issueAccepting;
+      this.selected.formattedDateAccepting = issueformattedDateAccepting;
       this.selected.issue_manday = issueManday;
-      this.selected.issue_start = issueStart;
-      this.selected.issue_expected = issueExpected;
+      this.selected.formattedDateStart = issueformattedDateStart;
+      this.selected.formattedDateExpected = issueformattedDateExpected;
       this.selected.issue_complete = issueComplete;
       this.selected.issue_des_implementer = issueDesImplementer;
       this.selected.issue_des_dev = issueDesDev;
