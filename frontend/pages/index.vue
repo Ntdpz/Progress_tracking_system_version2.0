@@ -120,7 +120,7 @@
                 </v-card-subtitle>
               </v-card>
             </template>
-          </v-col> -->
+          </v-col>
         </v-row>
         <!-- persistent คือ การที่คลิกนอก dialog แล้ว dialog จะไม่ปิด -->
         <v-dialog v-model="dialog_newproject" max-width="700px">
@@ -246,9 +246,6 @@ export default {
       return null; // or some default value if localStorage is not available
     },
   },
-  updated() {
-    console.log("this.userId", this.userId);
-  },
   methods: {
     async getUser() {
       await this.$axios.get("/users/getOne/" + this.userId).then((res) => {
@@ -265,13 +262,13 @@ export default {
         .get("/user_projects/getOneUserID/" + this.userId)
         .then((res) => {
           this.ownProject = res.data;
-          console.log("ownProject", this.ownProject);
+          // console.log("ownProject", this.ownProject);
 
           // Extract the project IDs from the userProjects array
           this.projectIds = this.ownProject.map(
             (project) => project.project_id
           );
-          console.log("this.projectIds", this.projectIds);
+          // console.log("this.projectIds", this.projectIds);
 
           // Fetch project details for each project ID
           const requests = this.projectIds.map((projectId) => {
@@ -279,14 +276,14 @@ export default {
           });
           Promise.all(requests).then((responses) => {
             this.projectDetails = responses.map((res) => res.data);
-            console.log("projectDetails", this.projectDetails);
+            // console.log("projectDetails", this.projectDetails);
           });
         });
     },
     async getProject() {
       await this.$axios.get("/projects/getAll").then((res) => {
         this.projects = res.data;
-        console.log(this.projects, "projects");
+        // console.log(this.projects, "projects");
       });
     },
     getImageUrl(fileName) {

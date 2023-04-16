@@ -1,6 +1,5 @@
 export const state = () => ({
   user_id: undefined,
-  user_position: undefined,
 });
 
 export const mutations = {
