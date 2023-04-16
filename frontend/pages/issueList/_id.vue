@@ -182,37 +182,37 @@
               </v-icon>
             </template>
           </v-data-table>
-          <!-- <dialog-issue-detail
+          <dialog-issue-detail
             :dialog.sync="dialogIssueDetail"
             :ProjectName="projectName"
-            :ProjectId="projectId"
-            :SystemName="system.system_nameTH"
-            :SystemId="system.id"
-            :id="selected.Id"
-            :IssueId="selected.issue_id"
-            :IssueType="selected.issue_type"
-            :IssueScreenId="selected.screen_id"
-            :IssueStatus="selected.issue_status"
-            :IssuePriority="selected.issue_priority"
-            :IssueEndDate="selected.formattedDateEnd"
-            :IssueName="selected.issue_name"
-            :IssueDesSA="selected.issue_des_sa"
-            :IssueInformer="selected.issue_informer"
-            :IssueAssign="selected.issue_assign"
-            :IssueQC="selected.issue_qc"
-            :IssueFilename="selected.issue_filename"
-            :IssueAccepting="selected.issue_accepting"
-            :IssueManday="selected.issue_manday"
-            :IssueStart="selected.issue_start"
-            :IssueExpected="selected.issue_expected"
-            :IssueComplete="selected.issue_complete"
-            :IssueDesImplementer="selected.issue_des_implementer"
-            :IssueDesDev="selected.issue_des_dev"
-            :IssueDes="selected.issue_des"
-            :IssueDocId="selected.issue_doc_id"
-            :IssueCustomer="selected.issue_customer"
-            :IssueTypeSA="selected.issue_type_sa"
-          /> -->
+              :ProjectId="projectId"
+              :SystemName="system.system_nameTH"
+              :SystemId="system.id"
+              :id="selected.Id"
+              :IssueId="selected.issue_id"
+              :IssueType="selected.issue_type"
+              :IssueScreenId="selected.screen_id"
+              :IssueStatus="selected.issue_status"
+              :IssuePriority="selected.issue_priority"
+              :IssueEndDate="selected.formattedDateEnd"
+              :IssueName="selected.issue_name"
+              :IssueDesSA="selected.issue_des_sa"
+              :IssueInformer="selected.issue_informer"
+              :IssueAssign="selected.issue_assign"
+              :IssueQC="selected.issue_qc"
+              :IssueFilename="selected.issue_filename"
+              :IssueAccepting="selected.formattedDateAccepting"
+              :IssueManday="selected.issue_manday"
+              :IssueStart="selected.formattedDateStart"
+              :IssueExpected="selected.formattedDateExpected"
+              :IssueComplete="selected.issue_complete"
+              :IssueDesImplementer="selected.issue_des_implementer"
+              :IssueDesDev="selected.issue_des_dev"
+              :IssueDes="selected.issue_des"
+              :IssueDocId="selected.issue_doc_id"
+              :IssueCustomer="selected.issue_customer"
+              :IssueTypeSA="selected.issue_type_sa"
+          />
           <dialog-issue-imple
               :dialog.sync="dialogIssueImple"
               :ProjectName="projectName"
@@ -446,6 +446,7 @@ export default {
       user_firstname: "",
       user_lastname: "",
       user_position: "",
+      user_role: "",
       
 
     };
@@ -475,6 +476,7 @@ export default {
         this.user_firstname = res.data[0].user_firstname;
         this.user_lastname = res.data[0].user_lastname;
         this.user_position = res.data[0].user_position;
+        this.user_role = res.data[0].user_role;
         console.log(this.user_position);
       });
     },
@@ -482,7 +484,10 @@ export default {
       console.log("item:", this.item);
       console.log("assignedIssues:", this.system.assignedIssues);
         // this.dialogIssueDetail = true;
-      if (this.user_position == "Implementer") {
+      if (this.user_role == "Admin") {
+          this.dialogIssueDetail =true;
+        }
+      else if (this.user_position == "Implementer") {
         this.dialogIssueImple = true;
       }
       else if(this.user_position == "Developer"){
@@ -610,10 +615,13 @@ export default {
       this.selected.issue_customer = issueCustomer;
       this.selected.issue_doc_id = issueDocId;
       this.selected.issue_type_sa = issueTypeSA;
-      if (this.user_position == "Implementer") {
+      if (this.user_role == "Admin") {
+          this.dialogIssueDetail = true;
+        }
+      else if (this.user_position == "Implementer") {
         this.dialogIssueImple = true;
       }
-      if (this.user_position == "Developer") {
+      else if (this.user_position == "Developer") {
         this.dialogIssueDev = true;
       }
     },
