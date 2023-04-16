@@ -32,7 +32,7 @@
         </v-list-item>
       </v-list>
       <v-divider></v-divider>
-      <v-list>
+      <v-list v-show="user_role == 'Admin'">
         <v-list-group
           v-for="(project, index) in items3"
           :key="index"
@@ -42,7 +42,7 @@
         >
           <template v-slot:activator>
             <v-list-item-content>
-              <v-list-item-title>{{ project.title }}</v-list-item-title>
+              <v-list-item-title>Project</v-list-item-title>
             </v-list-item-content>
           </template>
 
@@ -61,25 +61,55 @@
           </v-list-item>
         </v-list-group>
       </v-list>
+      <!-- {{ this.projectDetails.projectList }} -->
+      <v-list v-show="user_role == 'User'">
+        <v-list-group
+          v-for="(project, index) in projectDetails"
+          :key="index"
+          v-model="project.active"
+          :prepend-icon="project.action"
+          no-action
+        >
+          <template v-slot:activator>
+            <v-list-item-content>
+              <v-list-item-title>{{ project.title }}</v-list-item-title>
+            </v-list-item-content>
+          </template>
+
+          <v-list-item
+            v-for="child in projectDetails.projectList"
+            :key="child.title"
+            :to="`/issueList/${child[0].id}`"
+          >
+            <v-list-item-content>
+              <v-list-item-title
+                ><v-icon color="primary" class="mr-2"
+                  >mdi mdi-format-list-bulleted</v-icon
+                >{{ child[0].project_name }}</v-list-item-title
+              >
+            </v-list-item-content>
+          </v-list-item>
+        </v-list-group>
+      </v-list>
       <v-divider></v-divider>
       <v-list>
-    <v-list-item
-      v-for="(item, i) in filteredItems"
-      :key="i"
-      :to="item.to"
-      router
-      color="primary"
-      exact
-    >
-      <v-list-item-action>
-        <v-icon>{{ item.icon }}</v-icon>
-      </v-list-item-action>
-      <v-list-item-content>
-        <v-list-item-title v-text="item.title" />
-      </v-list-item-content>
-    </v-list-item>
-    <v-divider></v-divider>
-  </v-list>
+        <v-list-item
+          v-for="(item, i) in filteredItems"
+          :key="i"
+          :to="item.to"
+          router
+          color="primary"
+          exact
+        >
+          <v-list-item-action>
+            <v-icon>{{ item.icon }}</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title v-text="item.title" />
+          </v-list-item-content>
+        </v-list-item>
+        <v-divider></v-divider>
+      </v-list>
     </v-navigation-drawer>
     <v-app-bar
       :clipped-left="clipped"
@@ -99,9 +129,6 @@
         <Nuxt />
       </v-container>
     </v-main>
-    <!-- <v-footer :absolute="!fixed" app>
-        <span>&copy; {{ new Date().getFullYear() }}</span>
-      </v-footer> -->
   </v-app>
 </template>
     
@@ -111,7 +138,17 @@ export default {
     return {
       clipped: false,
       drawer: false,
-      user_role:"",
+      user_role: "",
+      ownProject: [],
+      projectIds: [],
+      projectDetails: [
+        {
+          action: "mdi-view-list",
+          active: true,
+          title: "Project",
+          projectList: [],
+        },
+      ],
       items: [
         {
           icon: "mdi-home",
@@ -128,37 +165,11 @@ export default {
         {
           action: "mdi-view-list",
           active: true,
-          items: [
-            // { title: "Project1", route: "/issueList" },
-            // { title: "Project2", route: "/issueList" },
-            // { title: "Project3", route: "/issueList" },
-          ],
           title: "Project",
           projectList: [],
         },
       ],
-      items2: [
-        {
-          icon: "mdi-calendar-month",
-          title: "Schedule",
-          to: "/schedule",
-        },
-        // {
-        //   icon: "mdi-account",
-        //   title: "Manage User",
-        //   to: "/manageUser",
-        // },
-        {
-          icon: "mdi-view-list",
-          title: "Manage Project",
-          to: "/manageProject",
-        },
-        {
-          icon: "mdi-view-dashboard",
-          title: "Dashboard",
-          to: "/dashboard",
-        },
-      ],
+      menuOption: [],
       right: true,
       rightDrawer: false,
       title: "Note Management",
@@ -170,63 +181,101 @@ export default {
         project.active = false; // initialize active property to false
       });
       this.items3[0].projectList = res.data;
-      console.log(this.items3[0].projectList, "this.items[0].projectList");
+      // console.log(this.items3, "this.items3");
     });
     await this.getUser();
+    await this.getOwnProject();
   },
   async created() {
     await this.getUser();
+    await this.getOwnProject();
   },
-    computed: {
-        userId() {
-          if (typeof window !== "undefined") {
-            return window.localStorage.getItem("userId");
-          }
-          return null; // or some default value if localStorage is not available
-      },
-      filteredItems() {
-      if (this.user_role == 'Admin') {
-        const items = this.items2.filter(item => item.title !== "Manage User");
-        items.splice(1, 0, {
+  computed: {
+    userId() {
+      if (typeof window !== "undefined") {
+        return window.localStorage.getItem("userId");
+      }
+      return null; // or some default value if localStorage is not available
+    },
+    filteredItems() {
+      if (this.user_role === "Admin") {
+        const items = this.menuOption.filter(
+          (item) =>
+            item.title !== "Manage User" &&
+            item.title !== "Manage Project" &&
+            item.title !== "Dashboard"
+        );
+        items.splice(0, 0, {
+          icon: "mdi-view-dashboard",
+          title: "Dashboard",
+          to: "/dashboard",
+        });
+        items.splice(0, 0, {
           icon: "mdi-account",
           title: "Manage User",
           to: "/manageUser",
         });
+        items.splice(0, 0, {
+          icon: "mdi-view-list",
+          title: "Manage Project",
+          to: "/manageProject",
+        });
+        items.splice(0, 0, {
+          icon: "mdi-calendar-month",
+          title: "Schedule",
+          to: "/schedule",
+        });
+        return items;
+      } else if (this.user_role === "User") {
+        const items = this.menuOption.filter(
+          (item) =>
+            item.title !== "Manage User" &&
+            item.title !== "Manage Project" &&
+            item.title !== "Dashboard"
+        );
+        items.splice(0, 0, {
+          icon: "mdi-calendar-month",
+          title: "Schedule",
+          to: "/schedule",
+        });
         return items;
       } else {
-        return this.items2;
+        return this.menuOption;
       }
     },
-      },
+  },
   methods: {
-    goToPage(route) {
-      this.$router.push(route);
-    },
-    async getProject() {
-      await this.$axios.get("/projects/getAll").then((res) => {
-        this.items3.items = res.data;
-      });
+    async getOwnProject() {
+      await this.$axios
+        .get("/user_projects/getOneUserID/" + this.userId)
+        .then((res) => {
+          this.ownProject = res.data;
+          // console.log("ownProject", this.ownProject);
+
+          this.projectIds = this.ownProject.map(
+            (project) => project.project_id
+          );
+          // console.log("this.projectIds", this.projectIds);
+
+          const requests = this.projectIds.map((projectId) => {
+            return this.$axios.get("/projects/getOne/" + projectId);
+          });
+          Promise.all(requests).then((responses) => {
+            this.projectDetails.projectList = responses.map((res) => res.data);
+
+            // console.log(
+            //   "this.projectDetails.projectList",
+            //   this.projectDetails.projectList
+            // );
+          });
+        });
     },
     async getUser() {
-          await this.$axios.get("/users/getOne/" + this.userId).then((res) => {
-            this.user_role = res.data[0].user_role;
-            console.log(this.user_position);
-            // this.filteredItems();
-          });
+      await this.$axios.get("/users/getOne/" + this.userId).then((res) => {
+        this.user_role = res.data[0].user_role;
+        // console.log(this.user_role, "user position");
+      });
     },
-    // filteredItems() {
-    //   if (this.user_role === "Admin") {
-    //     const items = this.items2.filter(item => item.title !== "Manage User");
-    //     items.splice(2, 0, {
-    //       icon: "mdi-account",
-    //       title: "Manage User",
-    //       to: "/manageUser",
-    //     });
-    //     return items;
-    //   } else {
-    //     return this.items2;
-    //   }
-    // },
   },
 };
 </script>
