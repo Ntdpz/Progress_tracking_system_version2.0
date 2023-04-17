@@ -48,7 +48,7 @@
         <!-- *content -->
         <v-expansion-panel-content class="mt-2">
           <v-row justify="center">
-            <v-btn class="new-btn ma-2 text-left" outlined color="indigo" dark v-bind="attrs" v-on="on" block
+            <v-btn v-if="user_role == 'Admin' || user_position =='Implementer'" class="new-btn ma-2 text-left" outlined color="indigo" dark v-bind="attrs" v-on="on" block
               @click="dialog = true">
               <span class="mdi mdi-plus-circle-outline" style="font-size: 20px; color: black"></span>
               <h4 style="color: black">Add New Issue</h4>
