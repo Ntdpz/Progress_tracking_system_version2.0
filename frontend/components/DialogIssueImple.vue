@@ -245,9 +245,9 @@
                                     <v-textarea disabled solo name="input-7-4" label="Note" v-mode="IssueDesDev"></v-textarea>
                                 </v-col>
                             </v-row>
-                            <v-row class="justify-center mr-16 mt-5">
+                            <!-- <v-row class="justify-center mr-16 mt-5">
                                 <v-btn color="primary" @click="handleClose()">Update</v-btn>
-                            </v-row>
+                            </v-row> -->
                         </v-col>
                     </v-row>
                 </v-col>

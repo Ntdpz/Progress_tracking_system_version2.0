@@ -243,7 +243,7 @@
                                 </v-col>
                             </v-row>
                             <v-row class="justify-center mr-16 mt-5">
-                <v-btn color="primary" @click="handleClose()">Update</v-btn>
+                <v-btn color="primary" @click="saveIssue()">Update</v-btn>
                 </v-row>
                         </v-col>
                     </v-row>
@@ -273,9 +273,9 @@
                 </v-col>
             </v-row>
             <v-row justify-center>
-                <v-col class="" style="margin-left: 20%">
+                <!-- <v-col class="" style="margin-left: 20%">
                     <v-btn color="primary" @click="saveIssue()">Update</v-btn>
-                </v-col>
+                </v-col> -->
                 <v-spacer></v-spacer>
                 <v-col>
                     <v-btn color="primary" @click="handleClose()">Cancel</v-btn>
