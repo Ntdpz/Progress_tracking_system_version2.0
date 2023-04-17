@@ -930,10 +930,10 @@ export default {
       if (this.user_role == "Admin") {
         this.dialogIssueDetail = true;
       }
-      else if (this.user_position == "Implementer") {
+      else if (this.user_position == "Implementer" && this.user_role == "User") {
         this.dialogIssueImple = true;
       }
-      else if (this.user_position == "Developer") {
+      else if (this.user_position == "Developer" && this.user_role == "User") {
         this.dialogIssueDev = true;
       }
     },
