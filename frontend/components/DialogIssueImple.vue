@@ -139,7 +139,7 @@
                                         <v-menu disabled v-model="acceptMenu" :close-on-content-click="false" :nudge-right="40"
                                             transition="scale-transition" min-width="auto">
                                             <template v-slot:activator="{ on, attrs }">
-                                                <v-text-field v-model="dateOfAccepting" label="Date of Accepting"
+                                                <v-text-field disabled v-model="dateOfAccepting" label="Date of Accepting"
                                                     prepend-icon="mdi-calendar" readonly v-bind="attrs"
                                                     v-on="on"></v-text-field>
                                             </template>
@@ -175,7 +175,7 @@
                                         <v-menu disabled v-model="startMenu" :close-on-content-click="false" :nudge-right="40"
                                             transition="scale-transition" min-width="auto" @change="calculateManday()">
                                             <template v-slot:activator="{ on, attrs }">
-                                                <v-text-field v-model="startDate" label="Start Date"
+                                                <v-text-field disabled v-model="startDate" label="Start Date"
                                                     prepend-icon="mdi-calendar" readonly v-bind="attrs"
                                                     v-on="on"></v-text-field>
                                             </template>
@@ -186,7 +186,7 @@
                                         <v-menu disabled v-model="expectedMenu" :close-on-content-click="false" :nudge-right="40"
                                             transition="scale-transition" min-width="auto" @change="calculateManday()">
                                             <template v-slot:activator="{ on, attrs }">
-                                                <v-text-field v-model="expectedCompletionDate"
+                                                <v-text-field disabled v-model="expectedCompletionDate"
                                                     label="Expected Completion Date" prepend-icon="mdi-calendar" readonly
                                                     v-bind="attrs" v-on="on"></v-text-field>
                                             </template>
@@ -229,7 +229,7 @@
                                         <v-menu disabled v-model="completionMenu" :close-on-content-click="false" :nudge-right="40"
                                             transition="scale-transition" min-width="auto">
                                             <template v-slot:activator="{ on, attrs }">
-                                                <v-text-field v-model="completionDate" label="Completion date"
+                                                <v-text-field disabled v-model="completionDate" label="Completion date"
                                                     prepend-icon="mdi-calendar" readonly v-bind="attrs"
                                                     v-on="on"></v-text-field>
                                             </template>
