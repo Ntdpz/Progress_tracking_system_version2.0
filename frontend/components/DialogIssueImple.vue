@@ -136,7 +136,7 @@
                                             Date of accepting / {{ dateOfAccepting != null ? dateOfAccepting :
                                                 IssueAccepting }}
                                         </p>
-                                        <v-menu disabled v-model="acceptMenu" :close-on-content-click="false" :nudge-right="40"
+                                        <!-- <v-menu disabled v-model="acceptMenu" :close-on-content-click="false" :nudge-right="40"
                                             transition="scale-transition" min-width="auto">
                                             <template v-slot:activator="{ on, attrs }">
                                                 <v-text-field disabled v-model="dateOfAccepting" label="Date of Accepting"
@@ -145,22 +145,22 @@
                                             </template>
                                             <v-date-picker v-model="dateOfAccepting"
                                                 @input="acceptMenu = false"></v-date-picker>
-                                        </v-menu>
+                                        </v-menu> -->
                                     </v-row>
                                 </v-col>
                             </v-row>
                             <v-row> </v-row>
                             <v-row>
-                                <v-col cols="6">
+                                <v-col cols="12">
                                     <v-row>
-                                        <v-col>
-                                            <p class="pa-2">Start date /{{ startDate != null ? startDate : IssueStart }}</p>
+                                        <v-col cols="4">
+                                            <p class="">Start date /{{ startDate != null ? startDate : IssueStart }}</p>
                                         </v-col>
-                                        <v-col>
-                                            <p class="pa-2">-</p>
+                                        <v-col cols="1">
+                                            <p class="">-</p>
                                         </v-col>
-                                        <v-col>
-                                            <p class="pa-2">
+                                        <v-col cols="7">
+                                            <p class="">
                                                 Expected completion Date / {{ expectedCompletionDate != null ?
                                                     expectedCompletionDate : IssueExpected }}
                                             </p>
@@ -172,7 +172,7 @@
                                 <v-col cols="6" class="mb-5">
                                     <v-row>
                                         <!-- Start date -->
-                                        <v-menu disabled v-model="startMenu" :close-on-content-click="false" :nudge-right="40"
+                                        <!-- <v-menu disabled v-model="startMenu" :close-on-content-click="false" :nudge-right="40"
                                             transition="scale-transition" min-width="auto" @change="calculateManday()">
                                             <template v-slot:activator="{ on, attrs }">
                                                 <v-text-field disabled v-model="startDate" label="Start Date"
@@ -181,9 +181,9 @@
                                             </template>
                                             <v-date-picker v-model="startDate" @input="startMenu = false"
                                                 @change="calculateManday()"></v-date-picker>
-                                        </v-menu>
+                                        </v-menu> -->
                                         <!-- Expected completion Date -->
-                                        <v-menu disabled v-model="expectedMenu" :close-on-content-click="false" :nudge-right="40"
+                                        <!-- <v-menu disabled v-model="expectedMenu" :close-on-content-click="false" :nudge-right="40"
                                             transition="scale-transition" min-width="auto" @change="calculateManday()">
                                             <template v-slot:activator="{ on, attrs }">
                                                 <v-text-field disabled v-model="expectedCompletionDate"
@@ -192,7 +192,7 @@
                                             </template>
                                             <v-date-picker v-model="expectedCompletionDate" @input="expectedMenu = false"
                                                 @change="calculateManday()"></v-date-picker>
-                                        </v-menu>
+                                        </v-menu> -->
                                     </v-row>
                                 </v-col>
                             </v-row>
@@ -226,7 +226,7 @@
                                     <v-row>
                                         <!-- Completion date-->
                                         <p class="pa-2">Completion date</p>
-                                        <v-menu disabled v-model="completionMenu" :close-on-content-click="false" :nudge-right="40"
+                                        <!-- <v-menu disabled v-model="completionMenu" :close-on-content-click="false" :nudge-right="40"
                                             transition="scale-transition" min-width="auto">
                                             <template v-slot:activator="{ on, attrs }">
                                                 <v-text-field disabled v-model="completionDate" label="Completion date"
@@ -235,7 +235,7 @@
                                             </template>
                                             <v-date-picker v-model="completionDate"
                                                 @input="completionMenu = false"></v-date-picker>
-                                        </v-menu>
+                                        </v-menu> -->
                                     </v-row>
                                 </v-col>
                             </v-row>
