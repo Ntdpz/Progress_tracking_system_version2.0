@@ -6,7 +6,7 @@
         <v-card v-else width="99%" class="pa-0 ma-0">
             <v-card-title class="text-h5">
                 <!-- <h5>{{ ProjectName }} > {{ SystemName }} > {{ IssueName }}</h5> -->
-                <h5>{{ ProjectName }} > {{ SystemName }}</h5>
+                <h5>Imple: {{ ProjectName }} > {{ SystemName }}</h5>
             </v-card-title>
             <v-row class="pa-5">
                 <v-col>
@@ -35,21 +35,21 @@
                             <v-row>
                                 <p class="pa-2">Name</p>
                                 <v-text-field label="Issue Name" placeholder="Issue Name" outlined dense v-model="IssueName"
-                                    disabled></v-text-field>
+                                ></v-text-field>
                             </v-row>
                         </v-col>
                     </v-row>
                     <v-row>
                         <v-col cols="12">
                             <v-textarea solo name="input-7-4" label="Note" v-model="IssueDes" style=""
-                                disabled></v-textarea></v-col>
+                            ></v-textarea></v-col>
                     </v-row>
                     <v-row>
                         <v-col cols="6">
                             <v-row>
                                 <p class="pa-2">Informer</p>
                                 <v-text-field label="Issue Informer" placeholder="Issue Informer" outlined dense
-                                    v-model="IssueInformer" disabled></v-text-field>
+                                    v-model="IssueInformer"></v-text-field>
                             </v-row>
                         </v-col>
                     </v-row>
@@ -59,14 +59,14 @@
                             <v-row>
                                 <p class="pa-2">Document No.</p>
                                 <v-text-field label="Issue Informer" placeholder="Issue Informer" outlined dense
-                                    v-model="IssueDocId" disabled></v-text-field>
+                                    v-model="IssueDocId"></v-text-field>
                             </v-row>
                         </v-col>
                         <v-col cols="6">
                             <v-row>
                                 <p class="pa-2">Customer Name</p>
                                 <v-text-field label="Issue Informer" placeholder="Issue Informer" outlined dense
-                                    v-model="IssueCustomer" disabled></v-text-field>
+                                    v-model="IssueCustomer"></v-text-field>
                             </v-row>
                         </v-col>
                     </v-row>
@@ -76,13 +76,13 @@
                             <v-row>
                                 <p class="pa-2">Type New Req</p>
                                 <v-text-field label="Issue Informer" placeholder="Issue Informer" outlined dense
-                                    v-model="IssueTypeSA" disabled></v-text-field>
+                                    v-model="IssueTypeSA"></v-text-field>
                             </v-row>
                         </v-col>
                         <v-col cols="6">
                             <v-row>
                                 <p class="pa-2">Note to SA</p>
-                                <v-textarea solo name="input-7-4" label="Note" v-model="IssueDesSA" disabled></v-textarea>
+                                <v-textarea solo name="input-7-4" label="Note" v-model="IssueDesSA"></v-textarea>
                             </v-row>
                         </v-col>
                     </v-row>
@@ -263,7 +263,7 @@
                             <v-row>
                                 <p class="pa-2">Status</p>
                                 <v-text-field label="Status" placeholder="Status" outlined dense v-model="IssueStatus"
-                                    disabled></v-text-field>
+                                ></v-text-field>
                             </v-row>
                         </v-col>
                     </v-row>
@@ -271,7 +271,7 @@
                         <v-col cols="6">
                             <p class="">Cause / Remedy</p>
                             <v-textarea solo name="input-7-4" label="Note" v-model="IssueDesImplementer"
-                                disabled></v-textarea>
+                            ></v-textarea>
                         </v-col>
                     </v-row>
                 </v-col>
