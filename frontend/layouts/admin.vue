@@ -144,7 +144,7 @@ export default {
       projectDetails: [
         {
           action: "mdi-view-list",
-          active: true,
+          active: false,
           title: "Project",
           projectList: [],
         },
@@ -164,7 +164,7 @@ export default {
       items3: [
         {
           action: "mdi-view-list",
-          active: true,
+          active: false,
           title: "Project",
           projectList: [],
         },
