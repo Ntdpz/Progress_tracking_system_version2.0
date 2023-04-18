@@ -45,7 +45,7 @@
                   v-model="form.issue_type"
                 ></v-select>
               </v-col>
-              <v-col cols="12" sm="6" md="4">
+              <v-col cols="12" sm="6" md="8">
                 <v-select
                   @change="getUserSystems(selectedScreen.id)"
                   :items="screen_selectDefault"
@@ -57,7 +57,7 @@
                   return-object="false"
                 ></v-select>
               </v-col>
-              <v-col cols="12" sm="6" md="4">
+              <v-col cols="12" sm="6" md="6">
                 <v-text-field
                   label="Informer"
                   placeholder="Informer"
@@ -66,7 +66,7 @@
                   v-model="form.issue_informer"
                 ></v-text-field>
               </v-col>
-              <v-col cols="12" sm="6" md="4">
+              <v-col cols="12" sm="6" md="6">
                 <v-select
                   :items="priotity_select"
                   label="Priotity"
@@ -76,7 +76,7 @@
                   v-model="form.issue_priority"
                 ></v-select>
               </v-col>
-              <v-col cols="12" sm="6" md="4">
+              <v-col cols="12" sm="6" md="12">
                 <v-menu
                   ref="menu"
                   v-model="menu"
@@ -88,7 +88,7 @@
                   <template v-slot:activator="{ on, attrs }">
                     <v-text-field
                       v-model="date"
-                      label="Picker in menu"
+                      label="Picker Deadline"
                       prepend-icon="mdi-calendar"
                       readonly
                       v-bind="attrs"
@@ -107,7 +107,7 @@
                   </v-date-picker>
                 </v-menu>
               </v-col>
-              <v-col cols="12" sm="4" md="2">
+              <v-col cols="12" sm="4" md="6">
                 <v-select
                   :items="position_Developers"
                   label="Dev"
@@ -118,7 +118,7 @@
                   return-object="false"
                 ></v-select>
               </v-col>
-              <v-col cols="12" sm="4" md="2">
+              <v-col cols="12" sm="4" md="6">
                 <v-select
                   :items="qc_select"
                   label="QC"
@@ -147,7 +147,8 @@
               </v-col>
               <v-col cols="12" sm="6" md="6" v-show="Newreq">
                 <v-container fluid class="ma-0 pa-0">
-                  <p>Type Issue {{ selected }}</p>
+                  <!-- <p>Type Issue {{ selected }}</p> -->
+                  <p>Type Issue</p>
                   <v-row>
                     <v-col>
                       <v-row>
@@ -216,7 +217,14 @@
                 ></v-textarea>
               </v-col>
               <v-col cols="12">
-                <v-file-input v-model="form.issue_filename" ref="fileInput" @change="uploadFile()" label="File input" outlined dense></v-file-input>
+                <v-file-input
+                  v-model="form.issue_filename"
+                  ref="fileInput"
+                  @change="uploadFile()"
+                  label="File input"
+                  outlined
+                  dense
+                ></v-file-input>
               </v-col>
             </v-row>
           </v-container>
@@ -238,6 +246,9 @@ export default {
     systemName: String,
     projectId: String,
     systemId: String,
+    userFirstname: String,
+    userLastname: String,
+    userId: String,
     mode: String,
     dialog: {
       default: false,
@@ -288,7 +299,6 @@ export default {
         issue_manday: "",
         issue_complete: "",
       },
-      URI: "http://localhost:7777",
       dataDefault: [],
     };
   },
@@ -312,8 +322,8 @@ export default {
     await this.getScreenDefault();
   },
   methods: {
-    uploadFile(){
-      let formData = new FormData()
+    uploadFile() {
+      let formData = new FormData();
       if (this.form.issue_filename) {
         formData.append("file", this.form.issue_filename);
         console.log(formData.getAll("file"));
@@ -342,40 +352,39 @@ export default {
         const selectedScreenId = this.selectedScreen
           ? this.selectedScreen.id
           : null;
-        const formData = new FormData();
-        formData.append('screen_id', selectedScreenId);
-        formData.append('system_id', this.systemId);
-        formData.append('project_id', this.projectId);
-        formData.append('issue_name', this.form.issue_name);
-        formData.append('issue_id', this.form.issue_id);
-        formData.append('issue_type', this.form.issue_type);
-        formData.append('issue_informer', this.form.issue_informer);
-        formData.append('issue_priority', this.form.issue_priority);
-        formData.append('issue_end', this.form.issue_end);
-        if (this.form.issue_assign.user_firstname) {
-        formData.append('issue_assign', this.form.issue_assign.user_firstname);
-        } else{
-          formData.append('issue_assign', "");
-        }
-        formData.append('issue_qc', this.form.issue_qc);
-        formData.append('issue_des', this.form.issue_des);
-        formData.append('issue_des_sa', this.form.issue_des_sa);
-        formData.append('issue_type_sa', this.form.issue_type_sa);
-        formData.append('issue_doc_id', this.form.issue_doc_id);
-        formData.append('issue_customer', this.form.issue_customer);
-        if (this.form.issue_filename) {
-          formData.append('file', this.form.issue_filename);
-        }
-        formData.append('issue_des_dev', this.form.issue_des_dev);
-        formData.append('issue_des_implementer', this.form.issue_des_implementer);
-        formData.append('issue_start', null);
-        formData.append('issue_expected', null);
-        formData.append('issue_status', this.form.issue_status);
-        formData.append('issue_accepting', null);
-        formData.append('issue_manday', 1);
-        formData.append('issue_complete', null);
+
+        const date = new Date();
+        const dateString = date.toISOString().slice(0, 10);
+
+        const data = {
+          screen_id: selectedScreenId,
+          system_id: this.systemId,
+          project_id: this.projectId,
+          issue_name: this.form.issue_name,
+          issue_id: this.form.issue_id,
+          issue_type: this.form.issue_type,
+          issue_informer: this.form.issue_informer,
+          issue_priority: this.form.issue_priority,
+          issue_end: this.form.issue_end,
+          issue_assign: this.form.issue_assign.user_firstname,
+          issue_qc: this.form.issue_qc,
+          issue_des: this.form.issue_des,
+          issue_des_sa: this.form.issue_des_sa,
+          issue_type_sa: this.form.issue_type_sa,
+          issue_doc_id: this.form.issue_doc_id,
+          issue_customer: this.form.issue_customer,
+          issue_filename: this.form.issue_filename,
+          issue_des_dev: this.form.issue_des_dev,
+          issue_des_implementer: this.form.issue_des_implementer,
+          issue_start: dateString,
+          issue_expected: null,
+          issue_status: "open",
+          issue_accepting: null,
+          issue_manday: "",
+          issue_complete: null,
+        };
         try {
-          await this.$axios.post("/issues/createIssue", formData);
+          await this.$axios.post("/issues/createIssue", data);
           console.log("post success");
           window.location.reload();
           const promise = new Promise((resolve, reject) => {
