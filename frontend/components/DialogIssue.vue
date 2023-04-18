@@ -383,6 +383,45 @@ export default {
           issue_manday: "",
           issue_complete: null,
         };
+        // const formData = new FormData();
+        // formData.append("screen_id", selectedScreenId);
+        // formData.append("system_id", this.systemId);
+        // formData.append("project_id", this.projectId);
+        // formData.append("issue_name", this.form.issue_name);
+        // formData.append("issue_id", this.form.issue_id);
+        // formData.append("issue_type", this.form.issue_type);
+        // formData.append("issue_informer", this.form.issue_informer);
+        // formData.append("issue_priority", this.form.issue_priority);
+        // formData.append("issue_end", this.form.issue_end);
+        // if (this.form.issue_assign.user_firstname) {
+        //   formData.append(
+        //     "issue_assign",
+        //     this.form.issue_assign.user_firstname
+        //   );
+        // } else {
+        //   formData.append("issue_assign", "");
+        // }
+        // formData.append("issue_qc", this.form.issue_qc);
+        // formData.append("issue_des", this.form.issue_des);
+        // formData.append("issue_des_sa", this.form.issue_des_sa);
+        // formData.append("issue_type_sa", this.form.issue_type_sa);
+        // formData.append("issue_doc_id", this.form.issue_doc_id);
+        // formData.append("issue_customer", this.form.issue_customer);
+        // if (this.form.issue_filename) {
+        //   formData.append("file", this.form.issue_filename);
+        // }
+        // formData.append("issue_des_dev", this.form.issue_des_dev);
+        // formData.append(
+        //   "issue_des_implementer",
+        //   this.form.issue_des_implementer
+        // );
+
+        // formData.append("issue_start", dateString);
+        // formData.append("issue_expected", null);
+        // formData.append("issue_status", this.form.issue_status);
+        // formData.append("issue_accepting", null);
+        // formData.append("issue_manday", 1);
+        // formData.append("issue_complete", null);
         try {
           await this.$axios.post("/issues/createIssue", data);
           console.log("post success");
