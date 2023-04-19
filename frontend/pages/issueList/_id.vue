@@ -79,6 +79,9 @@
               :projectId="projectId"
               :systemId="system.id"
               :mode="'create'"
+              :userFirstname="user_firstname"
+              :userLastname="user_lastname"
+              :userId="userId"
             />
           </v-row>
           <!-- *tabs -->
@@ -990,7 +993,7 @@ export default {
         this.user_lastname = res.data[0].user_lastname;
         this.user_position = res.data[0].user_position;
         this.user_role = res.data[0].user_role;
-        console.log(this.user_firstname, this.user_lastname);
+        console.log(this.user_firstname, this.user_lastname, "First last");
       });
     },
     showIssueDetailDialog(issue_name) {

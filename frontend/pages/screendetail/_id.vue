@@ -530,7 +530,7 @@ export default {
     // this.getScreenID();
     this.calculateManDay();
     this.user_id = this.developer.concat(this.implementer);
-    console.log(this.user_id);
+
   },
   methods: {
     async getScreenID() {
@@ -538,20 +538,20 @@ export default {
         this.screensID = data.data[0];
         this.screenname = data.data[0].screen_name;
         this.IDdelete = this.screensID.system_id;
-        console.log(this.screensID);
+     
         this.getUserSystems();
         const date = moment(
           this.screensID.screen_start,
           "YYYY-MM-DDTHH:mm:ss.SSSZ"
         );
         this.screensID.screen_start = date.format("YYYY-MM-DD");
-        // console.log(project.formattedDateStart);
+
         const dateEnd = moment(
           this.screensID.screen_end,
           "YYYY-MM-DDTHH:mm:ss.SSSZ"
         );
         this.screensID.screen_end = dateEnd.format("YYYY-MM-DD");
-        // console.log(project.formattedDateEnd);
+        
         this.loading = false;
       });
     },
@@ -560,8 +560,7 @@ export default {
         .get("/user_screens/getOneScreenID/" + this.id)
         .then((data) => {
           this.userScreens = data.data;
-          console.log("this.userScreens");
-          console.log(this.userScreens);
+         
           // Filter users based on user_position
           this.developer = this.userScreens
             .filter((user) => user.user_position === "Developer")
@@ -570,8 +569,7 @@ export default {
             .filter((user) => user.user_position === "Implementer")
             .map((user) => user.id);
 
-          console.log(this.developer);
-          console.log(this.implementer);
+       
         });
     },
     async getPosition_Developer() {
@@ -579,7 +577,7 @@ export default {
         .get("/users/getAll?user_position=Developer")
         .then((data) => {
           this.data_position_Developer = data.data;
-          console.log(data.data);
+        
         });
     },
     async getPosition_Implementer() {
@@ -587,19 +585,13 @@ export default {
         .get("/users/getAll?user_position=Implementer")
         .then((data) => {
           this.data_position_Implementer = data.data;
-          console.log(this.name_Implementer);
+         
         });
     },
     async getUserSystems() {
       await this.$axios
         .get("/user_systems/getOneScreenID/" + this.screensID.system_id)
         .then((data) => {
-          // this.data_position_Implementer = data.data
-          //   .filter((item) => item.user_position === "Implementer")
-          //   .map((user) => user.id);
-          // this.data_position_Developer = data.data
-          //   .filter((item) => item.user_position === "Developer")
-          //   .map((user) => user.id);
           this.position_Implementers = data.data.filter(
             (item) => item.user_position === "Implementer"
           );
@@ -616,9 +608,9 @@ export default {
       const dateEnd = new Date(this.screensID.screen_end);
       const timeDiff = Math.abs(dateEnd.getTime() - dateStart.getTime());
       this.screensID.screen_manday = Math.ceil(timeDiff / (1000 * 3600 * 24)); // convert to days and round up
-      console.log(
-        `The difference between ${this.screensID.screen_start} and ${this.screensID.screen_end} is ${this.screensID.screen_manday} days`
-      );
+      // console.log(
+      //   `The difference between ${this.screensID.screen_start} and ${this.screensID.screen_end} is ${this.screensID.screen_manday} days`
+      // );
       return;
     },
     resetday() {
@@ -676,7 +668,7 @@ export default {
         await this.$axios
           .delete("/user_screens/deleteScreenID/" + this.id)
           .then((res) => {
-            console.log("delete success");
+            // console.log("delete success");
             alert("delete user_screen success");
           })
           .catch((err) => {
@@ -698,7 +690,7 @@ export default {
             project_id: this.screensID.project_id,
           })
           .then((res) => {
-            console.log("POST success for user ID: " + this.$route.params.id);
+            // console.log("POST success for user ID: " + this.$route.params.id);
             alert("addUser_Screen Success!!");
           });
       } catch (error) {
@@ -720,7 +712,7 @@ export default {
         this.imageChange = event.target.files[0];
         // เอาไว้โชว์
         this.selectedImage = URL.createObjectURL(this.imageChange);
-        console.log(this.imageChange);
+        // console.log(this.imageChange);
       });
       input.click();
     },
@@ -741,7 +733,7 @@ export default {
       await this.$axios.get("/default_settings/getAll").then((data) => {
         this.dataDefault = data.data;
         console.clear();
-        console.log(this.dataDefault);
+        // console.log(this.dataDefault);
         this.dataDefault.forEach((item) => {
           if (item.level) {
             this.selectlevel.push(item.level);
