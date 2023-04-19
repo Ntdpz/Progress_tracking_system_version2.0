@@ -120,11 +120,13 @@
               </v-col>
               <v-col cols="12" sm="4" md="2">
                 <v-select
-                  :items="qc_select"
+                  :items="position_Implementer"
                   label="QC"
                   dense
                   outlined
+                  item-text="user_firstname"
                   v-model="form.issue_qc"
+                  return-object="false"
                 ></v-select>
               </v-col>
               <v-col cols="12" sm="6" md="4" v-show="PNC">
@@ -246,6 +248,7 @@ export default {
   data() {
     return {
       position_Developers: [],
+      position_Implementer: [],
       date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
         .toISOString()
         .substr(0, 10),
@@ -332,6 +335,9 @@ export default {
         .then((data) => {
           this.position_Developers = data.data.filter(
             (item) => item.user_position === "Developer"
+          );
+          this.position_Implementer = data.data.filter(
+            (item) => item.user_position === "Implementer"
           );
           console.log(this.position_Developers);
         });

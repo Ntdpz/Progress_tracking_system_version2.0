@@ -268,9 +268,7 @@
                         </v-col>
                       </v-row>
                       <v-row>
-                        <!-- <v-col class="mb-0 pb-0 hidden-sm-and-up" style="place-self: center">
-                          <h4 class="">Status</h4>
-                        </v-col> -->
+                        
                         <v-col
                           class="mb-0 pb-0 hidden-sm-and-up"
                           style="place-self: center"
@@ -298,6 +296,24 @@
                             persistent-hint
                           ></v-select>
                         </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col class="mb-0 pb-0 hidden-sm-and-up" style="place-self: center">
+                          <h4 class="">Status</h4>
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                          <v-col
+                            class="hidden-xs-only"
+                            sm="4"
+                            md="4"
+                            style="place-self: center"
+                          >
+                            <h4 class="">Status</h4>
+                          </v-col>
+                          <v-col class="col-10" sm="6" md="6">
+                            <h4 class=""><v-icon color="error">mdi-circle</v-icon> {{ status }}</h4>
+                          </v-col>    
                       </v-row>
                       <v-row>
                         <v-col
