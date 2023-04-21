@@ -853,10 +853,10 @@ export default {
         this.editedItem.project_agency = "";
         this.editedItem.project_start = "";
         this.editedItem.project_end = "";
-        this.$refs.form.reset();
+        // this.$refs.form.reset();
         console.log(mode);
         if (this.$refs.form) {
-          this.$refs.form.reset();
+          // this.$refs.form.reset();
         }
       }
     },

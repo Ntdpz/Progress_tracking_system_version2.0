@@ -7,7 +7,9 @@
     <!-- *Header* -->
     <v-row class="mt-4 ml-2 mb-2">
       <h4>
-        UserID {{ userId }} : {{ this.projectName }} ({{ this.projectId }})
+        UserID {{ userId }} {{ runningNumber }}: {{ this.projectName }} ({{
+          this.projectId
+        }})
       </h4>
       <p style="color: #b6b5b5; font-size: 16px" class="ml-2">
         {{ this.systemslength }} Sub Systems
@@ -82,6 +84,7 @@
               :userFirstname="user_firstname"
               :userLastname="user_lastname"
               :userId="userId"
+              :runningNumber="runningNumber"
             />
           </v-row>
           <!-- *tabs -->
@@ -138,6 +141,8 @@
             :IssueDocId="selected.issue_doc_id"
             :IssueCustomer="selected.issue_customer"
             :IssueTypeSA="selected.issue_type_sa"
+            :IssueCreate="selected.created_at"
+            :ScreenName="selected.screenName"
           />
           <dialog-issue-imple
             :dialog.sync="dialogIssueImple"
@@ -254,8 +259,6 @@
                   <p v-show="item.issue_assign == ''">N/A</p>
                 </template>
                 <template v-slot:[`item.actions`]="{ item }">
-                  <!-- <v-btn icon @click="showIssueDetailDialog(item.issue_name)"
-                >Details</v-btn -->
                   <v-icon
                     class="mr-2"
                     @click="
@@ -283,7 +286,8 @@
                         item.issue_des,
                         item.issue_customer,
                         item.issue_doc_id,
-                        item.issue_type_sa
+                        item.issue_type_sa,
+                        item.created_at
                       )
                     "
                     size="20"
@@ -358,7 +362,8 @@
                         item.issue_des,
                         item.issue_customer,
                         item.issue_doc_id,
-                        item.issue_type_sa
+                        item.issue_type_sa,
+                        item.created_at
                       )
                     "
                     size="20"
@@ -420,8 +425,6 @@
                   <p v-show="item.issue_assign == ''">N/A</p>
                 </template>
                 <template v-slot:[`item.actions`]="{ item }">
-                  <!-- <v-btn icon @click="showIssueDetailDialog(item.issue_name)"
-                >Details</v-btn -->
                   <v-icon
                     class="mr-2"
                     @click="
@@ -449,7 +452,8 @@
                         item.issue_des,
                         item.issue_customer,
                         item.issue_doc_id,
-                        item.issue_type_sa
+                        item.issue_type_sa,
+                        item.created_at
                       )
                     "
                     size="20"
@@ -523,7 +527,8 @@
                         item.issue_des,
                         item.issue_customer,
                         item.issue_doc_id,
-                        item.issue_type_sa
+                        item.issue_type_sa,
+                        item.created_at
                       )
                     "
                     size="20"
@@ -585,8 +590,6 @@
                   <p v-show="item.issue_assign == ''">N/A</p>
                 </template>
                 <template v-slot:[`item.actions`]="{ item }">
-                  <!-- <v-btn icon @click="showIssueDetailDialog(item.issue_name)"
-                >Details</v-btn -->
                   <v-icon
                     class="mr-2"
                     @click="
@@ -614,7 +617,8 @@
                         item.issue_des,
                         item.issue_customer,
                         item.issue_doc_id,
-                        item.issue_type_sa
+                        item.issue_type_sa,
+                        item.created_at
                       )
                     "
                     size="20"
@@ -688,7 +692,8 @@
                         item.issue_des,
                         item.issue_customer,
                         item.issue_doc_id,
-                        item.issue_type_sa
+                        item.issue_type_sa,
+                        item.created_at
                       )
                     "
                     size="20"
@@ -750,8 +755,6 @@
                   <p v-show="item.issue_assign == ''">N/A</p>
                 </template>
                 <template v-slot:[`item.actions`]="{ item }">
-                  <!-- <v-btn icon @click="showIssueDetailDialog(item.issue_name)"
-                >Details</v-btn -->
                   <v-icon
                     class="mr-2"
                     @click="
@@ -779,7 +782,8 @@
                         item.issue_des,
                         item.issue_customer,
                         item.issue_doc_id,
-                        item.issue_type_sa
+                        item.issue_type_sa,
+                        item.created_at
                       )
                     "
                     size="20"
@@ -853,7 +857,8 @@
                         item.issue_des,
                         item.issue_customer,
                         item.issue_doc_id,
-                        item.issue_type_sa
+                        item.issue_type_sa,
+                        item.created_at
                       )
                     "
                     size="20"
@@ -933,6 +938,8 @@ export default {
         issue_accepting: "",
         issue_manday: "",
         issue_complete: "",
+        created_at: "",
+        screenName: "",
         formattedDateEnd: "",
         formattedDateAccepting: "",
         formattedDateExpected: "",
@@ -965,6 +972,7 @@ export default {
       user_lastname: "",
       user_position: "",
       user_role: "",
+      runningNumber: "",
     };
   },
   async created() {
@@ -972,7 +980,6 @@ export default {
     await this.getProject();
     await this.getSystems();
     await this.getIssue();
-    // await this.getIssues2();
   },
   mounted() {
     this.getUser();
@@ -993,13 +1000,9 @@ export default {
         this.user_lastname = res.data[0].user_lastname;
         this.user_position = res.data[0].user_position;
         this.user_role = res.data[0].user_role;
-        console.log(this.user_firstname, this.user_lastname, "First last");
       });
     },
     showIssueDetailDialog(issue_name) {
-      console.log("item:", this.item);
-      console.log("assignedIssues:", this.system.assignedIssues);
-      // this.dialogIssueDetail = true;
       if (this.user_role == "Admin") {
         this.dialogIssueDetail = true;
       } else if (this.user_position == "Implementer") {
@@ -1013,8 +1016,6 @@ export default {
         this.project = res.data;
         this.projectName = this.project[0].project_name;
         this.projectId = this.project[0].id;
-        // console.log(this.project[0].project_name, "this.project");
-        console.log(this.project[0].id, "this.projectId");
       });
     },
     async getSystems() {
@@ -1027,13 +1028,9 @@ export default {
             res.data.filter((system) => system.project_id === project.id)
           );
         });
-        console.log(this.systems, "system");
       });
       this.systems = this.project[0].systems;
       this.systemslength = this.project[0].systems.length;
-      console.log(this.project, "this.project");
-      console.log(this.system, "this.system");
-      console.log(this.systemslength, "this.systemslength");
     },
     async getIssue() {
       try {
@@ -1041,6 +1038,8 @@ export default {
           "/issues/getAll?project_id=" + this.id
         );
         this.issue = res.data;
+        this.runningNumber = this.issue.length + 1;
+        // console.log(this.runningNumber, "this.runningNumber");
         this.issue.forEach((issue) => {
           const dateEnd = moment(issue.issue_end, "YYYY-MM-DDTHH:mm:ss.SSSZ");
           issue.formattedDateEnd = dateEnd.format("YYYY-MM-DD");
@@ -1062,7 +1061,6 @@ export default {
             "YYYY-MM-DDTHH:mm:ss.SSSZ"
           );
           issue.formattedDateExpected = dateExpected.format("YYYY-MM-DD");
-          // console.log(issue.formattedDateAccepting);
         });
         this.systems.forEach((system) => {
           Vue.set(
@@ -1122,7 +1120,6 @@ export default {
             )
           );
         });
-        // console.log(this.systems, "system issue2");
       } catch (err) {
         console.error(err);
       }
@@ -1151,7 +1148,8 @@ export default {
       issueDes,
       issueCustomer,
       issueDocId,
-      issueTypeSA
+      issueTypeSA,
+      issueCreate
     ) {
       this.selected.Id = issueid;
       this.selected.issue_id = issueId;
@@ -1177,6 +1175,16 @@ export default {
       this.selected.issue_customer = issueCustomer;
       this.selected.issue_doc_id = issueDocId;
       this.selected.issue_type_sa = issueTypeSA;
+      //created at
+      const dateCreate = moment(issueCreate).format("YYYY-MM-DD");
+      this.selected.created_at = dateCreate;
+      //get screen name
+      this.$axios.get("/screens/getOne/" + issueScreenid).then((res) => {
+        const screen = res.data[0].screen_name;
+        this.selected.screenName = screen;
+        // console.log(screen, "screen screen screen");
+      });
+      //check role
       if (this.user_role == "Admin") {
         this.dialogIssueDetail = true;
       } else if (
@@ -1190,6 +1198,7 @@ export default {
       ) {
         this.dialogIssueDev = true;
       }
+      //check role
     },
   },
 };

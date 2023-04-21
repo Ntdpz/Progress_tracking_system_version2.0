@@ -1,77 +1,114 @@
 <template>
-  <v-container>
-    <v-row>
-      <v-card-text>
-        <v-expansion-panels>
-          <v-expansion-panel
-            v-for="(system, index) in systems"
-            :key="system.id"
-          >
-            <v-expansion-panel-header>
-              {{ system.id }} / {{ system.system_nameTH }}
-            </v-expansion-panel-header>
-            <v-expansion-panel-content>
-              <v-list>
-                <v-list-item-group>
-                  <v-list-item
-                    v-for="(issue, index) in system.issues"
-                    :key="issue.id"
-                  >
-                    {{ issue.id }} / {{ issue.issue_name }}
-                  </v-list-item>
-                </v-list-item-group>
-              </v-list>
-            </v-expansion-panel-content>
-          </v-expansion-panel>
-        </v-expansion-panels>
-      </v-card-text>
+  <v-container fluid>
+    <v-row align="center">
+      <v-col cols="6">
+        <v-subheader> Prepended icon </v-subheader>
+      </v-col>
+      <v-col cols="6">
+        <v-select
+          v-model="e1"
+          :items="states"
+          label="Select"
+          menu-props="auto"
+          hide-details
+          prepend-icon="mdi-map"
+          single-line
+        ></v-select>
+      </v-col>
+      <v-col cols="6">
+        <v-subheader> Appended icon </v-subheader>
+      </v-col>
+      <v-col cols="6">
+        <v-select
+          v-model="e2"
+          :items="states"
+          append-outer-icon="mdi-map"
+          menu-props="auto"
+          hide-details
+          label="Select"
+          single-line
+        ></v-select>
+      </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script>
-import Vue from "vue";
 export default {
   data() {
     return {
-      id: 1,
-      systems: [],
+      e1: "Florida",
+      e2: "Texas",
+      e3: null,
+      e4: null,
+      states: [
+        "Alabama",
+        "Alaska",
+        "American Samoa",
+        "Arizona",
+        "Arkansas",
+        "California",
+        "Colorado",
+        "Connecticut",
+        "Delaware",
+        "District of Columbia",
+        "Federated States of Micronesia",
+        "Florida",
+        "Georgia",
+        "Guam",
+        "Hawaii",
+        "Idaho",
+        "Illinois",
+        "Indiana",
+        "Iowa",
+        "Kansas",
+        "Kentucky",
+        "Louisiana",
+        "Maine",
+        "Marshall Islands",
+        "Maryland",
+        "Massachusetts",
+        "Michigan",
+        "Minnesota",
+        "Mississippi",
+        "Missouri",
+        "Montana",
+        "Nebraska",
+        "Nevada",
+        "New Hampshire",
+        "New Jersey",
+        "New Mexico",
+        "New York",
+        "North Carolina",
+        "North Dakota",
+        "Northern Mariana Islands",
+        "Ohio",
+        "Oklahoma",
+        "Oregon",
+        "Palau",
+        "Pennsylvania",
+        "Puerto Rico",
+        "Rhode Island",
+        "South Carolina",
+        "South Dakota",
+        "Tennessee",
+        "Texas",
+        "Utah",
+        "Vermont",
+        "Virgin Island",
+        "Virginia",
+        "Washington",
+        "West Virginia",
+        "Wisconsin",
+        "Wyoming",
+      ],
     };
-  },
-  methods: {
-    async getSystems() {
-      try {
-        const res = await this.$axios.get("/systems/getAll");
-        this.systems = res.data;
-
-        // Log the systems for debugging purposes
-        console.log(this.systems);
-      } catch (err) {
-        console.error(err);
-      }
-    },
-    async getIssues() {
-      try {
-        const res = await this.$axios.get(
-          "/issues/getAll?project_id=" + this.id
-        );
-        // Loop through each system and assign the associated issues
-        this.systems.forEach((system) => {
-          Vue.set(
-            system,
-            "issues",
-            res.data.filter((issue) => issue.system_id === system.id)
-          );
-        });
-        console.log(this.systems);
-      } catch (err) {
-        console.error(err);
-      }
-    },
-  },
-  mounted() {
-    this.getSystems();
-    this.getIssues();
   },
 };
 </script>
+
+<style scoped>
+* {
+  font-family: "Lato", sans-serif;
+}
+</style>
