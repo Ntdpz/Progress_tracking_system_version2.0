@@ -436,7 +436,14 @@
                           <h4 class="">Manday</h4>
                         </v-col>
                         <v-col class="col-10" sm="6" md="6">
-                          <h4 class="">{{ manday }}</h4>
+                          <v-text-field
+                                  v-model="manday"
+                                  style="text-align-last: left"
+                                  hide-details="auto"
+                                  type="number"
+                            dense
+                            outlined
+                                ></v-text-field>
                         </v-col>
                         <v-col style="place-self: center">
                           <h4 class="">Days</h4>
@@ -898,13 +905,13 @@ export default {
     // this.calculateManDay();
   },
   updated() {
-    this.calculateManDay();
+    // this.calculateManDay();
     // console.log(this.user_id);
     // console.log(this.implementer);
     this.sumUser = this.user_developer.concat(this.user_implementer);
     console.log(this.sumUser);
     // this.sumUserIds = this.sumUser.map((user) => user.id);
-    // console.log(this.sumUserIds);
+
   },
   methods: {
     async getScreens() {
@@ -1004,7 +1011,7 @@ export default {
     },
     async CreateAllScreen() {
       try {
-        this.calculateManDay();
+        // this.calculateManDay();
         console.log("Man-day calculation completed successfully.");
         await this.createScreen();
         console.log("Screen creation completed successfully.");
@@ -1021,16 +1028,16 @@ export default {
         alert(error);
       }
     },
-    calculateManDay() {
-      const dateStart = new Date(this.newscreen_dateStart);
-      const dateEnd = new Date(this.newscreen_dateEnd);
-      const timeDiff = Math.abs(dateEnd.getTime() - dateStart.getTime());
-      this.manday = Math.ceil(timeDiff / (1000 * 3600 * 24)); // convert to days and round up
-      console.log(
-        `The difference between ${this.newscreen_dateStart} and ${this.newscreen_dateEnd} is ${this.manday} days`
-      );
-      return;
-    },
+    // calculateManDay() {
+    //   const dateStart = new Date(this.newscreen_dateStart);
+    //   const dateEnd = new Date(this.newscreen_dateEnd);
+    //   const timeDiff = Math.abs(dateEnd.getTime() - dateStart.getTime());
+    //   this.manday = Math.ceil(timeDiff / (1000 * 3600 * 24)); // convert to days and round up
+    //   console.log(
+    //     `The difference between ${this.newscreen_dateStart} and ${this.newscreen_dateEnd} is ${this.manday} days`
+    //   );
+    //   return;
+    // },
     resetday() {
       this.today = new Date();
       this.dateEnd = new Date();
