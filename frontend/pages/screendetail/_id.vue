@@ -409,10 +409,20 @@
                   <h4 class="">Manday</h4>
                 </v-col>
                 <v-col class="col-10" sm="6" md="6">
-                  <h4 class="">
+                  <!-- <h4 class="">
                     {{ screensID.screen_manday }}
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Day
-                  </h4>
+                  </h4> -->
+                  <v-text-field v-model="screensID.screen_manday"
+                                  style="text-align-last: left"
+                                  hide-details="auto"
+                                  type="number"
+                                  dense
+                                  outlined>
+                  </v-text-field>      
+                </v-col>
+                <v-col style="place-self: center">
+                          <h4 class="">Days</h4>
                 </v-col>
                 <!-- <v-col style="place-self: center">
                   <h4 class="">Days</h4>
