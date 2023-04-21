@@ -8,7 +8,7 @@
         <!-- <h5>{{ ProjectName }} > {{ SystemName }} > {{ IssueName }}</h5> -->
         <h5>
           รายละเอียด Issue | {{ ProjectName }} > {{ SystemName }}
-          {{ IssueAssign }}
+          {{ IssueAssign }} {{ IssueScreenId }}
         </h5>
       </v-card-title>
       <v-row class="pa-5">
@@ -130,7 +130,21 @@
                 label="Dev"
                 dense
                 outlined
+                menu-props="auto"
+                item-text="user_firstname"
                 v-model="IssueAssign"
+              ></v-select>
+            </v-col>
+            <v-col cols="12" sm="6" md="6">
+              <v-select
+                return-object="false"
+                :items="position_Implementer"
+                label="QC"
+                dense
+                outlined
+                menu-props="auto"
+                item-text="user_firstname"
+                v-model="IssueQC"
               ></v-select>
             </v-col>
           </v-row>
@@ -195,32 +209,6 @@
                   label="Note"
                   v-model="IssueDesSA"
                 ></v-textarea>
-              </v-row>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col cols="6">
-              <v-row>
-                <p class="pa-2">Assign To</p>
-                <v-chip class="ma-2" color="primary" text-color="white">
-                  <v-avatar left>
-                    <v-icon>mdi-account-circle</v-icon>
-                  </v-avatar>
-                  {{ IssueAssign }}
-                </v-chip>
-              </v-row>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col cols="6">
-              <v-row>
-                <p class="pa-2">QC</p>
-                <v-chip class="ma-2" color="primary" text-color="white">
-                  <v-avatar left>
-                    <v-icon>mdi-account-circle</v-icon>
-                  </v-avatar>
-                  {{ IssueQC }}
-                </v-chip>
               </v-row>
             </v-col>
           </v-row>
@@ -563,11 +551,13 @@ export default {
       screen_selectDefault: [],
       type_select: [],
       priotity_select: [],
+      position_Developers: [],
+      position_Implementer: [],
     };
   },
   async mounted() {
     await this.getDefault();
-    // await this.getScreenDefault();
+    await this.getUserSystemsOncreated();
   },
   methods: {
     calculateManday() {
@@ -681,19 +671,42 @@ export default {
         console.error(error);
       }
     },
+    async getUserSystemsOncreated() {
+      console.log(this.IssueScreenId, "this.IssueScreenId");
+      await this.$axios
+        .get("/user_screens/getOneScreenID/" + 391579736)
+        .then((data) => {
+          this.position_Developers = data.data.filter(
+            (item) => item.user_position === "Developer"
+          );
+          this.position_Implementer = data.data.filter(
+            (item) => item.user_position === "Implementer"
+          );
+          console.log(
+            this.position_Developers,
+            this.position_Implementer,
+            "data"
+          );
+        });
+    },
     async getUserSystems(selectedScreenID) {
       this.IssueScreenId = selectedScreenID;
       console.log(this.IssueScreenId, "this.IssueScreenId");
       await this.$axios
         .get("/user_screens/getOneScreenID/" + selectedScreenID)
         .then((data) => {
-          //   this.position_Developers = data.data.filter(
-          //     (item) => item.user_position === "Developer"
-          //   );
-          //   this.position_Implementer = data.data.filter(
-          //     (item) => item.user_position === "Implementer"
-          //   );
-          console.log(selectedScreenID, data, "data");
+          this.position_Developers = data.data.filter(
+            (item) => item.user_position === "Developer"
+          );
+          this.position_Implementer = data.data.filter(
+            (item) => item.user_position === "Implementer"
+          );
+          console.log(
+            selectedScreenID,
+            this.position_Developers,
+            this.position_Implementer,
+            "data"
+          );
         });
     },
     selectedType() {},
