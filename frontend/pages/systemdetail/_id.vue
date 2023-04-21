@@ -298,6 +298,36 @@
                         </v-col>
                       </v-row>
                       <v-row>
+                        
+                        <v-col
+                          class="mb-0 pb-0 hidden-sm-and-up"
+                          style="place-self: center"
+                        >
+                          <h4 class="">Screen Type</h4>
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col
+                          class="hidden-xs-only"
+                          sm="4"
+                          md="4"
+                          style="place-self: center"
+                        >
+                          <h4 class="">Screen Type</h4>
+                        </v-col>
+                        <v-col class="" sm="8" md="8">
+                          <v-select
+                            style="text-align-last: center"
+                            v-model="screentype"
+                            :items="SelectScreenType"
+                            hide-details="auto"
+                            dense
+                            outlined
+                            persistent-hint
+                          ></v-select>
+                        </v-col>
+                      </v-row>
+                      <v-row>
                         <v-col class="mb-0 pb-0 hidden-sm-and-up" style="place-self: center">
                           <h4 class="">Status</h4>
                         </v-col>
@@ -861,7 +891,6 @@ export default {
       sumUserIds: [],
       sumUser: [],
       status: "Not Complete",
-      level: ["1"],
       selectlevel: [],
       manday: null,
       mode: "create",
@@ -891,6 +920,8 @@ export default {
       position_Implementers: [],
       position_Developers: [],
       dataDefault:[],
+      SelectScreenType:[],
+      screentype:"",
     };
   },
   created() {
@@ -1233,6 +1264,9 @@ export default {
         this.dataDefault.forEach((item) => {
           if (item.level) {
             this.selectlevel.push(item.level);
+          }
+          if (item.screen_type) {
+            this.SelectScreenType.push(item.screen_type);
           }
         });
       });
