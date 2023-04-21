@@ -268,9 +268,7 @@
                         </v-col>
                       </v-row>
                       <v-row>
-                        <!-- <v-col class="mb-0 pb-0 hidden-sm-and-up" style="place-self: center">
-                          <h4 class="">Status</h4>
-                        </v-col> -->
+                        
                         <v-col
                           class="mb-0 pb-0 hidden-sm-and-up"
                           style="place-self: center"
@@ -298,6 +296,54 @@
                             persistent-hint
                           ></v-select>
                         </v-col>
+                      </v-row>
+                      <v-row>
+                        
+                        <v-col
+                          class="mb-0 pb-0 hidden-sm-and-up"
+                          style="place-self: center"
+                        >
+                          <h4 class="">Screen Type</h4>
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col
+                          class="hidden-xs-only"
+                          sm="4"
+                          md="4"
+                          style="place-self: center"
+                        >
+                          <h4 class="">Screen Type</h4>
+                        </v-col>
+                        <v-col class="" sm="8" md="8">
+                          <v-select
+                            style="text-align-last: center"
+                            v-model="screentype"
+                            :items="SelectScreenType"
+                            hide-details="auto"
+                            dense
+                            outlined
+                            persistent-hint
+                          ></v-select>
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col class="mb-0 pb-0 hidden-sm-and-up" style="place-self: center">
+                          <h4 class="">Status</h4>
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                          <v-col
+                            class="hidden-xs-only"
+                            sm="4"
+                            md="4"
+                            style="place-self: center"
+                          >
+                            <h4 class="">Status</h4>
+                          </v-col>
+                          <v-col class="col-10" sm="6" md="6">
+                            <h4 class=""><v-icon color="error">mdi-circle</v-icon> {{ status }}</h4>
+                          </v-col>    
                       </v-row>
                       <v-row>
                         <v-col
@@ -420,7 +466,14 @@
                           <h4 class="">Manday</h4>
                         </v-col>
                         <v-col class="col-10" sm="6" md="6">
-                          <h4 class="">{{ manday }}</h4>
+                          <v-text-field
+                                  v-model="manday"
+                                  style="text-align-last: left"
+                                  hide-details="auto"
+                                  type="number"
+                            dense
+                            outlined
+                                ></v-text-field>
                         </v-col>
                         <v-col style="place-self: center">
                           <h4 class="">Days</h4>
@@ -838,7 +891,6 @@ export default {
       sumUserIds: [],
       sumUser: [],
       status: "Not Complete",
-      level: ["1"],
       selectlevel: [],
       manday: null,
       mode: "create",
@@ -868,6 +920,8 @@ export default {
       position_Implementers: [],
       position_Developers: [],
       dataDefault:[],
+      SelectScreenType:[],
+      screentype:"",
     };
   },
   created() {
@@ -880,9 +934,13 @@ export default {
     this.getUserSystems();
   },
   updated() {
-    this.calculateManDay();
+    // this.calculateManDay();
+    // console.log(this.user_id);
+    // console.log(this.implementer);
     this.sumUser = this.user_developer.concat(this.user_implementer);
-    // console.log(this.sumUser);
+    console.log(this.sumUser);
+    // this.sumUserIds = this.sumUser.map((user) => user.id);
+
   },
   methods: {
     async getScreens() {
@@ -982,8 +1040,8 @@ export default {
     },
     async CreateAllScreen() {
       try {
-        this.calculateManDay();
-        // console.log("Man-day calculation completed successfully.");
+        // this.calculateManDay();
+        console.log("Man-day calculation completed successfully.");
         await this.createScreen();
         // console.log("Screen creation completed successfully.");
         await this.getNewScreenAndAddUserScreen();
@@ -999,16 +1057,16 @@ export default {
         alert(error);
       }
     },
-    calculateManDay() {
-      const dateStart = new Date(this.newscreen_dateStart);
-      const dateEnd = new Date(this.newscreen_dateEnd);
-      const timeDiff = Math.abs(dateEnd.getTime() - dateStart.getTime());
-      this.manday = Math.ceil(timeDiff / (1000 * 3600 * 24)); // convert to days and round up
-      // console.log(
-      //   `The difference between ${this.newscreen_dateStart} and ${this.newscreen_dateEnd} is ${this.manday} days`
-      // );
-      return;
-    },
+    // calculateManDay() {
+    //   const dateStart = new Date(this.newscreen_dateStart);
+    //   const dateEnd = new Date(this.newscreen_dateEnd);
+    //   const timeDiff = Math.abs(dateEnd.getTime() - dateStart.getTime());
+    //   this.manday = Math.ceil(timeDiff / (1000 * 3600 * 24)); // convert to days and round up
+    //   console.log(
+    //     `The difference between ${this.newscreen_dateStart} and ${this.newscreen_dateEnd} is ${this.manday} days`
+    //   );
+    //   return;
+    // },
     resetday() {
       this.today = new Date();
       this.dateEnd = new Date();
@@ -1204,6 +1262,9 @@ export default {
         this.dataDefault.forEach((item) => {
           if (item.level) {
             this.selectlevel.push(item.level);
+          }
+          if (item.screen_type) {
+            this.SelectScreenType.push(item.screen_type);
           }
         });
       });

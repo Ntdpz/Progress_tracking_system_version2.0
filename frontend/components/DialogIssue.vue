@@ -316,6 +316,7 @@ export default {
   data() {
     return {
       position_Developers: [],
+      position_Implementer: [],
       date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
         .toISOString()
         .substr(0, 10),
