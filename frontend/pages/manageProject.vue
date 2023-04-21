@@ -136,7 +136,7 @@
 
 
     <!-- Admin -->
-    <div v-if="loading === true">
+    <div v-if="loading === true" style="text-align: center;">
         <v-progress-circular
         :size="70"
         :width="7"
@@ -579,25 +579,25 @@ export default {
         this.userlastname = res.data[0].user_lastname;
         this.userposition = res.data[0].user_position;
         this.userrole = res.data[0].user_role;
-        console.log(this.user_position);
+        // console.log(this.user_position);
       });
     },
     async CreateAllSystem() {
       await this.createSystem();
-      console.log("Create system successfully!");
+      // console.log("Create system successfully!");
       await this.getsystemID();
-      console.log("Get SystemID successfully!");
+      // console.log("Get SystemID successfully!");
       await this.getProjectId();
-      console.log("Get ProjectId successfully!");
+      // console.log("Get ProjectId successfully!");
       await this.addUser_system(this.systemId);
-      console.log("Create successfully!");
+      // console.log("Create successfully!");
     },
     async getsystemID() {
       await this.$axios
         .get("/systems/getAll?system_id=" + this.system.system_id)
         .then((data) => {
           this.systemId = data.data[0].id;
-          console.log(this.systemId);
+          // console.log(this.systemId);
         });
     },
     async addUser_system(systemID) {
@@ -607,7 +607,7 @@ export default {
           system_id: systemID,
           project_id: this.projectIds,
         });
-        console.log("POST success for system ID: " + systemID);
+        // console.log("POST success for system ID: " + systemID);
         alert("Post Success!!");
         await this.getProject();
         await this.getSystems();
@@ -631,7 +631,7 @@ export default {
         .get("/projects/getAll?project_id=" + this.editedItem.project_id)
         .then((data) => {
           this.projectIds = data.data[0].id;
-          console.log(this.projectIds);
+          // console.log(this.projectIds);
         });
     },
     async getPosition_Developer() {
@@ -642,7 +642,7 @@ export default {
           this.name_Dev = this.data_position_Developer.map(
             (item) => item.user_firstname
           );
-          console.log(data.data);
+          // console.log(data.data);
         });
     },
     async getPosition_Implementer() {
@@ -653,7 +653,7 @@ export default {
           this.name_Implementer = this.data_position_Implementer.map(
             (item) => item.user_firstname
           );
-          console.log(this.name_Implementer);
+          // console.log(this.name_Implementer);
         });
     },
     // async getSystemsOwner() {
@@ -697,25 +697,25 @@ export default {
     async getSystemsOwner() {
       this.loading = true;
       this.projectOwner = [];
-      console.log(this.projectList[0].systems[0], "List");
-      console.log(this.systemOwner, "List systemss");
+      // console.log(this.projectList[0].systems[0], "projectList");
+      // console.log(this.systemOwner, "List systemOwner");
 
       const projectsWithSystems = [];
       for (let i = 0; i < this.projectList.length; i++) {
-        console.log(this.projectList[i], "projectList");
-        // Check if any system in the current project matches with systemOwner's system_id
+        // console.log(this.projectList[i], "projectList");
+        
         for (let num = 0; num < this.systemOwner.length; num++) {
-          console.log(this.systemOwner[num].system_id, "systems Owner2");
+          // console.log(this.systemOwner[num].system_id, "systems Owner2");
           const hasSystem = this.projectList[i].systems.find(system => {
             return system.id === this.systemOwner[num].system_id;
           });
 
           if (hasSystem) {
-            console.log(hasSystem, "hasSystem");
-            // If the project has a system installed, add it to the projectsWithSystems array
+            // console.log(hasSystem, "hasSystem");
+            
             projectsWithSystems.push(this.projectList[i]);
             this.projectList[i].systems.splice(0, this.projectList[i].systems.length);
-            // Push the systems data to the corresponding projectList's systems array
+            
             const systemData = this.projectListAdmin[i].systems.find(owner => owner.id === hasSystem.id);
             if (systemData) {
               
@@ -726,9 +726,9 @@ export default {
       }
 
       // projectsWithSystems now contains only projects from this.projectList which have systems installed
-      console.log(projectsWithSystems);
-      console.log(this.projectListAdmin, "edki");
-      console.log(this.userrole);
+      // console.log(projectsWithSystems);
+      // console.log(this.projectListAdmin, "edki");
+      // console.log(this.userrole);
       this.loading = false;
     },
 
@@ -779,8 +779,8 @@ export default {
       });
     },
     async saveProject() {
-      console.log(this.mode);
-      console.log(this.editedItem.id);
+      // console.log(this.mode);
+      // console.log(this.editedItem.id);
       if (this.mode == "edit") {
         this.editedItem.project_start = this.editedItem.formattedDateStart;
         this.editedItem.project_end = this.editedItem.formattedDateEnd;
@@ -789,7 +789,7 @@ export default {
             `/projects/updateProject/${this.editedItem.id}`,
             this.editedItem
           );
-          console.log("put success");
+          // console.log("put success");
           // window.location.reload();
           this.initialize();
           this.getProject();
@@ -817,7 +817,7 @@ export default {
         this.editedItem.project_end = this.dateEnd;
         try {
           await this.$axios.post("/projects/createProject", this.editedItem);
-          console.log("post success");
+          // console.log("post success");
           // window.location.reload();
           const promise = new Promise((resolve, reject) => {
             resolve();
@@ -842,15 +842,15 @@ export default {
     },
     async DeleteAllProject() {
       await this.deleteUser_screens();
-      console.log("success User_screen");
+      // console.log("success User_screen");
       await this.deleteUserSystem();
-      console.log("success User_system");
+      // console.log("success User_system");
       await this.deleteScreenByIdProject();
-      console.log("success screen");
+      // console.log("success screen");
       await this.deleteSystem();
-      console.log("success system");
+      // console.log("success system");
       await this.deleteProject();
-      console.log("success project");
+      // console.log("success project");
       alert("success delete all");
       // window.location.reload();
       await this.initialize();
@@ -888,11 +888,11 @@ export default {
         const response = await this.$axios.delete(
           "/user_screens/deleteProjectID/" + this.editedItem.id
         );
-        console.log("delete success");
+        // console.log("delete success");
         if (response.status === 200 || response.status === 404) {
           // alert("delete user_screen success");
           // window.location.reload();
-          console.log("delete user_screen success");
+          // console.log("delete user_screen success");
         }
       } catch (err) {
         if (err.response && err.response.status === 404) {
@@ -935,7 +935,7 @@ export default {
         })
         .then((response) => {
           console.log(response);
-          console.log("Update success");
+          // console.log("Update success");
           // alert("Update success");
 
           // window.location.reload();
@@ -954,7 +954,7 @@ export default {
         })
         .then((response) => {
           console.log(response);
-          console.log("delete success");
+          // console.log("delete success");
           // alert("delete success");
           // window.location.reload();
         })
@@ -974,10 +974,10 @@ export default {
         this.editedIndex = this.projectList.indexOf(projectList);
         this.editedItem = Object.assign({}, projectList);
         this.dialog = true;
-        console.log(mode, projectList);
+        // console.log(mode, projectList);
       } else if (mode === "create") {
         this.dialog = true;
-        console.log(mode);
+        // console.log(mode);
         if (this.$refs.form) {
           this.$refs.form.reset();
         }
@@ -988,7 +988,7 @@ export default {
         .get("/user_systems/getOneUserID/" + this.userId)
         .then((data) => {
           this.systemOwner = data.data;
-          console.log(this.systemOwner, "systemOwner");
+          // console.log(this.systemOwner, "systemOwner");
         })
         .catch((err) => {
           if (err.response && err.response.status === 404) {
@@ -1025,17 +1025,17 @@ export default {
       return project.systems ? project.systems.length : 0;
     },
     async dialogSystem(projectList) {
-      console.log(projectList.id);
+      // console.log(projectList.id);
       this.editedIndex = this.projectList.indexOf(projectList);
       this.editedItem = Object.assign({}, projectList);
       this.system.project_id = projectList.id;
-      console.log(this.system.project_id + "id is post");
-      console.log(this.projectList.project_id);
+      // console.log(this.system.project_id + "id is post");
+      // console.log(this.projectList.project_id);
     },
     async createSystem() {
       try {
         await this.$axios.post("/systems/createSystem", this.system);
-        console.log("post success");
+        // console.log("post success");
         // window.location.reload();
         const promise = new Promise((resolve, reject) => {
           resolve();
