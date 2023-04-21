@@ -144,7 +144,7 @@
         indeterminate
       ></v-progress-circular>
     </div>
-    <div v-else-if="userrole === 'Admin'">
+    <div v-else-if="userrole === 'Admin' || userposition === 'Implementer'">
       <v-expansion-panels  v-for="(project, index) in projectListAdmin" :key="index" class="mb-5" :items="projectList">
         <v-expansion-panel>
           <v-expansion-panel-header disable-icon-rotate>
@@ -300,7 +300,7 @@
         </v-expansion-panel>
       </v-expansion-panels>
     </div>
-    <div v-else-if="userrole === 'User'">
+    <div v-else-if="userrole !== 'Admin' && userposition !== 'Implementer' ">
       <v-expansion-panels  v-for="(project, index) in projectList" :key="index" class="mb-5" :items="projectList">
           <v-expansion-panel>
             <v-expansion-panel-header disable-icon-rotate>
