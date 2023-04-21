@@ -528,7 +528,7 @@ export default {
   },
   updated() {
     // this.getScreenID();
-    this.calculateManDay();
+    // this.calculateManDay();
     this.user_id = this.developer.concat(this.implementer);
     console.log(this.user_id);
   },
@@ -611,23 +611,23 @@ export default {
           this.user_implementer = this.data_position_Implementer;
         });
     },
-    calculateManDay() {
-      const dateStart = new Date(this.screensID.screen_start);
-      const dateEnd = new Date(this.screensID.screen_end);
-      const timeDiff = Math.abs(dateEnd.getTime() - dateStart.getTime());
-      this.screensID.screen_manday = Math.ceil(timeDiff / (1000 * 3600 * 24)); // convert to days and round up
-      console.log(
-        `The difference between ${this.screensID.screen_start} and ${this.screensID.screen_end} is ${this.screensID.screen_manday} days`
-      );
-      return;
-    },
+    // calculateManDay() {
+    //   const dateStart = new Date(this.screensID.screen_start);
+    //   const dateEnd = new Date(this.screensID.screen_end);
+    //   const timeDiff = Math.abs(dateEnd.getTime() - dateStart.getTime());
+    //   this.screensID.screen_manday = Math.ceil(timeDiff / (1000 * 3600 * 24)); // convert to days and round up
+    //   console.log(
+    //     `The difference between ${this.screensID.screen_start} and ${this.screensID.screen_end} is ${this.screensID.screen_manday} days`
+    //   );
+    //   return;
+    // },
     resetday() {
       this.today = new Date();
       this.dateEnd = new Date();
       return;
     },
     async update() {
-      this.calculateManDay();
+      // this.calculateManDay();
       await this.deleteUser_screens();
       await this.addUser_Screen();
       await this.updateScreen();
