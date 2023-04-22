@@ -4,12 +4,9 @@
       <h1>Loading.....</h1>
     </v-card>
     <v-card v-else width="99%" class="pa-0 ma-0">
-      <v-card-title class="text-h5">
+      <v-card-title class="text-h5 pt-8">
         <!-- <h5>{{ ProjectName }} > {{ SystemName }} > {{ IssueName }}</h5> -->
-        <h5>
-          รายละเอียด Issue | {{ ProjectName }} > {{ SystemName }}
-          {{ IssueAssign }} {{ IssueScreenId }}
-        </h5>
+        <h5>Issue Detail | {{ ProjectName }} > {{ SystemName }}</h5>
       </v-card-title>
       <v-row class="pa-5">
         <v-col>
@@ -187,7 +184,7 @@
             </v-col>
           </v-row>
           <!-- Type New Req option -->
-          <v-row v-if="IssueType == 'New Rep'">
+          <v-row v-if="IssueType == 'New Req'">
             <v-col cols="6">
               <v-row>
                 <p class="pa-2">Type New Req</p>
@@ -223,259 +220,268 @@
 
         <!-- col ใหญ่ฝั่งขวา -->
         <v-col style="width: 100%">
-          <v-row class="ml-2">
-            <v-col>
-              <v-row class="text-h6">
-                <h6>Developer Section 1</h6>
-              </v-row>
-              <v-row class="mt-5">
-                <v-col cols="6">
-                  <v-row>
-                    <!-- Date of accepting-->
-                    <p class="pa-2">
-                      Date of accepting /
-                      {{
-                        dateOfAccepting != null
-                          ? dateOfAccepting
-                          : IssueAccepting
-                      }}
-                    </p>
-                    <v-menu
-                      v-model="acceptMenu"
-                      :close-on-content-click="false"
-                      :nudge-right="40"
-                      transition="scale-transition"
-                      min-width="auto"
-                    >
-                      <template v-slot:activator="{ on, attrs }">
-                        <v-text-field
-                          v-model="dateOfAccepting"
-                          label="Date of Accepting"
-                          prepend-icon="mdi-calendar"
-                          readonly
-                          v-bind="attrs"
-                          v-on="on"
-                        ></v-text-field>
-                      </template>
-                      <v-date-picker
-                        v-model="dateOfAccepting"
-                        @input="acceptMenu = false"
-                      ></v-date-picker>
-                    </v-menu>
-                  </v-row>
-                </v-col>
-              </v-row>
-              <v-row> </v-row>
-              <v-row>
-                <v-col cols="6">
-                  <v-row>
-                    <v-col>
-                      <p class="pa-2">
-                        Start date /{{
-                          startDate != null ? startDate : IssueStart
-                        }}
-                      </p>
-                    </v-col>
-                    <v-col>
-                      <p class="pa-2">-</p>
-                    </v-col>
-                    <v-col>
-                      <p class="pa-2">
-                        Expected completion Date /
-                        {{
-                          expectedCompletionDate != null
-                            ? expectedCompletionDate
-                            : IssueExpected
-                        }}
-                      </p>
+          <v-expansion-panels class="mb-2">
+            <v-expansion-panel>
+              <v-expansion-panel-header>
+                <h3>Developer Section</h3>
+              </v-expansion-panel-header>
+              <v-expansion-panel-content>
+                <v-col>
+                  <v-row class="mt-5">
+                    <v-col cols="6">
+                      <v-row>
+                        <!-- Date of accepting-->
+                        <p class="pa-2">
+                          Date of accepting /
+                          {{
+                            dateOfAccepting != null
+                              ? dateOfAccepting
+                              : IssueAccepting
+                          }}
+                        </p>
+                        <v-menu
+                          v-model="acceptMenu"
+                          :close-on-content-click="false"
+                          :nudge-right="40"
+                          transition="scale-transition"
+                          min-width="auto"
+                        >
+                          <template v-slot:activator="{ on, attrs }">
+                            <v-text-field
+                              v-model="dateOfAccepting"
+                              label="Date of Accepting"
+                              prepend-icon="mdi-calendar"
+                              readonly
+                              v-bind="attrs"
+                              v-on="on"
+                            ></v-text-field>
+                          </template>
+                          <v-date-picker
+                            v-model="dateOfAccepting"
+                            @input="acceptMenu = false"
+                          ></v-date-picker>
+                        </v-menu>
+                      </v-row>
                     </v-col>
                   </v-row>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col cols="6" class="mb-5">
+                  <v-row> </v-row>
                   <v-row>
-                    <!-- Start date -->
-                    <v-menu
-                      v-model="startMenu"
-                      :close-on-content-click="false"
-                      :nudge-right="40"
-                      transition="scale-transition"
-                      min-width="auto"
-                      @change="calculateManday()"
-                    >
-                      <template v-slot:activator="{ on, attrs }">
-                        <v-text-field
-                          v-model="startDate"
-                          label="Start Date"
-                          prepend-icon="mdi-calendar"
-                          readonly
-                          v-bind="attrs"
-                          v-on="on"
-                        ></v-text-field>
-                      </template>
-                      <v-date-picker
-                        v-model="startDate"
-                        @input="startMenu = false"
-                        @change="calculateManday()"
-                      ></v-date-picker>
-                    </v-menu>
-                    <!-- Expected completion Date -->
-                    <v-menu
-                      v-model="expectedMenu"
-                      :close-on-content-click="false"
-                      :nudge-right="40"
-                      transition="scale-transition"
-                      min-width="auto"
-                      @change="calculateManday()"
-                    >
-                      <template v-slot:activator="{ on, attrs }">
-                        <v-text-field
-                          v-model="expectedCompletionDate"
-                          label="Expected Completion Date"
-                          prepend-icon="mdi-calendar"
-                          readonly
-                          v-bind="attrs"
-                          v-on="on"
-                        ></v-text-field>
-                      </template>
-                      <v-date-picker
-                        v-model="expectedCompletionDate"
-                        @input="expectedMenu = false"
-                        @change="calculateManday()"
-                      ></v-date-picker>
-                    </v-menu>
+                    <v-col cols="6">
+                      <v-row>
+                        <v-col>
+                          <p class="pa-2">
+                            Start date /{{
+                              startDate != null ? startDate : IssueStart
+                            }}
+                          </p>
+                        </v-col>
+                        <v-col>
+                          <p class="pa-2">-</p>
+                        </v-col>
+                        <v-col>
+                          <p class="pa-2">
+                            Expected completion Date /
+                            {{
+                              expectedCompletionDate != null
+                                ? expectedCompletionDate
+                                : IssueExpected
+                            }}
+                          </p>
+                        </v-col>
+                      </v-row>
+                    </v-col>
                   </v-row>
-                </v-col>
-              </v-row>
-              <v-col cols="6">
-                <v-row v-if="mandayProps">
-                  <p class="pa-2">Manday</p>
-                  <v-text-field
-                    label="Manday"
-                    placeholder="Manday"
-                    outlined
-                    dense
-                    v-model="IssueManday"
-                  ></v-text-field>
-                </v-row>
-                <v-row v-if="mandaySeleted">
-                  <p class="pa-2">Manday (Edit)</p>
-                  <v-text-field
-                    label="Manday"
-                    placeholder="Manday"
-                    outlined
-                    dense
-                    v-model="manday"
-                  ></v-text-field>
-                </v-row>
-              </v-col>
-              <v-divider></v-divider>
-              <v-row class="text-h6 mt-2 mb-2">
-                <h6>Developer Section 2</h6>
-              </v-row>
-              <v-row>
-                <v-col cols="6">
                   <v-row>
-                    <p class="pa-2">Status</p>
-                    <v-text-field
-                      label="Status"
-                      placeholder="Status"
-                      outlined
-                      dense
-                      v-model="IssueStatus"
-                    ></v-text-field>
+                    <v-col cols="6" class="mb-5">
+                      <v-row>
+                        <!-- Start date -->
+                        <v-menu
+                          v-model="startMenu"
+                          :close-on-content-click="false"
+                          :nudge-right="40"
+                          transition="scale-transition"
+                          min-width="auto"
+                          @change="calculateManday()"
+                        >
+                          <template v-slot:activator="{ on, attrs }">
+                            <v-text-field
+                              v-model="startDate"
+                              label="Start Date"
+                              prepend-icon="mdi-calendar"
+                              readonly
+                              v-bind="attrs"
+                              v-on="on"
+                            ></v-text-field>
+                          </template>
+                          <v-date-picker
+                            v-model="startDate"
+                            @input="startMenu = false"
+                            @change="calculateManday()"
+                          ></v-date-picker>
+                        </v-menu>
+                        <!-- Expected completion Date -->
+                        <v-menu
+                          v-model="expectedMenu"
+                          :close-on-content-click="false"
+                          :nudge-right="40"
+                          transition="scale-transition"
+                          min-width="auto"
+                          @change="calculateManday()"
+                        >
+                          <template v-slot:activator="{ on, attrs }">
+                            <v-text-field
+                              v-model="expectedCompletionDate"
+                              label="Expected Completion Date"
+                              prepend-icon="mdi-calendar"
+                              readonly
+                              v-bind="attrs"
+                              v-on="on"
+                            ></v-text-field>
+                          </template>
+                          <v-date-picker
+                            v-model="expectedCompletionDate"
+                            @input="expectedMenu = false"
+                            @change="calculateManday()"
+                          ></v-date-picker>
+                        </v-menu>
+                      </v-row>
+                    </v-col>
                   </v-row>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col cols="6">
+                  <v-col cols="6">
+                    <v-row v-if="mandayProps">
+                      <p class="pa-2">Manday</p>
+                      <v-text-field
+                        label="Manday"
+                        placeholder="Manday"
+                        outlined
+                        dense
+                        v-model="IssueManday"
+                      ></v-text-field>
+                    </v-row>
+                    <v-row v-if="mandaySeleted">
+                      <p class="pa-2">Manday (Edit)</p>
+                      <v-text-field
+                        label="Manday"
+                        placeholder="Manday"
+                        outlined
+                        dense
+                        v-model="manday"
+                      ></v-text-field>
+                    </v-row>
+                  </v-col>
+                  <v-divider></v-divider>
+                  <v-row class="text-h6 mt-2 mb-2">
+                    <h6>Developer Section 2</h6>
+                  </v-row>
                   <v-row>
-                    <!-- Completion date-->
-                    <p class="pa-2">Completion date</p>
-                    <v-menu
-                      v-model="completionMenu"
-                      :close-on-content-click="false"
-                      :nudge-right="40"
-                      transition="scale-transition"
-                      min-width="auto"
-                    >
-                      <template v-slot:activator="{ on, attrs }">
+                    <v-col cols="6">
+                      <v-row>
+                        <p class="pa-2">Status</p>
                         <v-text-field
-                          v-model="completionDate"
-                          label="Completion date"
-                          prepend-icon="mdi-calendar"
-                          readonly
-                          v-bind="attrs"
-                          v-on="on"
+                          label="Status"
+                          placeholder="Status"
+                          outlined
+                          dense
+                          v-model="IssueStatus"
                         ></v-text-field>
-                      </template>
-                      <v-date-picker
-                        v-model="completionDate"
-                        @input="completionMenu = false"
-                      ></v-date-picker>
-                    </v-menu>
+                      </v-row>
+                    </v-col>
                   </v-row>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col cols="6">
-                  <p class="">Cause / Remedy</p>
-                  <v-textarea
-                    solo
-                    name="input-7-4"
-                    label="Note"
-                    v-mode="IssueDesDev"
-                  ></v-textarea>
-                </v-col>
-              </v-row>
-              <!-- <v-row class="justify-center mr-16 mt-5">
+                  <v-row>
+                    <v-col cols="6">
+                      <v-row>
+                        <!-- Completion date-->
+                        <p class="pa-2">Completion date</p>
+                        <v-menu
+                          v-model="completionMenu"
+                          :close-on-content-click="false"
+                          :nudge-right="40"
+                          transition="scale-transition"
+                          min-width="auto"
+                        >
+                          <template v-slot:activator="{ on, attrs }">
+                            <v-text-field
+                              v-model="completionDate"
+                              label="Completion date"
+                              prepend-icon="mdi-calendar"
+                              readonly
+                              v-bind="attrs"
+                              v-on="on"
+                            ></v-text-field>
+                          </template>
+                          <v-date-picker
+                            v-model="completionDate"
+                            @input="completionMenu = false"
+                          ></v-date-picker>
+                        </v-menu>
+                      </v-row>
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col cols="6">
+                      <p class="">Cause / Remedy</p>
+                      <v-textarea
+                        solo
+                        name="input-7-4"
+                        label="Note"
+                        v-mode="IssueDesDev"
+                      ></v-textarea>
+                    </v-col>
+                  </v-row>
+                  <!-- <v-row class="justify-center mr-16 mt-5">
                 <v-btn color="primary" @click="handleClose()">Update</v-btn>
               </v-row> -->
-            </v-col>
-          </v-row>
+                </v-col>
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+          </v-expansion-panels>
+          <!-- End developer section 1 -->
+          <v-expansion-panels>
+            <v-expansion-panel>
+              <v-expansion-panel-header>
+                <h3>Implements Section</h3>
+              </v-expansion-panel-header>
+              <v-expansion-panel-content>
+                <v-col>
+                  <v-row class="mt-5">
+                    <v-col cols="6">
+                      <v-row>
+                        <p class="pa-2">Status</p>
+                        <v-text-field
+                          label="Status"
+                          placeholder="Status"
+                          outlined
+                          dense
+                          v-model="IssueStatus"
+                        ></v-text-field>
+                      </v-row>
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col cols="6">
+                      <p class="">Cause / Remedy</p>
+                      <v-textarea
+                        solo
+                        name="input-7-4"
+                        label="Note"
+                        v-model="IssueDesImplementer"
+                      ></v-textarea>
+                    </v-col>
+                  </v-row>
+                </v-col>
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+          </v-expansion-panels>
         </v-col>
       </v-row>
-      <v-divider width="50%"></v-divider>
-      <v-row class="pa-5">
-        <v-col>
-          <v-row class="text-h6">
-            <h6>Implements Section</h6>
-          </v-row>
-          <v-row class="mt-5">
-            <v-col cols="6">
-              <v-row>
-                <p class="pa-2">Status</p>
-                <v-text-field
-                  label="Status"
-                  placeholder="Status"
-                  outlined
-                  dense
-                  v-model="IssueStatus"
-                ></v-text-field>
-              </v-row>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col cols="6">
-              <p class="">Cause / Remedy</p>
-              <v-textarea
-                solo
-                name="input-7-4"
-                label="Note"
-                v-model="IssueDesImplementer"
-              ></v-textarea>
-            </v-col>
-          </v-row>
-        </v-col>
-      </v-row>
-      <v-row justify-center>
+      <!-- <v-divider width="50%"></v-divider> -->
+      <v-row justify-center class="pa-5">
         <v-col class="" style="margin-left: 20%">
-          <v-btn color="primary" @click="saveIssue()">Update</v-btn>
+          <v-btn color="primary" @click="saveIssue()"><h4>Update</h4></v-btn>
         </v-col>
         <v-spacer></v-spacer>
         <v-col>
-          <v-btn color="primary" @click="handleClose()">Cancel</v-btn>
+          <v-btn color="error" @click="handleClose()"><h4>Cancel</h4></v-btn>
         </v-col>
       </v-row>
     </v-card>
