@@ -248,12 +248,6 @@
                 >
                   <h4 class="">Status</h4>
                 </v-col>
-                <v-col
-                  class="mb-0 pb-0 hidden-sm-and-up"
-                  style="place-self: center"
-                >
-                  <h4 class="">Level</h4>
-                </v-col>
               </v-row>
               <v-row>
                 <v-col
@@ -274,6 +268,16 @@
                     </span>
                   </template>
                 </v-col>
+              </v-row>
+              <v-row>
+                  <v-col
+                    class="mb-0 pb-0 hidden-sm-and-up"
+                    style="place-self: center"
+                  >
+                    <h4 class="">Level</h4>
+                  </v-col>
+                </v-row>
+              <v-row>
                 <v-col
                   class="hidden-xs-only"
                   sm="4"
@@ -294,6 +298,37 @@
                   ></v-select>
                 </v-col>
               </v-row>
+              <!--  -->
+              <v-row>
+                  <v-col
+                    class="mb-0 pb-0 hidden-sm-and-up"
+                    style="place-self: center"
+                  >
+                    <h4 class="">Screen Type</h4>
+                  </v-col>
+                </v-row>
+              <v-row>
+                <v-col
+                  class="hidden-xs-only"
+                  sm="4"
+                  md="4"
+                  style="place-self: center"
+                >
+                  <h4 class="">Screen Type</h4>
+                </v-col>
+                <v-col class="" sm="8" md="8">
+                  <v-select
+                    style="text-align-last: left"
+                    v-model="screensID.screen_type"
+                    :items="SelectScreenType"
+                    hide-details="auto"
+                    dense
+                    outlined
+                    :disabled="disabled"
+                  ></v-select>
+                </v-col>
+              </v-row>
+              <!--  -->
               <v-row>
                 <v-col
                   class="mb-0 pb-0 hidden-sm-and-up"
@@ -517,6 +552,7 @@ export default {
       dialog_canEdit: false,
       menuDateStart: false,
       menuDateEnd: false,
+      SelectScreenType: [],
       selectlevel: [],
       userScreens: [],
       developer: [],
@@ -657,6 +693,7 @@ export default {
       formData.append("screen_implementer", this.screensID.screen_implementer);
       formData.append("screen_status", this.screensID.screen_status);
       formData.append("screen_level", this.screensID.screen_level);
+      formData.append("screen_type", this.screensID.screen_type);
       formData.append("screen_start", this.screensID.screen_start);
       formData.append("screen_end", this.screensID.screen_end);
       formData.append("screen_manday", this.screensID.screen_manday);

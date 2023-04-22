@@ -48,13 +48,14 @@ router.post("/createScreen", upload.single("image"), (req, res) => {
     screen_start,
     screen_end,
     screen_manday,
+    screen_type,
   } = req.body;
 
   const screen_pic = req.file ? req.file.filename : defaultImage;
   const id = generateId();
   try {
     connection.query(
-      "INSERT INTO screens(id,system_id,project_id,screen_id,screen_name,screen_developer,screen_implementer,screen_status,screen_level,screen_start,screen_end,screen_manday,screen_pic) VALUES(?,?, ?, ? ,? ,?,?,?,?,?,?,?,?)",
+      "INSERT INTO screens(id,system_id,project_id,screen_id,screen_name,screen_developer,screen_implementer,screen_status,screen_level,screen_start,screen_end,screen_manday,screen_type,screen_pic) VALUES(?,?, ?, ? ,? ,?,?,?,?,?,?,?,?,?)",
       [
         id,
         system_id,
@@ -68,6 +69,7 @@ router.post("/createScreen", upload.single("image"), (req, res) => {
         screen_start,
         screen_end,
         screen_manday,
+        screen_type,
         screen_pic,
       ],
       (err, results, fields) => {
@@ -214,6 +216,7 @@ router.put("/updateScreen/:id/image", upload.single("image"), (req, res) => {
     screen_start,
     screen_end,
     screen_manday,
+    screen_type,
   } = req.body;
   const screen_pic = req.file ? req.file.filename : null;
   try {
@@ -260,6 +263,7 @@ router.put("/updateScreen/:id/image", upload.single("image"), (req, res) => {
           screen_start = ?,
           screen_end = ?,
           screen_manday = ?,
+          screen_type = ?,
           screen_pic = ?
           WHERE id = ?`;
           values = [
@@ -274,6 +278,7 @@ router.put("/updateScreen/:id/image", upload.single("image"), (req, res) => {
             screen_start,
             screen_end,
             screen_manday,
+            screen_type,
             screen_pic,
             id,
           ];
@@ -288,7 +293,7 @@ router.put("/updateScreen/:id/image", upload.single("image"), (req, res) => {
       );
     } else {
       connection.query(
-        "UPDATE screens SET system_id = ?, project_id = ?, screen_id = ?, screen_name = ?, screen_developer = ?, screen_implementer = ?, screen_status = ?, screen_level = ?, screen_start = ?, screen_end = ?, screen_manday = ? WHERE id = ?",
+        "UPDATE screens SET system_id = ?, project_id = ?, screen_id = ?, screen_name = ?, screen_developer = ?, screen_implementer = ?, screen_status = ?, screen_level = ?, screen_start = ?, screen_end = ?, screen_manday = ?, screen_type =? WHERE id = ?",
         [
           system_id,
           project_id,
@@ -301,6 +306,7 @@ router.put("/updateScreen/:id/image", upload.single("image"), (req, res) => {
           screen_start,
           screen_end,
           screen_manday,
+          screen_type,
           id,
         ],
         (err, results, fields) => {

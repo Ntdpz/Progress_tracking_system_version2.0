@@ -1279,6 +1279,7 @@ export default {
       this.status = "Not Complete";
       this.level = null;
       this.manday = null;
+      this.screentype = "";
     },
     async createScreen() {
       try {
@@ -1298,6 +1299,7 @@ export default {
         formData.append("screen_start", datestart);
         formData.append("screen_end", dateEnd);
         formData.append("screen_manday", this.manday);
+        formData.append("screen_type", this.screentype);
 
         if (
           this.screenID == "" ||
@@ -1305,7 +1307,8 @@ export default {
           this.user_id == [] ||
           this.status == "" ||
           this.level == null ||
-          this.manday == null
+          this.manday == null ||
+          this.screentype == null
         ) {
           alert("Please enter all information.");
         } else {
