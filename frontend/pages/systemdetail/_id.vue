@@ -922,7 +922,7 @@ export default {
       dataDefault:[],
       SelectScreenType:[],
       screentype: "",
-         userid: "",
+      userid: "",
       userfirstname: "",
       userlastname: "",
       userposition: "",
@@ -930,6 +930,7 @@ export default {
     };
   },
   created() {
+    this.getUser();
     this.getAllDefault();
     this.getSystemID();
     this.getProject();
@@ -938,7 +939,7 @@ export default {
     this.getPosition_Implementer();
     this.getUserSystems();
   },
-     computed: {
+    computed: {
     userId() {
       if (typeof window !== "undefined") {
         return window.localStorage.getItem("userId");
@@ -956,7 +957,7 @@ export default {
 
   },
   methods: {
-        async getUser() {
+      async getUser() {
       await this.$axios.get("/users/getOne/" + this.userId).then((res) => {
         this.userid = res.data[0].user_id;
         this.userfirstname = res.data[0].user_firstname;
