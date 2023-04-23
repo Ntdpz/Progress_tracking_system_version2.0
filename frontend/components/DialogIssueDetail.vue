@@ -6,7 +6,10 @@
     <v-card v-else width="99%" class="pa-0 ma-0">
       <v-card-title class="text-h5 pt-8">
         <!-- <h5>{{ ProjectName }} > {{ SystemName }} > {{ IssueName }}</h5> -->
-        <h5>Issue Detail | {{ ProjectName }} > {{ SystemName }}</h5>
+        <h5>
+          Issue Detail | {{ ProjectName }} > {{ SystemName }}
+          {{ IssuePriority }} {{ priotity_select }}
+        </h5>
       </v-card-title>
       <v-row class="pa-5">
         <v-col>
@@ -668,10 +671,10 @@ export default {
           if (item.issue_type) {
             this.type_select.push(item.issue_type);
           }
-          if (item.issue_priotity) {
-            this.priotity_select.push(item.issue_priotity);
+          if (item.issue_priority) {
+            this.priotity_select.push(item.issue_priority);
           }
-          //   console.log(this.type_select, "this.type_select");
+          console.log(this.priotity_select, "this.priotity_select");
         });
       } catch (error) {
         console.error(error);
