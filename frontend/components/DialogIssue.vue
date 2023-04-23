@@ -161,7 +161,13 @@
                 </v-menu>
               </v-col>
               <v-col cols="12" sm="4" md="6">
-                <p v-show="selectedScreen == null" style="color: red;" class="ma-0">โปรดเลือกหน้าจอก่อน</p>
+                <p
+                  v-show="selectedScreen == null"
+                  style="color: red"
+                  class="ma-0"
+                >
+                  โปรดเลือกหน้าจอก่อน
+                </p>
                 <v-select
                   :items="position_Developers"
                   label="Dev"
@@ -173,7 +179,13 @@
                 ></v-select>
               </v-col>
               <v-col cols="12" sm="4" md="6">
-                <p v-show="selectedScreen == null" style="color: red;" class="ma-0">โปรดเลือกหน้าจอก่อน</p>
+                <p
+                  v-show="selectedScreen == null"
+                  style="color: red"
+                  class="ma-0"
+                >
+                  โปรดเลือกหน้าจอก่อน
+                </p>
                 <v-select
                   :items="position_Implementer"
                   label="QC"
@@ -530,8 +542,8 @@ export default {
           if (item.issue_type) {
             this.type_select.push(item.issue_type);
           }
-          if (item.issue_priotity) {
-            this.priotity_select.push(item.issue_priotity);
+          if (item.issue_priority) {
+            this.priotity_select.push(item.issue_priority);
           }
         });
       } catch (error) {
