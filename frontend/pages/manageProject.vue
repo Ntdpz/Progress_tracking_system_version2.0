@@ -42,7 +42,7 @@
       <!-- <v-col cols="1"></v-col> -->
     </v-row>
 
-    <v-btn class="new-btn ma-2 text-left" outlined color="indigo" dark block @click="openDialog('create')">
+    <v-btn v-if="userposition != 'Developer'" class="new-btn ma-2 text-left" outlined color="indigo" dark block @click="openDialog('create')">
       <span class="mdi mdi-plus-circle-outline" style="font-size: 20px; color: black"></span>
       <h4 style="color: black">CREATE PROJECT</h4>
     </v-btn>

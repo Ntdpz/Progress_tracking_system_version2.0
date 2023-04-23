@@ -61,7 +61,7 @@
                 size="35px"
                 left
               >
-                <v-icon size="35px">mdi-arrow-left-circle</v-icon>
+              <v-icon size="35px">mdi-arrow-left-circle</v-icon>
               </v-btn>
               {{ dataSystem.system_nameTH }}({{ dataSystem.system_shortname }})
               ของ Project: {{ projectName.project_name }} ●
@@ -70,13 +70,13 @@
               </b>
               <!-- <v-avatar class="ml-4" color="primary" size="20"> </v-avatar>
               <v-avatar class="ml-4" color="error" size="20"> </v-avatar> -->
-              <v-btn class="ml-3" icon color="primary" size="35px">
+              <v-btn v-if="userposition != 'Developer'" class="ml-3" icon color="primary" size="35px">
                 <v-icon size="35px" @click="editSystem = true"
                   >mdi mdi-square-edit-outline</v-icon
                 >
               </v-btn>
               <v-spacer></v-spacer>
-              <v-btn
+              <v-btn v-if="userposition != 'Developer'"
                 @click="
                   (dialog_newscreen = true),
                     resetday(),
@@ -87,7 +87,7 @@
                 color="primary"
                 style="color: white; border-radius: 10px; font-weight: bold"
               >
-                <v-icon left> mdi-plus-circle-outline </v-icon>New Screen
+              <v-icon left> mdi-plus-circle-outline </v-icon>New Screen
               </v-btn>
             </v-card-title>
             <!-- button + dialog new screen -->
@@ -921,7 +921,12 @@ export default {
       position_Developers: [],
       dataDefault:[],
       SelectScreenType:[],
-      screentype:"",
+      screentype: "",
+         userid: "",
+      userfirstname: "",
+      userlastname: "",
+      userposition: "",
+      userrole: "",
     };
   },
   created() {
@@ -933,6 +938,14 @@ export default {
     this.getPosition_Implementer();
     this.getUserSystems();
   },
+     computed: {
+    userId() {
+      if (typeof window !== "undefined") {
+        return window.localStorage.getItem("userId");
+      }
+      return null; // or some default value if localStorage is not available
+    },
+  },
   updated() {
     // this.calculateManDay();
     // console.log(this.user_id);
@@ -943,6 +956,16 @@ export default {
 
   },
   methods: {
+        async getUser() {
+      await this.$axios.get("/users/getOne/" + this.userId).then((res) => {
+        this.userid = res.data[0].user_id;
+        this.userfirstname = res.data[0].user_firstname;
+        this.userlastname = res.data[0].user_lastname;
+        this.userposition = res.data[0].user_position;
+        this.userrole = res.data[0].user_role;
+        // console.log(this.user_position);
+      });
+    },
     async getScreens() {
       await this.$axios
         .get("/screens/getAll?system_id=" + this.id)
