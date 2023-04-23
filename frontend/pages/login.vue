@@ -22,8 +22,7 @@
                     >
                   </v-col>
                 </v-row>
-                <v-form @submit.prevent="handleLogin">
-                  <!-- :rules="rules" -->
+                <v-form @submit.prevent="handleLogin" ref="form">
                   <v-text-field
                     class="mb-2"
                     placeholder="Enter your employee ID."
@@ -31,6 +30,7 @@
                     type="text"
                     outlined
                     hide-details="auto"
+                    :rules="rules"
                     style="border-radius: 15px"
                   >
                   </v-text-field>
@@ -53,14 +53,16 @@
                     type="password"
                     outlined
                     hide-details="auto"
+                    :rules="rules"
                     style="border-radius: 15px"
                   >
                   </v-text-field>
-                  <v-checkbox
+                  <br />
+                  <!-- <v-checkbox
                     v-model="checkbox"
                     class="mt-0"
                     :label="`Remember Me`"
-                  ></v-checkbox>
+                  ></v-checkbox> -->
                   <v-btn
                     class="mb-8"
                     style="color: white; font-weight: bold; height: 43px"
@@ -131,15 +133,13 @@ export default {
       dialog: false,
       countlogin: 0,
 
-      rules: [
-        (value) => !!value || "Required.",
-        (value) => (value && value.length >= 6) || "Min 6 characters",
-      ],
+      rules: [(value) => !!value || "Required field."],
     };
   },
   methods: {
     async handleLogin() {
       try {
+        await this.$refs.form.validate();
         const response = await this.$axios.post("/auth/api/login", {
           username: this.user_id,
           password: this.user_password,
@@ -155,8 +155,8 @@ export default {
           this.error = response.data.message;
         }
       } catch (error) {
-        console.error(error);
-        this.error = "An error occurred";
+        // console.error(error);
+        // this.error = "An error occurred";
       }
     },
   },
