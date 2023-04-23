@@ -5,7 +5,7 @@
         <v-card-title>
           <v-col cols="12">
             <v-row>
-              <h5 v-show="mode === 'create'">Create Issue |</h5>
+              <h5 v-show="mode === 'create'">Create Issue|</h5>
               <h5 v-show="mode === 'edit'">Edit Issue |</h5>
               <p style="font-size: 16px; margin-left: 2%">
                 {{ projectName }} ({{ projectId }})> {{ systemName }} ({{
@@ -22,6 +22,7 @@
                 <v-text-field
                   label="Issue ID"
                   placeholder="Issue ID"
+                  disabled
                   outlined
                   dense
                   v-model="form.issue_id"
@@ -43,9 +44,10 @@
                   dense
                   outlined
                   v-model="form.issue_type"
+                  @change="selectedType()"
                 ></v-select>
               </v-col>
-              <v-col cols="12" sm="6" md="4">
+              <v-col cols="12" sm="6" md="8">
                 <v-select
                   @change="getUserSystems(selectedScreen.id)"
                   :items="screen_selectDefault"
@@ -59,9 +61,10 @@
               </v-col>
               <v-col cols="12" sm="6" md="4">
                 <v-text-field
-                  label="Informer"
-                  placeholder="Informer"
+                  label="ผู้จดแจ้ง"
+                  placeholder="ผู้จดแจ้ง"
                   outlined
+                  disabled
                   dense
                   v-model="form.issue_informer"
                 ></v-text-field>
@@ -77,6 +80,56 @@
                 ></v-select>
               </v-col>
               <v-col cols="12" sm="6" md="4">
+                <v-text-field
+                  label="สถานะ"
+                  placeholder="สถานะ"
+                  outlined
+                  disabled
+                  dense
+                  v-model="form.issue_status"
+                ></v-text-field>
+              </v-col>
+              <!-- date start -->
+              <v-col cols="12" sm="6" md="6">
+                <v-menu
+                  ref="menuDateStart"
+                  v-model="menuStart"
+                  :close-on-content-click="false"
+                  transition="scale-transition"
+                  offset-y
+                  min-width="auto"
+                  disabled
+                >
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-text-field
+                      v-model="dateStart"
+                      label="วันที่สร้าง"
+                      prepend-icon="mdi-calendar"
+                      readonly
+                      v-bind="attrs"
+                      v-on="on"
+                      class="pt-0"
+                      disabled
+                    ></v-text-field>
+                  </template>
+                  <v-date-picker v-model="dateStart" no-title scrollable>
+                    <v-spacer></v-spacer>
+                    <v-btn text color="primary" @click="menuStart = false">
+                      Cancel
+                    </v-btn>
+                    <v-btn
+                      text
+                      color="primary"
+                      @click="$refs.menuDateStart.save(dateStart)"
+                    >
+                      OK
+                    </v-btn>
+                  </v-date-picker>
+                </v-menu>
+              </v-col>
+
+              <!-- date end -->
+              <v-col cols="12" sm="6" md="6">
                 <v-menu
                   ref="menu"
                   v-model="menu"
@@ -88,7 +141,7 @@
                   <template v-slot:activator="{ on, attrs }">
                     <v-text-field
                       v-model="date"
-                      label="Picker in menu"
+                      label="วันกำหนดส่ง"
                       prepend-icon="mdi-calendar"
                       readonly
                       v-bind="attrs"
@@ -107,7 +160,8 @@
                   </v-date-picker>
                 </v-menu>
               </v-col>
-              <v-col cols="12" sm="4" md="2">
+              <v-col cols="12" sm="4" md="6">
+                <p v-show="selectedScreen == null" style="color: red;" class="ma-0">โปรดเลือกหน้าจอก่อน</p>
                 <v-select
                   :items="position_Developers"
                   label="Dev"
@@ -118,7 +172,8 @@
                   return-object="false"
                 ></v-select>
               </v-col>
-              <v-col cols="12" sm="4" md="2">
+              <v-col cols="12" sm="4" md="6">
+                <p v-show="selectedScreen == null" style="color: red;" class="ma-0">โปรดเลือกหน้าจอก่อน</p>
                 <v-select
                   :items="position_Implementer"
                   label="QC"
@@ -149,7 +204,8 @@
               </v-col>
               <v-col cols="12" sm="6" md="6" v-show="Newreq">
                 <v-container fluid class="ma-0 pa-0">
-                  <p>Type Issue {{ selected }}</p>
+                  <!-- <p>Type Issue {{ selected }}</p> -->
+                  <p>Type Issue</p>
                   <v-row>
                     <v-col>
                       <v-row>
@@ -218,7 +274,14 @@
                 ></v-textarea>
               </v-col>
               <v-col cols="12">
-                <v-file-input v-model="form.issue_filename" ref="fileInput" @change="uploadFile()" label="File input" outlined dense></v-file-input>
+                <v-file-input
+                  v-model="form.issue_filename"
+                  ref="fileInput"
+                  @change="uploadFile()"
+                  label="File input"
+                  outlined
+                  dense
+                ></v-file-input>
               </v-col>
             </v-row>
           </v-container>
@@ -234,13 +297,18 @@
 </template>
 
 <script>
+import moment from "moment";
 export default {
   props: {
     projectName: String,
     systemName: String,
     projectId: String,
     systemId: String,
+    userFirstname: String,
+    userLastname: String,
+    userId: String,
     mode: String,
+    runningNumber: String,
     dialog: {
       default: false,
     },
@@ -250,6 +318,9 @@ export default {
       position_Developers: [],
       position_Implementer: [],
       date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+        .toISOString()
+        .substr(0, 10),
+      dateStart: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
         .toISOString()
         .substr(0, 10),
       menu: false,
@@ -269,9 +340,9 @@ export default {
         system_id: "",
         project_id: "",
         issue_name: "",
-        issue_id: "",
+        issue_id: this.runningNumber,
         issue_type: "",
-        issue_informer: "",
+        issue_informer: this.userFirstname,
         issue_priority: "",
         issue_end: "",
         issue_assign: "",
@@ -291,32 +362,33 @@ export default {
         issue_manday: "",
         issue_complete: "",
       },
-      URI: "http://localhost:7777",
       dataDefault: [],
+      manday: null,
     };
   },
-  updated() {
-    if (this.form.issue_type == "PNC") {
-      this.PNC = true;
-      this.Newreq = false;
-    } else if (this.form.issue_type == "PNI") {
-      this.PNC = false;
-      this.Newreq = false;
-    } else if (this.form.issue_type == "New Req") {
-      this.Newreq = true;
-      this.PNC = false;
-    } else {
-      this.PNC = false;
-      this.Newreq = false;
-    }
-  },
+  updated() {},
   async mounted() {
     await this.getDefault();
     await this.getScreenDefault();
   },
   methods: {
-    uploadFile(){
-      let formData = new FormData()
+    selectedType() {
+      if (this.form.issue_type == "PNC") {
+        this.PNC = true;
+        this.Newreq = false;
+      } else if (this.form.issue_type == "PNI") {
+        this.PNC = false;
+        this.Newreq = false;
+      } else if (this.form.issue_type == "New Req") {
+        this.Newreq = true;
+        this.PNC = false;
+      } else {
+        this.PNC = false;
+        this.Newreq = false;
+      }
+    },
+    uploadFile() {
+      let formData = new FormData();
       if (this.form.issue_filename) {
         formData.append("file", this.form.issue_filename);
         console.log(formData.getAll("file"));
@@ -326,7 +398,35 @@ export default {
         console.log("No file");
       }
     },
-    close() {
+    resetForm() {
+      this.form.screen_id = "";
+      this.form.system_id = "";
+      this.form.project_id = "";
+      this.form.issue_name = "";
+      // this.form.issue_id = "";
+      this.form.issue_type = "";
+      // this.form.issue_informer = "";
+      this.form.issue_priority = "";
+      this.form.issue_end = "";
+      this.form.issue_assign = "";
+      this.form.issue_qc = "";
+      this.form.issue_des = "";
+      this.form.issue_des_sa = "";
+      this.form.issue_type_sa = "";
+      this.form.issue_doc_id = "";
+      this.form.issue_customer = "";
+      this.form.issue_filename = "";
+      this.form.issue_des_dev = "";
+      this.form.issue_des_implementer = "";
+      this.form.issue_start = "";
+      this.form.issue_expected = "";
+      this.form.issue_status = "open";
+      this.form.issue_accepting = "";
+      this.form.issue_manday = "";
+      this.form.issue_complete = "";
+    },
+    async close() {
+      await this.resetForm();
       this.$emit("update:dialog", false);
     },
     async getUserSystems(selectedScreenID) {
@@ -339,7 +439,7 @@ export default {
           this.position_Implementer = data.data.filter(
             (item) => item.user_position === "Implementer"
           );
-          console.log(this.position_Developers);
+          // console.log(this.position_Developers);
         });
     },
     async saveIssue() {
@@ -348,45 +448,67 @@ export default {
         const selectedScreenId = this.selectedScreen
           ? this.selectedScreen.id
           : null;
-        const formData = new FormData();
-        formData.append('screen_id', selectedScreenId);
-        formData.append('system_id', this.systemId);
-        formData.append('project_id', this.projectId);
-        formData.append('issue_name', this.form.issue_name);
-        formData.append('issue_id', this.form.issue_id);
-        formData.append('issue_type', this.form.issue_type);
-        formData.append('issue_informer', this.form.issue_informer);
-        formData.append('issue_priority', this.form.issue_priority);
-        formData.append('issue_end', this.form.issue_end);
-        if (this.form.issue_assign.user_firstname) {
-        formData.append('issue_assign', this.form.issue_assign.user_firstname);
-        } else{
-          formData.append('issue_assign', "");
-        }
-        formData.append('issue_qc', this.form.issue_qc);
-        formData.append('issue_des', this.form.issue_des);
-        formData.append('issue_des_sa', this.form.issue_des_sa);
-        formData.append('issue_type_sa', this.form.issue_type_sa);
-        formData.append('issue_doc_id', this.form.issue_doc_id);
-        formData.append('issue_customer', this.form.issue_customer);
-        if (this.form.issue_filename) {
-          formData.append('file', this.form.issue_filename);
-        }
-        formData.append('issue_des_dev', this.form.issue_des_dev);
-        formData.append('issue_des_implementer', this.form.issue_des_implementer);
-        formData.append('issue_start', null);
-        formData.append('issue_expected', null);
-        formData.append('issue_status', this.form.issue_status);
-        formData.append('issue_accepting', null);
-        formData.append('issue_manday', 1);
-        formData.append('issue_complete', null);
+
+        const date = new Date();
+        const dateString = date.toISOString().slice(0, 10);
+        const data = {
+          screen_id: selectedScreenId,
+          system_id: this.systemId,
+          project_id: this.projectId,
+          issue_name: this.form.issue_name,
+          issue_id: this.form.issue_id,
+          issue_type: this.form.issue_type,
+          issue_informer: this.form.issue_informer,
+          issue_priority: this.form.issue_priority,
+          issue_end: this.form.issue_end,
+          issue_assign: this.form.issue_assign.user_firstname,
+          issue_qc: this.form.issue_qc.user_firstname,
+          issue_des: this.form.issue_des,
+          issue_des_sa: this.form.issue_des_sa,
+          issue_type_sa: this.form.issue_type_sa,
+          issue_doc_id: this.form.issue_doc_id,
+          issue_customer: this.form.issue_customer,
+          issue_filename: this.form.issue_filename,
+          issue_des_dev: this.form.issue_des_dev,
+          issue_des_implementer: this.form.issue_des_implementer,
+          issue_start: null,
+          issue_expected: null,
+          issue_status: "open",
+          issue_accepting: null,
+          issue_manday: null,
+          issue_complete: null,
+        };
         try {
-          await this.$axios.post("/issues/createIssue", formData);
+          await this.$axios.post("/issues/createIssue", data);
           console.log("post success");
           window.location.reload();
           const promise = new Promise((resolve, reject) => {
             resolve();
-            this.close();
+            this.form.screen_id = "";
+            this.form.system_id = "";
+            this.form.project_id = "";
+            this.form.issue_name = "";
+            this.form.issue_id = "";
+            this.form.issue_type = "";
+            this.form.issue_informer = "";
+            this.form.issue_priority = "";
+            this.form.issue_end = "";
+            this.form.issue_assign = "";
+            this.form.issue_qc = "";
+            this.form.issue_des = "";
+            this.form.issue_des_sa = "";
+            this.form.issue_type_sa = "";
+            this.form.issue_doc_id = "";
+            this.form.issue_customer = "";
+            this.form.issue_filename = "";
+            this.form.issue_des_dev = "";
+            this.form.issue_des_implementer = "";
+            this.form.issue_start = "";
+            this.form.issue_expected = "";
+            this.form.issue_status = "open";
+            this.form.issue_accepting = "";
+            this.form.issue_manday = "";
+            this.form.issue_complete = "";
           });
           promise.then(() => {
             setTimeout(() => {
@@ -403,7 +525,7 @@ export default {
       try {
         const res = await this.$axios.get("/default_settings/getAll");
         this.default = res.data;
-        console.log(this.default, "this.dataDefault");
+        // console.log(this.default, "this.dataDefault");
         this.default.forEach((item) => {
           if (item.issue_type) {
             this.type_select.push(item.issue_type);

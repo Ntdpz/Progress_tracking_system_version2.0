@@ -539,7 +539,7 @@ export default {
     };
   },
   updated() {
-    console.log(this.user_id);
+    // console.log(this.user_id);
   },
   async created() {
     await this.getUser();
@@ -738,7 +738,6 @@ export default {
     async getProject() {
       await this.$axios.get("/projects/getAll").then((res) => {
         this.projectList = res.data;
-
         // console.log(this.projectList);
         this.projectList.forEach((project) => {
           const date = moment(
@@ -979,7 +978,7 @@ export default {
         this.dialog = true;
         // console.log(mode);
         if (this.$refs.form) {
-          this.$refs.form.reset();
+          // this.$refs.form.reset();
         }
       }
     },

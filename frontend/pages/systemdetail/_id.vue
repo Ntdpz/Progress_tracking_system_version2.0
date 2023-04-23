@@ -932,8 +932,6 @@ export default {
     this.getPosition_Developer();
     this.getPosition_Implementer();
     this.getUserSystems();
-    // this.getProjectID();
-    // this.calculateManDay();
   },
   updated() {
     // this.calculateManDay();
@@ -966,8 +964,8 @@ export default {
             this.screen_idd = data.data[0].id;
             // this.addUser_Screen(screen_id);
           });
-        console.log(this.screen_idd);
-        console.log("post User_Screen success!");
+        // console.log(this.screen_idd);
+        // console.log("post User_Screen success!");
       } catch (error) {
         console.log(error);
         alert(error);
@@ -981,7 +979,7 @@ export default {
           this.name_Dev = this.develop_system.map(
             (item) => item.user_firstname
           );
-          console.log(data.data);
+          // console.log(data.data);
         });
     },
     async getPosition_Implementer() {
@@ -992,7 +990,7 @@ export default {
           this.name_Implementer = this.develop_system.map(
             (item) => item.user_firstname
           );
-          console.log(this.name_Implementer);
+          // console.log(this.name_Implementer);
         });
     },
     async getUserSystems() {
@@ -1024,7 +1022,7 @@ export default {
           system_id: this.id,
           project_id: this.projectID,
         });
-        console.log("POST success for user ID: " + screenID);
+        // console.log("POST success for user ID: " + screenID);
         alert("Success!!");
       } catch (error) {
         console.log(error);
@@ -1045,13 +1043,13 @@ export default {
         // this.calculateManDay();
         console.log("Man-day calculation completed successfully.");
         await this.createScreen();
-        console.log("Screen creation completed successfully.");
+        // console.log("Screen creation completed successfully.");
         await this.getNewScreenAndAddUserScreen();
-        console.log(
-          "New screen and user screen association completed successfully."
-        );
+        // console.log(
+        //   "New screen and user screen association completed successfully."
+        // );
         await this.addUser_Screen(this.screen_idd);
-        console.log("User screen creation completed successfully.");
+        // console.log("User screen creation completed successfully.");
         this.ClearText();
         this.dialog_newscreen = false;
       } catch (error) {
@@ -1082,7 +1080,7 @@ export default {
       this.imageFileUpload = input2.files[0];
       try {
         this.photo = URL.createObjectURL(this.imageFileUpload);
-        console.log(this.imageFileUpload);
+        // console.log(this.imageFileUpload);
         // Do something with the file, for example upload to a server
       } catch (error) {
         console.error(error);
@@ -1102,18 +1100,18 @@ export default {
         this.short_system_name = data.data[0].system_shortname;
 
         // console.clear();
-        console.log("this.projectID");
-        console.log(this.projectID);
+        // console.log("this.projectID");
+        // console.log(this.projectID);
         this.getProjectID();
       });
     },
     async AllUpdate() {
       await this.deleteUserSystem();
-      console.log("successfully deleted 1");
+      // console.log("successfully deleted 1");
       await this.addUser_system(this.id);
-      console.log("successfully deleted 2");
+      // console.log("successfully deleted 2");
       await this.updateSystem();
-      console.log("successfully update");
+      // console.log("successfully update");
     },
     async updateSystem() {
       await this.$axios
@@ -1126,8 +1124,8 @@ export default {
           system_member: "dev1",
         })
         .then((response) => {
-          console.log(response);
-          console.log("Update success");
+          // console.log(response);
+          // console.log("Update success");
           alert("Update success");
           // window.location.reload();
         })
@@ -1166,7 +1164,7 @@ export default {
           system_id: systemID,
           project_id: this.projectID,
         });
-        console.log("POST success for system ID: " + systemID);
+        // console.log("POST success for system ID: " + systemID);
         alert("Post Success!!");
       } catch (error) {
         console.log(error);
@@ -1175,20 +1173,20 @@ export default {
     },
     async deleteAll() {
       await this.deleteUser_screens();
-      console.log("successfully deleted");
+      // console.log("successfully deleted");
       await this.deleteScreenByIdSystem();
-      console.log("successfully deleted");
+      // console.log("successfully deleted");
       await this.deleteUserSystem();
-      console.log("successfully deleted ");
+      // console.log("successfully deleted ");
       await this.deleteSystem();
-      console.log("successfully deleted");
+      // console.log("successfully deleted");
     },
     async deleteUser_screens() {
       try {
         const response = await this.$axios.delete(
           "/user_screens/deleteSystemID/" + this.id
         );
-        console.log("delete success");
+        // console.log("delete success");
         if (response.status === 200) {
           alert("delete user_screen success");
           // window.location.reload();
@@ -1210,8 +1208,8 @@ export default {
           this.$router.push("/manageProject");
         })
         .then((response) => {
-          console.log(response);
-          console.log("Update success");
+          // console.log(response);
+          // console.log("Update success");
           alert("Update success");
           // window.location.reload();
         })
@@ -1228,8 +1226,8 @@ export default {
           this.deleteSystem();
         })
         .then((response) => {
-          console.log(response);
-          console.log("delete success");
+          // console.log(response);
+          // console.log("delete success");
           alert("delete success");
           // window.location.reload();
         })
@@ -1244,7 +1242,7 @@ export default {
     },
     async getProject() {
       await this.$axios.get("/projects/getAll").then((res) => {
-        console.log(res.data);
+        // console.log(res.data);
       });
     },
     async getProjectID() {
@@ -1252,15 +1250,15 @@ export default {
         .get("/projects/getOne/" + this.projectID)
         .then((res) => {
           this.projectName = res.data[0];
-          console.log("this.projectName");
-          console.log(res.data);
+          // console.log("this.projectName");
+          // console.log(res.data);
         });
     },
     async getAllDefault() {
       await this.$axios.get("/default_settings/getAll").then((data) => {
         this.dataDefault = data.data;
         console.clear();
-        console.log(this.dataDefault);
+        // console.log(this.dataDefault);
         this.dataDefault.forEach((item) => {
           if (item.level) {
             this.selectlevel.push(item.level);
@@ -1317,20 +1315,7 @@ export default {
               "Content-Type": "multipart/form-data",
             },
           });
-          console.log("create screen success");
-          // this.getNewScreenAndAddUserScreen();
-          // const promise = new Promise((resolve, reject) => {
-          //   resolve();
-          // });
-          // promise.then(() => {
-          //   setTimeout(() => {
-          //     alert("success!!");
-          //     // this.addUser_Screen(id_screen);
-          //     // this.ClearText();
-          //     // this.dialog_newscreen = false
-          //     // window.location.reload();
-          //   }, 4000);
-          // });
+          // console.log("create screen success");
         }
       } catch (error) {
         console.error(error);

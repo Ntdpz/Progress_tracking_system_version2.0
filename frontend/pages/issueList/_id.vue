@@ -6,14 +6,22 @@
 
     <!-- *Header* -->
     <v-row class="mt-4 ml-2 mb-2">
-      <h4>UserID {{ userId }} : {{ this.projectName }} ({{ this.projectId }})</h4>
+      <h4>
+        UserID {{ userId }} {{ runningNumber }}: {{ this.projectName }} ({{
+          this.projectId
+        }})
+      </h4>
       <p style="color: #b6b5b5; font-size: 16px" class="ml-2">
         {{ this.systemslength }} Sub Systems
       </p>
     </v-row>
 
     <!-- * box -->
-    <v-expansion-panels class="mb-6" v-for="(system, index) in systems" :key="index">
+    <v-expansion-panels
+      class="mb-6"
+      v-for="(system, index) in systems"
+      :key="index"
+    >
       <v-expansion-panel>
         <v-expansion-panel-header>
           <template>
@@ -48,18 +56,47 @@
         <!-- *content -->
         <v-expansion-panel-content class="mt-2">
           <v-row justify="center">
-            <v-btn v-if="user_role == 'Admin' || user_position =='Implementer'" class="new-btn ma-2 text-left" outlined color="indigo" dark v-bind="attrs" v-on="on" block
-              @click="dialog = true">
-              <span class="mdi mdi-plus-circle-outline" style="font-size: 20px; color: black"></span>
-              <h4 style="color: black">Add New Issue</h4>
+            <v-btn
+              v-if="user_role == 'Admin' || user_position == 'Implementer'"
+              class="new-btn ma-2 text-left"
+              outlined
+              color="indigo"
+              dark
+              v-bind="attrs"
+              v-on="on"
+              block
+              @click="dialog = true"
+            >
+              <span
+                class="mdi mdi-plus-circle-outline"
+                style="font-size: 20px; color: black"
+              ></span>
+              <h4 style="color: black">Create New Issue</h4>
             </v-btn>
             <!-- *dialog -->
-            <dialog-issue :dialog.sync="dialog" :projectName="projectName" :systemName="system.system_nameTH"
-              :projectId="projectId" :systemId="system.id" :mode="'create'" />
+            <dialog-issue
+              :dialog.sync="dialog"
+              :projectName="projectName"
+              :systemName="system.system_nameTH"
+              :projectId="projectId"
+              :systemId="system.id"
+              :mode="'create'"
+              :userFirstname="user_firstname"
+              :userLastname="user_lastname"
+              :userId="userId"
+              :runningNumber="runningNumber"
+            />
           </v-row>
           <!-- *tabs -->
-          <v-tabs fixed-tabs v-model="tab" next-icon="mdi-menu-right-outline" prev-icon="mdi-menu-left-outline"
-            show-arrows color="primary" class="mt-5">
+          <v-tabs
+            fixed-tabs
+            v-model="tab"
+            next-icon="mdi-menu-right-outline"
+            prev-icon="mdi-menu-left-outline"
+            show-arrows
+            color="primary"
+            class="mt-5"
+          >
             <v-tab>
               <h3 style="color: black">All</h3>
             </v-tab>
@@ -74,50 +111,120 @@
             </v-tab>
           </v-tabs>
           <!-- Dialog Admin Dev Implementer -->
-          <dialog-issue-detail :dialog.sync="dialogIssueDetail" :ProjectName="projectName" :ProjectId="projectId"
-            :SystemName="system.system_nameTH" :SystemId="system.id" :id="selected.Id" :IssueId="selected.issue_id"
-            :IssueType="selected.issue_type" :IssueScreenId="selected.screen_id" :IssueStatus="selected.issue_status"
-            :IssuePriority="selected.issue_priority" :IssueEndDate="selected.formattedDateEnd"
-            :IssueName="selected.issue_name" :IssueDesSA="selected.issue_des_sa" :IssueInformer="selected.issue_informer"
-            :IssueAssign="selected.issue_assign" :IssueQC="selected.issue_qc" :IssueFilename="selected.issue_filename"
-            :IssueAccepting="selected.formattedDateAccepting" :IssueManday="selected.issue_manday"
-            :IssueStart="selected.formattedDateStart" :IssueExpected="selected.formattedDateExpected"
-            :IssueComplete="selected.issue_complete" :IssueDesImplementer="selected.issue_des_implementer"
-            :IssueDesDev="selected.issue_des_dev" :IssueDes="selected.issue_des" :IssueDocId="selected.issue_doc_id"
-            :IssueCustomer="selected.issue_customer" :IssueTypeSA="selected.issue_type_sa" />
-          <dialog-issue-imple :dialog.sync="dialogIssueImple" :ProjectName="projectName" :ProjectId="projectId"
-            :SystemName="system.system_nameTH" :SystemId="system.id" :id="selected.Id" :IssueId="selected.issue_id"
-            :IssueType="selected.issue_type" :IssueScreenId="selected.screen_id" :IssueStatus="selected.issue_status"
-            :IssuePriority="selected.issue_priority" :IssueEndDate="selected.formattedDateEnd"
-            :IssueName="selected.issue_name" :IssueDesSA="selected.issue_des_sa" :IssueInformer="selected.issue_informer"
-            :IssueAssign="selected.issue_assign" :IssueQC="selected.issue_qc" :IssueFilename="selected.issue_filename"
-            :IssueAccepting="selected.formattedDateAccepting" :IssueManday="selected.issue_manday"
-            :IssueStart="selected.formattedDateStart" :IssueExpected="selected.formattedDateExpected"
-            :IssueComplete="selected.issue_complete" :IssueDesImplementer="selected.issue_des_implementer"
-            :IssueDesDev="selected.issue_des_dev" :IssueDes="selected.issue_des" :IssueDocId="selected.issue_doc_id"
-            :IssueCustomer="selected.issue_customer" :IssueTypeSA="selected.issue_type_sa" />
-          <dialog-issue-dev :dialog.sync="dialogIssueDev" :ProjectName="projectName" :ProjectId="projectId"
-            :SystemName="system.system_nameTH" :SystemId="system.id" :id="selected.Id" :IssueId="selected.issue_id"
-            :IssueType="selected.issue_type" :IssueScreenId="selected.screen_id" :IssueStatus="selected.issue_status"
-            :IssuePriority="selected.issue_priority" :IssueEndDate="selected.formattedDateEnd"
-            :IssueName="selected.issue_name" :IssueDesSA="selected.issue_des_sa" :IssueInformer="selected.issue_informer"
-            :IssueAssign="selected.issue_assign" :IssueQC="selected.issue_qc" :IssueFilename="selected.issue_filename"
-            :IssueAccepting="selected.formattedDateAccepting" :IssueManday="selected.issue_manday"
-            :IssueStart="selected.formattedDateStart" :IssueExpected="selected.formattedDateExpected"
-            :IssueComplete="selected.issue_complete" :IssueDesImplementer="selected.issue_des_implementer"
-            :IssueDesDev="selected.issue_des_dev" :IssueDes="selected.issue_des" :IssueDocId="selected.issue_doc_id"
-            :IssueCustomer="selected.issue_customer" :IssueTypeSA="selected.issue_type_sa" />
+          <dialog-issue-detail
+            :dialog.sync="dialogIssueDetail"
+            :ProjectName="projectName"
+            :ProjectId="projectId"
+            :SystemName="system.system_nameTH"
+            :SystemId="system.id"
+            :id="selected.Id"
+            :IssueId="selected.issue_id"
+            :IssueType="selected.issue_type"
+            :IssueScreenId="selected.screen_id"
+            :IssueStatus="selected.issue_status"
+            :IssuePriority="selected.issue_priority"
+            :IssueEndDate="selected.formattedDateEnd"
+            :IssueName="selected.issue_name"
+            :IssueDesSA="selected.issue_des_sa"
+            :IssueInformer="selected.issue_informer"
+            :IssueAssign="selected.issue_assign"
+            :IssueQC="selected.issue_qc"
+            :IssueFilename="selected.issue_filename"
+            :IssueAccepting="selected.formattedDateAccepting"
+            :IssueManday="selected.issue_manday"
+            :IssueStart="selected.formattedDateStart"
+            :IssueExpected="selected.formattedDateExpected"
+            :IssueComplete="selected.issue_complete"
+            :IssueDesImplementer="selected.issue_des_implementer"
+            :IssueDesDev="selected.issue_des_dev"
+            :IssueDes="selected.issue_des"
+            :IssueDocId="selected.issue_doc_id"
+            :IssueCustomer="selected.issue_customer"
+            :IssueTypeSA="selected.issue_type_sa"
+            :IssueCreate="selected.created_at"
+            :ScreenName="selected.screenName"
+          />
+          <dialog-issue-imple
+            :dialog.sync="dialogIssueImple"
+            :ProjectName="projectName"
+            :ProjectId="projectId"
+            :SystemName="system.system_nameTH"
+            :SystemId="system.id"
+            :id="selected.Id"
+            :IssueId="selected.issue_id"
+            :IssueType="selected.issue_type"
+            :IssueScreenId="selected.screen_id"
+            :IssueStatus="selected.issue_status"
+            :IssuePriority="selected.issue_priority"
+            :IssueEndDate="selected.formattedDateEnd"
+            :IssueName="selected.issue_name"
+            :IssueDesSA="selected.issue_des_sa"
+            :IssueInformer="selected.issue_informer"
+            :IssueAssign="selected.issue_assign"
+            :IssueQC="selected.issue_qc"
+            :IssueFilename="selected.issue_filename"
+            :IssueAccepting="selected.formattedDateAccepting"
+            :IssueManday="selected.issue_manday"
+            :IssueStart="selected.formattedDateStart"
+            :IssueExpected="selected.formattedDateExpected"
+            :IssueComplete="selected.issue_complete"
+            :IssueDesImplementer="selected.issue_des_implementer"
+            :IssueDesDev="selected.issue_des_dev"
+            :IssueDes="selected.issue_des"
+            :IssueDocId="selected.issue_doc_id"
+            :IssueCustomer="selected.issue_customer"
+            :IssueTypeSA="selected.issue_type_sa"
+          />
+          <dialog-issue-dev
+            :dialog.sync="dialogIssueDev"
+            :ProjectName="projectName"
+            :ProjectId="projectId"
+            :SystemName="system.system_nameTH"
+            :SystemId="system.id"
+            :id="selected.Id"
+            :IssueId="selected.issue_id"
+            :IssueType="selected.issue_type"
+            :IssueScreenId="selected.screen_id"
+            :IssueStatus="selected.issue_status"
+            :IssuePriority="selected.issue_priority"
+            :IssueEndDate="selected.formattedDateEnd"
+            :IssueName="selected.issue_name"
+            :IssueDesSA="selected.issue_des_sa"
+            :IssueInformer="selected.issue_informer"
+            :IssueAssign="selected.issue_assign"
+            :IssueQC="selected.issue_qc"
+            :IssueFilename="selected.issue_filename"
+            :IssueAccepting="selected.formattedDateAccepting"
+            :IssueManday="selected.issue_manday"
+            :IssueStart="selected.formattedDateStart"
+            :IssueExpected="selected.formattedDateExpected"
+            :IssueComplete="selected.issue_complete"
+            :IssueDesImplementer="selected.issue_des_implementer"
+            :IssueDesDev="selected.issue_des_dev"
+            :IssueDes="selected.issue_des"
+            :IssueDocId="selected.issue_doc_id"
+            :IssueCustomer="selected.issue_customer"
+            :IssueTypeSA="selected.issue_type_sa"
+          />
           <!--  -->
           <v-tabs-items v-model="tab">
             <v-tab-item>
               <!-- *cardAll -->
               <!-- *Table assignedIssues -->
-              <v-data-table :headers="headers" :items="system.assignedIssues" sort-by="calories"
-                class="v-data-table elevation-1 mb-2" v-remove-row-borders>
+              <v-data-table
+                :headers="headers"
+                :items="system.assignedIssues"
+                sort-by="calories"
+                class="v-data-table elevation-1 mb-2"
+                v-remove-row-borders
+              >
                 <template v-slot:top>
                   <v-toolbar flat>
                     <v-toolbar-title>
-                      <h5 class="pa-1" style="background-color: #1cff17; text-align: left">
+                      <h5
+                        class="pa-1"
+                        style="background-color: #1cff17; text-align: left"
+                      >
                         assignedIssues
                       </h5>
                     </v-toolbar-title>
@@ -131,8 +238,16 @@
                   {{ item.formattedDateEnd }}
                 </template>
                 <template v-slot:[`item.issue_status`]="{ item }">
-                  <v-icon v-if="item.issue_status == 'active'" style="color: #1cff17">mdi-circle</v-icon>
-                  <v-icon v-if="item.issue_status == 'open'" style="color: gainsboro">mdi-circle</v-icon>
+                  <v-icon
+                    v-if="item.issue_status == 'active'"
+                    style="color: #1cff17"
+                    >mdi-circle</v-icon
+                  >
+                  <v-icon
+                    v-if="item.issue_status == 'open'"
+                    style="color: gainsboro"
+                    >mdi-circle</v-icon
+                  >
                   {{ item.issue_status }}
                 </template>
                 <template v-slot:[`item.issue_priotity`]="{ item }">
@@ -144,48 +259,60 @@
                   <p v-show="item.issue_assign == ''">N/A</p>
                 </template>
                 <template v-slot:[`item.actions`]="{ item }">
-                  <!-- <v-btn icon @click="showIssueDetailDialog(item.issue_name)"
-                >Details</v-btn -->
-                  <v-icon class="mr-2" @click="
-                    showIssueDetailDialog(
-                      item.id,
-                      item.issue_id,
-                      item.issue_type,
-                      item.screen_id,
-                      item.issue_status,
-                      item.issue_priority,
-                      item.formattedDateEnd,
-                      item.issue_name,
-                      item.issue_des_sa,
-                      item.issue_informer,
-                      item.issue_assign,
-                      item.issue_qc,
-                      item.issue_filename,
-                      item.formattedDateAccepting,
-                      item.issue_manday,
-                      item.formattedDateStart,
-                      item.formattedDateExpected,
-                      item.issue_complete,
-                      item.issue_des_implementer,
-                      item.issue_des_dev,
-                      item.issue_des,
-                      item.issue_customer,
-                      item.issue_doc_id,
-                      item.issue_type_sa
-                    )
-                  " size="20" color="primary">
+                  <v-icon
+                    class="mr-2"
+                    @click="
+                      showIssueDetailDialog(
+                        item.id,
+                        item.issue_id,
+                        item.issue_type,
+                        item.screen_id,
+                        item.issue_status,
+                        item.issue_priority,
+                        item.formattedDateEnd,
+                        item.issue_name,
+                        item.issue_des_sa,
+                        item.issue_informer,
+                        item.issue_assign,
+                        item.issue_qc,
+                        item.issue_filename,
+                        item.formattedDateAccepting,
+                        item.issue_manday,
+                        item.formattedDateStart,
+                        item.formattedDateExpected,
+                        item.issue_complete,
+                        item.issue_des_implementer,
+                        item.issue_des_dev,
+                        item.issue_des,
+                        item.issue_customer,
+                        item.issue_doc_id,
+                        item.issue_type_sa,
+                        item.created_at
+                      )
+                    "
+                    size="20"
+                    color="primary"
+                  >
                     mdi-information-outline
                   </v-icon>
                 </template>
               </v-data-table>
 
               <!-- *Table 2 unassignedIssues-->
-              <v-data-table :headers="headers" :items="system.unassignedIssues" sort-by="calories"
-                class="v-data-table elevation-1" v-remove-row-borders>
+              <v-data-table
+                :headers="headers"
+                :items="system.unassignedIssues"
+                sort-by="calories"
+                class="v-data-table elevation-1"
+                v-remove-row-borders
+              >
                 <template v-slot:top>
                   <v-toolbar flat>
                     <v-toolbar-title>
-                      <h5 class="pa-1" style="background-color: #aaaaaa; text-align: left">
+                      <h5
+                        class="pa-1"
+                        style="background-color: #aaaaaa; text-align: left"
+                      >
                         unassignedIssues
                       </h5>
                     </v-toolbar-title>
@@ -208,32 +335,40 @@
                 </template>
                 <template #item.issue_assign="{ value }"> No assign </template>
                 <template v-slot:item.actions="{ item }">
-                  <v-icon class="mr-2" @click="showIssueDetailDialog(
-                    item.id,
-                    item.issue_id,
-                    item.issue_type,
-                    item.screen_id,
-                    item.issue_status,
-                    item.issue_priority,
-                    item.formattedDateEnd,
-                    item.issue_name,
-                    item.issue_des_sa,
-                    item.issue_informer,
-                    item.issue_assign,
-                    item.issue_qc,
-                    item.issue_filename,
-                    item.formattedDateAccepting,
-                    item.issue_manday,
-                    item.formattedDateStart,
-                    item.formattedDateExpected,
-                    item.issue_complete,
-                    item.issue_des_implementer,
-                    item.issue_des_dev,
-                    item.issue_des,
-                    item.issue_customer,
-                    item.issue_doc_id,
-                    item.issue_type_sa
-                  )" size="20" color="primary">
+                  <v-icon
+                    class="mr-2"
+                    @click="
+                      showIssueDetailDialog(
+                        item.id,
+                        item.issue_id,
+                        item.issue_type,
+                        item.screen_id,
+                        item.issue_status,
+                        item.issue_priority,
+                        item.formattedDateEnd,
+                        item.issue_name,
+                        item.issue_des_sa,
+                        item.issue_informer,
+                        item.issue_assign,
+                        item.issue_qc,
+                        item.issue_filename,
+                        item.formattedDateAccepting,
+                        item.issue_manday,
+                        item.formattedDateStart,
+                        item.formattedDateExpected,
+                        item.issue_complete,
+                        item.issue_des_implementer,
+                        item.issue_des_dev,
+                        item.issue_des,
+                        item.issue_customer,
+                        item.issue_doc_id,
+                        item.issue_type_sa,
+                        item.created_at
+                      )
+                    "
+                    size="20"
+                    color="primary"
+                  >
                     mdi-information-outline
                   </v-icon>
                 </template>
@@ -242,12 +377,20 @@
             <v-tab-item>
               <!-- *card PNI -->
               <!-- *Table assignedIssues -->
-              <v-data-table :headers="headers" :items="system.assignedIssuesPNI" sort-by="calories"
-                class="v-data-table elevation-1 mb-2" v-remove-row-borders>
+              <v-data-table
+                :headers="headers"
+                :items="system.assignedIssuesPNI"
+                sort-by="calories"
+                class="v-data-table elevation-1 mb-2"
+                v-remove-row-borders
+              >
                 <template v-slot:top>
                   <v-toolbar flat>
                     <v-toolbar-title>
-                      <h5 class="pa-1" style="background-color: #1cff17; text-align: left">
+                      <h5
+                        class="pa-1"
+                        style="background-color: #1cff17; text-align: left"
+                      >
                         assignedIssues
                       </h5>
                     </v-toolbar-title>
@@ -261,8 +404,16 @@
                   {{ item.formattedDateEnd }}
                 </template>
                 <template v-slot:[`item.issue_status`]="{ item }">
-                  <v-icon v-if="item.issue_status == 'active'" style="color: #1cff17">mdi-circle</v-icon>
-                  <v-icon v-if="item.issue_status == 'open'" style="color: gainsboro">mdi-circle</v-icon>
+                  <v-icon
+                    v-if="item.issue_status == 'active'"
+                    style="color: #1cff17"
+                    >mdi-circle</v-icon
+                  >
+                  <v-icon
+                    v-if="item.issue_status == 'open'"
+                    style="color: gainsboro"
+                    >mdi-circle</v-icon
+                  >
                   {{ item.issue_status }}
                 </template>
                 <template v-slot:[`item.issue_priotity`]="{ item }">
@@ -274,47 +425,59 @@
                   <p v-show="item.issue_assign == ''">N/A</p>
                 </template>
                 <template v-slot:[`item.actions`]="{ item }">
-                  <!-- <v-btn icon @click="showIssueDetailDialog(item.issue_name)"
-                >Details</v-btn -->
-                  <v-icon class="mr-2" @click="
-                    showIssueDetailDialog(
-                      item.id,
-                      item.issue_id,
-                      item.issue_type,
-                      item.screen_id,
-                      item.issue_status,
-                      item.issue_priority,
-                      item.formattedDateEnd,
-                      item.issue_name,
-                      item.issue_des_sa,
-                      item.issue_informer,
-                      item.issue_assign,
-                      item.issue_qc,
-                      item.issue_filename,
-                      item.formattedDateAccepting,
-                      item.issue_manday,
-                      item.formattedDateStart,
-                      item.formattedDateExpected,
-                      item.issue_complete,
-                      item.issue_des_implementer,
-                      item.issue_des_dev,
-                      item.issue_des,
-                      item.issue_customer,
-                      item.issue_doc_id,
-                      item.issue_type_sa
-                    )
-                  " size="20" color="primary">
+                  <v-icon
+                    class="mr-2"
+                    @click="
+                      showIssueDetailDialog(
+                        item.id,
+                        item.issue_id,
+                        item.issue_type,
+                        item.screen_id,
+                        item.issue_status,
+                        item.issue_priority,
+                        item.formattedDateEnd,
+                        item.issue_name,
+                        item.issue_des_sa,
+                        item.issue_informer,
+                        item.issue_assign,
+                        item.issue_qc,
+                        item.issue_filename,
+                        item.formattedDateAccepting,
+                        item.issue_manday,
+                        item.formattedDateStart,
+                        item.formattedDateExpected,
+                        item.issue_complete,
+                        item.issue_des_implementer,
+                        item.issue_des_dev,
+                        item.issue_des,
+                        item.issue_customer,
+                        item.issue_doc_id,
+                        item.issue_type_sa,
+                        item.created_at
+                      )
+                    "
+                    size="20"
+                    color="primary"
+                  >
                     mdi-information-outline
                   </v-icon>
                 </template>
               </v-data-table>
               <!-- *Table 2 unassignedIssues-->
-              <v-data-table :headers="headers" :items="system.unassignedIssuesPNI" sort-by="calories"
-                class="v-data-table elevation-1" v-remove-row-borders>
+              <v-data-table
+                :headers="headers"
+                :items="system.unassignedIssuesPNI"
+                sort-by="calories"
+                class="v-data-table elevation-1"
+                v-remove-row-borders
+              >
                 <template v-slot:top>
                   <v-toolbar flat>
                     <v-toolbar-title>
-                      <h5 class="pa-1" style="background-color: #aaaaaa; text-align: left">
+                      <h5
+                        class="pa-1"
+                        style="background-color: #aaaaaa; text-align: left"
+                      >
                         unassignedIssues
                       </h5>
                     </v-toolbar-title>
@@ -337,32 +500,40 @@
                 </template>
                 <template #item.issue_assign="{ value }"> No assign </template>
                 <template v-slot:item.actions="{ item }">
-                  <v-icon class="mr-2" @click="showIssueDetailDialog(
-                    item.id,
-                    item.issue_id,
-                    item.issue_type,
-                    item.screen_id,
-                    item.issue_status,
-                    item.issue_priority,
-                    item.formattedDateEnd,
-                    item.issue_name,
-                    item.issue_des_sa,
-                    item.issue_informer,
-                    item.issue_assign,
-                    item.issue_qc,
-                    item.issue_filename,
-                    item.formattedDateAccepting,
-                    item.issue_manday,
-                    item.formattedDateStart,
-                    item.formattedDateExpected,
-                    item.issue_complete,
-                    item.issue_des_implementer,
-                    item.issue_des_dev,
-                    item.issue_des,
-                    item.issue_customer,
-                    item.issue_doc_id,
-                    item.issue_type_sa
-                  )" size="20" color="primary">
+                  <v-icon
+                    class="mr-2"
+                    @click="
+                      showIssueDetailDialog(
+                        item.id,
+                        item.issue_id,
+                        item.issue_type,
+                        item.screen_id,
+                        item.issue_status,
+                        item.issue_priority,
+                        item.formattedDateEnd,
+                        item.issue_name,
+                        item.issue_des_sa,
+                        item.issue_informer,
+                        item.issue_assign,
+                        item.issue_qc,
+                        item.issue_filename,
+                        item.formattedDateAccepting,
+                        item.issue_manday,
+                        item.formattedDateStart,
+                        item.formattedDateExpected,
+                        item.issue_complete,
+                        item.issue_des_implementer,
+                        item.issue_des_dev,
+                        item.issue_des,
+                        item.issue_customer,
+                        item.issue_doc_id,
+                        item.issue_type_sa,
+                        item.created_at
+                      )
+                    "
+                    size="20"
+                    color="primary"
+                  >
                     mdi-information-outline
                   </v-icon>
                 </template>
@@ -371,12 +542,20 @@
             <v-tab-item>
               <!-- *card PNC -->
               <!-- *Table assignedIssues -->
-              <v-data-table :headers="headers" :items="system.assignedIssuesPNC" sort-by="calories"
-                class="v-data-table elevation-1 mb-2" v-remove-row-borders>
+              <v-data-table
+                :headers="headers"
+                :items="system.assignedIssuesPNC"
+                sort-by="calories"
+                class="v-data-table elevation-1 mb-2"
+                v-remove-row-borders
+              >
                 <template v-slot:top>
                   <v-toolbar flat>
                     <v-toolbar-title>
-                      <h5 class="pa-1" style="background-color: #1cff17; text-align: left">
+                      <h5
+                        class="pa-1"
+                        style="background-color: #1cff17; text-align: left"
+                      >
                         assignedIssues
                       </h5>
                     </v-toolbar-title>
@@ -390,8 +569,16 @@
                   {{ item.formattedDateEnd }}
                 </template>
                 <template v-slot:[`item.issue_status`]="{ item }">
-                  <v-icon v-if="item.issue_status == 'active'" style="color: #1cff17">mdi-circle</v-icon>
-                  <v-icon v-if="item.issue_status == 'open'" style="color: gainsboro">mdi-circle</v-icon>
+                  <v-icon
+                    v-if="item.issue_status == 'active'"
+                    style="color: #1cff17"
+                    >mdi-circle</v-icon
+                  >
+                  <v-icon
+                    v-if="item.issue_status == 'open'"
+                    style="color: gainsboro"
+                    >mdi-circle</v-icon
+                  >
                   {{ item.issue_status }}
                 </template>
                 <template v-slot:[`item.issue_priotity`]="{ item }">
@@ -403,47 +590,59 @@
                   <p v-show="item.issue_assign == ''">N/A</p>
                 </template>
                 <template v-slot:[`item.actions`]="{ item }">
-                  <!-- <v-btn icon @click="showIssueDetailDialog(item.issue_name)"
-                >Details</v-btn -->
-                  <v-icon class="mr-2" @click="
-                    showIssueDetailDialog(
-                      item.id,
-                      item.issue_id,
-                      item.issue_type,
-                      item.screen_id,
-                      item.issue_status,
-                      item.issue_priority,
-                      item.formattedDateEnd,
-                      item.issue_name,
-                      item.issue_des_sa,
-                      item.issue_informer,
-                      item.issue_assign,
-                      item.issue_qc,
-                      item.issue_filename,
-                      item.formattedDateAccepting,
-                      item.issue_manday,
-                      item.formattedDateStart,
-                      item.formattedDateExpected,
-                      item.issue_complete,
-                      item.issue_des_implementer,
-                      item.issue_des_dev,
-                      item.issue_des,
-                      item.issue_customer,
-                      item.issue_doc_id,
-                      item.issue_type_sa
-                    )
-                  " size="20" color="primary">
+                  <v-icon
+                    class="mr-2"
+                    @click="
+                      showIssueDetailDialog(
+                        item.id,
+                        item.issue_id,
+                        item.issue_type,
+                        item.screen_id,
+                        item.issue_status,
+                        item.issue_priority,
+                        item.formattedDateEnd,
+                        item.issue_name,
+                        item.issue_des_sa,
+                        item.issue_informer,
+                        item.issue_assign,
+                        item.issue_qc,
+                        item.issue_filename,
+                        item.formattedDateAccepting,
+                        item.issue_manday,
+                        item.formattedDateStart,
+                        item.formattedDateExpected,
+                        item.issue_complete,
+                        item.issue_des_implementer,
+                        item.issue_des_dev,
+                        item.issue_des,
+                        item.issue_customer,
+                        item.issue_doc_id,
+                        item.issue_type_sa,
+                        item.created_at
+                      )
+                    "
+                    size="20"
+                    color="primary"
+                  >
                     mdi-information-outline
                   </v-icon>
                 </template>
               </v-data-table>
               <!-- *Table 2 unassignedIssues-->
-              <v-data-table :headers="headers" :items="system.unassignedIssuesPNC" sort-by="calories"
-                class="v-data-table elevation-1" v-remove-row-borders>
+              <v-data-table
+                :headers="headers"
+                :items="system.unassignedIssuesPNC"
+                sort-by="calories"
+                class="v-data-table elevation-1"
+                v-remove-row-borders
+              >
                 <template v-slot:top>
                   <v-toolbar flat>
                     <v-toolbar-title>
-                      <h5 class="pa-1" style="background-color: #aaaaaa; text-align: left">
+                      <h5
+                        class="pa-1"
+                        style="background-color: #aaaaaa; text-align: left"
+                      >
                         unassignedIssues
                       </h5>
                     </v-toolbar-title>
@@ -466,32 +665,40 @@
                 </template>
                 <template #item.issue_assign="{ value }"> No assign </template>
                 <template v-slot:item.actions="{ item }">
-                  <v-icon class="mr-2" @click="showIssueDetailDialog(
-                    item.id,
-                    item.issue_id,
-                    item.issue_type,
-                    item.screen_id,
-                    item.issue_status,
-                    item.issue_priority,
-                    item.formattedDateEnd,
-                    item.issue_name,
-                    item.issue_des_sa,
-                    item.issue_informer,
-                    item.issue_assign,
-                    item.issue_qc,
-                    item.issue_filename,
-                    item.formattedDateAccepting,
-                    item.issue_manday,
-                    item.formattedDateStart,
-                    item.formattedDateExpected,
-                    item.issue_complete,
-                    item.issue_des_implementer,
-                    item.issue_des_dev,
-                    item.issue_des,
-                    item.issue_customer,
-                    item.issue_doc_id,
-                    item.issue_type_sa
-                  )" size="20" color="primary">
+                  <v-icon
+                    class="mr-2"
+                    @click="
+                      showIssueDetailDialog(
+                        item.id,
+                        item.issue_id,
+                        item.issue_type,
+                        item.screen_id,
+                        item.issue_status,
+                        item.issue_priority,
+                        item.formattedDateEnd,
+                        item.issue_name,
+                        item.issue_des_sa,
+                        item.issue_informer,
+                        item.issue_assign,
+                        item.issue_qc,
+                        item.issue_filename,
+                        item.formattedDateAccepting,
+                        item.issue_manday,
+                        item.formattedDateStart,
+                        item.formattedDateExpected,
+                        item.issue_complete,
+                        item.issue_des_implementer,
+                        item.issue_des_dev,
+                        item.issue_des,
+                        item.issue_customer,
+                        item.issue_doc_id,
+                        item.issue_type_sa,
+                        item.created_at
+                      )
+                    "
+                    size="20"
+                    color="primary"
+                  >
                     mdi-information-outline
                   </v-icon>
                 </template>
@@ -500,12 +707,20 @@
             <v-tab-item>
               <!-- *card History -->
               <!-- *Table assignedIssues -->
-              <v-data-table :headers="headers" :items="system.assignedIssues" sort-by="calories"
-                class="v-data-table elevation-1 mb-2" v-remove-row-borders>
+              <v-data-table
+                :headers="headers"
+                :items="system.assignedIssues"
+                sort-by="calories"
+                class="v-data-table elevation-1 mb-2"
+                v-remove-row-borders
+              >
                 <template v-slot:top>
                   <v-toolbar flat>
                     <v-toolbar-title>
-                      <h5 class="pa-1" style="background-color: #1cff17; text-align: left">
+                      <h5
+                        class="pa-1"
+                        style="background-color: #1cff17; text-align: left"
+                      >
                         assignedIssues
                       </h5>
                     </v-toolbar-title>
@@ -519,8 +734,16 @@
                   {{ item.formattedDateEnd }}
                 </template>
                 <template v-slot:[`item.issue_status`]="{ item }">
-                  <v-icon v-if="item.issue_status == 'active'" style="color: #1cff17">mdi-circle</v-icon>
-                  <v-icon v-if="item.issue_status == 'open'" style="color: gainsboro">mdi-circle</v-icon>
+                  <v-icon
+                    v-if="item.issue_status == 'active'"
+                    style="color: #1cff17"
+                    >mdi-circle</v-icon
+                  >
+                  <v-icon
+                    v-if="item.issue_status == 'open'"
+                    style="color: gainsboro"
+                    >mdi-circle</v-icon
+                  >
                   {{ item.issue_status }}
                 </template>
                 <template v-slot:[`item.issue_priotity`]="{ item }">
@@ -532,47 +755,59 @@
                   <p v-show="item.issue_assign == ''">N/A</p>
                 </template>
                 <template v-slot:[`item.actions`]="{ item }">
-                  <!-- <v-btn icon @click="showIssueDetailDialog(item.issue_name)"
-                >Details</v-btn -->
-                  <v-icon class="mr-2" @click="
-                    showIssueDetailDialog(
-                      item.id,
-                      item.issue_id,
-                      item.issue_type,
-                      item.screen_id,
-                      item.issue_status,
-                      item.issue_priority,
-                      item.formattedDateEnd,
-                      item.issue_name,
-                      item.issue_des_sa,
-                      item.issue_informer,
-                      item.issue_assign,
-                      item.issue_qc,
-                      item.issue_filename,
-                      item.formattedDateAccepting,
-                      item.issue_manday,
-                      item.formattedDateStart,
-                      item.formattedDateExpected,
-                      item.issue_complete,
-                      item.issue_des_implementer,
-                      item.issue_des_dev,
-                      item.issue_des,
-                      item.issue_customer,
-                      item.issue_doc_id,
-                      item.issue_type_sa
-                    )
-                  " size="20" color="primary">
+                  <v-icon
+                    class="mr-2"
+                    @click="
+                      showIssueDetailDialog(
+                        item.id,
+                        item.issue_id,
+                        item.issue_type,
+                        item.screen_id,
+                        item.issue_status,
+                        item.issue_priority,
+                        item.formattedDateEnd,
+                        item.issue_name,
+                        item.issue_des_sa,
+                        item.issue_informer,
+                        item.issue_assign,
+                        item.issue_qc,
+                        item.issue_filename,
+                        item.formattedDateAccepting,
+                        item.issue_manday,
+                        item.formattedDateStart,
+                        item.formattedDateExpected,
+                        item.issue_complete,
+                        item.issue_des_implementer,
+                        item.issue_des_dev,
+                        item.issue_des,
+                        item.issue_customer,
+                        item.issue_doc_id,
+                        item.issue_type_sa,
+                        item.created_at
+                      )
+                    "
+                    size="20"
+                    color="primary"
+                  >
                     mdi-information-outline
                   </v-icon>
                 </template>
               </v-data-table>
               <!-- *Table 2 unassignedIssues-->
-              <v-data-table :headers="headers" :items="system.unassignedIssues" sort-by="calories"
-                class="v-data-table elevation-1" v-remove-row-borders>
+              <v-data-table
+                :headers="headers"
+                :items="system.unassignedIssues"
+                sort-by="calories"
+                class="v-data-table elevation-1"
+                v-remove-row-borders
+              >
                 <template v-slot:top>
                   <v-toolbar flat>
                     <v-toolbar-title>
-                      <h5 class="pa-1" style="background-color: #aaaaaa; text-align: left">
+                      <h5
+                        class="pa-1"
+                        style="background-color: #aaaaaa; text-align: left"
+                      >
                         unassignedIssues
                       </h5>
                     </v-toolbar-title>
@@ -595,32 +830,40 @@
                 </template>
                 <template #item.issue_assign="{ value }"> No assign </template>
                 <template v-slot:item.actions="{ item }">
-                  <v-icon class="mr-2" @click="showIssueDetailDialog(
-                    item.id,
-                    item.issue_id,
-                    item.issue_type,
-                    item.screen_id,
-                    item.issue_status,
-                    item.issue_priority,
-                    item.formattedDateEnd,
-                    item.issue_name,
-                    item.issue_des_sa,
-                    item.issue_informer,
-                    item.issue_assign,
-                    item.issue_qc,
-                    item.issue_filename,
-                    item.formattedDateAccepting,
-                    item.issue_manday,
-                    item.formattedDateStart,
-                    item.formattedDateExpected,
-                    item.issue_complete,
-                    item.issue_des_implementer,
-                    item.issue_des_dev,
-                    item.issue_des,
-                    item.issue_customer,
-                    item.issue_doc_id,
-                    item.issue_type_sa
-                  )" size="20" color="primary">
+                  <v-icon
+                    class="mr-2"
+                    @click="
+                      showIssueDetailDialog(
+                        item.id,
+                        item.issue_id,
+                        item.issue_type,
+                        item.screen_id,
+                        item.issue_status,
+                        item.issue_priority,
+                        item.formattedDateEnd,
+                        item.issue_name,
+                        item.issue_des_sa,
+                        item.issue_informer,
+                        item.issue_assign,
+                        item.issue_qc,
+                        item.issue_filename,
+                        item.formattedDateAccepting,
+                        item.issue_manday,
+                        item.formattedDateStart,
+                        item.formattedDateExpected,
+                        item.issue_complete,
+                        item.issue_des_implementer,
+                        item.issue_des_dev,
+                        item.issue_des,
+                        item.issue_customer,
+                        item.issue_doc_id,
+                        item.issue_type_sa,
+                        item.created_at
+                      )
+                    "
+                    size="20"
+                    color="primary"
+                  >
                     mdi-information-outline
                   </v-icon>
                 </template>
@@ -695,6 +938,8 @@ export default {
         issue_accepting: "",
         issue_manday: "",
         issue_complete: "",
+        created_at: "",
+        screenName: "",
         formattedDateEnd: "",
         formattedDateAccepting: "",
         formattedDateExpected: "",
@@ -727,8 +972,7 @@ export default {
       user_lastname: "",
       user_position: "",
       user_role: "",
-
-
+      runningNumber: "",
     };
   },
   async created() {
@@ -736,7 +980,6 @@ export default {
     await this.getProject();
     await this.getSystems();
     await this.getIssue();
-    // await this.getIssues2();
   },
   mounted() {
     this.getUser();
@@ -757,31 +1000,22 @@ export default {
         this.user_lastname = res.data[0].user_lastname;
         this.user_position = res.data[0].user_position;
         this.user_role = res.data[0].user_role;
-        console.log(this.user_position);
       });
     },
     showIssueDetailDialog(issue_name) {
-      console.log("item:", this.item);
-      console.log("assignedIssues:", this.system.assignedIssues);
-      // this.dialogIssueDetail = true;
       if (this.user_role == "Admin") {
         this.dialogIssueDetail = true;
-      }
-      else if (this.user_position == "Implementer") {
+      } else if (this.user_position == "Implementer") {
         this.dialogIssueImple = true;
-      }
-      else if (this.user_position == "Developer") {
+      } else if (this.user_position == "Developer") {
         this.dialogIssueDev = true;
       }
-
     },
     async getProject() {
       await this.$axios.get("/projects/getOne/" + this.id).then((res) => {
         this.project = res.data;
         this.projectName = this.project[0].project_name;
         this.projectId = this.project[0].id;
-        // console.log(this.project[0].project_name, "this.project");
-        console.log(this.project[0].id, "this.projectId");
       });
     },
     async getSystems() {
@@ -794,13 +1028,9 @@ export default {
             res.data.filter((system) => system.project_id === project.id)
           );
         });
-        console.log(this.systems, "system");
       });
       this.systems = this.project[0].systems;
       this.systemslength = this.project[0].systems.length;
-      console.log(this.project, "this.project");
-      console.log(this.system, "this.system");
-      console.log(this.systemslength, "this.systemslength");
     },
     async getIssue() {
       try {
@@ -808,19 +1038,29 @@ export default {
           "/issues/getAll?project_id=" + this.id
         );
         this.issue = res.data;
+        this.runningNumber = this.issue.length + 1;
+        // console.log(this.runningNumber, "this.runningNumber");
         this.issue.forEach((issue) => {
           const dateEnd = moment(issue.issue_end, "YYYY-MM-DDTHH:mm:ss.SSSZ");
           issue.formattedDateEnd = dateEnd.format("YYYY-MM-DD");
 
-          const dateAccepting = moment(issue.issue_accepting, "YYYY-MM-DDTHH:mm:ss.SSSZ");
+          const dateAccepting = moment(
+            issue.issue_accepting,
+            "YYYY-MM-DDTHH:mm:ss.SSSZ"
+          );
           issue.formattedDateAccepting = dateAccepting.format("YYYY-MM-DD");
 
-          const dateStart = moment(issue.issue_start, "YYYY-MM-DDTHH:mm:ss.SSSZ");
+          const dateStart = moment(
+            issue.issue_start,
+            "YYYY-MM-DDTHH:mm:ss.SSSZ"
+          );
           issue.formattedDateStart = dateStart.format("YYYY-MM-DD");
 
-          const dateExpected = moment(issue.issue_expected, "YYYY-MM-DDTHH:mm:ss.SSSZ");
+          const dateExpected = moment(
+            issue.issue_expected,
+            "YYYY-MM-DDTHH:mm:ss.SSSZ"
+          );
           issue.formattedDateExpected = dateExpected.format("YYYY-MM-DD");
-          // console.log(issue.formattedDateAccepting);
         });
         this.systems.forEach((system) => {
           Vue.set(
@@ -844,7 +1084,9 @@ export default {
             "assignedIssuesPNI",
             this.issue.filter(
               (issue) =>
-                issue.system_id === system.id && issue.issue_assign !== "" && issue.issue_type === "PNI"
+                issue.system_id === system.id &&
+                issue.issue_assign !== "" &&
+                issue.issue_type === "PNI"
             )
           );
           Vue.set(
@@ -852,7 +1094,9 @@ export default {
             "unassignedIssuesPNI",
             this.issue.filter(
               (issue) =>
-                issue.system_id === system.id && issue.issue_assign === "" && issue.issue_type === "PNI"
+                issue.system_id === system.id &&
+                issue.issue_assign === "" &&
+                issue.issue_type === "PNI"
             )
           );
           Vue.set(
@@ -860,7 +1104,9 @@ export default {
             "assignedIssuesPNC",
             this.issue.filter(
               (issue) =>
-                issue.system_id === system.id && issue.issue_assign !== "" && issue.issue_type === "PNC"
+                issue.system_id === system.id &&
+                issue.issue_assign !== "" &&
+                issue.issue_type === "PNC"
             )
           );
           Vue.set(
@@ -868,11 +1114,12 @@ export default {
             "unassignedIssuesPNC",
             this.issue.filter(
               (issue) =>
-                issue.system_id === system.id && issue.issue_assign === "" && issue.issue_type === "PNC"
+                issue.system_id === system.id &&
+                issue.issue_assign === "" &&
+                issue.issue_type === "PNC"
             )
           );
         });
-        // console.log(this.systems, "system issue2");
       } catch (err) {
         console.error(err);
       }
@@ -901,7 +1148,8 @@ export default {
       issueDes,
       issueCustomer,
       issueDocId,
-      issueTypeSA
+      issueTypeSA,
+      issueCreate
     ) {
       this.selected.Id = issueid;
       this.selected.issue_id = issueId;
@@ -927,15 +1175,30 @@ export default {
       this.selected.issue_customer = issueCustomer;
       this.selected.issue_doc_id = issueDocId;
       this.selected.issue_type_sa = issueTypeSA;
+      //created at
+      const dateCreate = moment(issueCreate).format("YYYY-MM-DD");
+      this.selected.created_at = dateCreate;
+      //get screen name
+      this.$axios.get("/screens/getOne/" + issueScreenid).then((res) => {
+        const screen = res.data[0].screen_name;
+        this.selected.screenName = screen;
+        // console.log(screen, "screen screen screen");
+      });
+      //check role
       if (this.user_role == "Admin") {
         this.dialogIssueDetail = true;
-      }
-      else if (this.user_position == "Implementer" && this.user_role == "User") {
+      } else if (
+        this.user_position == "Implementer" &&
+        this.user_role == "User"
+      ) {
         this.dialogIssueImple = true;
-      }
-      else if (this.user_position == "Developer" && this.user_role == "User") {
+      } else if (
+        this.user_position == "Developer" &&
+        this.user_role == "User"
+      ) {
         this.dialogIssueDev = true;
       }
+      //check role
     },
   },
 };
