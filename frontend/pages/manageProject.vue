@@ -44,7 +44,7 @@
 
     <v-btn class="new-btn ma-2 text-left" outlined color="indigo" dark block @click="openDialog('create')">
       <span class="mdi mdi-plus-circle-outline" style="font-size: 20px; color: black"></span>
-      <h4 style="color: black">Add New Project</h4>
+      <h4 style="color: black">CREATE PROJECT</h4>
     </v-btn>
     <v-dialog v-model="dialog" max-width="500px" :retain-focus="false">
       <v-card>
