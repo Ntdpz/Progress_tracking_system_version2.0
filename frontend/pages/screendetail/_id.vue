@@ -317,6 +317,11 @@ export default {
       position_Implementers: [],
       position_Developers: [],
       dataDefault: [],
+      userid: "",
+      userfirstname: "",
+      userlastname: "",
+      userposition: "",
+      userrole: "",
     };
   },
   created() {
@@ -326,6 +331,14 @@ export default {
     this.getPosition_Developer();
     this.getPosition_Implementer();
   },
+   computed: {
+    userId() {
+      if (typeof window !== "undefined") {
+        return window.localStorage.getItem("userId");
+      }
+      return null; // or some default value if localStorage is not available
+    },
+  },
   updated() {
     // this.getScreenID();
     // this.calculateManDay();
@@ -333,6 +346,16 @@ export default {
 
   },
   methods: {
+    async getUser() {
+      await this.$axios.get("/users/getOne/" + this.userId).then((res) => {
+        this.userid = res.data[0].user_id;
+        this.userfirstname = res.data[0].user_firstname;
+        this.userlastname = res.data[0].user_lastname;
+        this.userposition = res.data[0].user_position;
+        this.userrole = res.data[0].user_role;
+        // console.log(this.user_position);
+      });
+    },
     async getScreenID() {
       await this.$axios.get("/screens/getOne/" + this.id).then((data) => {
         this.screensID = data.data[0];
