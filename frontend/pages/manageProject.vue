@@ -321,9 +321,9 @@
                 <h4>{{ project.project_agency }}</h4>
               </v-col>
               <v-col cols="1">
-                <v-btn color="primary" icon @click="openDialog('edit', projectList[index])">
+                <!-- <v-btn color="primary" icon @click="openDialog('edit', projectList[index])">
                   <v-icon class="pa-0" size="25" color="primary">mdi mdi-square-edit-outline</v-icon>
-                </v-btn>
+                </v-btn> -->
               </v-col>
             </v-row>
 
@@ -335,13 +335,13 @@
             <v-row justify="center" class="ml-5 mr-5 mt-0">
               <!-- *dialog -->
               <v-dialog v-model="dialogSubsystem" persistent max-width="600px" class="">
-                <template v-slot:activator="{ on, attrs }">
+                <!-- <template v-slot:activator="{ on, attrs }">
                   <v-btn class="new-btn ma-2 text-left" outlined color="indigo" dark v-bind="attrs" v-on="on" block
                     @click="dialogSystem(projectList[index])">
                     <span class="mdi mdi-plus-circle-outline" style="font-size: 20px; color: black"></span>
                     <h4 style="color: black">Add New Sub System</h4>
                   </v-btn>
-                </template>
+                </template> -->
                 <v-card>
                   <v-card-title>
                     <v-col cols="12">
