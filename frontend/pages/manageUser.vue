@@ -3,7 +3,8 @@
     <v-row>
       <v-col> <searchbar title="Manage User" /></v-col>
       <v-col>
-        <v-btn v-if="check_role == 'Admin'"
+        <v-btn
+          v-if="check_role == 'Admin'"
           @click="dialog = true"
           class="mr-10"
           elevation="2"
@@ -13,9 +14,10 @@
           style="color: white; border-radius: 10px"
         >
           <v-icon left> mdi-plus-circle-outline </v-icon>
-          Create User
+          <h4>Create User</h4>
         </v-btn>
-        <v-btn v-else
+        <v-btn
+          v-else
           class="mr-10"
           elevation="2"
           right
@@ -82,7 +84,7 @@
                     <template v-slot:[`item.name`]="{ item }">
                       {{ item.user_firstname }}
                     </template>
-                    <template v-slot:[`item.code`]="{ item}">
+                    <template v-slot:[`item.code`]="{ item }">
                       {{ item.user_id }}
                     </template>
                     <template v-slot:[`item.position`]="{ item }">
@@ -116,7 +118,10 @@
                       {{ item.user_status }}
                     </template>
                     <!-- ปุ่ม Manage -->
-                    <template v-if="check_role == 'Admin'" v-slot:[`item.actions`]="{ item }">
+                    <template
+                      v-if="check_role == 'Admin'"
+                      v-slot:[`item.actions`]="{ item }"
+                    >
                       <v-btn
                         @click="(dialog_manage = true), editItem(item)"
                         color="primary"
@@ -126,10 +131,7 @@
                       </v-btn>
                     </template>
                     <template v-else v-slot:[`item.actions`]>
-                      <v-btn
-                        style="color: white; border-radius: 20px"
-                        disabled
-                      >
+                      <v-btn style="color: white; border-radius: 20px" disabled>
                         Admin Only
                       </v-btn>
                     </template>
@@ -197,24 +199,24 @@
                       {{ item.user_status }}
                     </template>
                     <!-- ปุ่ม Manage -->
-                      <template v-if="check_role == 'Admin'" v-slot:[`item.actions`]="{ item }">
-                        <v-btn
-                          @click="(dialog_manage = true), editItem(item)"
-                          color="primary"
-                          style="color: white; border-radius: 20px"
-                        >
-                          Manage
-                        </v-btn>
-                      </template>
-                      <template v-else v-slot:[`item.actions`]>
-                        <v-btn
-                          style="color: white; border-radius: 20px"
-                          disabled
-                        >
-                          Admin Only
-                        </v-btn>
-                      </template>
-                      <!--  -->
+                    <template
+                      v-if="check_role == 'Admin'"
+                      v-slot:[`item.actions`]="{ item }"
+                    >
+                      <v-btn
+                        @click="(dialog_manage = true), editItem(item)"
+                        color="primary"
+                        style="color: white; border-radius: 20px"
+                      >
+                        Manage
+                      </v-btn>
+                    </template>
+                    <template v-else v-slot:[`item.actions`]>
+                      <v-btn style="color: white; border-radius: 20px" disabled>
+                        Admin Only
+                      </v-btn>
+                    </template>
+                    <!--  -->
                     <template v-slot:no-data>
                       <v-col>No Data</v-col>
                       <v-btn class="mb-4" color="primary" @click="initialize">
@@ -280,24 +282,24 @@
                       {{ item.user_status }}
                     </template>
                     <!-- ปุ่ม Manage -->
-                      <template v-if="check_role == 'Admin'" v-slot:[`item.actions`]="{ item }">
-                        <v-btn
-                          @click="(dialog_manage = true), editItem(item)"
-                          color="primary"
-                          style="color: white; border-radius: 20px"
-                        >
-                          Manage
-                        </v-btn>
-                      </template>
-                      <template v-else v-slot:[`item.actions`]>
-                        <v-btn
-                          style="color: white; border-radius: 20px"
-                          disabled
-                        >
-                          Admin Only
-                        </v-btn>
-                      </template>
-                      <!--  -->
+                    <template
+                      v-if="check_role == 'Admin'"
+                      v-slot:[`item.actions`]="{ item }"
+                    >
+                      <v-btn
+                        @click="(dialog_manage = true), editItem(item)"
+                        color="primary"
+                        style="color: white; border-radius: 20px"
+                      >
+                        Manage
+                      </v-btn>
+                    </template>
+                    <template v-else v-slot:[`item.actions`]>
+                      <v-btn style="color: white; border-radius: 20px" disabled>
+                        Admin Only
+                      </v-btn>
+                    </template>
+                    <!--  -->
                     <template v-slot:no-data>
                       <v-col>No Data</v-col>
                       <v-btn class="mb-4" color="primary" @click="initialize">
@@ -365,24 +367,24 @@
                       {{ item.user_status }}
                     </template>
                     <!-- ปุ่ม Manage -->
-                      <template v-if="check_role == 'Admin'" v-slot:[`item.actions`]="{ item }">
-                        <v-btn
-                          @click="(dialog_manage = true), editItem(item)"
-                          color="primary"
-                          style="color: white; border-radius: 20px"
-                        >
-                          Manage
-                        </v-btn>
-                      </template>
-                      <template v-else v-slot:[`item.actions`]>
-                        <v-btn
-                          style="color: white; border-radius: 20px"
-                          disabled
-                        >
-                          Admin Only
-                        </v-btn>
-                      </template>
-                      <!--  -->
+                    <template
+                      v-if="check_role == 'Admin'"
+                      v-slot:[`item.actions`]="{ item }"
+                    >
+                      <v-btn
+                        @click="(dialog_manage = true), editItem(item)"
+                        color="primary"
+                        style="color: white; border-radius: 20px"
+                      >
+                        Manage
+                      </v-btn>
+                    </template>
+                    <template v-else v-slot:[`item.actions`]>
+                      <v-btn style="color: white; border-radius: 20px" disabled>
+                        Admin Only
+                      </v-btn>
+                    </template>
+                    <!--  -->
                     <template v-slot:no-data>
                       <v-col>No Data</v-col>
                       <v-btn class="mb-4" color="primary" @click="initialize">
@@ -448,24 +450,24 @@
                       {{ item.user_status }}
                     </template>
                     <!-- ปุ่ม Manage -->
-                      <template v-if="check_role == 'Admin'" v-slot:[`item.actions`]="{ item }">
-                        <v-btn
-                          @click="(dialog_manage = true), editItem(item)"
-                          color="primary"
-                          style="color: white; border-radius: 20px"
-                        >
-                          Manage
-                        </v-btn>
-                      </template>
-                      <template v-else v-slot:[`item.actions`]>
-                        <v-btn
-                          style="color: white; border-radius: 20px"
-                          disabled
-                        >
-                          Admin Only
-                        </v-btn>
-                      </template>
-                      <!--  -->
+                    <template
+                      v-if="check_role == 'Admin'"
+                      v-slot:[`item.actions`]="{ item }"
+                    >
+                      <v-btn
+                        @click="(dialog_manage = true), editItem(item)"
+                        color="primary"
+                        style="color: white; border-radius: 20px"
+                      >
+                        Manage
+                      </v-btn>
+                    </template>
+                    <template v-else v-slot:[`item.actions`]>
+                      <v-btn style="color: white; border-radius: 20px" disabled>
+                        Admin Only
+                      </v-btn>
+                    </template>
+                    <!--  -->
                     <template v-slot:no-data>
                       <v-col>No Data</v-col>
                       <v-btn class="mb-4" color="primary" @click="initialize">
@@ -531,24 +533,24 @@
                       {{ item.user_status }}
                     </template>
                     <!-- ปุ่ม Manage -->
-                      <template v-if="check_role == 'Admin'" v-slot:[`item.actions`]="{ item }">
-                        <v-btn
-                          @click="(dialog_manage = true), editItem(item)"
-                          color="primary"
-                          style="color: white; border-radius: 20px"
-                        >
-                          Manage
-                        </v-btn>
-                      </template>
-                      <template v-else v-slot:[`item.actions`]>
-                        <v-btn
-                          style="color: white; border-radius: 20px"
-                          disabled
-                        >
-                          Admin Only
-                        </v-btn>
-                      </template>
-                      <!--  -->
+                    <template
+                      v-if="check_role == 'Admin'"
+                      v-slot:[`item.actions`]="{ item }"
+                    >
+                      <v-btn
+                        @click="(dialog_manage = true), editItem(item)"
+                        color="primary"
+                        style="color: white; border-radius: 20px"
+                      >
+                        Manage
+                      </v-btn>
+                    </template>
+                    <template v-else v-slot:[`item.actions`]>
+                      <v-btn style="color: white; border-radius: 20px" disabled>
+                        Admin Only
+                      </v-btn>
+                    </template>
+                    <!--  -->
                     <template v-slot:no-data>
                       <v-col>No Data</v-col>
                       <v-btn class="mb-4" color="primary" @click="initialize">
@@ -566,285 +568,287 @@
             <v-dialog v-model="dialog" width="900px" max-height="100%">
               <v-card class="mx-auto" height="580px" max-height="100%">
                 <v-card-title>
-                  <span class="text-h5">Create User</span>
+                  <span class="text-h5"><h4>Create User</h4></span>
                 </v-card-title>
                 <!-- Form -->
-                <v-row class="mb-2" no-gutters>
-                  <!-- Upload image -->
-                  <v-col class="col-12" col="12" sm="12" md="2">
-                    <v-card
-                      style="border: none"
-                      class="mx-auto text-center"
-                      outlined
-                      tile
-                      height="100%"
-                    >
-                      <!--  -->
-                      <template>
+                <v-form ref="formCreate" @submit.prevent="createUser2">
+                  <v-row class="mb-2" no-gutters>
+                    <!-- Upload image -->
+                    <v-col class="col-12" col="12" sm="12" md="2">
+                      <v-card
+                        style="border: none"
+                        class="mx-auto text-center"
+                        outlined
+                        tile
+                        height="100%"
+                      >
+                        <!--  -->
+                        <template>
+                          <div>
+                            <form>
+                              <label class="mt-10 avatar-upload">
+                                <input
+                                  type="file"
+                                  ref="fileInput"
+                                  @change="uploadFile"
+                                />
+                                <v-icon
+                                  class="center mt-7"
+                                  color="black"
+                                  size="30px"
+                                  v-if="!photo"
+                                  >mdi-cloud-upload-outline</v-icon
+                                >
+                                <img v-if="photo" :src="photo" />
+                              </label>
+                            </form>
+                          </div>
+                        </template>
+                        <!--  -->
+                      </v-card>
+                    </v-col>
+                    <!-- Input Form -->
+                    <v-col col="12" sm="12" md="10">
+                      <v-card
+                        style="border: none"
+                        class="pa-2"
+                        outlined
+                        tile
+                        height="100%"
+                      >
                         <div>
-                          <form>
-                            <label class="mt-10 avatar-upload">
-                              <input
-                                type="file"
-                                ref="fileInput"
-                                @change="uploadFile"
-                              />
-                              <v-icon
-                                class="center mt-7"
-                                color="black"
-                                size="30px"
-                                v-if="!photo"
-                                >mdi-cloud-upload-outline</v-icon
-                              >
-                              <img v-if="photo" :src="photo" />
-                            </label>
-                          </form>
-                        </div>
-                      </template>
-                      <!--  -->
-                    </v-card>
-                  </v-col>
-                  <!-- Input Form -->
-                  <v-col col="12" sm="12" md="10">
-                    <v-card
-                      style="border: none"
-                      class="pa-2"
-                      outlined
-                      tile
-                      height="100%"
-                    >
-                      <div>
-                        <v-row
-                          class="mr-2"
-                          style="margin-bottom: -2%; font-size: 14px"
-                        >
-                          <v-col class="hidden-xs-only" cols="12" sm="3">
-                            Title
-                          </v-col>
-                          <v-col class="hidden-xs-only" cols="12" sm="4">
-                            First Name
-                          </v-col>
+                          <v-row
+                            class="mr-2"
+                            style="margin-bottom: -2%; font-size: 14px"
+                          >
+                            <v-col class="hidden-xs-only" cols="12" sm="3">
+                              Title
+                            </v-col>
+                            <v-col class="hidden-xs-only" cols="12" sm="4">
+                              First Name
+                            </v-col>
 
-                          <v-col
-                            class="hidden-xs-only"
-                            cols="12"
-                            sm="5"
-                            style="margin-right: -1%; padding-right: 0%"
-                          >
-                            Last Name
-                          </v-col>
-                        </v-row>
-                        <!--  -->
-                        <v-row class="mr-2 mt-0" style="margin-bottom: -8%">
-                          <v-col
-                            cols="12"
-                            sm="3"
-                            style="margin-right: -1%; padding-right: 0%"
-                          >
-                            <v-select
-                              :rules="[rules.required]"
-                              v-model="name"
-                              :items="dataDefault_nametitle"
-                              label="Mr/Miss"
-                              dense
-                              rounded
-                              solo
-                            ></v-select>
-                          </v-col>
-                          <v-col cols="12" sm="4">
-                            <v-text-field
-                              :rules="[rules.required]"
-                              v-model="firstname"
-                              label="First Name"
-                              dense
-                              rounded
-                              solo
-                            ></v-text-field>
-                          </v-col>
-                          <v-col cols="12" sm="5">
-                            <v-text-field
-                              :rules="[rules.required]"
-                              v-model="lastname"
-                              label="Last Name"
-                              dense
-                              rounded
-                              solo
-                            ></v-text-field>
-                          </v-col>
-                        </v-row>
-                        <!--  -->
-                        <v-row
-                          class="mr-2 mt-6"
-                          style="margin-bottom: -2%; font-size: 14px"
-                        >
-                          <v-col class="hidden-xs-only" cols="12" sm="4">
-                            Code
-                          </v-col>
-                          <v-col class="hidden-xs-only" cols="12" sm="4">
-                            Position
-                          </v-col>
-                          <v-col
-                            class="hidden-xs-only"
-                            cols="12"
-                            sm="4"
-                            style="margin-right: -1%; padding-right: 0%"
-                          >
-                            Department
-                          </v-col>
-                        </v-row>
-                        <!--  -->
-                        <v-row class="mr-2 mt-0" style="margin-bottom: -6%">
-                          <v-col cols="12" sm="4">
-                            <v-text-field
-                              :rules="[rules.required]"
-                              v-model="code"
-                              label="Code"
-                              dense
-                              rounded
-                              solo
-                            ></v-text-field>
-                          </v-col>
-                          <v-col cols="12" sm="4">
-                            <v-select
-                              :rules="[rules.required]"
-                              v-model="position"
-                              :items="dataDefault_position"
-                              label="Position"
-                              dense
-                              rounded
-                              solo
-                            ></v-select>
-                          </v-col>
-                          <v-col cols="12" sm="4">
-                            <v-select
-                              :rules="[rules.required]"
-                              v-model="department"
-                              :items="dataDefault_department"
-                              label="Department"
-                              dense
-                              rounded
-                              solo
-                            ></v-select>
-                          </v-col>
-                        </v-row>
-                        <!--  -->
-                        <v-row
-                          class="mr-2 mt-2"
-                          style="margin-bottom: -2%; font-size: 14px"
-                        >
-                          <v-col class="hidden-xs-only" cols="12" sm="12">
-                            E-mail
-                          </v-col>
-                        </v-row>
-                        <!--  -->
-                        <v-row class="mr-2 mt-0" style="margin-bottom: -6%">
-                          <v-col cols="12" sm="12">
-                            <v-text-field
-                              :rules="[rules.required, rules.email]"
-                              v-model="email"
-                              label="E-mail"
-                              dense
-                              rounded
-                              solo
-                            ></v-text-field>
-                          </v-col>
-                        </v-row>
-                        <!--  -->
-                        <v-row
-                          class="mr-2 mt-2"
-                          style="margin-bottom: -2%; font-size: 14px"
-                        >
-                          <v-col class="hidden-xs-only" cols="12" sm="12">
-                            Passwords
-                          </v-col>
-                        </v-row>
-                        <!--  -->
-                        <v-row class="mr-2 mt-0" style="margin-bottom: -4%">
-                          <v-col class="" cols="12" sm="12">
-                            <v-text-field
-                              :rules="[rules.required, rules.counter]"
-                              v-model="password"
-                              label="Password"
-                              :append-icon="
-                                showpassword_newbt ? 'mdi-eye' : 'mdi-eye-off'
-                              "
-                              @click:append="
-                                showpassword_newbt = !showpassword_newbt
-                              "
-                              :type="showpassword_newbt ? 'text' : 'password'"
-                              dense
-                              rounded
-                              solo
-                            ></v-text-field>
-                          </v-col>
-                        </v-row>
-                        <!--  -->
-                        <v-row
-                          class="mr-2 mt-0"
-                          style="margin-bottom: -2%; font-size: 14px"
-                        >
-                          <v-col class="hidden-xs-only" cols="12" sm="6">
-                            Status
-                          </v-col>
-                          <v-col class="hidden-xs-only" cols="12" sm="6">
-                            Role
-                          </v-col>
-                        </v-row>
-                        <!--  -->
-                        <v-row class="mr-2 mt-0">
-                          <v-col cols="12" sm="6">
-                            <v-select
-                              :rules="[rules.required]"
-                              v-model="stratiform"
-                              :items="dataDefault_status_user"
-                              label="Status"
-                              dense
-                              rounded
-                              solo
-                            ></v-select>
-                          </v-col>
-
-                          <v-col cols="12" sm="6">
-                            <v-select
-                              :rules="[rules.required]"
-                              v-model="role"
-                              :items="dataDefault_role_user"
-                              label="Role"
-                              dense
-                              rounded
-                              solo
+                            <v-col
+                              class="hidden-xs-only"
+                              cols="12"
+                              sm="5"
+                              style="margin-right: -1%; padding-right: 0%"
                             >
-                            </v-select>
-                          </v-col>
-                          <!--  -->
-                        </v-row>
+                              Last Name
+                            </v-col>
+                          </v-row>
 
-                        <v-row
-                          class="mr-6 mt-0 mb-1"
-                          style="justify-content: right"
-                        >
-                          <v-btn
-                            class="mr-4"
-                            elevation="2"
-                            color="error"
-                            style="color: white; border-radius: 10px"
-                            @click="(dialog = false), clearInfoNewUser()"
+                          <v-row class="mr-2 mt-0" style="margin-bottom: -8%">
+                            <v-col
+                              cols="12"
+                              sm="3"
+                              style="margin-right: -1%; padding-right: 0%"
+                            >
+                              <v-select
+                                :rules="[rules.required]"
+                                v-model="name"
+                                :items="dataDefault_nametitle"
+                                label="Mr/Miss"
+                                dense
+                                rounded
+                                solo
+                              ></v-select>
+                            </v-col>
+                            <v-col cols="12" sm="4">
+                              <v-text-field
+                                :rules="[rules.required]"
+                                v-model="firstname"
+                                label="First Name"
+                                dense
+                                rounded
+                                solo
+                              ></v-text-field>
+                            </v-col>
+                            <v-col cols="12" sm="5">
+                              <v-text-field
+                                :rules="[rules.required]"
+                                v-model="lastname"
+                                label="Last Name"
+                                dense
+                                rounded
+                                solo
+                              ></v-text-field>
+                            </v-col>
+                          </v-row>
+
+                          <v-row
+                            class="mr-2 mt-6"
+                            style="margin-bottom: -2%; font-size: 14px"
                           >
-                            Cancel
-                          </v-btn>
-                          <v-btn
-                            elevation="2"
-                            color="primary"
-                            style="color: white; border-radius: 10px"
-                            @click="(dialog = false), createUser2()"
+                            <v-col class="hidden-xs-only" cols="12" sm="4">
+                              Code
+                            </v-col>
+                            <v-col class="hidden-xs-only" cols="12" sm="4">
+                              Position
+                            </v-col>
+                            <v-col
+                              class="hidden-xs-only"
+                              cols="12"
+                              sm="4"
+                              style="margin-right: -1%; padding-right: 0%"
+                            >
+                              Department
+                            </v-col>
+                          </v-row>
+                          <!--  -->
+                          <v-row class="mr-2 mt-0" style="margin-bottom: -6%">
+                            <v-col cols="12" sm="4">
+                              <v-text-field
+                                :rules="[rules.required]"
+                                v-model="code"
+                                label="Code"
+                                dense
+                                rounded
+                                solo
+                              ></v-text-field>
+                            </v-col>
+                            <v-col cols="12" sm="4">
+                              <v-select
+                                :rules="[rules.required]"
+                                v-model="position"
+                                :items="dataDefault_position"
+                                label="Position"
+                                dense
+                                rounded
+                                solo
+                              ></v-select>
+                            </v-col>
+                            <v-col cols="12" sm="4">
+                              <v-select
+                                :rules="[rules.required]"
+                                v-model="department"
+                                :items="dataDefault_department"
+                                label="Department"
+                                dense
+                                rounded
+                                solo
+                              ></v-select>
+                            </v-col>
+                          </v-row>
+                          <!--  -->
+                          <v-row
+                            class="mr-2 mt-2"
+                            style="margin-bottom: -2%; font-size: 14px"
                           >
-                            Create
-                          </v-btn>
-                        </v-row>
-                      </div>
-                    </v-card>
-                  </v-col>
-                </v-row>
+                            <v-col class="hidden-xs-only" cols="12" sm="12">
+                              E-mail
+                            </v-col>
+                          </v-row>
+                          <!--  -->
+                          <v-row class="mr-2 mt-0" style="margin-bottom: -6%">
+                            <v-col cols="12" sm="12">
+                              <v-text-field
+                                :rules="[rules.required, rules.email]"
+                                v-model="email"
+                                label="E-mail"
+                                dense
+                                rounded
+                                solo
+                              ></v-text-field>
+                            </v-col>
+                          </v-row>
+                          <!--  -->
+                          <v-row
+                            class="mr-2 mt-2"
+                            style="margin-bottom: -2%; font-size: 14px"
+                          >
+                            <v-col class="hidden-xs-only" cols="12" sm="12">
+                              Passwords
+                            </v-col>
+                          </v-row>
+                          <!--  -->
+                          <v-row class="mr-2 mt-0" style="margin-bottom: -4%">
+                            <v-col class="" cols="12" sm="12">
+                              <v-text-field
+                                :rules="[rules.required, rules.counter]"
+                                v-model="password"
+                                label="Password"
+                                :append-icon="
+                                  showpassword_newbt ? 'mdi-eye' : 'mdi-eye-off'
+                                "
+                                @click:append="
+                                  showpassword_newbt = !showpassword_newbt
+                                "
+                                :type="showpassword_newbt ? 'text' : 'password'"
+                                dense
+                                rounded
+                                solo
+                              ></v-text-field>
+                            </v-col>
+                          </v-row>
+                          <!--  -->
+                          <v-row
+                            class="mr-2 mt-0"
+                            style="margin-bottom: -2%; font-size: 14px"
+                          >
+                            <v-col class="hidden-xs-only" cols="12" sm="6">
+                              Status
+                            </v-col>
+                            <v-col class="hidden-xs-only" cols="12" sm="6">
+                              Role
+                            </v-col>
+                          </v-row>
+                          <!--  -->
+                          <v-row class="mr-2 mt-0">
+                            <v-col cols="12" sm="6">
+                              <v-select
+                                :rules="[rules.required]"
+                                v-model="stratiform"
+                                :items="dataDefault_status_user"
+                                label="Status"
+                                dense
+                                rounded
+                                solo
+                              ></v-select>
+                            </v-col>
+
+                            <v-col cols="12" sm="6">
+                              <v-select
+                                :rules="[rules.required]"
+                                v-model="role"
+                                :items="dataDefault_role_user"
+                                label="Role"
+                                dense
+                                rounded
+                                solo
+                              >
+                              </v-select>
+                            </v-col>
+                            <!--  -->
+                          </v-row>
+
+                          <v-row
+                            class="mr-6 mt-0 mb-1"
+                            style="justify-content: right"
+                          >
+                            <v-btn
+                              class="mr-4"
+                              elevation="2"
+                              color="error"
+                              style="color: white; border-radius: 10px"
+                              @click="(dialog = false), clearInfoNewUser()"
+                            >
+                              Cancel
+                            </v-btn>
+                            <v-btn
+                              elevation="2"
+                              color="primary"
+                              type="submit"
+                              style="color: white; border-radius: 10px"
+                            >
+                              Create
+                            </v-btn>
+                          </v-row>
+                        </div>
+                      </v-card>
+                    </v-col>
+                  </v-row>
+                </v-form>
                 <!-- End Form -->
               </v-card>
             </v-dialog>
@@ -855,286 +859,287 @@
                   <span class="text-h5">Manage User</span>
                 </v-card-title>
                 <!-- Form -->
-                <v-row class="mb-2" no-gutters>
-                  <!-- Upload image -->
-                  <v-col class="col-12" col="12" sm="12" md="2">
-                    <v-card
-                      style="border: none"
-                      class="mx-auto text-center"
-                      outlined
-                      tile
-                      height="100%"
-                    >
-                      <!--  -->
-                      <template>
+                <v-form ref="form">
+                  <v-row class="mb-2" no-gutters>
+                    <!-- Upload image -->
+                    <v-col class="col-12" col="12" sm="12" md="2">
+                      <v-card
+                        style="border: none"
+                        class="mx-auto text-center"
+                        outlined
+                        tile
+                        height="100%"
+                      >
+                        <!--  -->
+                        <template>
+                          <div>
+                            <form>
+                              <label class="mt-10 avatar-upload">
+                                <input
+                                  type="file"
+                                  ref="fileInput"
+                                  @change="uploadFile_manage"
+                                />
+                                <v-icon
+                                  class="center mt-7"
+                                  color="black"
+                                  size="30px"
+                                  v-if="!imageManage"
+                                  >mdi-cloud-upload-outline</v-icon
+                                >
+                                <img v-if="avatar != null" :src="avatar" />
+                                <img
+                                  v-else-if="imageManage"
+                                  :src="getImageUrl(imageManage)"
+                                />
+                              </label>
+                            </form>
+                          </div>
+                        </template>
+                        <!--  -->
+                      </v-card>
+                    </v-col>
+                    <!-- Input Form -->
+                    <v-col col="12" sm="12" md="10">
+                      <v-card
+                        style="border: none"
+                        class="pa-2"
+                        outlined
+                        tile
+                        height="100%"
+                      >
                         <div>
-                          <form>
-                            <label class="mt-10 avatar-upload">
-                              <input
-                                type="file"
-                                ref="fileInput"
-                                @change="uploadFile_manage"
-                              />
-                              <v-icon
-                                class="center mt-7"
-                                color="black"
-                                size="30px"
-                                v-if="!imageManage"
-                                >mdi-cloud-upload-outline</v-icon
-                              >
-                              <img v-if="avatar != null" :src="avatar" />
-                              <img
-                                v-else-if="imageManage"
-                                :src="getImageUrl(imageManage)"
-                              />
-                            </label>
-                          </form>
-                        </div>
-                      </template>
-                      <!--  -->
-                    </v-card>
-                  </v-col>
-                  <!-- Input Form -->
-                  <v-col col="12" sm="12" md="10">
-                    <v-card
-                      style="border: none"
-                      class="pa-2"
-                      outlined
-                      tile
-                      height="100%"
-                    >
-                      <div>
-                        <v-row
-                          class="mr-2"
-                          style="margin-bottom: -2%; font-size: 14px"
-                        >
-                          <v-col class="hidden-xs-only" cols="12" sm="3">
-                            Title
-                          </v-col>
-                          <v-col class="hidden-xs-only" cols="12" sm="4">
-                            First Name
-                          </v-col>
+                          <v-row
+                            class="mr-2"
+                            style="margin-bottom: -2%; font-size: 14px"
+                          >
+                            <v-col class="hidden-xs-only" cols="12" sm="3">
+                              Title
+                            </v-col>
+                            <v-col class="hidden-xs-only" cols="12" sm="4">
+                              First Name
+                            </v-col>
 
-                          <v-col
-                            class="hidden-xs-only"
-                            cols="12"
-                            sm="5"
-                            style="margin-right: -1%; padding-right: 0%"
-                          >
-                            Last Name
-                          </v-col>
-                        </v-row>
-                        <!--  -->
-                        <v-row class="mr-2 mt-0" style="margin-bottom: -8%">
-                          <v-col
-                            cols="12"
-                            sm="3"
-                            style="margin-right: -1%; padding-right: 0%"
-                          >
-                            <v-select
-                              :rules="[rules.required]"
-                              v-model="editedItem.misname"
-                              :items="dataDefault_nametitle"
-                              label="Mr/Miss"
-                              dense
-                              rounded
-                              solo
-                            ></v-select>
-                          </v-col>
-                          <v-col cols="12" sm="4">
-                            <v-text-field
-                              :rules="[rules.required]"
-                              v-model="editedItem.user_firstname"
-                              label="First Name"
-                              dense
-                              rounded
-                              solo
-                            ></v-text-field>
-                          </v-col>
-                          <v-col cols="12" sm="5">
-                            <v-text-field
-                              :rules="[rules.required]"
-                              v-model="editedItem.user_lastname"
-                              label="Last Name"
-                              dense
-                              rounded
-                              solo
-                            ></v-text-field>
-                          </v-col>
-                        </v-row>
-                        <!--  -->
-                        <v-row
-                          class="mr-2 mt-6"
-                          style="margin-bottom: -2%; font-size: 14px"
-                        >
-                          <v-col class="hidden-xs-only" cols="12" sm="4">
-                            Code
-                          </v-col>
-                          <v-col class="hidden-xs-only" cols="12" sm="4">
-                            Position
-                          </v-col>
-                          <v-col
-                            class="hidden-xs-only"
-                            cols="12"
-                            sm="4"
-                            style="margin-right: -1%; padding-right: 0%"
-                          >
-                            Department
-                          </v-col>
-                        </v-row>
-                        <!--  -->
-                        <v-row class="mr-2 mt-0" style="margin-bottom: -6%">
-                          <v-col cols="12" sm="4">
-                            <v-text-field
-                              :rules="[rules.required]"
-                              v-model="editedItem.user_id"
-                              label="Code"
-                              dense
-                              rounded
-                              solo
-                            ></v-text-field>
-                          </v-col>
-                          <v-col cols="12" sm="4">
-                            <v-select
-                              :rules="[rules.required]"
-                              v-model="editedItem.user_position"
-                              :items="dataDefault_position"
-                              label="Position"
-                              dense
-                              rounded
-                              solo
-                            ></v-select>
-                          </v-col>
-                          <v-col cols="12" sm="4">
-                            <v-select
-                              :rules="[rules.required]"
-                              v-model="editedItem.user_department"
-                              :items="dataDefault_department"
-                              label="Department"
-                              dense
-                              rounded
-                              solo
-                            ></v-select>
-                          </v-col>
-                        </v-row>
-                        <!--  -->
-                        <v-row
-                          class="mr-2 mt-2"
-                          style="margin-bottom: -2%; font-size: 14px"
-                        >
-                          <v-col class="hidden-xs-only" cols="12" sm="12">
-                            E-mail
-                          </v-col>
-                        </v-row>
-                        <!--  -->
-                        <v-row class="mr-2 mt-0" style="margin-bottom: -6%">
-                          <v-col cols="12" sm="12">
-                            <v-text-field
-                              :rules="[rules.required, rules.email]"
-                              v-model="editedItem.user_email"
-                              label="E-mail"
-                              dense
-                              rounded
-                              solo
-                            ></v-text-field>
-                          </v-col>
-                        </v-row>
-                        <!--  -->
-                        <v-row
-                          class="mr-2 mt-2"
-                          style="margin-bottom: -2%; font-size: 14px"
-                        >
-                          <v-col class="hidden-xs-only" cols="12" sm="12">
-                            Passwords
-                          </v-col>
-                        </v-row>
-                        <!--  -->
-                        <v-row class="mr-2 mt-0" style="margin-bottom: -4%">
-                          <v-col class="" cols="12" sm="12">
-                            <v-text-field
-                              v-model="editedItem.user_password"
-                              label="Password"
-                              :append-icon="
-                                showpassword_managebt
-                                  ? 'mdi-eye'
-                                  : 'mdi-eye-off'
-                              "
-                              @click:append="
-                                showpassword_managebt = !showpassword_managebt
-                              "
-                              :type="
-                                showpassword_managebt ? 'text' : 'password'
-                              "
-                              dense
-                              rounded
-                              solo
-                            ></v-text-field>
-                          </v-col>
-                        </v-row>
-                        <!--  -->
-                        <v-row
-                          class="mr-2 mt-0"
-                          style="margin-bottom: -2%; font-size: 14px"
-                        >
-                          <v-col class="hidden-xs-only" cols="12" sm="6">
-                            Status
-                          </v-col>
-                          <v-col class="hidden-xs-only" cols="12" sm="6">
-                            Role
-                          </v-col>
-                        </v-row>
-                        <!--  -->
-                        <v-row class="mr-2 mt-0">
-                          <v-col cols="12" sm="6">
-                            <v-select
-                              :rules="[rules.required]"
-                              v-model="editedItem.user_status"
-                              :items="dataDefault_status_user"
-                              label="Status"
-                              dense
-                              rounded
-                              solo
-                            ></v-select>
-                          </v-col>
-                          <v-col cols="12" sm="6">
-                            <v-select
-                              :rules="[rules.required]"
-                              v-model="editedItem.user_role"
-                              :items="dataDefault_role_user"
-                              label="Role"
-                              dense
-                              rounded
-                              solo
-                            ></v-select>
-                          </v-col>
+                            <v-col
+                              class="hidden-xs-only"
+                              cols="12"
+                              sm="5"
+                              style="margin-right: -1%; padding-right: 0%"
+                            >
+                              Last Name
+                            </v-col>
+                          </v-row>
                           <!--  -->
-                        </v-row>
-                        <v-row
-                          class="mr-6 mt-0 mb-1"
-                          style="justify-content: right"
-                        >
-                          <v-btn
-                            class="mr-4"
-                            elevation="2"
-                            color="error"
-                            style="color: white; border-radius: 10px"
-                            @click="deleteUser()"
+                          <v-row class="mr-2 mt-0" style="margin-bottom: -8%">
+                            <v-col
+                              cols="12"
+                              sm="3"
+                              style="margin-right: -1%; padding-right: 0%"
+                            >
+                              <v-select
+                                :rules="[rules.required]"
+                                v-model="editedItem.misname"
+                                :items="dataDefault_nametitle"
+                                label="Mr/Miss"
+                                dense
+                                rounded
+                                solo
+                              ></v-select>
+                            </v-col>
+                            <v-col cols="12" sm="4">
+                              <v-text-field
+                                :rules="[rules.required]"
+                                v-model="editedItem.user_firstname"
+                                label="First Name"
+                                dense
+                                rounded
+                                solo
+                              ></v-text-field>
+                            </v-col>
+                            <v-col cols="12" sm="5">
+                              <v-text-field
+                                :rules="[rules.required]"
+                                v-model="editedItem.user_lastname"
+                                label="Last Name"
+                                dense
+                                rounded
+                                solo
+                              ></v-text-field>
+                            </v-col>
+                          </v-row>
+                          <!--  -->
+                          <v-row
+                            class="mr-2 mt-6"
+                            style="margin-bottom: -2%; font-size: 14px"
                           >
-                            <h4>Delete</h4>
-                          </v-btn>
-                          <v-btn
-                            elevation="2"
-                            color="primary"
-                            style="color: white; border-radius: 10px"
-                            @click="updateUser2()"
+                            <v-col class="hidden-xs-only" cols="12" sm="4">
+                              Code
+                            </v-col>
+                            <v-col class="hidden-xs-only" cols="12" sm="4">
+                              Position
+                            </v-col>
+                            <v-col
+                              class="hidden-xs-only"
+                              cols="12"
+                              sm="4"
+                              style="margin-right: -1%; padding-right: 0%"
+                            >
+                              Department
+                            </v-col>
+                          </v-row>
+                          <!--  -->
+                          <v-row class="mr-2 mt-0" style="margin-bottom: -6%">
+                            <v-col cols="12" sm="4">
+                              <v-text-field
+                                :rules="[rules.required]"
+                                v-model="editedItem.user_id"
+                                label="Code"
+                                dense
+                                rounded
+                                solo
+                              ></v-text-field>
+                            </v-col>
+                            <v-col cols="12" sm="4">
+                              <v-select
+                                :rules="[rules.required]"
+                                v-model="editedItem.user_position"
+                                :items="dataDefault_position"
+                                label="Position"
+                                dense
+                                rounded
+                                solo
+                              ></v-select>
+                            </v-col>
+                            <v-col cols="12" sm="4">
+                              <v-select
+                                :rules="[rules.required]"
+                                v-model="editedItem.user_department"
+                                :items="dataDefault_department"
+                                label="Department"
+                                dense
+                                rounded
+                                solo
+                              ></v-select>
+                            </v-col>
+                          </v-row>
+                          <!--  -->
+                          <v-row
+                            class="mr-2 mt-2"
+                            style="margin-bottom: -2%; font-size: 14px"
                           >
-                            <h4>Update</h4>
-                          </v-btn>
-                        </v-row>
-                      </div>
-                    </v-card>
-                  </v-col>
-                </v-row>
+                            <v-col class="hidden-xs-only" cols="12" sm="12">
+                              E-mail
+                            </v-col>
+                          </v-row>
+
+                          <v-row class="mr-2 mt-0" style="margin-bottom: -6%">
+                            <v-col cols="12" sm="12">
+                              <v-text-field
+                                :rules="[rules.required, rules.email]"
+                                v-model="editedItem.user_email"
+                                label="E-mail"
+                                dense
+                                rounded
+                                solo
+                              ></v-text-field>
+                            </v-col>
+                          </v-row>
+                          <!--  -->
+                          <v-row
+                            class="mr-2 mt-2"
+                            style="margin-bottom: -2%; font-size: 14px"
+                          >
+                            <v-col class="hidden-xs-only" cols="12" sm="12">
+                              Passwords
+                            </v-col>
+                          </v-row>
+                          <!--  -->
+                          <v-row class="mr-2 mt-0" style="margin-bottom: -4%">
+                            <v-col class="" cols="12" sm="12">
+                              <v-text-field
+                                v-model="editedItem.user_password"
+                                label="Password"
+                                :append-icon="
+                                  showpassword_managebt
+                                    ? 'mdi-eye'
+                                    : 'mdi-eye-off'
+                                "
+                                @click:append="
+                                  showpassword_managebt = !showpassword_managebt
+                                "
+                                :type="
+                                  showpassword_managebt ? 'text' : 'password'
+                                "
+                                dense
+                                rounded
+                                solo
+                              ></v-text-field>
+                            </v-col>
+                          </v-row>
+                          <!--  -->
+                          <v-row
+                            class="mr-2 mt-0"
+                            style="margin-bottom: -2%; font-size: 14px"
+                          >
+                            <v-col class="hidden-xs-only" cols="12" sm="6">
+                              Status
+                            </v-col>
+                            <v-col class="hidden-xs-only" cols="12" sm="6">
+                              Role
+                            </v-col>
+                          </v-row>
+
+                          <v-row class="mr-2 mt-0">
+                            <v-col cols="12" sm="6">
+                              <v-select
+                                :rules="[rules.required]"
+                                v-model="editedItem.user_status"
+                                :items="dataDefault_status_user"
+                                label="Status"
+                                dense
+                                rounded
+                                solo
+                              ></v-select>
+                            </v-col>
+                            <v-col cols="12" sm="6">
+                              <v-select
+                                :rules="[rules.required]"
+                                v-model="editedItem.user_role"
+                                :items="dataDefault_role_user"
+                                label="Role"
+                                dense
+                                rounded
+                                solo
+                              ></v-select>
+                            </v-col>
+                          </v-row>
+                          <v-row
+                            class="mr-6 mt-0 mb-1"
+                            style="justify-content: right"
+                          >
+                            <v-btn
+                              class="mr-4"
+                              elevation="2"
+                              color="error"
+                              style="color: white; border-radius: 10px"
+                              @click="deleteUser()"
+                            >
+                              <h4>Delete</h4>
+                            </v-btn>
+                            <v-btn
+                              elevation="2"
+                              color="primary"
+                              style="color: white; border-radius: 10px"
+                              @click="updateUser2()"
+                            >
+                              <h4>Update</h4>
+                            </v-btn>
+                          </v-row>
+                        </div>
+                      </v-card>
+                    </v-col>
+                  </v-row>
+                </v-form>
                 <!-- End Form -->
               </v-card>
             </v-dialog>
@@ -1257,17 +1262,17 @@ export default {
       dataDefault_status_user: [],
       dataDefault_issue_type: [],
       dataDefault_issue_priotity: [],
-      check_role:"",
+      check_role: "",
     };
   },
   created() {
     this.getUser();
     this.initialize();
   },
-    mounted() {
+  mounted() {
     this.getUser();
   },
-    computed: {
+  computed: {
     userId() {
       if (typeof window !== "undefined") {
         return window.localStorage.getItem("userId");
@@ -1276,22 +1281,18 @@ export default {
     },
   },
   methods: {
-    initialize(){
-    this.getUser();
-    this.getAll();
-    this.getPosition_Developer();
-    this.getPosition_Implementer();
-    this.getPosition_ProgramManagement();
-    this.getPosition_SystemAnalyst();
-    this.getPosition_ReportDeveloper();
-    this.getAllDefault();
+    initialize() {
+      this.getUser();
+      this.getAll();
+      this.getPosition_Developer();
+      this.getPosition_Implementer();
+      this.getPosition_ProgramManagement();
+      this.getPosition_SystemAnalyst();
+      this.getPosition_ReportDeveloper();
+      this.getAllDefault();
     },
     async getUser() {
       await this.$axios.get("/users/getOne/" + this.userId).then((res) => {
-        // this.user_id = res.data[0].user_id;
-        // this.user_firstname = res.data[0].user_firstname;
-        // this.user_lastname = res.data[0].user_lastname;
-        // this.user_position = res.data[0].user_position;
         this.check_role = res.data[0].user_role;
         console.log(this.check_role);
       });
@@ -1301,8 +1302,6 @@ export default {
         this.data = data.data;
         console.log(this.data);
         this.splitImage(this.data, this.imageALL);
-        // console.log("this.imageALL");
-        // console.log(this.data[0].user_pic);
       });
     },
     async getPosition_Developer() {
@@ -1387,7 +1386,25 @@ export default {
     },
 
     async createUser2() {
+      if (
+        this.email == "" ||
+        this.name == "" ||
+        this.firstname == "" ||
+        this.lastname == "" ||
+        this.code == "" ||
+        this.position == "" ||
+        this.department == "" ||
+        this.password == "" ||
+        this.stratiform == "" ||
+        this.role == ""
+      ) {
+        await this.$refs.formCreate.validate();
+        alert("Please fill in all required fields.");
+        return;
+      }
+
       try {
+        await this.$refs.formCreate.validate();
         const formData = new FormData();
         formData.append("user_firstname", this.name + " " + this.firstname);
         formData.append("user_lastname", this.lastname);
@@ -1404,8 +1421,9 @@ export default {
             "Content-Type": "multipart/form-data",
           },
         });
-        console.log("post success");
+        console.log("post success1111");
         const promise = new Promise((resolve, reject) => {
+          this.dialog = false;
           this.getAll();
           this.getPosition_Developer();
           this.getPosition_Implementer();
@@ -1417,11 +1435,12 @@ export default {
         });
         promise.then(() => {
           setTimeout(() => {
-            alert("success");
+            alert("Success! The new user has been created.");
             window.location.href = "http://localhost:3000/manageUser"; // replace with your actual URL
           }, 1000);
         });
       } catch (error) {
+        // If an error occurs, display an error message
         console.error(error);
         alert("Error submitting form");
       }
