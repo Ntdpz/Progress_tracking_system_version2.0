@@ -60,7 +60,7 @@
           </v-col>
         </v-card-title>
         <v-form ref="form" @submit.prevent="saveProject">
-        <v-card-text>
+          <v-card-text>
             <v-container>
               <v-row>
                 <v-col cols="12">
@@ -117,20 +117,20 @@
                 </v-col>
               </v-row>
             </v-container>
-          
-        </v-card-text>
-        <v-card-actions>
-          <v-btn color="error" dark @click="DeleteAllProject()" v-show="mode == 'edit'">
-            <h5>Delete</h5>
-          </v-btn>
-          <v-spacer></v-spacer>
-          <v-btn color="primary" text @click="clearCreateProject">
-            <h5>Close</h5>
-          </v-btn>
-          <v-btn color="primary" dark type="submit">
-            <h5>{{ mode === "create" ? "Create" : "Save" }}</h5>
-          </v-btn>
-        </v-card-actions>
+
+          </v-card-text>
+          <v-card-actions>
+            <v-btn color="error" dark @click="DeleteAllProject()" v-show="mode == 'edit'">
+              <h5>Delete</h5>
+            </v-btn>
+            <v-spacer></v-spacer>
+            <v-btn color="primary" text @click="clearCreateProject">
+              <h5>Close</h5>
+            </v-btn>
+            <v-btn color="primary" dark type="submit">
+              <h5>{{ mode === "create" ? "Create" : "Save" }}</h5>
+            </v-btn>
+          </v-card-actions>
         </v-form>
       </v-card>
     </v-dialog>
@@ -139,10 +139,7 @@
 
 
     <!-- Admin -->
-    <div v-if="loading === true" style="text-align: center;">
-      <v-progress-circular :size="70" :width="7" color="purple" indeterminate></v-progress-circular>
-    </div>
-    <div v-else-if="userrole === 'Admin' || userposition === 'Implementer'">
+    <div v-if="userrole === 'Admin' || userposition === 'Implementer'">
       <v-expansion-panels v-for="(project, index) in projectListAdmin" :key="index" class="mb-5" :items="projectList">
         <v-expansion-panel>
           <v-expansion-panel-header disable-icon-rotate>
@@ -185,7 +182,7 @@
                   <v-btn class="new-btn ma-2 text-left" outlined color="indigo" dark v-bind="attrs" v-on="on" block
                     @click="dialogSystem(projectList[index])">
                     <span class="mdi mdi-plus-circle-outline" style="font-size: 20px; color: black"></span>
-                    <h4 style="color: black">Add New Sub System</h4>
+                    <h4 style="color: black">Create System</h4>
                   </v-btn>
                 </template>
                 <v-card>
@@ -221,9 +218,10 @@
                             v-model="system.system_shortname"></v-text-field>
                         </v-col>
                         <v-col class="col-12" sm="12" md="12">
-                          <v-select label="Choose developer" style="text-align-last: left" v-model="user_id"
-                            :items="data_position_Developer" item-text="user_firstname" item-value="id" dense outlined
-                            chips multiple single-line>
+                          <!--  -->
+                          <v-select label="Choose developer" v-model="user_id"
+                            :items="data_position_Developer" item-text="user_firstname" item-value="id"  outlined
+                            chips multiple >
                             <template v-slot:item="{ item }">
                               {{ item.user_firstname }}
                             </template>
@@ -231,8 +229,8 @@
                         </v-col>
                         <v-col class="col-12" sm="12" md="12">
                           <v-select label="Choose implementer" style="text-align-last: left" v-model="user_id"
-                            :items="data_position_Implementer" item-text="user_firstname" item-value="id" dense outlined
-                            chips multiple single-line>
+                            :items="data_position_Implementer" item-text="user_firstname" item-value="id" outlined
+                            chips multiple>
                             <template v-slot:item="{ item }">
                               {{ item.user_firstname }}
                             </template>
@@ -453,6 +451,9 @@
           </v-expansion-panel-content>
         </v-expansion-panel>
       </v-expansion-panels>
+    </div>
+    <div v-else-if="loading === true" style="text-align: center;">
+      <v-progress-circular :size="70" :width="7" color="purple" indeterminate></v-progress-circular>
     </div>
 
 
@@ -781,61 +782,72 @@ export default {
         this.$refs.form.validate();
       } else {
         if (this.mode == "edit") {
-        this.editedItem.project_start = this.editedItem.formattedDateStart;
-        this.editedItem.project_end = this.editedItem.formattedDateEnd;
-        try {
-        
-          await this.$refs.form.validate();
-          await this.$axios.put(
-            `/projects/updateProject/${this.editedItem.id}`,
-            this.editedItem
-          );
-          // console.log("put success");
-          // window.location.reload();
-          this.initialize();
-          this.getProject();
-          this.getProject2();
-          this.getSystems();
-          this.getPosition_Developer();
-          this.getPosition_Implementer();
-          this.getSystemOwner();
-          this.getSystemsOwner();
-          const promise = new Promise((resolve, reject) => {
-            resolve();
-            this.dialog = false;
-          });
-          promise.then(() => {
-            setTimeout(() => {
-              alert("success");
-            }, 2000);
-          });
-        } catch (error) {
-          console.error(error);
-          alert("Error submitting form");
-        }
-      } else if (this.mode === "create") {
-        this.editedItem.project_start = this.dateStart;
-        this.editedItem.project_end = this.dateEnd;
-        try {
-          await this.$refs.form.validate();
+          this.editedItem.project_start = this.editedItem.formattedDateStart;
+          this.editedItem.project_end = this.editedItem.formattedDateEnd;
+          try {
 
-          await this.$axios.post("/projects/createProject", this.editedItem);
-          // console.log("post success");
-          // window.location.reload();
-          const promise = new Promise((resolve, reject) => {
-            resolve();
-            this.clearCreateProject();
-          });
-          promise.then(() => {
-            setTimeout(() => {
-              alert("success");
-            }, 2000);
-          });
-        } catch (error) {
-          console.error(error);
-          alert("Error submitting form");
+            await this.$refs.form.validate();
+            await this.$axios.put(
+              `/projects/updateProject/${this.editedItem.id}`,
+              this.editedItem
+            );
+            // console.log("put success");
+            // window.location.reload();
+
+            const promise = new Promise((resolve, reject) => {
+              resolve();
+              this.getUser();
+              this.initialize();
+              this.getProject();
+              this.getProject2();
+              this.getSystems();
+              this.getPosition_Developer();
+              this.getPosition_Implementer();
+              this.getSystemOwner();
+              this.getSystemsOwner();
+              this.dialog = false;
+            });
+            promise.then(() => {
+              setTimeout(() => {
+                alert("success");
+              }, 2000);
+            });
+          } catch (error) {
+            console.error(error);
+            alert("Error submitting form");
+          }
+        } else if (this.mode === "create") {
+          this.editedItem.project_start = this.dateStart;
+          this.editedItem.project_end = this.dateEnd;
+          try {
+            await this.$refs.form.validate();
+
+            await this.$axios.post("/projects/createProject", this.editedItem);
+            // console.log("post success");
+            // window.location.reload();
+            const promise = new Promise((resolve, reject) => {
+              resolve();
+              this.dialog = false;
+              this.getUser();
+              this.initialize();
+              this.getProject();
+              this.getProject2();
+              this.getSystems();
+              this.getPosition_Developer();
+              this.getPosition_Implementer();
+              this.getSystemOwner();
+              this.getSystemsOwner();
+            });
+            promise.then(() => {
+              setTimeout(() => {
+                alert("success");
+              }, 2000);
+            });
+          } catch (error) {
+            console.error(error);
+            alert("Error submitting form");
+          }
         }
-      }
       }
     },
     clearCreateProject() {
@@ -843,7 +855,7 @@ export default {
       this.editedItem.project_shortname = "";
       this.editedItem.project_name = "";
       this.editedItem.project_id = "";
-      this.editedItem.project_agency = ""; 
+      this.editedItem.project_agency = "";
       this.dialog = false;
     },
     async DeleteAllProject() {
@@ -861,11 +873,25 @@ export default {
       // window.location.reload();
       this.dialog = false;
       // this.loading = true;
-      await this.getProject();
-      await this.getSystems();
-      await this.getPosition_Developer();
-      await this.getPosition_Implementer();
-      await this.initialize();
+      const promise = new Promise((resolve, reject) => {
+        resolve();
+        this.loading = true;
+        this.getUser();
+        this.initialize();
+        this.getProject();
+        this.getProject2();
+        this.getSystems();
+        this.getPosition_Developer();
+        this.getPosition_Implementer();
+        this.getSystemOwner();
+        this.getSystemsOwner();
+      });
+      promise.then(() => {
+        setTimeout(() => {
+          // alert("success");
+          this.loading = false;
+        }, 2000);
+      });
       // this.loading = false;
     },
     async deleteProject() {
@@ -873,12 +899,6 @@ export default {
         await this.$axios.delete("/projects/delete/" + this.editedItem.id);
         console.log("delete success");
         // this.loading = true;
-        await this.getProject();
-        await this.getSystems();
-        await this.getPosition_Developer();
-        await this.getPosition_Implementer();
-        await this.initialize();
-        await this.getUser();
         // this.loading = false;
         // window.location.reload();
         // await this.initialize();
