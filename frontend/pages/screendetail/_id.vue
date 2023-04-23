@@ -167,7 +167,7 @@
                 </v-col>
                 <v-col class="" sm="8" md="8">
                   <v-select style="text-align-last: left" v-model="screensID.screen_type" :items="SelectScreenType"
-                    hide-details="auto" dense outlined :disabled="disabled"></v-select>
+                      hide-details="auto" dense outlined :disabled="disabled"></v-select>
                 </v-col>
               </v-row>
               <!--  -->
@@ -538,6 +538,10 @@ export default {
         this.dataDefault.forEach((item) => {
           if (item.level) {
             this.selectlevel.push(item.level);
+          }
+          if (item.screen_type) {
+            this.SelectScreenType.push(item.screen_type);
+            // console.log(this.SelectScreenType);
           }
         });
       });
