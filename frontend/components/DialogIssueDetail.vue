@@ -8,7 +8,6 @@
         <!-- <h5>{{ ProjectName }} > {{ SystemName }} > {{ IssueName }}</h5> -->
         <h5>
           Issue Detail | {{ ProjectName }} > {{ SystemName }}
-          {{ IssuePriority }} {{ priotity_select }}
         </h5>
       </v-card-title>
       <v-row class="pa-5">
