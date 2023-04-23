@@ -116,6 +116,49 @@
                 </v-card>
               </v-dialog>
             </div>
+            <div height="600px">
+              <v-dialog
+                v-model="dialogWrong"
+                persistent
+                max-width="400px"
+                max-height="600px"
+              >
+                <v-card class="pt-4 pb-4">
+                  <v-card-title
+                    class="pt-4 pb-4"
+                    style="
+                      place-content: center;
+                      font-size: 24px;
+                      font-weigth: bold;
+                    "
+                  >
+                    <h4>
+                      คุณกรอกข้อมูลไม่ถูกต้อง <br />
+                      กรุณากรอกใหม่อีกครั้ง
+                    </h4>
+                  </v-card-title>
+                  <div style="text-align-last: center">
+                    <v-icon class="pb-8" style="color: red; font-size: 700%"
+                      >mdi-alert-circle
+                    </v-icon>
+                  </div>
+                  <!-- <v-card-text>
+                    เนื่องจากการกรอกข้อมูลผิดมากกว่า 3 ครั้ง บัญชีจึงล็อก
+                    กรุณาติดต่อแอดมินเพื่อทำการเปลี่ยนข้อมูล</v-card-text
+                  > -->
+                  <v-card-actions class="pb-4">
+                    <v-btn
+                      style="place-content: center; color: white"
+                      color="red"
+                      @click="dialogWrong = false"
+                      width="100%"
+                    >
+                      ตกลง
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+            </div>
           </v-flex>
         </v-layout>
       </v-container>
@@ -131,9 +174,10 @@ export default {
       user_password: "",
       checkbox: false,
       dialog: false,
+      dialogWrong: false,
       countlogin: 0,
 
-      rules: [(value) => !!value || "Required field."],
+      rules: [(value) => !!value || "กรุณากรอกข้อมูลให้ครบถ้วน."],
     };
   },
   methods: {
@@ -155,8 +199,9 @@ export default {
           this.error = response.data.message;
         }
       } catch (error) {
-        // console.error(error);
-        // this.error = "An error occurred";
+        this.dialogWrong = true;
+        console.error(error);
+        this.error = "An error occurred";
       }
     },
   },

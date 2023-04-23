@@ -13,7 +13,7 @@
           style="color: white; border-radius: 10px"
         >
           <v-icon left> mdi-plus-circle-outline </v-icon>
-          New User
+          Create User
         </v-btn>
         <v-btn v-else
           class="mr-10"
