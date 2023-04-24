@@ -1081,7 +1081,8 @@ export default {
             "unassignedIssues",
             this.issue.filter(
               (issue) =>
-                issue.system_id === system.id && issue.issue_assign === ""
+                issue.system_id === system.id &&
+                (issue.issue_assign === "" || issue.issue_assign === null)
             )
           );
           Vue.set(
@@ -1100,7 +1101,7 @@ export default {
             this.issue.filter(
               (issue) =>
                 issue.system_id === system.id &&
-                issue.issue_assign === "" &&
+                (issue.issue_assign === "" || issue.issue_assign === null) &&
                 issue.issue_type === "PNI"
             )
           );
@@ -1120,7 +1121,7 @@ export default {
             this.issue.filter(
               (issue) =>
                 issue.system_id === system.id &&
-                issue.issue_assign === "" &&
+                (issue.issue_assign === "" || issue.issue_assign === null) &&
                 issue.issue_type === "PNC"
             )
           );
