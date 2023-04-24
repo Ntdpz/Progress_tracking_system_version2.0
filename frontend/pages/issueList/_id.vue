@@ -71,9 +71,7 @@
                 class="mdi mdi-plus-circle-outline"
                 style="font-size: 20px; color: black"
               ></span>
-              <h4 style="color: black">
-                Create New Issue {{ system.system_nameTH }} {{ system.id }}
-              </h4>
+              <h4 style="color: black">Create New Issue</h4>
             </v-btn>
             <!-- *dialog -->
             <dialog-issue
