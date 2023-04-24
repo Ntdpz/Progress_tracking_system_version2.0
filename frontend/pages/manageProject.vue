@@ -42,7 +42,7 @@
       <!-- <v-col cols="1"></v-col> -->
     </v-row>
 
-    <v-btn v-if="userposition != 'Developer'" class="new-btn ma-2 text-left" outlined color="indigo" dark block @click="openDialog('create')">
+    <v-btn v-if="userposition != 'Developer' || userrole == 'Admin'" class="new-btn ma-2 text-left" outlined color="indigo" dark block @click="openDialog('create')">
       <span class="mdi mdi-plus-circle-outline" style="font-size: 20px; color: black"></span>
       <h4 style="color: black">CREATE PROJECT</h4>
     </v-btn>
@@ -236,22 +236,6 @@
                             </template>
                           </v-select>
                         </v-col>
-                        <!-- <v-col cols="12" sm="6" md="4">
-                          <v-autocomplete
-                            label="Autocomplete"
-                            :items="[
-                              'dev1',
-                              'dev2',
-                              'dev3',
-                              'dev4',
-                              'dev5',
-                              'dev6',
-                            ]"
-                            multiple
-                            variant="solo"
-                            v-model="system.system_member"
-                          ></v-autocomplete>
-                        </v-col> -->
                       </v-row>
                     </v-container>
                   </v-card-text>
@@ -296,6 +280,7 @@
         </v-expansion-panel>
       </v-expansion-panels>
     </div>
+    <!-- Develop -->
     <div v-else-if="userrole !== 'Admin' && userposition !== 'Implementer'">
       <v-expansion-panels v-for="(project, index) in projectList" :key="index" class="mb-5" :items="projectList">
         <v-expansion-panel>
@@ -332,99 +317,6 @@
 
           <!--  -->
           <v-expansion-panel-content>
-            <v-row justify="center" class="ml-5 mr-5 mt-0">
-              <!-- *dialog -->
-              <v-dialog v-model="dialogSubsystem" persistent max-width="600px" class="">
-                <!-- <template v-slot:activator="{ on, attrs }">
-                  <v-btn class="new-btn ma-2 text-left" outlined color="indigo" dark v-bind="attrs" v-on="on" block
-                    @click="dialogSystem(projectList[index])">
-                    <span class="mdi mdi-plus-circle-outline" style="font-size: 20px; color: black"></span>
-                    <h4 style="color: black">Add New Sub System</h4>
-                  </v-btn>
-                </template> -->
-                <v-card>
-                  <v-card-title>
-                    <v-col cols="12">
-                      <v-row>
-                        <h5>Create System</h5>
-                      </v-row>
-                    </v-col>
-                  </v-card-title>
-                  <v-card-text>
-                    <v-container>
-                      <v-row>
-                        <v-col cols="12">
-                          <p>Create system form Project ID</p>
-                          <v-text-field label="Project ID" placeholder="Project ID" outlined dense disabled
-                            v-model="editedItem.project_id"></v-text-field>
-                        </v-col>
-                        <v-col cols="12">
-                          <v-text-field label="System ID" placeholder="System ID" outlined dense
-                            v-model="system.system_id"></v-text-field>
-                        </v-col>
-                        <v-col cols="12">
-                          <v-text-field label="System Name (TH)" placeholder="System Name (TH)" outlined dense
-                            v-model="system.system_nameTH"></v-text-field>
-                        </v-col>
-                        <v-col cols="12">
-                          <v-text-field label="System Name (EN)" placeholder="System Name (EN)" outlined dense
-                            v-model="system.system_nameEN"></v-text-field>
-                        </v-col>
-                        <v-col cols="12" sm="6" md="6">
-                          <v-text-field label="Short system name" placeholder="Short system name" outlined dense
-                            v-model="system.system_shortname"></v-text-field>
-                        </v-col>
-                        <v-col class="col-12" sm="12" md="12">
-                          <v-select label="Choose developer" style="text-align-last: left" v-model="user_id"
-                            :items="data_position_Developer" item-text="user_firstname" item-value="id" dense outlined
-                            chips multiple single-line>
-                            <template v-slot:item="{ item }">
-                              {{ item.user_firstname }}
-                            </template>
-                          </v-select>
-                        </v-col>
-                        <v-col class="col-12" sm="12" md="12">
-                          <v-select label="Choose implementer" style="text-align-last: left" v-model="user_id"
-                            :items="data_position_Implementer" item-text="user_firstname" item-value="id" dense outlined
-                            chips multiple single-line>
-                            <template v-slot:item="{ item }">
-                              {{ item.user_firstname }}
-                            </template>
-                          </v-select>
-                        </v-col>
-                        <!-- <v-col cols="12" sm="6" md="4">
-                          <v-autocomplete
-                            label="Autocomplete"
-                            :items="[
-                              'dev1',
-                              'dev2',
-                              'dev3',
-                              'dev4',
-                              'dev5',
-                              'dev6',
-                            ]"
-                            multiple
-                            variant="solo"
-                            v-model="system.system_member"
-                          ></v-autocomplete>
-                        </v-col> -->
-                      </v-row>
-                    </v-container>
-                  </v-card-text>
-                  <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn color="primary" text @click="dialogSubsystem = false">
-                      Close
-                    </v-btn>
-                    <v-btn color="primary" dark @click="CreateAllSystem()">
-                      Create
-                    </v-btn>
-                  </v-card-actions>
-                </v-card>
-              </v-dialog>
-            </v-row>
-
-
             <!-- Admin -->
             <v-data-table :headers="headers" :items="project.systems" sort-by="calories"
               class="v-data-table elevation-1 mb-2 mt-5" v-remove-row-borders>
@@ -589,6 +481,8 @@ export default {
       // console.log("Get SystemID successfully!");
       await this.getProjectId();
       // console.log("Get ProjectId successfully!");
+      await this.addUser_project();
+      // console.log("Get ProjectId successfully!");
       await this.addUser_system(this.systemId);
       // console.log("Create successfully!");
     },
@@ -608,6 +502,7 @@ export default {
           project_id: this.projectIds,
         });
         // console.log("POST success for system ID: " + systemID);
+        ;
         alert("Post Success!!");
         await this.getProject();
         await this.getSystems();
@@ -616,6 +511,22 @@ export default {
       } catch (error) {
         console.log(error);
         alert("user_system: " + error);
+      }
+    },
+    async addUser_project() {
+      try {
+        await this.$axios.post("/user_projects/createUser_project", {
+          user_id: this.user_id,
+          project_id: this.projectIds,
+        });
+        // console.log("POST success for system ID: " + systemID);
+        alert("Post Success!!");
+        await this.getProject();
+        await this.getSystems();
+        this.dialogSubsystem = false;
+        this.ClearSubsystem();
+      } catch (error) {
+        console.log(error);
       }
     },
     ClearSubsystem() {
@@ -656,44 +567,6 @@ export default {
           // console.log(this.name_Implementer);
         });
     },
-    // async getSystemsOwner() {
-    //   console.log(this.projectListAdmin[0].systems[0], "List");
-    //   console.log(this.systemOwner, "List systemss");
-
-    //   const projectsWithSystems = [];
-
-    //   for (let i = 0; i < this.projectListAdmin.length; i++) {
-    //     console.log(this.projectListAdmin[i], "projectListAdmin");
-    //     console.log(this.projectList[i], "projectList");
-
-    //     // Check if any system in the current project matches with systemOwner's system_id
-    //     for (let num = 0; num < this.systemOwner.length; num++) {
-    //       console.log(this.systemOwner[num].system_id, "systems Owner2");
-    //       const hasSystem = this.projectListAdmin[i].systems.find(system => {
-    //         return system.id === this.systemOwner[num].system_id;
-    //       });
-
-    //       if (hasSystem) {
-    //         console.log(hasSystem, "hasSystem");
-    //         // If the project has a system installed, add it to the projectsWithSystems array
-    //         projectsWithSystems.push(this.projectListAdmin[i]);
-    //   // console.log(this.projectList[0].systems[0], "Liseeeet");
-    //         // Clear the existing systems data in the projectListAdmin[i].systems array
-    //         this.projectListAdmin[i].systems.splice(0, this.projectListAdmin[i].systems.length);
-    //         // Push the new systems data to the corresponding projectList's systems array
-    //         if (hasSystem) {
-    //           const systemData = this.systemOwner.find(owner => owner.system_id === hasSystem.id);
-    //           console.log(systemData, "systemData");
-    //           this.projectListAdmin[i].systems.push(systemData);
-    //         }
-    //       }
-    //     }
-    //   }
-
-    //   // projectsWithSystems now contains only projects from this.projectList which have systems installed
-    //   console.log(projectsWithSystems);
-    // },
-
     async getSystemsOwner() {
       this.loading = true;
       this.projectOwner = [];
@@ -724,7 +597,6 @@ export default {
           }
         }
       }
-
       // projectsWithSystems now contains only projects from this.projectList which have systems installed
       // console.log(projectsWithSystems);
       // console.log(this.projectListAdmin, "edki");
@@ -898,22 +770,6 @@ export default {
       try {
         await this.$axios.delete("/projects/delete/" + this.editedItem.id);
         console.log("delete success");
-        // this.loading = true;
-        // this.loading = false;
-        // window.location.reload();
-        // await this.initialize();
-        // await this.getProject();
-        // await this.getSystems();
-        // const promise = new Promise((resolve, reject) => {
-        //   resolve();
-        //   this.dialog = false;
-
-        // });
-        // promise.then(() => {
-        //   setTimeout(() => {
-        //     alert("delete success");
-        //   }, 2000);
-        // });
       } catch (error) {
         console.error(error);
         alert("Error delete form");
@@ -926,14 +782,10 @@ export default {
         );
         // console.log("delete success");
         if (response.status === 200 || response.status === 404) {
-          // alert("delete user_screen success");
-          // window.location.reload();
-          // console.log("delete user_screen success");
-          // this.loading = true;
+
         }
       } catch (err) {
         if (err.response && err.response.status === 404) {
-          // do nothing when 404 error occurs
           console.log(err.response);
         }
         console.log(err);
@@ -945,8 +797,6 @@ export default {
           "/user_systems/deleteProjectID/" + this.editedItem.id
         );
         if (response.status === 200) {
-          // alert("delete user_system success");
-          // window.location.reload();
         } else if (response.status === 404) {
           const responseData = response.data;
           if (responseData) {
@@ -966,15 +816,11 @@ export default {
         .delete("/systems/deleteProjectId/" + this.editedItem.id)
         .then((res) => {
           // alert("Detete system Success!");
-
           // this.$router.push("/manageProject");
         })
         .then((response) => {
           console.log(response);
           // console.log("Update success");
-          // alert("Update success");
-
-          // window.location.reload();
         })
         .catch((err) => {
           console.log(err);
@@ -991,8 +837,6 @@ export default {
         .then((response) => {
           console.log(response);
           // console.log("delete success");
-          // alert("delete success");
-          // window.location.reload();
         })
         .catch((err) => {
           if (err.response && err.response.status === 404) {

@@ -70,19 +70,14 @@
               </b>
               <!-- <v-avatar class="ml-4" color="primary" size="20"> </v-avatar>
               <v-avatar class="ml-4" color="error" size="20"> </v-avatar> -->
-              <v-btn v-if="userposition != 'Developer'" class="ml-3" icon color="primary" size="35px">
+              <v-btn v-if="userposition != 'Developer' && userrole != 'Admin'" class="ml-3" icon color="primary" size="35px">
                 <v-icon size="35px" @click="editSystem = true"
                   >mdi mdi-square-edit-outline</v-icon
                 >
               </v-btn>
               <v-spacer></v-spacer>
-              <v-btn v-if="userposition != 'Developer'"
-                @click="
-                  (dialog_newscreen = true),
-                    resetday(),
-                    (menuDateStart = false),
-                    (menuDateEnd = false)
-                "
+              <v-btn v-if="userposition != 'Developer' && userrole != 'Admin'"
+                  @click="(dialog_newscreen = true),resetday(),(menuDateStart = false),(menuDateEnd = false)"
                 elevation="2"
                 color="primary"
                 style="color: white; border-radius: 10px; font-weight: bold"
