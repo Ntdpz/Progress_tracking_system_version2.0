@@ -65,22 +65,24 @@
               v-bind="attrs"
               v-on="on"
               block
-              @click="dialog = true"
+              @click="showIssueCreateDialog(system.system_nameTH, system.id)"
             >
               <span
                 class="mdi mdi-plus-circle-outline"
                 style="font-size: 20px; color: black"
               ></span>
-              <h4 style="color: black">Create New Issue</h4>
+              <h4 style="color: black">
+                Create New Issue {{ system.system_nameTH }} {{ system.id }}
+              </h4>
             </v-btn>
             <!-- *dialog -->
             <dialog-issue
               :dialog.sync="dialog"
               :projectName="projectName"
-              :systemName="system.system_nameTH"
+              :systemName="infoCreate.systemName"
               :projectId="projectId"
-              :systemId="system.id"
-              :mode="'create'"
+              :systemId="infoCreate.systemId"
+              mode="create"
               :userFirstname="user_firstname"
               :userLastname="user_lastname"
               :userId="userId"
@@ -206,7 +208,6 @@
             :IssueCustomer="selected.issue_customer"
             :IssueTypeSA="selected.issue_type_sa"
           />
-          <!--  -->
           <v-tabs-items v-model="tab">
             <v-tab-item>
               <!-- *cardAll -->
@@ -945,6 +946,10 @@ export default {
         formattedDateExpected: "",
         formattedDateStart: "",
       },
+      infoCreate: {
+        systemName: "",
+        systemId: "",
+      },
       headers: [
         {
           text: "Issues ID",
@@ -1123,6 +1128,11 @@ export default {
       } catch (err) {
         console.error(err);
       }
+    },
+    showIssueCreateDialog(systemName, systemId) {
+      this.infoCreate.systemName = systemName;
+      this.infoCreate.systemId = systemId;
+      this.dialog = true;
     },
     showIssueDetailDialog(
       issueid,

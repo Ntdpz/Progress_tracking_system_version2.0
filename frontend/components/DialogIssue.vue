@@ -378,7 +378,6 @@ export default {
       manday: null,
     };
   },
-  updated() {},
   async mounted() {
     await this.getDefault();
     await this.getScreenDefault();
@@ -411,6 +410,15 @@ export default {
       }
     },
     resetForm() {
+      this.projectName = "";
+      this.systemName = "";
+      this.projectId = "";
+      this.systemId = "";
+      this.userFirstname = "";
+      this.userLastname = "";
+      this.userId = "";
+      this.mode = "";
+      this.runningNumber = "";
       this.form.screen_id = "";
       this.form.system_id = "";
       this.form.project_id = "";

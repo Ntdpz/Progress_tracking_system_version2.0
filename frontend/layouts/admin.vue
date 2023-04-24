@@ -238,6 +238,12 @@ export default {
           title: "Schedule",
           to: "/schedule",
         });
+        items.splice(0, 0, {
+          icon: "mdi-view-list",
+          title: "Manage Project",
+          to: "/manageProject",
+        });
+
         return items;
       } else {
         return this.menuOption;
