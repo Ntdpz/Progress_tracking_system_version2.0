@@ -145,7 +145,7 @@ router.delete("/deleteUserID/:user_id", async (req, res) => {
 });
 
 //* DELETE user by project_id
-router.delete("/deleteUserID/:project_id", async (req, res) => {
+router.delete("/deleteProjectID/:project_id", async (req, res) => {
     const project_id = req.params.project_id;
 
     try {

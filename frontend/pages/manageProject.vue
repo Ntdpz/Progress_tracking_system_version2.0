@@ -735,6 +735,8 @@ export default {
       // console.log("success User_screen");
       await this.deleteUserSystem();
       // console.log("success User_system");
+      await this.deleteUserProject();
+      // console.log("success User_project");
       await this.deleteScreenByIdProject();
       // console.log("success screen");
       await this.deleteSystem();
@@ -788,6 +790,26 @@ export default {
         if (err.response && err.response.status === 404) {
           console.log(err.response);
         }
+        console.log(err);
+      }
+    },
+    async deleteUserProject() {
+      try {
+        const response = await this.$axios.delete(
+          "/user_projects/deleteProjectID/" + this.editedItem.id
+        );
+        if (response.status === 200) {
+        } else if (response.status === 404) {
+          const responseData = response.data;
+          if (responseData) {
+            // alert("user_system no have data");
+          } else if (responseData.error && response.status != 404) {
+            // alert(responseData.error);
+            console.log(responseData.error);
+          }
+          // window.location.reload();
+        }
+      } catch (err) {
         console.log(err);
       }
     },
