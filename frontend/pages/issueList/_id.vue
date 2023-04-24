@@ -1066,64 +1066,67 @@ export default {
           issue.formattedDateExpected = dateExpected.format("YYYY-MM-DD");
         });
         this.systems.forEach((system) => {
-          Vue.set(
-            system,
-            "assignedIssues",
-            this.issue.filter(
-              (issue) =>
-                issue.system_id === system.id && issue.issue_assign !== ""
-            )
-          );
-          Vue.set(
-            system,
-            "unassignedIssues",
-            this.issue.filter(
-              (issue) =>
-                issue.system_id === system.id &&
-                (issue.issue_assign === "" || issue.issue_assign === null)
-            )
-          );
-          Vue.set(
-            system,
-            "assignedIssuesPNI",
-            this.issue.filter(
-              (issue) =>
-                issue.system_id === system.id &&
-                issue.issue_assign !== "" &&
-                issue.issue_type === "PNI"
-            )
-          );
-          Vue.set(
-            system,
-            "unassignedIssuesPNI",
-            this.issue.filter(
-              (issue) =>
-                issue.system_id === system.id &&
-                (issue.issue_assign === "" || issue.issue_assign === null) &&
-                issue.issue_type === "PNI"
-            )
-          );
-          Vue.set(
-            system,
-            "assignedIssuesPNC",
-            this.issue.filter(
-              (issue) =>
-                issue.system_id === system.id &&
-                issue.issue_assign !== "" &&
-                issue.issue_type === "PNC"
-            )
-          );
-          Vue.set(
-            system,
-            "unassignedIssuesPNC",
-            this.issue.filter(
-              (issue) =>
-                issue.system_id === system.id &&
-                (issue.issue_assign === "" || issue.issue_assign === null) &&
-                issue.issue_type === "PNC"
-            )
-          );
-        });
+  Vue.set(
+    system,
+    "assignedIssues",
+    this.issue.filter(
+      (issue) =>
+        issue.system_id === system.id && (
+          issue.issue_assign !== "" && issue.issue_assign !== null
+        )
+    )
+  );
+  Vue.set(
+    system,
+    "unassignedIssues",
+    this.issue.filter(
+      (issue) =>
+        issue.system_id === system.id &&
+        (issue.issue_assign === "" || issue.issue_assign === null)
+    )
+  );
+  Vue.set(
+    system,
+    "assignedIssuesPNI",
+    this.issue.filter(
+      (issue) =>
+        issue.system_id === system.id &&
+        (issue.issue_assign !== "" && issue.issue_assign !== null) &&
+        issue.issue_type === "PNI"
+    )
+  );
+  Vue.set(
+    system,
+    "unassignedIssuesPNI",
+    this.issue.filter(
+      (issue) =>
+        issue.system_id === system.id &&
+        (issue.issue_assign === "" || issue.issue_assign === null) &&
+        issue.issue_type === "PNI"
+    )
+  );
+  Vue.set(
+    system,
+    "assignedIssuesPNC",
+    this.issue.filter(
+      (issue) =>
+        issue.system_id === system.id &&
+        (issue.issue_assign !== "" && issue.issue_assign !== null) &&
+        issue.issue_type === "PNC"
+    )
+  );
+  Vue.set(
+    system,
+    "unassignedIssuesPNC",
+    this.issue.filter(
+      (issue) =>
+        issue.system_id === system.id &&
+        (issue.issue_assign === "" || issue.issue_assign === null) &&
+        issue.issue_type === "PNC"
+    )
+  );
+});
+
       } catch (err) {
         console.error(err);
       }
