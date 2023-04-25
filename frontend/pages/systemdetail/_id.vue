@@ -70,13 +70,13 @@
               </b>
               <!-- <v-avatar class="ml-4" color="primary" size="20"> </v-avatar>
               <v-avatar class="ml-4" color="error" size="20"> </v-avatar> -->
-              <v-btn v-if="userposition != 'Developer' && userrole != 'Admin'" class="ml-3" icon color="primary" size="35px">
+              <v-btn v-if="userposition != 'Developer' || userrole == 'Admin'" class="ml-3" icon color="primary" size="35px">
                 <v-icon size="35px" @click="editSystem = true"
                   >mdi mdi-square-edit-outline</v-icon
                 >
               </v-btn>
               <v-spacer></v-spacer>
-              <v-btn v-if="userposition != 'Developer' && userrole != 'Admin'"
+              <v-btn v-if="userposition != 'Developer' || userrole == 'Admin'"
                   @click="(dialog_newscreen = true),resetday(),(menuDateStart = false),(menuDateEnd = false)"
                 elevation="2"
                 color="primary"
@@ -1031,6 +1031,11 @@ export default {
 
           this.user_developer = this.data_position_Developer;
           this.user_implementer = this.data_position_Implementer;
+          console.log(this.user_developer, "user_developer");
+          console.log(this.user_implementer, "user_implementer");
+          console.log(data.data, "data.data");
+
+
         });
     },
     async addUser_Screen(screenID) {
@@ -1131,6 +1136,8 @@ export default {
       // console.log("successfully deleted 2");
       await this.updateSystem();
       // console.log("successfully update");
+      await this.addUser_project();
+      // console.log("successfully update");
     },
     async updateSystem() {
       await this.$axios
@@ -1188,6 +1195,22 @@ export default {
       } catch (error) {
         console.log(error);
         alert("user_system: " + error);
+      }
+    },
+    async addUser_project() {
+      try {
+        await this.$axios.post("/user_projects/createUser_project", {
+          user_id: this.sumUser,
+          project_id: this.projectID,
+        });
+        // console.log("POST success for system ID: " + systemID);
+        alert("Post Success!!");
+        await this.getProject();
+        await this.getSystems();
+        this.dialogSubsystem = false;
+        this.ClearSubsystem();
+      } catch (error) {
+        console.log(error);
       }
     },
     async deleteAll() {
