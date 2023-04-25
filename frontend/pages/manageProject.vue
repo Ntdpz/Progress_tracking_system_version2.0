@@ -6,13 +6,13 @@
       </v-text-title>
       <v-divider class="mt-3 mb-1" inset vertical style="background-color: black"></v-divider>
       <div style="
-                  border-radius: 99px;
-                  border: 2px solid #333;
-                  height: 32px;
-                  width: 25%;
-                  margin-left: 1%;
-                  margin-top: 0.8%;
-                ">
+                    border-radius: 99px;
+                    border: 2px solid #333;
+                    height: 32px;
+                    width: 25%;
+                    margin-left: 1%;
+                    margin-top: 0.8%;
+                  ">
         <v-text-field placeholder="Search some project" prepend-icon="mdi-magnify" rounded dense color="primary"
           style="margin-top: 1px; margin-left: 3%"></v-text-field>
       </div>
@@ -42,7 +42,8 @@
       <!-- <v-col cols="1"></v-col> -->
     </v-row>
 
-    <v-btn v-if="userposition != 'Developer' || userrole == 'Admin'" class="new-btn ma-2 text-left" outlined color="indigo" dark block @click="openDialog('create')">
+    <v-btn v-if="userposition != 'Developer' || userrole == 'Admin'" class="new-btn ma-2 text-left" outlined
+      color="indigo" dark block @click="openDialog('create')">
       <span class="mdi mdi-plus-circle-outline" style="font-size: 20px; color: black"></span>
       <h4 style="color: black">CREATE PROJECT</h4>
     </v-btn>
@@ -219,18 +220,17 @@
                         </v-col>
                         <v-col class="col-12" sm="12" md="12">
                           <!--  -->
-                          <v-select label="Choose developer" v-model="user_id"
-                            :items="data_position_Developer" item-text="user_firstname" item-value="id"  outlined
-                            chips multiple >
+                          <v-select label="Choose developer" v-model="choose_user_id" :items="data_position_Developer"
+                            item-text="user_firstname" item-value="id" outlined chips multiple>
                             <template v-slot:item="{ item }">
                               {{ item.user_firstname }}
                             </template>
                           </v-select>
                         </v-col>
                         <v-col class="col-12" sm="12" md="12">
-                          <v-select label="Choose implementer" style="text-align-last: left" v-model="user_id"
-                            :items="data_position_Implementer" item-text="user_firstname" item-value="id" outlined
-                            chips multiple>
+                          <v-select label="Choose implementer" style="text-align-last: left" v-model="choose_user_id"
+                            :items="data_position_Implementer" item-text="user_firstname" item-value="id" outlined chips
+                            multiple>
                             <template v-slot:item="{ item }">
                               {{ item.user_firstname }}
                             </template>
@@ -347,6 +347,7 @@
     <div v-else-if="loading === true" style="text-align: center;">
       <v-progress-circular :size="70" :width="7" color="purple" indeterminate></v-progress-circular>
     </div>
+    <dialog-success :dialog.sync="dialogSuccess" />
 
 
   </div>
@@ -356,7 +357,9 @@
 import { create } from "domain";
 import moment from "moment";
 import Vue from "vue";
+import DialogSuccess from '../components/DialogSuccess.vue';
 export default {
+  components: { DialogSuccess },
   layout: "admin",
   directives: {
     "remove-row-borders": {
@@ -379,6 +382,7 @@ export default {
       dialog: false,
       mode: "create",
       dialogSubsystem: false,
+      dialogSuccess: false,
       headers: [
         {
           text: "Name",
@@ -413,7 +417,7 @@ export default {
       },
       data_position_Developer: [],
       data_position_Implementer: [],
-      user_id: [],
+      choose_user_id: [],
       name_Dev: [],
       systemId: null,
       projectIds: null,
@@ -431,7 +435,7 @@ export default {
     };
   },
   updated() {
-    // console.log(this.user_id);
+    console.log(this.choose_user_id);
   },
   async created() {
     await this.getUser();
@@ -471,7 +475,7 @@ export default {
         this.userlastname = res.data[0].user_lastname;
         this.userposition = res.data[0].user_position;
         this.userrole = res.data[0].user_role;
-        // console.log(this.user_position);
+        // console.log(this.userid, this.userposition, this.userrole);
       });
     },
     async CreateAllSystem() {
@@ -497,7 +501,7 @@ export default {
     async addUser_system(systemID) {
       try {
         await this.$axios.post("/user_systems/createUser_system", {
-          user_id: this.user_id,
+          user_id: this.choose_user_id,
           system_id: systemID,
           project_id: this.projectIds,
         });
@@ -516,7 +520,7 @@ export default {
     async addUser_project() {
       try {
         await this.$axios.post("/user_projects/createUser_project", {
-          user_id: this.user_id,
+          user_id: this.choose_user_id,
           project_id: this.projectIds,
         });
         // console.log("POST success for system ID: " + systemID);
@@ -535,7 +539,7 @@ export default {
       this.system.system_nameTH = "";
       this.system.system_nameEN = "";
       this.system.system_shortname = "";
-      this.user_id = [];
+      // this.choose_user_id = [];
     },
     async getProjectId() {
       await this.$axios
@@ -567,42 +571,71 @@ export default {
           // console.log(this.name_Implementer);
         });
     },
-    async getSystemsOwner() {
-      this.loading = true;
-      this.projectOwner = [];
-      // console.log(this.projectList[0].systems[0], "projectList");
-      // console.log(this.systemOwner, "List systemOwner");
+  // async getSystemsOwner() {
+  //     try {
+  //       this.loading = true;
+  //       this.projectOwner = [];
+  //       // const havesystems = [];
+  //       // const projectsWithSystems = [];
+  //       // console.log(this.systemOwner.length, "this.systemOwner.length");
+  //       // console.log(this.projectListAdmin, "this.projectListAdmin");
+  //       this.projectList.forEach((project, i) => {
+  //           this.projectList[i].systems.splice(0, this.projectList[i].systems.length);
+  //       });
+  //       this.projectListAdmin.forEach((project, i) => {
+  //         // console.log(project, "projectList");
+  //         // console.log(project.systems, "project.systems");
+  //         // this.projectList[i].systems.splice(0, this.projectList[i].systems.length); // Clear systems array
+  //         project.systems.forEach((system, s) => {
+  //           this.systemOwner.forEach((owner, num) => {
+  //             // console.log(owner.system_id, owner, "systems Owner");
+  //             if (project.systems[s].id === owner.system_id) {
+  //               // console.log(project.systems[s].id + "===" + owner.system_id + "??");
+  //               // this.projectList[i].systems.push(this.projectListAdmin[i].systems[s]);
+  //               // this.projectList[i].systems.splice(0, this.projectList[i].systems.length); // Clear systems array
 
-      const projectsWithSystems = [];
-      for (let i = 0; i < this.projectList.length; i++) {
-        // console.log(this.projectList[i], "projectList");
+  //               this.projectList[i].systems.push({ ...this.projectListAdmin[i].systems[s] }); // Create a copy before pushing
+  //             } else {
+  //               console.log("Project not push");
+  //             }
+  //           });
+  //         });
+  //       });
+  //         // projectsWithSystems now contains only projects from this.projectList which have systems installed
+  //         // console.log(projectsWithSystems);
+  //         console.log(this.projectList, "this.projectList");
+  //       // console.log(this.userrole);
+  //       this.loading = false;
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   },
 
-        for (let num = 0; num < this.systemOwner.length; num++) {
-          // console.log(this.systemOwner[num].system_id, "systems Owner2");
-          const hasSystem = this.projectList[i].systems.find(system => {
-            return system.id === this.systemOwner[num].system_id;
-          });
-
-          if (hasSystem) {
-            // console.log(hasSystem, "hasSystem");
-
-            projectsWithSystems.push(this.projectList[i]);
+  async getSystemsOwner() {
+      try {
+        this.loading = true;
+        this.projectOwner = [];
+        this.projectList.forEach((project, i) => {
             this.projectList[i].systems.splice(0, this.projectList[i].systems.length);
-
-            const systemData = this.projectListAdmin[i].systems.find(owner => owner.id === hasSystem.id);
-            if (systemData) {
-
-              this.projectList[i].systems.push(systemData);
-            }
-          }
-        }
+        });
+        this.projectListAdmin.forEach((project, i) => {
+          project.systems.forEach((system, s) => {
+            this.systemOwner.forEach((owner, num) => {
+              if (project.systems[s].id === owner.system_id) {
+                this.projectList[i].systems.push({ ...this.projectListAdmin[i].systems[s] });
+              } else {
+                console.log("System not push");
+              }
+            });
+          });
+        });
+        this.loading = false;
+      } catch (error) {
+        console.log(error);
       }
-      // projectsWithSystems now contains only projects from this.projectList which have systems installed
-      // console.log(projectsWithSystems);
-      // console.log(this.projectListAdmin, "edki");
-      // console.log(this.userrole);
-      this.loading = false;
     },
+
+
 
 
 
@@ -681,7 +714,8 @@ export default {
             });
             promise.then(() => {
               setTimeout(() => {
-                alert("success");
+                // alert("success");
+                this.dialogSuccess = true;
               }, 2000);
             });
           } catch (error) {
@@ -709,10 +743,12 @@ export default {
               this.getPosition_Implementer();
               this.getSystemOwner();
               this.getSystemsOwner();
+
             });
             promise.then(() => {
               setTimeout(() => {
-                alert("success");
+                // alert("success");
+                this.dialogSuccess = true;
               }, 2000);
             });
           } catch (error) {
