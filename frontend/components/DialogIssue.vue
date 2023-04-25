@@ -64,7 +64,6 @@
                   label="ผู้จดแจ้ง"
                   placeholder="ผู้จดแจ้ง"
                   outlined
-                  disabled
                   dense
                   v-model="form.issue_informer"
                 ></v-text-field>
@@ -80,14 +79,14 @@
                 ></v-select>
               </v-col>
               <v-col cols="12" sm="6" md="4">
-                <v-text-field
+                <v-select
+                  :items="issue_status_default"
                   label="สถานะ"
                   placeholder="สถานะ"
-                  outlined
-                  disabled
                   dense
+                  outlined
                   v-model="form.issue_status"
-                ></v-text-field>
+                ></v-select>
               </v-col>
               <!-- date start -->
               <v-col cols="12" sm="6" md="6">
@@ -327,8 +326,6 @@ export default {
   },
   data() {
     return {
-      position_Developers: [],
-      position_Implementer: [],
       date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
         .toISOString()
         .substr(0, 10),
@@ -341,8 +338,6 @@ export default {
       priotity_select: [],
       type_select: [],
       screen_select: [],
-      qc_select: ["QC1"],
-      dev_select: ["Dev1"],
       selected: ["UI"],
       default: [],
       screen_selectDefault: [],
@@ -369,13 +364,16 @@ export default {
         issue_des_implementer: "",
         issue_start: "",
         issue_expected: "",
-        issue_status: "open",
+        issue_status: "รอแก้ไข",
         issue_accepting: "",
         issue_manday: "",
         issue_complete: "",
       },
       dataDefault: [],
       manday: null,
+      position_Developers: [],
+      position_Implementer: [],
+      issue_status_default: [],
     };
   },
   async mounted() {
@@ -469,8 +467,6 @@ export default {
           ? this.selectedScreen.id
           : null;
 
-        const date = new Date();
-        const dateString = date.toISOString().slice(0, 10);
         const data = {
           screen_id: selectedScreenId,
           system_id: this.systemId,
@@ -493,10 +489,13 @@ export default {
           issue_des_implementer: this.form.issue_des_implementer,
           issue_start: null,
           issue_expected: null,
-          issue_status: "open",
+          issue_status: "รอแก้ไข",
           issue_accepting: null,
           issue_manday: null,
           issue_complete: null,
+          issue_status_developer: "รอแก้ไข",
+          issue_status_implement: null,
+          issue_round: 0,
         };
         try {
           await this.$axios.post("/issues/createIssue", data);
@@ -552,6 +551,9 @@ export default {
           }
           if (item.issue_priority) {
             this.priotity_select.push(item.issue_priority);
+          }
+          if (item.issue_status) {
+            this.issue_status_default.push(item.issue_status);
           }
         });
       } catch (error) {

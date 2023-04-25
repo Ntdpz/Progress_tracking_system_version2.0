@@ -6,9 +6,7 @@
     <v-card v-else width="99%" class="pa-0 ma-0">
       <v-card-title class="text-h5 pt-8">
         <!-- <h5>{{ ProjectName }} > {{ SystemName }} > {{ IssueName }}</h5> -->
-        <h5>
-          Issue Detail | {{ ProjectName }} > {{ SystemName }}
-        </h5>
+        <h5>Issue Detail | {{ ProjectName }} > {{ SystemName }}</h5>
       </v-card-title>
       <v-row class="pa-5">
         <v-col>
@@ -75,15 +73,15 @@
               ></v-select>
             </v-col>
             <v-col cols="12" sm="6" md="4">
-              <v-text-field
+              <v-select
+                :items="issue_status_default"
                 label="สถานะ"
                 placeholder="สถานะ"
-                outlined
                 dense
+                outlined
                 v-model="IssueStatus"
-              ></v-text-field>
+              ></v-select>
             </v-col>
-
             <v-col cols="12" sm="6" md="6">
               <v-text-field
                 label="วันที่สร้าง"
@@ -235,11 +233,7 @@
                         <!-- Date of accepting-->
                         <p class="pa-2">
                           Date of accepting /
-                          {{
-                            dateOfAccepting != null
-                              ? dateOfAccepting
-                              : IssueAccepting
-                          }}
+                          {{ dateOfAccepting }}
                         </p>
                         <v-menu
                           v-model="acceptMenu"
@@ -271,11 +265,7 @@
                     <v-col cols="6">
                       <v-row>
                         <v-col>
-                          <p class="pa-2">
-                            Start date /{{
-                              startDate != null ? startDate : IssueStart
-                            }}
-                          </p>
+                          <p class="pa-2">Start date /{{ startDate }}</p>
                         </v-col>
                         <v-col>
                           <p class="pa-2">-</p>
@@ -283,11 +273,7 @@
                         <v-col>
                           <p class="pa-2">
                             Expected completion Date /
-                            {{
-                              expectedCompletionDate != null
-                                ? expectedCompletionDate
-                                : IssueExpected
-                            }}
+                            {{ expectedCompletionDate }}
                           </p>
                         </v-col>
                       </v-row>
@@ -379,13 +365,14 @@
                     <v-col cols="6">
                       <v-row>
                         <p class="pa-2">Status</p>
-                        <v-text-field
-                          label="Status"
-                          placeholder="Status"
-                          outlined
+                        <v-select
+                          :items="issue_status_developer_default"
+                          label="สถานะ"
+                          placeholder="สถานะ"
                           dense
+                          outlined
                           v-model="IssueStatus"
-                        ></v-text-field>
+                        ></v-select>
                       </v-row>
                     </v-col>
                   </v-row>
@@ -393,7 +380,9 @@
                     <v-col cols="6">
                       <v-row>
                         <!-- Completion date-->
-                        <p class="pa-2">Completion date</p>
+                        <p class="pa-2">
+                          Completion date / {{ completionDate }}
+                        </p>
                         <v-menu
                           v-model="completionMenu"
                           :close-on-content-click="false"
@@ -449,13 +438,14 @@
                     <v-col cols="6">
                       <v-row>
                         <p class="pa-2">Status</p>
-                        <v-text-field
-                          label="Status"
-                          placeholder="Status"
-                          outlined
+                        <v-select
+                          :items="issue_status_implement_default"
+                          label="สถานะ"
+                          placeholder="สถานะ"
                           dense
+                          outlined
                           v-model="IssueStatus"
-                        ></v-text-field>
+                        ></v-select>
                       </v-row>
                     </v-col>
                   </v-row>
@@ -549,24 +539,30 @@ export default {
       completionDate: null,
       manday: null,
       //data for update
-      updateManday: "",
-      updateStart: "",
-      updateExpected: "",
-      updatedateOfAccepting: "",
-      updatedateOfStart: "",
-      updatedateOfExpectedCompletion: "",
-      updateCompletion: "",
+      updateManday: null,
+      updateStart: null,
+      updateExpected: null,
+      updatedateOfAccepting: null,
+      updatedateOfStart: null,
+      updatedateOfExpectedCompletion: null,
+      updateCompletion: null,
       screen_selectDefault: [],
       type_select: [],
       priotity_select: [],
       position_Developers: [],
       position_Implementer: [],
+      issue_status_default: [],
+      issue_status_developer_default: [],
+      issue_status_implement_default: [],
     };
   },
   async mounted() {
     await this.getDefault();
     await this.getUserSystemsOncreated();
   },
+  // updated() {
+  //   console.log(this.updatedateOfAccepting, "this.updatedateOfAccepting");
+  // },
   methods: {
     calculateManday() {
       const start = moment(this.startDate);
@@ -578,61 +574,72 @@ export default {
     },
     async saveIssue() {
       this.updateManday = this.manday === null ? this.IssueManday : this.manday;
-      this.updateStart =
-        this.start === null
-          ? moment(this.IssueStart).format("YYYY-MM-DD")
-          : this.startDate;
-      this.updateExpected =
-        this.start === null
-          ? moment(this.IssueExpected).format("YYYY-MM-DD")
-          : this.expectedCompletionDate;
+
+      //accepting date
       this.updatedateOfAccepting =
         this.dateOfAccepting === null
-          ? moment(this.IssueAccepting).format("YYYY-MM-DD")
-          : this.dateOfAccepting;
+          ? null
+          : moment(this.dateOfAccepting).isValid()
+          ? moment(this.dateOfAccepting).format("YYYY-MM-DD")
+          : null;
+      //date start
       this.updatedateOfStart =
         this.startDate === null
+          ? null
+          : moment(this.IssueStart).isValid()
           ? moment(this.IssueStart).format("YYYY-MM-DD")
-          : this.startDate;
+          : null;
+      //date Expected Completion
       this.updatedateOfExpectedCompletion =
         this.expectedCompletionDate === null
+          ? null
+          : moment(this.IssueExpected).isValid()
           ? moment(this.IssueExpected).format("YYYY-MM-DD")
-          : this.expectedCompletionDate;
+          : null;
+      //date Completion
       this.updateCompletion =
         this.completionDate === null
+          ? null
+          : moment(this.IssueComplete).isValid()
           ? moment(this.IssueComplete).format("YYYY-MM-DD")
-          : this.completionDate;
+          : null;
 
-      let formData = new FormData();
-      formData.append("screen_id", this.IssueScreenId);
-      formData.append("system_id", this.SystemId);
-      formData.append("project_id", this.ProjectId);
-      formData.append("issue_name", this.IssueName);
-      formData.append("issue_id", this.IssueId);
-      formData.append("issue_type", this.IssueType);
-      formData.append("issue_informer", this.IssueInformer);
-      formData.append("issue_priority", this.IssuePriority);
-      formData.append("issue_end", this.IssueEndDate);
-      formData.append("issue_assign", this.IssueAssign);
-      formData.append("issue_qc", this.IssueQC);
-      formData.append("issue_des", this.IssueDes);
-      formData.append("issue_des_sa", this.IssueDesSA);
-      formData.append("issue_type_sa", this.IssueTypeSA);
-      formData.append("issue_doc_id", this.IssueDocId);
-      formData.append("issue_customer", this.IssueCustomer);
-      formData.append("issue_filename", this.IssueFilename);
-      formData.append("issue_des_dev", this.IssueDesDev);
-      formData.append("issue_des_implementer", this.IssueDesImplementer);
-      formData.append("issue_start", this.updatedateOfStart);
-      formData.append("issue_expected", this.updatedateOfExpectedCompletion);
-      formData.append("issue_status", this.IssueStatus);
-      formData.append("issue_accepting", this.updatedateOfAccepting);
-      formData.append("issue_manday", this.updateManday);
-      formData.append("issue_complete", this.updateCompletion);
+      const data = {
+        screen_id: this.IssueScreenId,
+        system_id: this.SystemId,
+        project_id: this.ProjectId,
+        issue_name: this.IssueName,
+        issue_id: this.IssueId,
+        issue_type: this.IssueType,
+        issue_informer: this.IssueInformer,
+        issue_priority: this.IssuePriority,
+        issue_end: this.IssueEndDate,
+        issue_assign: this.IssueAssign,
+        issue_qc: this.IssueQC,
+        issue_des: this.IssueDes,
+        issue_des_sa: this.IssueDesSA,
+        issue_type_sa: this.IssueTypeSA,
+        issue_doc_id: this.IssueDocId,
+        issue_customer: this.IssueCustomer,
+        issue_filename: this.IssueFilename,
+        issue_des_dev: this.IssueDesDev,
+        issue_des_implementer: this.IssueDesImplementer,
+        issue_start: this.updatedateOfStart,
+        issue_expected: this.updatedateOfExpectedCompletion,
+        issue_status: this.IssueStatus,
+        issue_accepting: this.updatedateOfAccepting,
+        issue_manday: this.updateManday,
+        issue_complete: this.updateCompletion,
+        issue_status_developer: null,
+        issue_status_implement: null,
+        issue_round: 0,
+      };
+
       try {
-        await this.$axios.put("/issues/updateIssueAdmin/" + this.id, formData);
+        await this.$axios.put("/issues/updateIssueAdmin/" + this.id, data);
         console.log("pout success");
         window.location.reload();
+        this.handleClose();
         const promise = new Promise((resolve, reject) => {
           resolve();
           this.close();
@@ -673,7 +680,16 @@ export default {
           if (item.issue_priority) {
             this.priotity_select.push(item.issue_priority);
           }
-          console.log(this.priotity_select, "this.priotity_select");
+          if (item.issue_status) {
+            this.issue_status_default.push(item.issue_status);
+          }
+          if (item.developer_status) {
+            this.issue_status_developer_default.push(item.developer_status);
+          }
+          if (item.implement_status) {
+            this.issue_status_implement_default.push(item.implement_status);
+          }
+          // console.log(this.priotity_select, "this.priotity_select");
         });
       } catch (error) {
         console.error(error);

@@ -237,16 +237,16 @@
                   {{ item.formattedDateEnd }}
                 </template>
                 <template v-slot:[`item.issue_status`]="{ item }">
-                  <v-icon
+                  <!-- <v-icon
                     v-if="item.issue_status == 'active'"
                     style="color: #1cff17"
                     >mdi-circle</v-icon
-                  >
-                  <v-icon
+                  > -->
+                  <!-- <v-icon
                     v-if="item.issue_status == 'open'"
                     style="color: gainsboro"
                     >mdi-circle</v-icon
-                  >
+                  > -->
                   {{ item.issue_status }}
                 </template>
                 <template v-slot:[`item.issue_priotity`]="{ item }">
@@ -325,7 +325,7 @@
                   {{ item.issue_type }}
                 </template>
                 <template v-slot:[`item.issue_status`]="{ item }">
-                  <v-icon style="color: #1cff17">mdi-circle</v-icon>
+                  <!-- <v-icon style="color: #1cff17">mdi-circle</v-icon> -->
                   {{ item.issue_status }}
                 </template>
                 <template v-slot:[`item.issue_Priotity`]="{ item }">
@@ -403,16 +403,16 @@
                   {{ item.formattedDateEnd }}
                 </template>
                 <template v-slot:[`item.issue_status`]="{ item }">
-                  <v-icon
+                  <!-- <v-icon
                     v-if="item.issue_status == 'active'"
                     style="color: #1cff17"
                     >mdi-circle</v-icon
-                  >
-                  <v-icon
+                  > -->
+                  <!-- <v-icon
                     v-if="item.issue_status == 'open'"
                     style="color: gainsboro"
                     >mdi-circle</v-icon
-                  >
+                  > -->
                   {{ item.issue_status }}
                 </template>
                 <template v-slot:[`item.issue_priotity`]="{ item }">
@@ -490,7 +490,7 @@
                   {{ item.issue_type }}
                 </template>
                 <template v-slot:[`item.issue_status`]="{ item }">
-                  <v-icon style="color: #1cff17">mdi-circle</v-icon>
+                  <!-- <v-icon style="color: #1cff17">mdi-circle</v-icon> -->
                   {{ item.issue_status }}
                 </template>
                 <template v-slot:[`item.issue_Priotity`]="{ item }">
@@ -568,16 +568,16 @@
                   {{ item.formattedDateEnd }}
                 </template>
                 <template v-slot:[`item.issue_status`]="{ item }">
-                  <v-icon
+                  <!-- <v-icon
                     v-if="item.issue_status == 'active'"
                     style="color: #1cff17"
                     >mdi-circle</v-icon
-                  >
-                  <v-icon
+                  > -->
+                  <!-- <v-icon
                     v-if="item.issue_status == 'open'"
                     style="color: gainsboro"
                     >mdi-circle</v-icon
-                  >
+                  > -->
                   {{ item.issue_status }}
                 </template>
                 <template v-slot:[`item.issue_priotity`]="{ item }">
@@ -655,7 +655,7 @@
                   {{ item.issue_type }}
                 </template>
                 <template v-slot:[`item.issue_status`]="{ item }">
-                  <v-icon style="color: #1cff17">mdi-circle</v-icon>
+                  <!-- <v-icon style="color: #1cff17">mdi-circle</v-icon> -->
                   {{ item.issue_status }}
                 </template>
                 <template v-slot:[`item.issue_Priotity`]="{ item }">
@@ -733,16 +733,16 @@
                   {{ item.formattedDateEnd }}
                 </template>
                 <template v-slot:[`item.issue_status`]="{ item }">
-                  <v-icon
+                  <!-- <v-icon
                     v-if="item.issue_status == 'active'"
                     style="color: #1cff17"
                     >mdi-circle</v-icon
-                  >
-                  <v-icon
+                  > -->
+                  <!-- <v-icon
                     v-if="item.issue_status == 'open'"
                     style="color: gainsboro"
                     >mdi-circle</v-icon
-                  >
+                  > -->
                   {{ item.issue_status }}
                 </template>
                 <template v-slot:[`item.issue_priotity`]="{ item }">
@@ -820,7 +820,7 @@
                   {{ item.issue_type }}
                 </template>
                 <template v-slot:[`item.issue_status`]="{ item }">
-                  <v-icon style="color: #1cff17">mdi-circle</v-icon>
+                  <!-- <v-icon style="color: #1cff17">mdi-circle</v-icon> -->
                   {{ item.issue_status }}
                 </template>
                 <template v-slot:[`item.issue_Priotity`]="{ item }">
@@ -933,7 +933,7 @@ export default {
         issue_des_implementer: "",
         issue_start: "",
         issue_expected: "",
-        issue_status: "open",
+        issue_status: "",
         issue_accepting: "",
         issue_manday: "",
         issue_complete: "",
@@ -984,8 +984,11 @@ export default {
     await this.getSystems();
     await this.getIssue();
   },
-  mounted() {
-    this.getUser();
+  async mounted() {
+    await this.getUser();
+    await this.getProject();
+    await this.getSystems();
+    await this.getIssue();
   },
   computed: {
     userId() {
@@ -1066,67 +1069,68 @@ export default {
           issue.formattedDateExpected = dateExpected.format("YYYY-MM-DD");
         });
         this.systems.forEach((system) => {
-  Vue.set(
-    system,
-    "assignedIssues",
-    this.issue.filter(
-      (issue) =>
-        issue.system_id === system.id && (
-          issue.issue_assign !== "" && issue.issue_assign !== null
-        )
-    )
-  );
-  Vue.set(
-    system,
-    "unassignedIssues",
-    this.issue.filter(
-      (issue) =>
-        issue.system_id === system.id &&
-        (issue.issue_assign === "" || issue.issue_assign === null)
-    )
-  );
-  Vue.set(
-    system,
-    "assignedIssuesPNI",
-    this.issue.filter(
-      (issue) =>
-        issue.system_id === system.id &&
-        (issue.issue_assign !== "" && issue.issue_assign !== null) &&
-        issue.issue_type === "PNI"
-    )
-  );
-  Vue.set(
-    system,
-    "unassignedIssuesPNI",
-    this.issue.filter(
-      (issue) =>
-        issue.system_id === system.id &&
-        (issue.issue_assign === "" || issue.issue_assign === null) &&
-        issue.issue_type === "PNI"
-    )
-  );
-  Vue.set(
-    system,
-    "assignedIssuesPNC",
-    this.issue.filter(
-      (issue) =>
-        issue.system_id === system.id &&
-        (issue.issue_assign !== "" && issue.issue_assign !== null) &&
-        issue.issue_type === "PNC"
-    )
-  );
-  Vue.set(
-    system,
-    "unassignedIssuesPNC",
-    this.issue.filter(
-      (issue) =>
-        issue.system_id === system.id &&
-        (issue.issue_assign === "" || issue.issue_assign === null) &&
-        issue.issue_type === "PNC"
-    )
-  );
-});
-
+          Vue.set(
+            system,
+            "assignedIssues",
+            this.issue.filter(
+              (issue) =>
+                issue.system_id === system.id &&
+                issue.issue_assign !== "" &&
+                issue.issue_assign !== null
+            )
+          );
+          Vue.set(
+            system,
+            "unassignedIssues",
+            this.issue.filter(
+              (issue) =>
+                issue.system_id === system.id &&
+                (issue.issue_assign === "" || issue.issue_assign === null)
+            )
+          );
+          Vue.set(
+            system,
+            "assignedIssuesPNI",
+            this.issue.filter(
+              (issue) =>
+                issue.system_id === system.id &&
+                issue.issue_assign !== "" &&
+                issue.issue_assign !== null &&
+                issue.issue_type === "PNI"
+            )
+          );
+          Vue.set(
+            system,
+            "unassignedIssuesPNI",
+            this.issue.filter(
+              (issue) =>
+                issue.system_id === system.id &&
+                (issue.issue_assign === "" || issue.issue_assign === null) &&
+                issue.issue_type === "PNI"
+            )
+          );
+          Vue.set(
+            system,
+            "assignedIssuesPNC",
+            this.issue.filter(
+              (issue) =>
+                issue.system_id === system.id &&
+                issue.issue_assign !== "" &&
+                issue.issue_assign !== null &&
+                issue.issue_type === "PNC"
+            )
+          );
+          Vue.set(
+            system,
+            "unassignedIssuesPNC",
+            this.issue.filter(
+              (issue) =>
+                issue.system_id === system.id &&
+                (issue.issue_assign === "" || issue.issue_assign === null) &&
+                issue.issue_type === "PNC"
+            )
+          );
+        });
       } catch (err) {
         console.error(err);
       }
