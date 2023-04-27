@@ -146,6 +146,7 @@
             :IssueDeveloperStatus="selected.issue_status_developer"
             :IssueImplementerStatus="selected.issue_status_implement"
             :IssueRound="selected.issue_round"
+            :ImpleSection="selected.impleSection"
           />
           <dialog-issue-imple
             :dialog.sync="dialogIssueImple"
@@ -282,7 +283,7 @@
                         item.issue_manday,
                         item.formattedDateStart,
                         item.formattedDateExpected,
-                        item.issue_complete,
+                        item.formattedDateComplete,
                         item.issue_des_implementer,
                         item.issue_des_dev,
                         item.issue_des,
@@ -361,7 +362,7 @@
                         item.issue_manday,
                         item.formattedDateStart,
                         item.formattedDateExpected,
-                        item.issue_complete,
+                        item.formattedDateComplete,
                         item.issue_des_implementer,
                         item.issue_des_dev,
                         item.issue_des,
@@ -454,7 +455,7 @@
                         item.issue_manday,
                         item.formattedDateStart,
                         item.formattedDateExpected,
-                        item.issue_complete,
+                        item.formattedDateComplete,
                         item.issue_des_implementer,
                         item.issue_des_dev,
                         item.issue_des,
@@ -532,7 +533,7 @@
                         item.issue_manday,
                         item.formattedDateStart,
                         item.formattedDateExpected,
-                        item.issue_complete,
+                        item.formattedDateComplete,
                         item.issue_des_implementer,
                         item.issue_des_dev,
                         item.issue_des,
@@ -625,7 +626,7 @@
                         item.issue_manday,
                         item.formattedDateStart,
                         item.formattedDateExpected,
-                        item.issue_complete,
+                        item.formattedDateComplete,
                         item.issue_des_implementer,
                         item.issue_des_dev,
                         item.issue_des,
@@ -703,7 +704,7 @@
                         item.issue_manday,
                         item.formattedDateStart,
                         item.formattedDateExpected,
-                        item.issue_complete,
+                        item.formattedDateComplete,
                         item.issue_des_implementer,
                         item.issue_des_dev,
                         item.issue_des,
@@ -796,7 +797,7 @@
                         item.issue_manday,
                         item.formattedDateStart,
                         item.formattedDateExpected,
-                        item.issue_complete,
+                        item.formattedDateComplete,
                         item.issue_des_implementer,
                         item.issue_des_dev,
                         item.issue_des,
@@ -874,7 +875,7 @@
                         item.issue_manday,
                         item.formattedDateStart,
                         item.formattedDateExpected,
-                        item.issue_complete,
+                        item.formattedDateComplete,
                         item.issue_des_implementer,
                         item.issue_des_dev,
                         item.issue_des,
@@ -973,6 +974,7 @@ export default {
         issue_status_developer: "",
         issue_status_implement: "",
         issue_round: "",
+        impleSection: false,
       },
       infoCreate: {
         systemName: "",
@@ -1020,6 +1022,9 @@ export default {
     await this.getSystems();
     await this.getIssue();
   },
+  // updated() {
+  //   console.log(this.formattedDateAccepting, "this.formattedDateAccepting");
+  // },
   computed: {
     userId() {
       if (typeof window !== "undefined") {
@@ -1097,6 +1102,12 @@ export default {
             "YYYY-MM-DDTHH:mm:ss.SSSZ"
           );
           issue.formattedDateExpected = dateExpected.format("YYYY-MM-DD");
+
+          const dateComplete = moment(
+            issue.issue_complete,
+            "YYYY-MM-DDTHH:mm:ss.SSSZ"
+          );
+          issue.formattedDateComplete = dateComplete.format("YYYY-MM-DD");
         });
         this.systems.forEach((system) => {
           Vue.set(
@@ -1200,24 +1211,55 @@ export default {
       issueImplementerStatus,
       issueRound
     ) {
+      //formattedDateAccepting
+      this.selected.formattedDateAccepting =
+        issueformattedDateAccepting == null ||
+        issueformattedDateAccepting == "Invalid date" ||
+        issueformattedDateAccepting == undefined
+          ? null
+          : issueformattedDateAccepting;
+      //formattedDateStart
+      this.selected.formattedDateStart =
+        issueformattedDateStart == null ||
+        issueformattedDateStart == "Invalid date" ||
+        issueformattedDateStart == undefined
+          ? null
+          : issueformattedDateStart;
+      //formattedDateExpected
+      this.selected.formattedDateExpected =
+        issueformattedDateExpected == null ||
+        issueformattedDateExpected == "Invalid date" ||
+        issueformattedDateExpected == undefined
+          ? null
+          : issueformattedDateExpected;
+      //formattedDateComplete
+      this.selected.issue_complete =
+        issueComplete == null ||
+        issueComplete == "Invalid date" ||
+        issueComplete == undefined
+          ? null
+          : issueComplete;
+      //formattedDateEnd
+      this.selected.formattedDateEnd =
+        issueFormattedDateEnd == null ||
+        issueFormattedDateEnd == "Invalid date" ||
+        issueFormattedDateEnd == undefined
+          ? null
+          : issueFormattedDateEnd;
+
       this.selected.Id = issueid;
       this.selected.issue_id = issueId;
       this.selected.issue_type = issueType;
       this.selected.screen_id = issueScreenid;
       this.selected.issue_status = issueStatus;
       this.selected.issue_priority = issuePriority;
-      this.selected.formattedDateEnd = issueFormattedDateEnd;
       this.selected.issue_name = issueName;
       this.selected.issue_des_sa = issueDesSA;
       this.selected.issue_informer = issueInformer;
       this.selected.issue_assign = issueAssign;
       this.selected.issue_qc = issueQc;
       this.selected.issue_filename = issueFilename;
-      this.selected.formattedDateAccepting = issueformattedDateAccepting;
       this.selected.issue_manday = issueManday;
-      this.selected.formattedDateStart = issueformattedDateStart;
-      this.selected.formattedDateExpected = issueformattedDateExpected;
-      this.selected.issue_complete = issueComplete;
       this.selected.issue_des_implementer = issueDesImplementer;
       this.selected.issue_des_dev = issueDesDev;
       this.selected.issue_des = issueDes;
@@ -1233,9 +1275,14 @@ export default {
         this.selected.screenName = screen;
         // console.log(screen, "screen screen screen");
       });
-      this.selected.issue_status_developer = issueDeveloperStatus
-      this.selected.issue_status_implement = issueImplementerStatus
-      this.selected.issue_round = issueRound
+      this.selected.issue_status_developer = issueDeveloperStatus;
+      if (issueDeveloperStatus === "แก้ไขเรียบร้อย") {
+        this.selected.impleSection = true;
+      } else {
+        this.selected.impleSection = false;
+      }
+      this.selected.issue_status_implement = issueImplementerStatus;
+      this.selected.issue_round = issueRound;
       //check role
       if (this.user_role == "Admin") {
         this.dialogIssueDetail = true;

@@ -233,7 +233,7 @@
                         <!-- Date of accepting-->
                         <p class="pa-2">
                           Date of accepting /
-                          {{ dateOfAccepting }}
+                          {{ IssueAccepting }}
                         </p>
                         <v-menu
                           v-model="acceptMenu"
@@ -244,17 +244,19 @@
                         >
                           <template v-slot:activator="{ on, attrs }">
                             <v-text-field
-                              v-model="dateOfAccepting"
+                              v-model="IssueAccepting"
                               label="Date of Accepting"
                               prepend-icon="mdi-calendar"
                               readonly
                               v-bind="attrs"
                               v-on="on"
+                              @change="checkStatus()"
                             ></v-text-field>
                           </template>
                           <v-date-picker
-                            v-model="dateOfAccepting"
+                            v-model="IssueAccepting"
                             @input="acceptMenu = false"
+                            @change="checkStatus()"
                           ></v-date-picker>
                         </v-menu>
                       </v-row>
@@ -265,7 +267,7 @@
                     <v-col cols="6">
                       <v-row>
                         <v-col>
-                          <p class="pa-2">Start date /{{ startDate }}</p>
+                          <p class="pa-2">Start date / {{ IssueStart }}</p>
                         </v-col>
                         <v-col>
                           <p class="pa-2">-</p>
@@ -273,7 +275,7 @@
                         <v-col>
                           <p class="pa-2">
                             Expected completion Date /
-                            {{ expectedCompletionDate }}
+                            {{ IssueExpected }}
                           </p>
                         </v-col>
                       </v-row>
@@ -289,11 +291,10 @@
                           :nudge-right="40"
                           transition="scale-transition"
                           min-width="auto"
-                          @change="calculateManday()"
                         >
                           <template v-slot:activator="{ on, attrs }">
                             <v-text-field
-                              v-model="startDate"
+                              v-model="IssueStart"
                               label="Start Date"
                               prepend-icon="mdi-calendar"
                               readonly
@@ -302,9 +303,8 @@
                             ></v-text-field>
                           </template>
                           <v-date-picker
-                            v-model="startDate"
+                            v-model="IssueStart"
                             @input="startMenu = false"
-                            @change="calculateManday()"
                           ></v-date-picker>
                         </v-menu>
                         <!-- Expected completion Date -->
@@ -314,11 +314,10 @@
                           :nudge-right="40"
                           transition="scale-transition"
                           min-width="auto"
-                          @change="calculateManday()"
                         >
                           <template v-slot:activator="{ on, attrs }">
                             <v-text-field
-                              v-model="expectedCompletionDate"
+                              v-model="IssueExpected"
                               label="Expected Completion Date"
                               prepend-icon="mdi-calendar"
                               readonly
@@ -327,9 +326,8 @@
                             ></v-text-field>
                           </template>
                           <v-date-picker
-                            v-model="expectedCompletionDate"
+                            v-model="IssueExpected"
                             @input="expectedMenu = false"
-                            @change="calculateManday()"
                           ></v-date-picker>
                         </v-menu>
                       </v-row>
@@ -346,7 +344,7 @@
                         v-model="IssueManday"
                       ></v-text-field>
                     </v-row>
-                    <v-row v-if="mandaySeleted">
+                    <!-- <v-row v-if="mandaySeleted">
                       <p class="pa-2">Manday (Edit)</p>
                       <v-text-field
                         label="Manday"
@@ -355,24 +353,40 @@
                         dense
                         v-model="manday"
                       ></v-text-field>
-                    </v-row>
+                    </v-row> -->
                   </v-col>
                   <v-divider></v-divider>
                   <v-row class="text-h6 mt-2 mb-2">
                     <h6>Developer Section 2</h6>
                   </v-row>
                   <v-row>
-                    <v-col cols="6">
+                    <v-col cols="8">
                       <v-row>
-                        <p class="pa-2">Status</p>
-                        <v-select
-                          :items="issue_status_developer_default"
-                          label="สถานะ"
-                          placeholder="สถานะ"
-                          dense
-                          outlined
-                          v-model="IssueDeveloperStatus"
-                        ></v-select>
+                        <v-col>
+                          <p class="pa-2">Status</p>
+                          <v-select
+                            :items="issue_status_developer_default"
+                            label="สถานะ"
+                            placeholder="สถานะ"
+                            dense
+                            outlined
+                            v-model="IssueDeveloperStatus"
+                            @change="checkStatus2()"
+                          ></v-select>
+                        </v-col>
+                        <v-col v-if="sendWork">
+                          <p class="pa-2">โปรดเลือกคนที่จะส่งต่องาน</p>
+                          <v-select
+                            return-object="false"
+                            :items="position_Developers"
+                            label="Dev"
+                            dense
+                            outlined
+                            menu-props="auto"
+                            item-text="user_firstname"
+                            v-model="IssueAssign"
+                          ></v-select>
+                        </v-col>
                       </v-row>
                     </v-col>
                   </v-row>
@@ -381,7 +395,7 @@
                       <v-row>
                         <!-- Completion date-->
                         <p class="pa-2">
-                          Completion date / {{ completionDate }}
+                          Completion date / {{ IssueComplete }}
                         </p>
                         <v-menu
                           v-model="completionMenu"
@@ -392,7 +406,7 @@
                         >
                           <template v-slot:activator="{ on, attrs }">
                             <v-text-field
-                              v-model="completionDate"
+                              v-model="IssueComplete"
                               label="Completion date"
                               prepend-icon="mdi-calendar"
                               readonly
@@ -401,7 +415,7 @@
                             ></v-text-field>
                           </template>
                           <v-date-picker
-                            v-model="completionDate"
+                            v-model="IssueComplete"
                             @input="completionMenu = false"
                           ></v-date-picker>
                         </v-menu>
@@ -415,7 +429,7 @@
                         solo
                         name="input-7-4"
                         label="Note"
-                        v-mode="IssueDesDev"
+                        v-model="IssueDesDev"
                       ></v-textarea>
                     </v-col>
                   </v-row>
@@ -427,7 +441,7 @@
             </v-expansion-panel>
           </v-expansion-panels>
           <!-- End developer section 1 -->
-          <v-expansion-panels>
+          <v-expansion-panels v-if="ImpleSection">
             <v-expansion-panel>
               <v-expansion-panel-header>
                 <h3>Implements Section</h3>
@@ -502,7 +516,7 @@ export default {
     SystemName: String,
     SystemId: Number,
     id: {
-      type: String,
+      type: Number,
       required: true,
     },
     IssueId: String,
@@ -533,6 +547,7 @@ export default {
     IssueDeveloperStatus: String,
     IssueImplementerStatus: String,
     IssueRound: Number,
+    ImpleSection: Boolean,
     dialog: {
       type: Boolean,
       default: false,
@@ -540,6 +555,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       mandayProps: true,
       mandaySeleted: false,
       completionMenu: false,
@@ -549,19 +565,7 @@ export default {
       expectedMenu: false,
       endIssueMenu: false,
       //date
-      dateOfAccepting: null,
-      startDate: null,
-      expectedCompletionDate: null,
-      completionDate: null,
       manday: null,
-      //data for update
-      updateManday: null,
-      updateStart: null,
-      updateExpected: null,
-      updatedateOfAccepting: null,
-      updatedateOfStart: null,
-      updatedateOfExpectedCompletion: null,
-      updateCompletion: null,
       screen_selectDefault: [],
       type_select: [],
       priotity_select: [],
@@ -570,56 +574,57 @@ export default {
       issue_status_default: [],
       issue_status_developer_default: [],
       issue_status_implement_default: [],
+
+      sendWork: false,
     };
   },
   async mounted() {
     await this.getDefault();
     await this.getUserSystemsOncreated();
+    await this.checkStatus();
+    await this.checkStatus2();
   },
-  // updated() {
-  //   console.log(this.updatedateOfAccepting, "this.updatedateOfAccepting");
-  // },
   methods: {
-    calculateManday() {
-      const start = moment(this.startDate);
-      const end = moment(this.expectedCompletionDate);
-      const days = end.diff(start, "days");
-      this.mandaySeleted = true;
-      this.mandayProps = false;
-      this.manday = days;
+    checkStatus() {
+      if (this.IssueAccepting != null) {
+        this.IssueDeveloperStatus = "กำลังแก้ไข";
+        this.IssueStatus = "กำลังแก้ไข";
+      }
+    },
+    checkStatus2() {
+      if (this.IssueDeveloperStatus != "แก้ไขเรียบร้อย") {
+        this.ImpleSection = false;
+      }
+      if (this.IssueDeveloperStatus == "แก้ไขเรียบร้อย") {
+        this.IssueStatus = "แก้ไขเรียบร้อย";
+      }
+      if (this.IssueDeveloperStatus == "กำลังแก้ไข") {
+        this.IssueStatus = "กำลังแก้ไข";
+        this.ImpleSection = false;
+      }
+      if (this.IssueDeveloperStatus == "รอแก้ไข") {
+        this.IssueStatus = "รอแก้ไข";
+        this.ImpleSection = false;
+      }
+      if (this.IssueDeveloperStatus == "แก้ไขไม่ได้") {
+        this.sendWork = true;
+        this.IssueStatus = "รอแก้ไข";
+      } else {
+        this.sendWork = false;
+      }
     },
     async saveIssue() {
-      this.updateManday = this.manday === null ? this.IssueManday : this.manday;
-
-      //accepting date
-      this.updatedateOfAccepting =
-        this.dateOfAccepting === null
-          ? null
-          : moment(this.dateOfAccepting).isValid()
-          ? moment(this.dateOfAccepting).format("YYYY-MM-DD")
-          : null;
-      //date start
-      this.updatedateOfStart =
-        this.startDate === null
-          ? null
-          : moment(this.IssueStart).isValid()
-          ? moment(this.IssueStart).format("YYYY-MM-DD")
-          : null;
-      //date Expected Completion
-      this.updatedateOfExpectedCompletion =
-        this.expectedCompletionDate === null
-          ? null
-          : moment(this.IssueExpected).isValid()
-          ? moment(this.IssueExpected).format("YYYY-MM-DD")
-          : null;
-      //date Completion
-      this.updateCompletion =
-        this.completionDate === null
-          ? null
-          : moment(this.IssueComplete).isValid()
-          ? moment(this.IssueComplete).format("YYYY-MM-DD")
-          : null;
-
+      if (this.IssueImplementerStatus == "แก้ไขไม่สำเร็จ") {
+        console.log("check imple");
+        alert("check imple");
+        this.IssueRound += 1;
+        this.IssueStatus = "รอแก้ไข";
+        this.IssueDeveloperStatus = "รอแก้ไข";
+        this.IssueAccepting = null;
+        this.IssueStart = null;
+        this.IssueExpected = null;
+        this.IssueImplementerStatus = null;
+      }
       const data = {
         screen_id: this.IssueScreenId,
         system_id: this.SystemId,
@@ -640,21 +645,21 @@ export default {
         issue_filename: this.IssueFilename,
         issue_des_dev: this.IssueDesDev,
         issue_des_implementer: this.IssueDesImplementer,
-        issue_start: this.updatedateOfStart,
-        issue_expected: this.updatedateOfExpectedCompletion,
+        issue_start: this.IssueStart,
+        issue_expected: this.IssueExpected,
         issue_status: this.IssueStatus,
-        issue_accepting: this.updatedateOfAccepting,
-        issue_manday: this.updateManday,
-        issue_complete: this.updateCompletion,
-        issue_status_developer: null,
-        issue_status_implement: null,
-        issue_round: 0,
+        issue_accepting: this.IssueAccepting,
+        issue_manday: this.IssueManday,
+        issue_complete: this.IssueComplete,
+        issue_status_developer: this.IssueDeveloperStatus,
+        issue_status_implement: this.IssueImplementerStatus,
+        issue_round: this.IssueRound,
       };
 
       try {
         await this.$axios.put("/issues/updateIssueAdmin/" + this.id, data);
         console.log("pout success");
-        window.location.reload();
+        // window.location.reload();
         this.handleClose();
         const promise = new Promise((resolve, reject) => {
           resolve();
