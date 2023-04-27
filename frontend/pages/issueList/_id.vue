@@ -143,6 +143,9 @@
             :IssueTypeSA="selected.issue_type_sa"
             :IssueCreate="selected.created_at"
             :ScreenName="selected.screenName"
+            :IssueDeveloperStatus="selected.issue_status_developer"
+            :IssueImplementerStatus="selected.issue_status_implement"
+            :IssueRound="selected.issue_round"
           />
           <dialog-issue-imple
             :dialog.sync="dialogIssueImple"
@@ -286,7 +289,10 @@
                         item.issue_customer,
                         item.issue_doc_id,
                         item.issue_type_sa,
-                        item.created_at
+                        item.created_at,
+                        item.issue_status_developer,
+                        item.issue_status_implement,
+                        item.issue_round
                       )
                     "
                     size="20"
@@ -362,7 +368,10 @@
                         item.issue_customer,
                         item.issue_doc_id,
                         item.issue_type_sa,
-                        item.created_at
+                        item.created_at,
+                        item.issue_status_developer,
+                        item.issue_status_implement,
+                        item.issue_round
                       )
                     "
                     size="20"
@@ -452,7 +461,10 @@
                         item.issue_customer,
                         item.issue_doc_id,
                         item.issue_type_sa,
-                        item.created_at
+                        item.created_at,
+                        item.issue_status_developer,
+                        item.issue_status_implement,
+                        item.issue_round
                       )
                     "
                     size="20"
@@ -527,7 +539,10 @@
                         item.issue_customer,
                         item.issue_doc_id,
                         item.issue_type_sa,
-                        item.created_at
+                        item.created_at,
+                        item.issue_status_developer,
+                        item.issue_status_implement,
+                        item.issue_round
                       )
                     "
                     size="20"
@@ -617,7 +632,10 @@
                         item.issue_customer,
                         item.issue_doc_id,
                         item.issue_type_sa,
-                        item.created_at
+                        item.created_at,
+                        item.issue_status_developer,
+                        item.issue_status_implement,
+                        item.issue_round
                       )
                     "
                     size="20"
@@ -692,7 +710,10 @@
                         item.issue_customer,
                         item.issue_doc_id,
                         item.issue_type_sa,
-                        item.created_at
+                        item.created_at,
+                        item.issue_status_developer,
+                        item.issue_status_implement,
+                        item.issue_round
                       )
                     "
                     size="20"
@@ -782,7 +803,10 @@
                         item.issue_customer,
                         item.issue_doc_id,
                         item.issue_type_sa,
-                        item.created_at
+                        item.created_at,
+                        item.issue_status_developer,
+                        item.issue_status_implement,
+                        item.issue_round
                       )
                     "
                     size="20"
@@ -857,7 +881,10 @@
                         item.issue_customer,
                         item.issue_doc_id,
                         item.issue_type_sa,
-                        item.created_at
+                        item.created_at,
+                        item.issue_status_developer,
+                        item.issue_status_implement,
+                        item.issue_round
                       )
                     "
                     size="20"
@@ -943,6 +970,9 @@ export default {
         formattedDateAccepting: "",
         formattedDateExpected: "",
         formattedDateStart: "",
+        issue_status_developer: "",
+        issue_status_implement: "",
+        issue_round: "",
       },
       infoCreate: {
         systemName: "",
@@ -1165,7 +1195,10 @@ export default {
       issueCustomer,
       issueDocId,
       issueTypeSA,
-      issueCreate
+      issueCreate,
+      issueDeveloperStatus,
+      issueImplementerStatus,
+      issueRound
     ) {
       this.selected.Id = issueid;
       this.selected.issue_id = issueId;
@@ -1200,6 +1233,9 @@ export default {
         this.selected.screenName = screen;
         // console.log(screen, "screen screen screen");
       });
+      this.selected.issue_status_developer = issueDeveloperStatus
+      this.selected.issue_status_implement = issueImplementerStatus
+      this.selected.issue_round = issueRound
       //check role
       if (this.user_role == "Admin") {
         this.dialogIssueDetail = true;

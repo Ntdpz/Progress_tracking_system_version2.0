@@ -371,7 +371,7 @@
                           placeholder="สถานะ"
                           dense
                           outlined
-                          v-model="IssueStatus"
+                          v-model="IssueDeveloperStatus"
                         ></v-select>
                       </v-row>
                     </v-col>
@@ -435,22 +435,35 @@
               <v-expansion-panel-content>
                 <v-col>
                   <v-row class="mt-5">
-                    <v-col cols="6">
+                    <v-col cols="8">
                       <v-row>
-                        <p class="pa-2">Status</p>
-                        <v-select
-                          :items="issue_status_implement_default"
-                          label="สถานะ"
-                          placeholder="สถานะ"
-                          dense
-                          outlined
-                          v-model="IssueStatus"
-                        ></v-select>
+                        <v-col>
+                          <p class="pa-2">Status</p>
+                          <v-select
+                            :items="issue_status_implement_default"
+                            label="สถานะ"
+                            placeholder="สถานะ"
+                            dense
+                            outlined
+                            v-model="IssueImplementerStatus"
+                          ></v-select>
+                        </v-col>
+                        <v-col>
+                          <p class="pa-2">จำนวนการแก้ไข</p>
+                          <v-text-field
+                            label="จำนวนการแก้ไข"
+                            placeholder="จำนวนการแก้ไข"
+                            outlined
+                            disabled
+                            dense
+                            v-model="IssueRound"
+                          ></v-text-field>
+                        </v-col>
                       </v-row>
                     </v-col>
                   </v-row>
                   <v-row>
-                    <v-col cols="6">
+                    <v-col cols="12">
                       <p class="">Cause / Remedy</p>
                       <v-textarea
                         solo
@@ -517,6 +530,9 @@ export default {
     IssueTypeSA: String,
     IssueCreate: String,
     ScreenName: String,
+    IssueDeveloperStatus: String,
+    IssueImplementerStatus: String,
+    IssueRound: Number,
     dialog: {
       type: Boolean,
       default: false,
