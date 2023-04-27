@@ -12,22 +12,6 @@ function generateId() {
   return id;
 }
 
-router.get("/test", async (req, res) => {
-  try {
-    return "Hello";
-  } catch (err) {
-    console.log(err);
-    return res.status(500).send();
-  }
-});
-
-function generateId() {
-  const maxId = 999999999;
-  const minId = 100000000;
-  const id = Math.floor(Math.random() * (maxId - minId + 1)) + minId;
-  return id;
-}
-
 // configure Multer to handle file uploads
 const storage = multer.diskStorage({
   destination(req, file, cb) {

@@ -12,6 +12,7 @@ const user_screensRouter = require("./user_screens");
 const user_systemsRouter = require("./user_systems");
 const pdfRouter = require("./pdf");
 const authRouter = require("./auth");
+const history_issuesRouter = require("./history_issues");
 
 router.use("/users", usersRouter);
 router.use("/projects", projectsRouter);
@@ -25,5 +26,7 @@ router.use("/user_screens", user_screensRouter);
 router.use("/user_systems", user_systemsRouter);
 router.use("/pdf", pdfRouter);
 router.use("/auth", authRouter);
+// router.use("/history_issues", history_issuesRouter);
+router.use("/history_issues", history_issuesRouter);
 
 module.exports = router;
