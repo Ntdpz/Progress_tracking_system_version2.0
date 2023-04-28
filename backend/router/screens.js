@@ -351,11 +351,11 @@ router.get("/getAll", async (req, res) => {
     } else if (screenIDFilter) {
       query += " WHERE screen_id = ?";
       queryParams.push(screenIDFilter);
-    }else if (screen_project_system_Filter) {
+    } else if (screen_project_system_Filter) {
       query += " WHERE project_id = ? && system_id = ?";
       queryParams.push(screen_project_system_Filter);
     }
-  
+
     connection.query(query, queryParams, (err, results, fields) => {
       if (err) {
         console.log(err);
@@ -453,7 +453,9 @@ router.delete("/deleteScreen/:system_id", (req, res) => {
   connection.query(checkSql, (err, results, fields) => {
     if (err) {
       console.log(err);
-      return res.status(500).send(`Error checking for system_id in database: ${err}`);
+      return res
+        .status(500)
+        .send(`Error checking for system_id in database: ${err}`);
     }
     if (results.length === 0) {
       console.log(`System with ID ${system_id} not found in database.`);
@@ -465,7 +467,9 @@ router.delete("/deleteScreen/:system_id", (req, res) => {
     connection.query(sql, (err, results, fields) => {
       if (err) {
         console.log(err);
-        res.status(500).send(`Error retrieving image path from database: ${err}`);
+        res
+          .status(500)
+          .send(`Error retrieving image path from database: ${err}`);
         return;
       }
       if (results.length === 0) {
@@ -497,7 +501,9 @@ router.delete("/deleteScreen/:system_id", (req, res) => {
           if (results.affectedRows === 0) {
             return res.status(404).json({ message: "No screen with that id!" });
           }
-          return res.status(200).json({ message: "Screen deleted successfully!" });
+          return res
+            .status(200)
+            .json({ message: "Screen deleted successfully!" });
         });
       } catch (err) {
         console.log(err);
@@ -516,7 +522,9 @@ router.delete("/deleteScreenProjectId/:project_id", (req, res) => {
   connection.query(checkSql, (err, results, fields) => {
     if (err) {
       console.log(err);
-      return res.status(500).send(`Error checking for project_id in database: ${err}`);
+      return res
+        .status(500)
+        .send(`Error checking for project_id in database: ${err}`);
     }
     if (results.length === 0) {
       console.log(`System with ID ${project_id} not found in database.`);
@@ -528,7 +536,9 @@ router.delete("/deleteScreenProjectId/:project_id", (req, res) => {
     connection.query(sql, (err, results, fields) => {
       if (err) {
         console.log(err);
-        res.status(500).send(`Error retrieving image path from database: ${err}`);
+        res
+          .status(500)
+          .send(`Error retrieving image path from database: ${err}`);
         return;
       }
       if (results.length === 0) {
@@ -560,7 +570,9 @@ router.delete("/deleteScreenProjectId/:project_id", (req, res) => {
           if (results.affectedRows === 0) {
             return res.status(404).json({ message: "No screen with that id!" });
           }
-          return res.status(200).json({ message: "Screen deleted successfully!" });
+          return res
+            .status(200)
+            .json({ message: "Screen deleted successfully!" });
         });
       } catch (err) {
         console.log(err);
@@ -609,7 +621,5 @@ router.post("/addUserScreen", async (req, res) => {
     return res.status(500).send();
   }
 });
-
-
 
 module.exports = router;

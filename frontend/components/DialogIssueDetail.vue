@@ -584,6 +584,9 @@ export default {
     await this.checkStatus();
     await this.checkStatus2();
   },
+  // updated() {
+  //   console.log(this.IssueAssign, "this.IssueAssign");
+  // },
   methods: {
     checkStatus() {
       if (this.IssueAccepting != null) {
@@ -690,8 +693,8 @@ export default {
         issue_informer: this.IssueInformer,
         issue_priority: this.IssuePriority,
         issue_end: this.IssueEndDate,
-        issue_assign: this.IssueAssign,
-        issue_qc: this.IssueQC,
+        issue_assign: this.IssueAssign.user_firstname,
+        issue_qc: this.IssueQC.user_firstname,
         issue_des: this.IssueDes,
         issue_des_sa: this.IssueDesSA,
         issue_type_sa: this.IssueTypeSA,
