@@ -130,6 +130,7 @@
                 menu-props="auto"
                 item-text="user_firstname"
                 v-model="IssueAssign"
+                @change="checkAssign()"
               ></v-select>
             </v-col>
             <v-col cols="12" sm="6" md="6">
@@ -142,6 +143,7 @@
                 menu-props="auto"
                 item-text="user_firstname"
                 v-model="IssueQC"
+                @change="checkAssign()"
               ></v-select>
             </v-col>
           </v-row>
@@ -616,6 +618,13 @@ export default {
         this.sendWork = false;
       }
     },
+    checkAssign() {
+      console.log("checkAssign");
+      const dev = this.IssueAssign.user_firstname;
+      this.IssueAssign = dev;
+      const qc = this.IssueQC.user_firstname;
+      this.IssueQC = qc;
+    },
     async saveIssue() {
       if (this.IssueImplementerStatus == "แก้ไขไม่สำเร็จ") {
         // console.log("check imple");
@@ -693,8 +702,8 @@ export default {
         issue_informer: this.IssueInformer,
         issue_priority: this.IssuePriority,
         issue_end: this.IssueEndDate,
-        issue_assign: this.IssueAssign.user_firstname,
-        issue_qc: this.IssueQC.user_firstname,
+        issue_assign: this.IssueAssign,
+        issue_qc: this.IssueQC,
         issue_des: this.IssueDes,
         issue_des_sa: this.IssueDesSA,
         issue_type_sa: this.IssueTypeSA,
