@@ -6,13 +6,13 @@
       </v-text-title>
       <v-divider class="mt-3 mb-1" inset vertical style="background-color: black"></v-divider>
       <div style="
-                    border-radius: 99px;
-                    border: 2px solid #333;
-                    height: 32px;
-                    width: 25%;
-                    margin-left: 1%;
-                    margin-top: 0.8%;
-                  ">
+                      border-radius: 99px;
+                      border: 2px solid #333;
+                      height: 32px;
+                      width: 25%;
+                      margin-left: 1%;
+                      margin-top: 0.8%;
+                    ">
         <v-text-field placeholder="Search some project" prepend-icon="mdi-magnify" rounded dense color="primary"
           style="margin-top: 1px; margin-left: 3%"></v-text-field>
       </div>
@@ -65,16 +65,17 @@
             <v-container>
               <v-row>
                 <v-col cols="12">
-                  <v-text-field label="Project ID" placeholder="Project ID" outlined dense :rules="rules"
-                    v-model="editedItem.project_id"></v-text-field>
+                  <v-text-field label="Project Name" placeholder="Project Name" outlined dense :rules="rules"
+                    v-model="editedItem.project_name"></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="6" md="4">
                   <v-text-field label="ตัวย่อ" placeholder="ตัวย่อ" outlined dense :rules="rules"
                     v-model="editedItem.project_shortname"></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="8" md="8">
-                  <v-text-field label="Project Name" placeholder="Project Name" outlined dense :rules="rules"
-                    v-model="editedItem.project_name"></v-text-field>
+
+                  <v-text-field label="Project ID" placeholder="Project ID" outlined dense :rules="rules"
+                    v-model="editedItem.project_id"></v-text-field>
                 </v-col>
                 <v-col cols="12" class="pb-0">
                   <v-text-field label="Agency" placeholder="Agency" outlined dense :rules="rules"
@@ -194,60 +195,68 @@
                       </v-row>
                     </v-col>
                   </v-card-title>
-                  <v-card-text>
-                    <v-container>
-                      <v-row>
-                        <v-col cols="12">
-                          <p>Create system form Project ID</p>
-                          <v-text-field label="Project ID" placeholder="Project ID" outlined dense disabled
-                            v-model="editedItem.project_id"></v-text-field>
-                        </v-col>
-                        <v-col cols="12">
-                          <v-text-field label="System ID" placeholder="System ID" outlined dense
-                            v-model="system.system_id"></v-text-field>
-                        </v-col>
-                        <v-col cols="12">
-                          <v-text-field label="System Name (TH)" placeholder="System Name (TH)" outlined dense
-                            v-model="system.system_nameTH"></v-text-field>
-                        </v-col>
-                        <v-col cols="12">
-                          <v-text-field label="System Name (EN)" placeholder="System Name (EN)" outlined dense
-                            v-model="system.system_nameEN"></v-text-field>
-                        </v-col>
-                        <v-col cols="12" sm="6" md="6">
-                          <v-text-field label="Short system name" placeholder="Short system name" outlined dense
-                            v-model="system.system_shortname"></v-text-field>
-                        </v-col>
-                        <v-col class="col-12" sm="12" md="12">
-                          <!--  -->
-                          <v-select label="Choose developer" v-model="choose_user_id" :items="data_position_Developer"
-                            item-text="user_firstname" item-value="id" outlined chips multiple>
-                            <template v-slot:item="{ item }">
-                              {{ item.user_firstname }}
-                            </template>
-                          </v-select>
-                        </v-col>
-                        <v-col class="col-12" sm="12" md="12">
-                          <v-select label="Choose implementer" style="text-align-last: left" v-model="choose_user_id"
-                            :items="data_position_Implementer" item-text="user_firstname" item-value="id" outlined chips
-                            multiple>
-                            <template v-slot:item="{ item }">
-                              {{ item.user_firstname }}
-                            </template>
-                          </v-select>
-                        </v-col>
-                      </v-row>
-                    </v-container>
-                  </v-card-text>
-                  <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn color="primary" text @click="dialogSubsystem = false">
-                      Close
-                    </v-btn>
-                    <v-btn color="primary" dark @click="CreateAllSystem()">
-                      Create
-                    </v-btn>
-                  </v-card-actions>
+                  <v-form ref="myForm" @submit.prevent="CreateAllSystem">
+                    <v-card-text>
+                      <v-container>
+                        <v-row>
+                          <v-col cols="12">
+                            <p>Create system form Project ID</p>
+                            <v-text-field :rules="rules" label="Project ID" placeholder="Project ID" outlined dense
+                              disabled v-model="editedItem.project_id" required></v-text-field>
+                          </v-col>
+                          <v-col cols="12">
+                            <v-text-field :rules="rules" label="System ID" placeholder="System ID" outlined dense
+                              v-model="system.system_id" required></v-text-field>
+                          </v-col>
+                          <v-col cols="12">
+                            <v-text-field :rules="rules" label="System Name (TH)" placeholder="System Name (TH)" outlined
+                              dense v-model="system.system_nameTH" required></v-text-field>
+                          </v-col>
+                          <v-col cols="12">
+                            <v-text-field :rules="rules" label="System Name (EN)" placeholder="System Name (EN)" outlined
+                              dense v-model="system.system_nameEN" required></v-text-field>
+                          </v-col>
+                          <v-col cols="12" sm="6" md="6">
+                            <v-text-field :rules="rules" label="Short system name" placeholder="Short system name"
+                              outlined dense v-model="system.system_shortname" required></v-text-field>
+                          </v-col>
+                          <v-col cols="12">
+                            <v-text-field :rules="rules" label="System Analyst" placeholder="System Analyst" outlined
+                              dense v-model="system.system_analyst" required></v-text-field>
+                          </v-col>
+                          <v-col class="col-12" sm="12" md="12">
+                            <!--  -->
+                            <v-select :rules="rules" required label="Choose developer" v-model="choose_user_id"
+                              :items="data_position_Developer" item-text="user_firstname" item-value="id" outlined chips
+                              multiple>
+                              <template v-slot:item="{ item }">
+                                {{ item.user_firstname }}
+                              </template>
+                            </v-select>
+                          </v-col>
+                          <v-col class="col-12" sm="12" md="12">
+                            <v-select :rules="rules" required label="Choose implementer" style="text-align-last: left"
+                              v-model="choose_user_id" :items="data_position_Implementer" item-text="user_firstname"
+                              item-value="id" outlined chips multiple>
+                              <template v-slot:item="{ item }">
+                                {{ item.user_firstname }}
+                              </template>
+                            </v-select>
+                          </v-col>
+                        </v-row>
+                      </v-container>
+                    </v-card-text>
+
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
+                      <v-btn color="primary" text @click="dialogSubsystem = false">
+                        Close
+                      </v-btn>
+                      <v-btn color="primary" dark type="submit">
+                        Create
+                      </v-btn>
+                    </v-card-actions>
+                  </v-form>
                 </v-card>
               </v-dialog>
             </v-row>
@@ -347,7 +356,11 @@
     <div v-else-if="loading === true" style="text-align: center;">
       <v-progress-circular :size="70" :width="7" color="purple" indeterminate></v-progress-circular>
     </div>
-    <dialog-success :dialog.sync="dialogSuccess" />
+    <dialog-success :dialog.sync="dialogSuccess" title="บันทึกข้อมูลเสร็จเรียบร้อย" />
+    <dialog-success :dialog.sync="dialogDeleteSuccess" title="ลบข้อมูลเสร็จเรียบร้อย" />
+    <dialog-fail :dialog.sync="dialogValidate" title="กรุณาใส่ข้อมูลให้ครบถ้วน" />
+
+
 
 
   </div>
@@ -373,8 +386,9 @@ export default {
   },
   data() {
     return {
+      // new Date().toISOString().substr(0, 10)
       dateStart: new Date().toISOString().substr(0, 10),
-      dateEnd: new Date().toISOString().substr(0, 10),
+      dateEnd: moment().format('DD-MM-YYYY'),
       menuDateStart: false,
       menuDateStartEdit: false,
       dateStartEdit: new Date().toISOString().substr(0, 10),
@@ -383,6 +397,8 @@ export default {
       mode: "create",
       dialogSubsystem: false,
       dialogSuccess: false,
+      dialogDeleteSuccess: false,
+      dialogValidate: false,
       headers: [
         {
           text: "Name",
@@ -396,12 +412,13 @@ export default {
         // { text: "Actions", value: "actions", sortable: false },
       ],
       system: {
-        project_id: "", //primary key of projects
+        project_id: "",
         system_id: "",
         system_nameTH: "",
         system_nameEN: "",
         system_shortname: "",
-        system_member: "dev1",
+        system_analyst: "",
+        system_member: "",
       },
       projectList: [],
       member_select: ["Dev1"],
@@ -435,7 +452,7 @@ export default {
     };
   },
   updated() {
-    console.log(this.choose_user_id);
+    // console.log(this.choose_user_id);
   },
   async created() {
     await this.getUser();
@@ -479,16 +496,48 @@ export default {
       });
     },
     async CreateAllSystem() {
-      await this.createSystem();
-      // console.log("Create system successfully!");
-      await this.getsystemID();
-      // console.log("Get SystemID successfully!");
-      await this.getProjectId();
-      // console.log("Get ProjectId successfully!");
-      await this.addUser_project();
-      // console.log("Get ProjectId successfully!");
-      await this.addUser_system(this.systemId);
-      // console.log("Create successfully!");
+      try {
+        //   console.log(this.$refs.myForm);
+        //   if (!this.$refs.myForm.validate()) {
+        //     this.$refs.myForm.validate();
+        //     console.log("1");
+        // } else {
+        //     this.$refs.myForm.validate();
+        //     console.log("2");
+        // }
+        if (this.system.system_id == "" || this.system.system_nameTH == "" ||
+          this.system.system_nameEN == "" || this.system.system_shortname == "" ||
+          this.system.system_analyst == "") {
+          this.dialogValidate = true;
+        } else {
+          await this.createSystem();
+          // console.log("Create system successfully!");
+          await this.getsystemID();
+          // console.log("Get SystemID successfully!");
+          await this.getProjectId();
+          // console.log("Get ProjectId successfully!");
+          await this.addUser_project();
+          // console.log("Get ProjectId successfully!");
+          await this.addUser_system(this.systemId);
+          // console.log("Create successfully!");
+        }
+
+
+      } catch (error) {
+        console.log(error);
+      }
+
+
+      // await this.createSystem();
+      // // console.log("Create system successfully!");
+      // await this.getsystemID();
+      // // console.log("Get SystemID successfully!");
+      // await this.getProjectId();
+      // // console.log("Get ProjectId successfully!");
+      // await this.addUser_project();
+      // // console.log("Get ProjectId successfully!");
+      // await this.addUser_system(this.systemId);
+      // // console.log("Create successfully!");
     },
     async getsystemID() {
       await this.$axios
@@ -500,6 +549,7 @@ export default {
     },
     async addUser_system(systemID) {
       try {
+
         await this.$axios.post("/user_systems/createUser_system", {
           user_id: this.choose_user_id,
           system_id: systemID,
@@ -507,9 +557,10 @@ export default {
         });
         // console.log("POST success for system ID: " + systemID);
         ;
-        alert("Post Success!!");
+        // alert("Post Success!!");
         await this.getProject();
         await this.getSystems();
+        this.dialogSuccess = true;
         this.dialogSubsystem = false;
         this.ClearSubsystem();
       } catch (error) {
@@ -519,12 +570,13 @@ export default {
     },
     async addUser_project() {
       try {
+
         await this.$axios.post("/user_projects/createUser_project", {
           user_id: this.choose_user_id,
           project_id: this.projectIds,
         });
         // console.log("POST success for system ID: " + systemID);
-        alert("Post Success!!");
+        // alert("Post Success!!");
         await this.getProject();
         await this.getSystems();
         this.dialogSubsystem = false;
@@ -571,52 +623,52 @@ export default {
           // console.log(this.name_Implementer);
         });
     },
-  // async getSystemsOwner() {
-  //     try {
-  //       this.loading = true;
-  //       this.projectOwner = [];
-  //       // const havesystems = [];
-  //       // const projectsWithSystems = [];
-  //       // console.log(this.systemOwner.length, "this.systemOwner.length");
-  //       // console.log(this.projectListAdmin, "this.projectListAdmin");
-  //       this.projectList.forEach((project, i) => {
-  //           this.projectList[i].systems.splice(0, this.projectList[i].systems.length);
-  //       });
-  //       this.projectListAdmin.forEach((project, i) => {
-  //         // console.log(project, "projectList");
-  //         // console.log(project.systems, "project.systems");
-  //         // this.projectList[i].systems.splice(0, this.projectList[i].systems.length); // Clear systems array
-  //         project.systems.forEach((system, s) => {
-  //           this.systemOwner.forEach((owner, num) => {
-  //             // console.log(owner.system_id, owner, "systems Owner");
-  //             if (project.systems[s].id === owner.system_id) {
-  //               // console.log(project.systems[s].id + "===" + owner.system_id + "??");
-  //               // this.projectList[i].systems.push(this.projectListAdmin[i].systems[s]);
-  //               // this.projectList[i].systems.splice(0, this.projectList[i].systems.length); // Clear systems array
+    // async getSystemsOwner() {
+    //     try {
+    //       this.loading = true;
+    //       this.projectOwner = [];
+    //       // const havesystems = [];
+    //       // const projectsWithSystems = [];
+    //       // console.log(this.systemOwner.length, "this.systemOwner.length");
+    //       // console.log(this.projectListAdmin, "this.projectListAdmin");
+    //       this.projectList.forEach((project, i) => {
+    //           this.projectList[i].systems.splice(0, this.projectList[i].systems.length);
+    //       });
+    //       this.projectListAdmin.forEach((project, i) => {
+    //         // console.log(project, "projectList");
+    //         // console.log(project.systems, "project.systems");
+    //         // this.projectList[i].systems.splice(0, this.projectList[i].systems.length); // Clear systems array
+    //         project.systems.forEach((system, s) => {
+    //           this.systemOwner.forEach((owner, num) => {
+    //             // console.log(owner.system_id, owner, "systems Owner");
+    //             if (project.systems[s].id === owner.system_id) {
+    //               // console.log(project.systems[s].id + "===" + owner.system_id + "??");
+    //               // this.projectList[i].systems.push(this.projectListAdmin[i].systems[s]);
+    //               // this.projectList[i].systems.splice(0, this.projectList[i].systems.length); // Clear systems array
 
-  //               this.projectList[i].systems.push({ ...this.projectListAdmin[i].systems[s] }); // Create a copy before pushing
-  //             } else {
-  //               console.log("Project not push");
-  //             }
-  //           });
-  //         });
-  //       });
-  //         // projectsWithSystems now contains only projects from this.projectList which have systems installed
-  //         // console.log(projectsWithSystems);
-  //         console.log(this.projectList, "this.projectList");
-  //       // console.log(this.userrole);
-  //       this.loading = false;
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   },
+    //               this.projectList[i].systems.push({ ...this.projectListAdmin[i].systems[s] }); // Create a copy before pushing
+    //             } else {
+    //               console.log("Project not push");
+    //             }
+    //           });
+    //         });
+    //       });
+    //         // projectsWithSystems now contains only projects from this.projectList which have systems installed
+    //         // console.log(projectsWithSystems);
+    //         console.log(this.projectList, "this.projectList");
+    //       // console.log(this.userrole);
+    //       this.loading = false;
+    //     } catch (error) {
+    //       console.log(error);
+    //     }
+    //   },
 
-  async getSystemsOwner() {
+    async getSystemsOwner() {
       try {
         this.loading = true;
         this.projectOwner = [];
         this.projectList.forEach((project, i) => {
-            this.projectList[i].systems.splice(0, this.projectList[i].systems.length);
+          this.projectList[i].systems.splice(0, this.projectList[i].systems.length);
         });
         this.projectListAdmin.forEach((project, i) => {
           project.systems.forEach((system, s) => {
@@ -683,6 +735,7 @@ export default {
       });
     },
     async saveProject() {
+      console.log(this.$refs.form);
       if (!this.$refs.form.validate()) {
         this.$refs.form.validate();
       } else {
@@ -779,7 +832,8 @@ export default {
       // console.log("success system");
       await this.deleteProject();
       // console.log("success project");
-      alert("success delete all");
+      // alert("success delete all");
+      this.dialogDeleteSuccess = true;
       // window.location.reload();
       this.dialog = false;
       // this.loading = true;
@@ -916,9 +970,9 @@ export default {
       } else if (mode === "create") {
         this.dialog = true;
         // console.log(mode);
-        if (this.$refs.form) {
-          // this.$refs.form.reset();
-        }
+        // if (this.$refs.form) {
+        //   // this.$refs.form.reset();
+        // }
       }
     },
     async getSystemOwner() {
@@ -982,17 +1036,20 @@ export default {
           this.system.system_nameTH == "";
           this.system.system_nameEN == "";
           this.system.system_shortname == "";
+          this.system.system_analyst == "";
           this.system.system_member == "";
         });
         promise.then(() => {
           setTimeout(() => {
-            alert("success");
+            // alert("success");
           }, 2000);
         });
       } catch (error) {
         console.error(error);
         alert("Error submitting form");
       }
+
+
     },
   },
 };

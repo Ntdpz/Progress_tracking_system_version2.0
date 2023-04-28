@@ -74,12 +74,13 @@ router.post("/createSystem", async (req, res) => {
     system_nameTH,
     system_nameEN,
     system_shortname,
+    system_analyst,
     system_member,
   } = req.body;
   const id = generateId();
   try {
     connection.query(
-      "INSERT INTO systems(id, project_id,system_id,system_nameTH,system_nameEN,system_shortname,system_member) VALUES(?, ?, ?, ? ,? ,?,?)",
+      "INSERT INTO systems(id, project_id,system_id,system_nameTH,system_nameEN,system_shortname,system_analyst, system_member) VALUES(?, ?, ?, ?, ? ,? ,?,?)",
       [
         id,
         project_id,
@@ -87,6 +88,7 @@ router.post("/createSystem", async (req, res) => {
         system_nameTH,
         system_nameEN,
         system_shortname,
+        system_analyst,
         system_member,
       ],
       (err, results, fields) => {
@@ -113,17 +115,19 @@ router.put("/updateSystem/:id", async (req, res) => {
     system_nameTH,
     system_nameEN,
     system_shortname,
+    system_analyst,
     system_member,
   } = req.body;
   try {
     connection.query(
-      "UPDATE systems SET project_id = ?, system_id = ?,system_nameTH = ?,system_nameEN = ?,system_shortname = ?,system_member = ? WHERE id = ?",
+      "UPDATE systems SET project_id = ?, system_id = ?,system_nameTH = ?,system_nameEN = ?,system_shortname = ?, system_analyst = ?, system_member = ? WHERE id = ?",
       [
         project_id,
         system_id,
         system_nameTH,
         system_nameEN,
         system_shortname,
+        system_analyst,
         system_member,
         id,
       ],

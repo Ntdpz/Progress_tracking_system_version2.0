@@ -3,7 +3,7 @@
         <v-card width="100%" max-height="100%">
             <v-row class="ma-0 pa-0" style="place-content: center;">
                 <v-card-title>
-                    <v-icon size="50px" color="success">mdi-check-circle-outline</v-icon>
+                    <v-icon size="50px" color="error">mdi-alert-circle-outline</v-icon>
                 </v-card-title>
             </v-row>
             <v-row class="ma-0 pa-0" style="place-content: center;">
@@ -28,7 +28,7 @@ export default {
             type: Boolean,
             required: true,
         },
-        title:String,
+        title: String,
     },
     methods: {
         closeDialog() {
