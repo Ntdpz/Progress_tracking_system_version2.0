@@ -3,7 +3,7 @@
     <!-- title -->
     <v-row class="mb-3">
       <b class="center ml-4 mr-4 mt-0 mb-1" style="font-weight: bold; font-size: 20px">
-        Screen {{ screensID.screen_name }}
+        Screen {{ screensID.screen_id }} : {{ screensID.screen_name }}
       </b>
       <v-divider class="mt-0 mb-1" inset vertical style="background-color: black"></v-divider>
       <template>
@@ -33,16 +33,16 @@
               <v-btn icon :to="`/systemdetail/${screensID.system_id}`" class="mr-4" color="primary" size="35px" left>
                 <v-icon size="35px">mdi-arrow-left-circle</v-icon>
               </v-btn>
-              Screen {{ screensID.screen_name }}
+              Screen {{ screensID.screen_id }} : {{ screensID.screen_name }}
             </v-card-title>
           </v-card>
         </v-col>
       </v-row>
       <!-- รูป กับรายลละเอียด -->
       <v-row no-gutters>
-        <v-col col="6" sm="6" md="6">
+        <v-col class="mb-12" col="12" sm="12" md="12" style="text-align: -webkit-center;">
           <!-- height="100%" -->
-          <v-card class="ma-1 mt-0" tile height="100%">
+          <v-card class="ma-1 mt-0" tile height="100%" width="50%">
             <div v-if="loading">
               <v-progress-circular class="center" :size="70" :width="7" color="purple"
                 indeterminate></v-progress-circular>
@@ -52,10 +52,10 @@
               contain></v-img>
           </v-card>
           <v-btn class="" elevation="2" color="primary" style="color: white; border-radius: 10px"
-            @click="selectImage">Change Image...</v-btn>
+            @click="selectImage" :disabled="disabled">Change Image...</v-btn>
         </v-col>
 
-        <v-col col="6" sm="6" md="6">
+        <v-col col="12" sm="12" md="12">
           <v-card outlined tile height="100%">
             <v-container fluid>
               <v-row>
@@ -508,11 +508,11 @@ export default {
           })
           .catch((err) => {
             console.log(err);
-            alert(err);
+            // alert(err);
           });
       } catch (err) {
         console.log(err);
-        alert(err);
+        // alert(err);
       }
     },
     async addUser_Screen() {
@@ -529,8 +529,8 @@ export default {
             // alert("addUser_Screen Success!!");
           });
       } catch (error) {
-        console.log(error);
-        alert("user_screen: " + error);
+        console.log("user_screen: " + error);
+        // alert("user_screen: " + error);
       }
     },
 
@@ -556,7 +556,6 @@ export default {
         .delete("/screens/delete/" + this.id)
         .then((res) => {
           
-
           const promise = new Promise((resolve, reject) => {
             resolve();
             this.dialogDeleteSuccess = true;

@@ -361,6 +361,25 @@
                     <v-col>
                       <v-row>
                         <v-col class="mb-0 pb-0 hidden-sm-and-up" style="place-self: center">
+                          <v-card-text class="">System Analyst</v-card-text>
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col class="hidden-xs-only" sm="4" md="4" style="place-self: center">
+                          <v-card-text class="">System Analyst</v-card-text>
+                        </v-col>
+                        <v-col class="col-12" sm="8" md="8" style="align-self: center">
+                          <v-text-field style="text-align-last: left" v-model="short_system_analyst" hide-details="auto"
+                            dense outlined></v-text-field>
+                        </v-col>
+                      </v-row>
+                    </v-col>
+                  </v-row>
+                  <!--  -->
+                  <v-row>
+                    <v-col>
+                      <v-row>
+                        <v-col class="mb-0 pb-0 hidden-sm-and-up" style="place-self: center">
                           <v-card-text class="">Developer</v-card-text>
                         </v-col>
                       </v-row>
@@ -460,9 +479,9 @@
                 <v-card :to="`/screendetail/${item.id}`" class="elevation-0" outlined rounded>
                   <v-img :src="getImageUrl(item.screen_pic)" max-height="250px" contain aspect-ratio="1"
                     class="d-block mx-auto" />
-                  <v-card-title> Screen: {{ item.screen_name }} </v-card-title>
+                  <v-card-title> ScreenID: {{ item.screen_id }} </v-card-title>
                   <v-card-subtitle style="color: black">
-                    ผู้รับผิดชอบ Dev {{ item.screen_developer }}
+                    Screen Name: {{ item.screen_name }}
                   </v-card-subtitle>
                 </v-card>
               </v-responsive>
@@ -530,6 +549,7 @@ export default {
       system_nameTH: "",
       system_nameEN: "",
       short_system_name: "",
+      short_system_analyst: "",
       count_screen: "",
       menuDateStart: true,
       menuDateEnd: true,
@@ -768,7 +788,7 @@ export default {
         this.system_nameTH = data.data[0].system_nameTH;
         this.system_nameEN = data.data[0].system_nameEN;
         this.short_system_name = data.data[0].system_shortname;
-
+        this.short_system_analyst = data.data[0].system_analyst;
         // console.clear();
         // console.log("this.projectID");
         // console.log(this.projectID);
@@ -794,7 +814,8 @@ export default {
           system_nameTH: this.system_nameTH,
           system_nameEN: this.system_nameEN,
           system_shortname: this.short_system_name,
-          system_member: "dev1",
+          system_analyst: this.short_system_analyst,
+          system_member: "",
         })
         .then((response) => {
           // console.log(response);
