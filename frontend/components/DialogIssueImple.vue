@@ -143,7 +143,7 @@
                 menu-props="auto"
                 item-text="user_firstname"
                 v-model="IssueQC"
-                @change="checkAssign()"
+                @change="checkAssign2()"
               ></v-select>
             </v-col>
           </v-row>
@@ -625,10 +625,13 @@ export default {
       }
     },
     checkAssign() {
-      console.log("checkAssign");
-      const dev = this.IssueAssign.user_firstname;
+      console.log("checkAssigndev", this.IssueAssign);
+      const dev = this.IssueAssign?.user_firstname ?? null;
       this.IssueAssign = dev;
-      const qc = this.IssueQC.user_firstname;
+    },
+    checkAssign2() {
+      console.log("checkAssignqc", this.IssueQC);
+      const qc = this.IssueQC?.user_firstname ?? null;
       this.IssueQC = qc;
     },
     async saveIssue() {
@@ -819,12 +822,8 @@ export default {
           this.position_Implementer = data.data.filter(
             (item) => item.user_position === "Implementer"
           );
-          console.log(
-            selectedScreenID,
-            this.position_Developers,
-            this.position_Implementer,
-            "data"
-          );
+          this.checkAssign();
+          this.checkAssign2();
         });
     },
     selectedType() {},
