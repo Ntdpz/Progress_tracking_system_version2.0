@@ -34,6 +34,7 @@
                   placeholder="Issue Name"
                   outlined
                   dense
+                  @change="getScreenDefault()"
                   v-model="form.issue_name"
                 ></v-text-field>
               </v-col>
@@ -378,7 +379,7 @@ export default {
   },
   async mounted() {
     await this.getDefault();
-    await this.getScreenDefault();
+    // await this.getScreenDefault();
   },
   methods: {
     selectedType() {
@@ -569,7 +570,6 @@ export default {
             this.systemId
         );
         this.screen_selectDefault = res.data;
-        console.log(this.screen_selectDefault, "this.screen_selectDefault");
       } catch (error) {
         console.error(error);
       }

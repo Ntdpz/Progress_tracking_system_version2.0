@@ -26,7 +26,6 @@ router.use("/user_screens", user_screensRouter);
 router.use("/user_systems", user_systemsRouter);
 router.use("/pdf", pdfRouter);
 router.use("/auth", authRouter);
-// router.use("/history_issues", history_issuesRouter);
 router.use("/history_issues", history_issuesRouter);
 
 module.exports = router;

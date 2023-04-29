@@ -178,6 +178,12 @@
             :IssueDocId="selected.issue_doc_id"
             :IssueCustomer="selected.issue_customer"
             :IssueTypeSA="selected.issue_type_sa"
+            :IssueCreate="selected.created_at"
+            :ScreenName="selected.screenName"
+            :IssueDeveloperStatus="selected.issue_status_developer"
+            :IssueImplementerStatus="selected.issue_status_implement"
+            :IssueRound="selected.issue_round"
+            :ImpleSection="selected.impleSection"
           />
           <dialog-issue-dev
             :dialog.sync="dialogIssueDev"
@@ -209,6 +215,12 @@
             :IssueDocId="selected.issue_doc_id"
             :IssueCustomer="selected.issue_customer"
             :IssueTypeSA="selected.issue_type_sa"
+            :IssueCreate="selected.created_at"
+            :ScreenName="selected.screenName"
+            :IssueDeveloperStatus="selected.issue_status_developer"
+            :IssueImplementerStatus="selected.issue_status_implement"
+            :IssueRound="selected.issue_round"
+            :ImpleSection="selected.impleSection"
           />
           <v-tabs-items v-model="tab">
             <v-tab-item>
