@@ -74,6 +74,27 @@ router.get("/getOne/:id", async (req, res) => {
   }
 });
 
+//* GET one by issue_assign
+router.get("/getOneName/:issue_assign", async (req, res) => {
+  const issue_assign = req.params.issue_assign;
+  try {
+    connection.query(
+      "SELECT * FROM issues WHERE issue_assign = ?",
+      [issue_assign],
+      (err, results, fields) => {
+        if (err) {
+          console.log(err);
+          return res.status(400).send();
+        }
+        res.status(200).json(results);
+      }
+    );
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send();
+  }
+});
+
 // * POST FROM issues
 router.post("/createIssue", upload.single("file"), (req, res) => {
   const {
