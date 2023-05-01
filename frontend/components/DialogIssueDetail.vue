@@ -590,7 +590,14 @@ export default {
     await this.checkStatus2();
   },
   // updated() {
-  //   console.log(this.IssueAssign, "this.IssueAssign");
+  //   console.log(
+  //     this.IssueDeveloperStatus,
+  //     "this.IssueDeveloperStatus",
+  //     this.IssueImplementerStatus,
+  //     "this.IssueImplementerStatus",
+  //     this.IssueStatus,
+  //     "this.IssueStatus"
+  //   );
   // },
   methods: {
     checkStatus() {

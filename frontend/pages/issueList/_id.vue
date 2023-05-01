@@ -747,7 +747,7 @@
                 class="v-data-table elevation-1 mb-2"
                 v-remove-row-borders
               >
-                <template v-slot:top>
+                <!-- <template v-slot:top>
                   <v-toolbar flat>
                     <v-toolbar-title>
                       <h5
@@ -758,7 +758,7 @@
                       </h5>
                     </v-toolbar-title>
                   </v-toolbar>
-                </template>
+                </template> -->
                 <template v-slot:[`item.issue_name`]="{ item }">
                   <v-icon>mdi-format-list-bulleted</v-icon>
                   {{ item.issue_name }} /{{ item.issue_id }}
@@ -1052,7 +1052,7 @@ export default {
                 issue.system_id === system.id &&
                 issue.issue_assign !== "" &&
                 issue.issue_assign !== null &&
-                issue.issue_status !== "แก้ไขเรียบร้อย"
+                issue.issue_status_implement !== "แก้ไขเรียบร้อย"
             )
           );
           Vue.set(
@@ -1062,7 +1062,7 @@ export default {
               (issue) =>
                 issue.system_id === system.id &&
                 (issue.issue_assign === "" || issue.issue_assign === null) &&
-                issue.issue_status !== "แก้ไขเรียบร้อย"
+                issue.issue_status_implement !== "แก้ไขเรียบร้อย"
             )
           );
           Vue.set(
@@ -1074,7 +1074,7 @@ export default {
                 issue.issue_assign !== "" &&
                 issue.issue_assign !== null &&
                 issue.issue_type === "PNI" &&
-                issue.issue_status !== "แก้ไขเรียบร้อย"
+                issue.issue_status_implement !== "แก้ไขเรียบร้อย"
             )
           );
           Vue.set(
@@ -1085,7 +1085,7 @@ export default {
                 issue.system_id === system.id &&
                 (issue.issue_assign === "" || issue.issue_assign === null) &&
                 issue.issue_type === "PNI" &&
-                issue.issue_status !== "แก้ไขเรียบร้อย"
+                issue.issue_status_implement !== "แก้ไขเรียบร้อย"
             )
           );
           Vue.set(
@@ -1097,7 +1097,7 @@ export default {
                 issue.issue_assign !== "" &&
                 issue.issue_assign !== null &&
                 issue.issue_type === "PNC" &&
-                issue.issue_status !== "แก้ไขเรียบร้อย"
+                issue.issue_status_implement !== "แก้ไขเรียบร้อย"
             )
           );
           Vue.set(
@@ -1108,7 +1108,7 @@ export default {
                 issue.system_id === system.id &&
                 (issue.issue_assign === "" || issue.issue_assign === null) &&
                 issue.issue_type === "PNC" &&
-                issue.issue_status !== "แก้ไขเรียบร้อย"
+                issue.issue_status_implement !== "แก้ไขเรียบร้อย"
             )
           );
           Vue.set(
@@ -1117,7 +1117,7 @@ export default {
             this.issue.filter(
               (issue) =>
                 issue.system_id === system.id &&
-                issue.issue_status === "แก้ไขเรียบร้อย"
+                issue.issue_status_implement === "แก้ไขเรียบร้อย"
             )
           );
         });
