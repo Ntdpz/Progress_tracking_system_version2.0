@@ -262,7 +262,7 @@
                             style="color: white; border-radius: 10px">Cancel
                           </v-btn>
 
-                          <v-btn @click="CreateAllScreen()" type="submit" class="mr-2" elevation="2" color="primary"
+                          <v-btn type="submit" class="mr-2" elevation="2" color="primary"
                             style="color: white; border-radius: 10px">Create
                           </v-btn>
                         </v-row>
