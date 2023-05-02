@@ -589,16 +589,6 @@ export default {
     await this.checkStatus();
     await this.checkStatus2();
   },
-  // updated() {
-  //   console.log(
-  //     this.IssueDeveloperStatus,
-  //     "this.IssueDeveloperStatus",
-  //     this.IssueImplementerStatus,
-  //     "this.IssueImplementerStatus",
-  //     this.IssueStatus,
-  //     "this.IssueStatus"
-  //   );
-  // },
   methods: {
     checkStatus() {
       if (this.IssueAccepting != null) {
@@ -639,6 +629,72 @@ export default {
       this.IssueQC = qc;
     },
     async saveIssue() {
+      if (this.IssueDeveloperStatus == "แก้ไขไม่ได้") {
+        console.log("check ส่งต่องาน");
+        alert("check ส่งต่องาน");
+        const dataHistoryDev = {
+          screen_id: this.IssueScreenId,
+          system_id: this.SystemId,
+          project_id: this.ProjectId,
+          issue_name: this.IssueName,
+          issue_id: this.IssueId,
+          issue_type: this.IssueType,
+          issue_informer: this.IssueInformer,
+          issue_priority: this.IssuePriority,
+          issue_end: this.IssueEndDate,
+          issue_assign: this.IssueAssign,
+          issue_qc: this.IssueQC,
+          issue_des: this.IssueDes,
+          issue_des_sa: this.IssueDesSA,
+          issue_type_sa: this.IssueTypeSA,
+          issue_doc_id: this.IssueDocId,
+          issue_customer: this.IssueCustomer,
+          issue_filename: this.IssueFilename,
+          issue_des_dev: this.IssueDesDev,
+          issue_des_implementer: this.IssueDesImplementer,
+          issue_start: this.IssueStart,
+          issue_expected: this.IssueExpected,
+          issue_status: this.IssueStatus,
+          issue_accepting: this.IssueAccepting,
+          issue_manday: this.IssueManday,
+          issue_complete: this.IssueComplete,
+          issue_status_developer: this.IssueDeveloperStatus,
+          issue_status_implement: this.IssueImplementerStatus,
+          issue_round: this.IssueRound,
+        };
+        try {
+          await this.$axios.post(
+            "/history_issues/createIssueHistory/",
+            dataHistoryDev
+          );
+          console.log("post history dev");
+          // window.location.reload();
+          this.handleClose();
+          const promise = new Promise((resolve, reject) => {
+            resolve();
+            this.close();
+          });
+          promise.then(() => {
+            setTimeout(() => {
+              alert("success");
+            }, 2000);
+          });
+        } catch (error) {
+          console.error(error);
+          alert("Error submitting form");
+        }
+        this.issue_des_dev = null;
+        this.issue_des_implementer = null;
+        this.issue_start = null;
+        this.issue_expected = null;
+        this.issue_status = "รอแก้ไข";
+        this.issue_accepting = null;
+        this.issue_manday = 0;
+        this.issue_complete = null;
+        this.issue_status_developer = "รอแก้ไข";
+        this.issue_status_implement = null;
+        this.issue_round = 0;
+      }
       if (this.IssueImplementerStatus == "แก้ไขไม่สำเร็จ") {
         // console.log("check imple");
         // alert("check imple");
