@@ -1,6 +1,6 @@
 <template>
   <v-layout row justify-center>
-    <v-dialog v-model="dialog" persistent max-width="750">
+    <v-dialog v-model="dialog" persistent max-width="750" >
       <v-card>
         <v-card-title>
           <v-col cols="12">
@@ -19,109 +19,51 @@
           <v-container>
             <v-row>
               <v-col cols="12" sm="6" md="4">
-                <v-text-field
-                  label="Issue ID"
-                  placeholder="Issue ID"
-                  disabled
-                  outlined
-                  dense
-                  v-model="form.issue_id"
-                ></v-text-field>
+                <v-text-field label="Issue ID" placeholder="Issue ID" disabled outlined dense
+                  v-model="form.issue_id"></v-text-field>
               </v-col>
               <v-col cols="12" sm="8" md="8">
-                <v-text-field
-                  label="Issue Name"
-                  placeholder="Issue Name"
-                  outlined
-                  dense
-                  @change="getScreenDefault()"
-                  v-model="form.issue_name"
-                ></v-text-field>
+                <v-text-field label="Issue Name" placeholder="Issue Name" outlined dense @change="getScreenDefault()"
+                  v-model="form.issue_name"></v-text-field>
               </v-col>
               <v-col cols="12" sm="6" md="4">
-                <v-select
-                  :items="type_select"
-                  label="PNI/PNC/New Req"
-                  dense
-                  outlined
-                  v-model="form.issue_type"
-                  @change="selectedType()"
-                ></v-select>
+                <v-select :items="type_select" label="PNI/PNC/New Req" dense outlined v-model="form.issue_type"
+                @change="selectedType()"></v-select>
               </v-col>
               <v-col cols="12" sm="6" md="8">
-                <v-select
-                  @change="getUserSystems(selectedScreen.id)"
-                  :items="screen_selectDefault"
-                  label="Screen No."
-                  dense
-                  outlined
-                  v-model="selectedScreen"
-                  item-text="screen_name"
-                  return-object="false"
-                ></v-select>
+                <v-select @mousemove="getScreenDefault()" @change="getUserSystems(selectedScreen.id)" :items="screen_selectDefault" label="Screen No."
+                  dense outlined v-model="selectedScreen" item-text="screen_name" item-value="screen_name" return-object="false">
+                <template v-slot:item="{ item }">
+                {{ item.screen_id }} : {{ item.screen_name }}
+                </template>
+                </v-select>
               </v-col>
               <v-col cols="12" sm="6" md="4">
-                <v-text-field
-                  label="ผู้จดแจ้ง"
-                  placeholder="ผู้จดแจ้ง"
-                  outlined
-                  dense
-                  v-model="form.issue_informer"
-                ></v-text-field>
+                <v-text-field label="ผู้จดแจ้ง" placeholder="ผู้จดแจ้ง" outlined dense
+                  v-model="form.issue_informer"></v-text-field>
               </v-col>
               <v-col cols="12" sm="6" md="4">
-                <v-select
-                  :items="priotity_select"
-                  label="Priotity"
-                  dense
-                  outlined
-                  prepend-icon="mdi-flag-outline"
-                  v-model="form.issue_priority"
-                ></v-select>
+                <v-select :items="priotity_select" label="Priotity" dense outlined prepend-icon="mdi-flag-outline"
+                  v-model="form.issue_priority"></v-select>
               </v-col>
               <v-col cols="12" sm="6" md="4">
-                <v-select
-                  :items="issue_status_default"
-                  label="สถานะ"
-                  placeholder="สถานะ"
-                  dense
-                  outlined
-                  v-model="form.issue_status"
-                ></v-select>
+                <v-select :items="issue_status_default" label="สถานะ" placeholder="สถานะ" dense outlined
+                  v-model="form.issue_status"></v-select>
               </v-col>
               <!-- date start -->
               <v-col cols="12" sm="6" md="6">
-                <v-menu
-                  ref="menuDateStart"
-                  v-model="menuStart"
-                  :close-on-content-click="false"
-                  transition="scale-transition"
-                  offset-y
-                  min-width="auto"
-                  disabled
-                >
+                <v-menu ref="menuDateStart" v-model="menuStart" :close-on-content-click="false"
+                  transition="scale-transition" offset-y min-width="auto" disabled>
                   <template v-slot:activator="{ on, attrs }">
-                    <v-text-field
-                      v-model="dateStart"
-                      label="วันที่สร้าง"
-                      prepend-icon="mdi-calendar"
-                      readonly
-                      v-bind="attrs"
-                      v-on="on"
-                      class="pt-0"
-                      disabled
-                    ></v-text-field>
+                    <v-text-field v-model="dateStart" label="วันที่สร้าง" prepend-icon="mdi-calendar" readonly
+                      v-bind="attrs" v-on="on" class="pt-0" disabled></v-text-field>
                   </template>
                   <v-date-picker v-model="dateStart" no-title scrollable>
                     <v-spacer></v-spacer>
                     <v-btn text color="primary" @click="menuStart = false">
                       Cancel
                     </v-btn>
-                    <v-btn
-                      text
-                      color="primary"
-                      @click="$refs.menuDateStart.save(dateStart)"
-                    >
+                    <v-btn text color="primary" @click="$refs.menuDateStart.save(dateStart)">
                       OK
                     </v-btn>
                   </v-date-picker>
@@ -130,24 +72,11 @@
 
               <!-- date end -->
               <v-col cols="12" sm="6" md="6">
-                <v-menu
-                  ref="menu"
-                  v-model="menu"
-                  :close-on-content-click="false"
-                  transition="scale-transition"
-                  offset-y
-                  min-width="auto"
-                >
+                <v-menu ref="menu" v-model="menu" :close-on-content-click="false" transition="scale-transition" offset-y
+                  min-width="auto">
                   <template v-slot:activator="{ on, attrs }">
-                    <v-text-field
-                      v-model="date"
-                      label="วันกำหนดส่ง"
-                      prepend-icon="mdi-calendar"
-                      readonly
-                      v-bind="attrs"
-                      v-on="on"
-                      class="pt-0"
-                    ></v-text-field>
+                    <v-text-field v-model="date" label="วันกำหนดส่ง" prepend-icon="mdi-calendar" readonly v-bind="attrs"
+                      v-on="on" class="pt-0"></v-text-field>
                   </template>
                   <v-date-picker v-model="date" no-title scrollable>
                     <v-spacer></v-spacer>
@@ -161,58 +90,26 @@
                 </v-menu>
               </v-col>
               <v-col cols="12" sm="4" md="6">
-                <p
-                  v-show="selectedScreen == null"
-                  style="color: red"
-                  class="ma-0"
-                >
+                <p v-show="selectedScreen == null" style="color: red" class="ma-0">
                   โปรดเลือกหน้าจอก่อน
                 </p>
-                <v-select
-                  :items="position_Developers"
-                  label="Dev"
-                  dense
-                  outlined
-                  item-text="user_firstname"
-                  v-model="form.issue_assign"
-                  return-object="false"
-                ></v-select>
+                <v-select :items="position_Developers" label="Dev" dense outlined item-text="user_firstname"
+                  v-model="form.issue_assign" return-object="false"></v-select>
               </v-col>
               <v-col cols="12" sm="4" md="6">
-                <p
-                  v-show="selectedScreen == null"
-                  style="color: red"
-                  class="ma-0"
-                >
+                <p v-show="selectedScreen == null" style="color: red" class="ma-0">
                   โปรดเลือกหน้าจอก่อน
                 </p>
-                <v-select
-                  :items="position_Implementer"
-                  label="QC"
-                  dense
-                  outlined
-                  item-text="user_firstname"
-                  v-model="form.issue_qc"
-                  return-object="false"
-                ></v-select>
+                <v-select :items="position_Implementer" label="QC" dense outlined item-text="user_firstname"
+                  v-model="form.issue_qc" return-object="false"></v-select>
               </v-col>
               <v-col cols="12" sm="6" md="4" v-show="PNC">
-                <v-text-field
-                  label="Document No."
-                  placeholder="Document No."
-                  outlined
-                  dense
-                  v-model="form.issue_doc_id"
-                ></v-text-field>
+                <v-text-field label="Document No." placeholder="Document No." outlined dense
+                  v-model="form.issue_doc_id"></v-text-field>
               </v-col>
               <v-col cols="12" sm="8" md="8" v-show="PNC">
-                <v-text-field
-                  label="Customer Name"
-                  placeholder="Customer Name"
-                  outlined
-                  dense
-                  v-model="form.issue_customer"
-                ></v-text-field>
+                <v-text-field label="Customer Name" placeholder="Customer Name" outlined dense
+                  v-model="form.issue_customer"></v-text-field>
               </v-col>
               <v-col cols="12" sm="6" md="6" v-show="Newreq">
                 <v-container fluid class="ma-0 pa-0">
@@ -221,48 +118,23 @@
                   <v-row>
                     <v-col>
                       <v-row>
-                        <v-checkbox
-                          v-model="form.issue_type_sa"
-                          label="UI"
-                          value="UI"
-                        ></v-checkbox>
+                        <v-checkbox v-model="form.issue_type_sa" label="UI" value="UI"></v-checkbox>
                       </v-row>
                       <v-row>
-                        <v-checkbox
-                          v-model="form.issue_type_sa"
-                          label="Business"
-                          value="Business"
-                        ></v-checkbox>
+                        <v-checkbox v-model="form.issue_type_sa" label="Business" value="Business"></v-checkbox>
                       </v-row>
                       <v-row>
-                        <v-checkbox
-                          v-model="form.issue_type_sa"
-                          label="Data"
-                          value="Data"
-                        ></v-checkbox
-                      ></v-row>
+                        <v-checkbox v-model="form.issue_type_sa" label="Data" value="Data"></v-checkbox></v-row>
                     </v-col>
                     <v-col>
                       <v-row>
-                        <v-checkbox
-                          v-model="form.issue_type_sa"
-                          label="Servies"
-                          value="Servies"
-                        ></v-checkbox>
+                        <v-checkbox v-model="form.issue_type_sa" label="Servies" value="Servies"></v-checkbox>
                       </v-row>
                       <v-row>
-                        <v-checkbox
-                          v-model="form.issue_type_sa"
-                          label="Report"
-                          value="Report"
-                        ></v-checkbox>
+                        <v-checkbox v-model="form.issue_type_sa" label="Report" value="Report"></v-checkbox>
                       </v-row>
                       <v-row>
-                        <v-checkbox
-                          v-model="form.issue_type_sa"
-                          label="Training"
-                          value="Training"
-                        ></v-checkbox>
+                        <v-checkbox v-model="form.issue_type_sa" label="Training" value="Training"></v-checkbox>
                       </v-row>
                     </v-col>
                   </v-row>
@@ -270,30 +142,14 @@
               </v-col>
               <v-col cols="12" sm="6" md="6" v-show="Newreq">
                 <p>Note for SA</p>
-                <v-textarea
-                  solo
-                  name="input-7-4"
-                  label="Note for SA"
-                  v-model="form.issue_des_sa"
-                ></v-textarea>
+                <v-textarea solo name="input-7-4" label="Note for SA" v-model="form.issue_des_sa"></v-textarea>
               </v-col>
               <v-col cols="12" class="mt-0">
-                <v-textarea
-                  solo
-                  name="input-7-4"
-                  label="Description"
-                  v-model="form.issue_des"
-                ></v-textarea>
+                <v-textarea solo name="input-7-4" label="Description" v-model="form.issue_des"></v-textarea>
               </v-col>
               <v-col cols="12">
-                <v-file-input
-                  v-model="form.issue_filename"
-                  ref="fileInput"
-                  @change="uploadFile()"
-                  label="File input"
-                  outlined
-                  dense
-                ></v-file-input>
+                <v-file-input v-model="form.issue_filename" ref="fileInput" @change="uploadFile()" label="File input"
+                  outlined dense></v-file-input>
               </v-col>
             </v-row>
           </v-container>
@@ -379,7 +235,19 @@ export default {
   },
   async mounted() {
     await this.getDefault();
+
     // await this.getScreenDefault();
+  },
+  computed() {
+  },
+  created() {
+
+    // this.getScreenDefault();
+  },
+  updated() {
+    // if(this.dialog = true){
+    //   this.getScreenDefault();
+    // }
   },
   methods: {
     selectedType() {
@@ -563,13 +431,11 @@ export default {
     },
     async getScreenDefault() {
       try {
-        const res = await this.$axios.get(
-          "/screens/getAll?project_id=" +
-            this.projectId +
-            "&&system_id=" +
-            this.systemId
-        );
-        this.screen_selectDefault = res.data;
+        await this.$axios.get("/screens/getAll?project_id=" + this.projectId + "&&system_id=" + this.systemId).then((data) => {
+          this.screen_selectDefault = data.data;
+        });
+
+
       } catch (error) {
         console.error(error);
       }
