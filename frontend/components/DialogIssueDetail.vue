@@ -642,7 +642,7 @@ export default {
           issue_informer: this.IssueInformer,
           issue_priority: this.IssuePriority,
           issue_end: this.IssueEndDate,
-          issue_assign: this.IssueAssign,
+          issue_assign: this.IssueAssign.user_firstname,
           issue_qc: this.IssueQC,
           issue_des: this.IssueDes,
           issue_des_sa: this.IssueDesSA,
@@ -694,6 +694,7 @@ export default {
         this.issue_status_developer = "รอแก้ไข";
         this.issue_status_implement = null;
         this.issue_round = 0;
+        this.IssueAssign = this.IssueAssign.user_firstname;
       }
       if (this.IssueImplementerStatus == "แก้ไขไม่สำเร็จ") {
         // console.log("check imple");

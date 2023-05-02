@@ -6,11 +6,7 @@
 
     <!-- *Header* -->
     <v-row class="mt-4 ml-2 mb-2">
-      <h4>
-        UserID {{ userId }} {{ runningNumber }}: {{ this.projectName }} ({{
-          this.projectId
-        }})
-      </h4>
+      <h4>{{ this.projectName }} ({{ this.projectId }})</h4>
       <p style="color: #b6b5b5; font-size: 16px" class="ml-2">
         {{ this.systemslength }} Sub Systems
       </p>
@@ -26,29 +22,14 @@
         <v-expansion-panel-header>
           <template>
             <v-row no-gutters>
-              <v-col cols="4">
-                <v-row style="margin-top: 1%">
+              <v-col cols="12">
+                <v-row style="margin-top: 1px">
                   <h4>{{ system.id }} {{ system.system_nameTH }}</h4>
-                  <p style="color: #b6b5b5; font-size: 16px; margin-left: 5%">
-                    <!-- 3 Issue -->
-                  </p>
+                  <!-- <p style="color: #b6b5b5; font-size: 16px; margin-left: 5%">
+                    3 Issue
+                  </p> -->
                 </v-row>
               </v-col>
-              <v-spacer></v-spacer>
-              <v-col cols="4">
-                <v-row>
-                  <!-- <h4 style="margin-top: 3.5%; margin-right: 2%">
-                    Sub System 1
-                  </h4> -->
-                  <v-chip class="ma-2" color="primary" text-color="white">
-                    <v-avatar left>
-                      <v-icon>mdi-account-circle</v-icon>
-                    </v-avatar>
-                    Mike
-                  </v-chip>
-                </v-row>
-              </v-col>
-              <v-spacer></v-spacer>
             </v-row>
           </template>
         </v-expansion-panel-header>
@@ -977,15 +958,6 @@ export default {
         this.user_role = res.data[0].user_role;
       });
     },
-    // showIssueDetailDialog(issue_name) {
-    //   if (this.user_role == "Admin") {
-    //     this.dialogIssueDetail = true;
-    //   } else if (this.user_position == "Implementer") {
-    //     this.dialogIssueImple = true;
-    //   } else if (this.user_position == "Developer") {
-    //     this.dialogIssueDev = true;
-    //   }
-    // },
     async getProject() {
       await this.$axios.get("/projects/getOne/" + this.id).then((res) => {
         this.project = res.data;
@@ -1263,12 +1235,5 @@ export default {
   align-items: center;
   border: 2px dotted #333;
   padding: 8px 16px;
-}
-
-input[type="text"] {
-  border: black;
-  font-size: 16px;
-  padding-left: 10px;
-  outline: black;
 }
 </style>
