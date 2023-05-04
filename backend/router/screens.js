@@ -9,7 +9,7 @@ const crypto = require("crypto");
 
 const storage = multer.diskStorage({
   destination(req, file, cb) {
-    cb(null, "../frontend/screenImages/");
+    cb(null, "../frontend/static/screenImages/");
   },
   filename(req, file, cb) {
     const originalname = file.originalname;
@@ -24,7 +24,7 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage });
-const defaultName = "../frontend/screenImages/DefaultScreen.jpg";
+const defaultName = "../frontend/static/screenImages/DefaultScreen.jpg";
 const defaultImage = defaultName.substring(defaultName.lastIndexOf("/") + 1);
 
 function generateId() {
@@ -121,7 +121,7 @@ router.post("/createScreen", upload.single("image"), (req, res) => {
 //           if (results[0].screen.pic === "DefaultScreen.jpg") {
 //             console.log("Save");
 //           } else if (results[0].screen_pic != "DefaultScreen.jpg" && results[0].screen_pic) {
-//             deletePath = "../frontend/screenImages/" + results[0].screen_pic;
+//             deletePath = "../frontend/static/screenImages/" + results[0].screen_pic;
 //             fs.unlink(deletePath, (err) => {
 //               if (err) {
 //                 console.error(err);
@@ -239,7 +239,7 @@ router.put("/updateScreen/:id/image", upload.single("image"), (req, res) => {
             results[0].screen_pic != "DefaultScreen.jpg" &&
             results[0].screen_pic
           ) {
-            deletePath = "../frontend/screenImages/" + results[0].screen_pic;
+            deletePath = "../frontend/static/screenImages/" + results[0].screen_pic;
             fs.unlink(deletePath, (err) => {
               if (err) {
                 console.error(err);
@@ -410,7 +410,7 @@ router.delete("/delete/:id", (req, res) => {
       return;
     }
 
-    const imagePath = "../frontend/screenImages/" + results[0].screen_pic;
+    const imagePath = "../frontend/static/screenImages/" + results[0].screen_pic;
 
     if (results[0].screen_pic !== "DefaultScreen.jpg") {
       fs.unlink(imagePath, (err) => {
@@ -478,7 +478,7 @@ router.delete("/deleteScreen/:system_id", (req, res) => {
         return;
       }
 
-      const imagePath = "../frontend/screenImages/" + results[0].screen_pic;
+      const imagePath = "../frontend/static/screenImages/" + results[0].screen_pic;
 
       if (results[0].screen_pic !== "DefaultScreen.jpg") {
         fs.unlink(imagePath, (err) => {
@@ -547,7 +547,7 @@ router.delete("/deleteScreenProjectId/:project_id", (req, res) => {
         return;
       }
 
-      const imagePath = "../frontend/screenImages/" + results[0].screen_pic;
+      const imagePath = "../frontend/static/screenImages/" + results[0].screen_pic;
 
       if (results[0].screen_pic !== "DefaultScreen.jpg") {
         fs.unlink(imagePath, (err) => {

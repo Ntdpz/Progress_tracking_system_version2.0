@@ -429,10 +429,10 @@ export default {
       this.cf_password = "";
     },
     getImageUrl(fileName) {
-      return require(`@/uploads/${fileName}`);
+      return require(`@/static/uploads/${fileName}`);
     },
     getdefaultImageUrl(fileName) {
-      return require(`@/defaultimage/${fileName}`);
+      return require(`@/static/defaultimage/${fileName}`);
     },
     uploadFile() {
       const input = this.$refs.fileInput;
@@ -515,7 +515,7 @@ export default {
       }
     },
     getdefaultImageUrl(fileName) {
-      return require(`@/defaultimage/${fileName}`);
+      return require(`@/static/defaultimage/${fileName}`);
     },
     async getAllDefault() {
       await this.$axios.get("/default_settings/getAll").then((data) => {

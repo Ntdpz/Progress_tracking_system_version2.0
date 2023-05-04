@@ -8,7 +8,7 @@ const uuid = require("uuid");
 
 const storage = multer.diskStorage({
   destination(req, file, cb) {
-    cb(null, "../frontend/uploads/");
+    cb(null, "../frontend/static/uploads/");
   },
   filename(req, file, cb) {
     const originalname = file.originalname;
@@ -23,7 +23,7 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage });
-const defaultName = "../frontend/uploads/DefaultAvatar.jpg";
+const defaultName = "../frontend/static/uploads/DefaultAvatar.jpg";
 const defaultImage = defaultName.substring(defaultName.lastIndexOf("/") + 1);
 
 function generateId() {
@@ -50,11 +50,11 @@ router.post("/createUser", upload.single("image"), (req, res) => {
   const user_pic = req.file
     ? req.file.filename
     : defaultImage;
-  
+
   const id = generateId();
 
   // if (!req.file) {
-  //   const targetPath = path.join("../frontend/uploads/", user_pic);
+  //   const targetPath = path.join("../frontend/static/uploads/", user_pic);
   //   fs.copyFileSync("../frontend/defaultimage/Avatar.jpg", targetPath);
   // }
 
@@ -124,19 +124,19 @@ router.put("/updateUsers/:id/image", upload.single("image"), (req, res) => {
             "DefaultAvatar.jpg"
           ) {
             console.log("it is save!");
-          }else if( results[0].user_pic !=
-            "DefaultAvatar.jpg" && results[0].user_pic){
-              deletePath = "../frontend/uploads/" + results[0].user_pic;
-              fs.unlink(deletePath, (err) => {
-                if (err) {
-                  console.error(err);
-                  return;
-                }
-                console.log("Old profile picture deleted"+ results[0].user_pic)
-              });
-            }
+          } else if (results[0].user_pic !=
+            "DefaultAvatar.jpg" && results[0].user_pic) {
+            deletePath = "../frontend/static/uploads/" + results[0].user_pic;
+            fs.unlink(deletePath, (err) => {
+              if (err) {
+                console.error(err);
+                return;
+              }
+              console.log("Old profile picture deleted" + results[0].user_pic)
+            });
+          }
           // if (results[0].user_pic) {
-          //   deletePath = "../frontend/uploads/" + results[0].user_pic;
+          //   deletePath = "../frontend/static/uploads/" + results[0].user_pic;
           //   fs.unlink(deletePath, (err) => {
           //     if (err) {
           //       console.error(err);
@@ -245,32 +245,32 @@ router.delete("/api/images/:id", (req, res) => {
     if (imagePath === "DefaultAvatar.jpg") {
       console.log("it is save!");
     }
-    else if( imagePath !="DefaultAvatar.jpg"){
-    deletePath = "../frontend/uploads/" + imagePath;
-    fs.unlink(deletePath, (err) => {
-      if (err) {
+    else if (imagePath != "DefaultAvatar.jpg") {
+      deletePath = "../frontend/static/uploads/" + imagePath;
+      fs.unlink(deletePath, (err) => {
+        if (err) {
           console.log(`Error deleting image file: ${err}`);
           res.status(500).send(`Error deleting image file: ${err}`);
-        return;
-      }
-      console.log(`Image file ${deletePath} deleted successfully.`);
-
-      
-    });
-    }
-    // Delete database entry
-      const deleteSql = `DELETE FROM mytable WHERE id = ${id}`;
-      connection.query(deleteSql, (error, results, fields) => {
-        if (error) {
-          console.log(`Error deleting image record from database: ${error}`);
-          res
-            .status(500)
-            .send(`Error deleting image record from database: ${error}`);
           return;
         }
-        console.log(`Database entry with id ${id} deleted successfully.`);
-        res.status(200).send(`Image with ID ${id} deleted successfully.`);
+        console.log(`Image file ${deletePath} deleted successfully.`);
+
+
       });
+    }
+    // Delete database entry
+    const deleteSql = `DELETE FROM mytable WHERE id = ${id}`;
+    connection.query(deleteSql, (error, results, fields) => {
+      if (error) {
+        console.log(`Error deleting image record from database: ${error}`);
+        res
+          .status(500)
+          .send(`Error deleting image record from database: ${error}`);
+        return;
+      }
+      console.log(`Database entry with id ${id} deleted successfully.`);
+      res.status(200).send(`Image with ID ${id} deleted successfully.`);
+    });
     // Delete image file from server
     // fs.unlink(imagePath, (err) => {
     //   if (err) {
@@ -455,28 +455,38 @@ router.delete("/deleteUser/:id", (req, res) => {
       return;
     }
 
-    const imagePath = "../frontend/uploads/" + results[0].user_pic;
+    const imagePath = "../frontend/static/uploads/" + results[0].user_pic;
 
     // Check if the image name is not equal to "DefaultAvatar.jpg"
-    if (results[0].user_pic !== "DefaultAvatar.jpg") {
-      // Delete image file from server
-      fs.unlink(imagePath, (err) => {
-        if (err) {
-          console.log(`Error deleting image file: ${err}`);
-          res.status(500).send(`Error deleting image file: ${err}`);
-          return;
-        }
-        console.log(`Image file ${imagePath} deleted successfully.`);
-      });
-    }
+    // if (results[0].user_pic !== "DefaultAvatar.jpg") {
+    // // Delete image file from server
+    //   fs.unlink(imagePath, (err) => {
+    //     if (err) {
+    //       console.log(`Error deleting image file: ${err}`);
+    //       res.status(500).send(`Error deleting image file: ${err}`);
+    //       return;
+    //     }
+    //     console.log(`Image file ${imagePath} deleted successfully.`);
+    //   });
+    // }
 
     // Delete database entry
     const deleteSql = `DELETE FROM users WHERE id = ${id}`;
-    connection.query(deleteSql, (error, results, fields) => {
+    connection.query(deleteSql, (error, results2, fields) => {
       if (error) {
         console.log(`Error deleting image record from database: ${error}`);
         res.status(500).send(`Error deleting image record from database: ${error}`);
         return;
+      }
+      if (res.statusCode === 200 && results[0].user_pic !== "DefaultAvatar.jpg") {
+          fs.unlink(imagePath, (err) => {
+            if (err) {
+              console.log(`Error deleting image file: ${err}`);
+              res.status(500).send(`Error deleting image file: ${err}`);
+              return;
+            }
+            console.log(`Image file ${imagePath} deleted successfully.`);
+          });
       }
       console.log(`Database entry with id ${id} deleted successfully.`);
       res.status(200).send(`Image with ID ${id} deleted successfully.`);
