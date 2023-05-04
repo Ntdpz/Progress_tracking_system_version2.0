@@ -763,7 +763,7 @@ export default {
       return;
     },
     getImageUrl(fileName) {
-      return require(`@/screenImages/${fileName}`);
+      return require(`@/static/screenImages/${fileName}`);
     },
     uploadFile() {
       const input2 = this.$refs.fileInput;

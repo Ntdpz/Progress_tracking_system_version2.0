@@ -287,10 +287,10 @@ export default {
       });
     },
     getImageUrl(fileName) {
-      return require(`@/uploads/${fileName}`);
+      return require(`@/static/uploads/${fileName}`);
     },
     getdefaultImageUrl(fileName) {
-      return require(`@/defaultimage/${fileName}`);
+      return require(`@/static/defaultimage/${fileName}`);
     },
     async logout() {
       const response = await this.$axios.post("/auth/api/logout");

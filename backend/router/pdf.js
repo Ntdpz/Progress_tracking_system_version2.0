@@ -26,7 +26,7 @@ function generateId() {
 // configure Multer to handle file uploads
 const storage = multer.diskStorage({
     destination(req, file, cb) {
-        cb(null, "../frontend/uploadfiles/");
+        cb(null, "../frontend/static/uploadfiles/");
     },
     filename(req, file, cb) {
         const originalname = file.originalname;
@@ -123,7 +123,7 @@ router.get("/downloadfile/:pdf", (req, res) => {
                 return res.status(400).send();
             }
             const file = results[0].pdf;
-            const filePath = path.join("../frontend/uploadfiles/", file);
+            const filePath = path.join("../frontend/static/uploadfiles/", file);
             const fileStream = fs.createReadStream(filePath);
 
             // Set the Content-Disposition header to force a download
@@ -172,7 +172,7 @@ router.delete("/deletefile/:id", (req, res) => {
                     }
                 );
             }
-            const filePath = path.join("../frontend/uploadfiles/", pdf);
+            const filePath = path.join("../frontend/static/uploadfiles/", pdf);
             try {
                 fs.unlinkSync(filePath);
                 connection.query(

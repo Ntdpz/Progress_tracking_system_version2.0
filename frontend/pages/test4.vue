@@ -57,7 +57,7 @@ export default {
       this.file = "";
     },
     getImageUrl(fileName) {
-      return require(`@/screenImages/${fileName}`);
+      return require(`@/static/screenImages/${fileName}`);
     },
 
     uploadFile() {

@@ -535,7 +535,7 @@ export default {
     },
 
     getImageUrl(fileName) {
-      return require(`@/screenImages/${fileName}`);
+      return require(`@/static/screenImages/${fileName}`);
     },
     selectImage() {
       // Create a file input element
