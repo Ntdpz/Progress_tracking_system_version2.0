@@ -235,19 +235,6 @@ export default {
   },
   async mounted() {
     await this.getDefault();
-
-    // await this.getScreenDefault();
-  },
-  computed() {
-  },
-  created() {
-
-    // this.getScreenDefault();
-  },
-  updated() {
-    // if(this.dialog = true){
-    //   this.getScreenDefault();
-    // }
   },
   methods: {
     selectedType() {

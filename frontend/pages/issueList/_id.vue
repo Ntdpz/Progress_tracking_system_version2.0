@@ -88,6 +88,9 @@
               <h3 style="color: black">PNC</h3>
             </v-tab>
             <v-tab>
+              <h3 style="color: black">NewReq</h3>
+            </v-tab>
+            <v-tab>
               <h3 style="color: black">History</h3>
             </v-tab>
           </v-tabs>
@@ -128,6 +131,8 @@
             :IssueImplementerStatus="selected.issue_status_implement"
             :IssueRound="selected.issue_round"
             :ImpleSection="selected.impleSection"
+            :UserId="selected.userId"
+            @button-clicked="getIssue()"
           />
           <dialog-issue-imple
             :dialog.sync="dialogIssueImple"
@@ -719,6 +724,177 @@
               </v-data-table>
             </v-tab-item>
             <v-tab-item>
+              <!-- *card New req -->
+              <!-- *Table assignedIssues -->
+              <v-data-table
+                :headers="headers"
+                :items="system.assignedIssuesPNC"
+                sort-by="calories"
+                class="v-data-table elevation-1 mb-2"
+                v-remove-row-borders
+              >
+                <template v-slot:top>
+                  <v-toolbar flat>
+                    <v-toolbar-title>
+                      <h5
+                        class="pa-1"
+                        style="background-color: #1cff17; text-align: left"
+                      >
+                        assignedIssues
+                      </h5>
+                    </v-toolbar-title>
+                  </v-toolbar>
+                </template>
+                <template v-slot:[`item.issue_name`]="{ item }">
+                  <v-icon>mdi-format-list-bulleted</v-icon>
+                  {{ item.issue_name }} /{{ item.issue_id }}
+                </template>
+                <template v-slot:[`item.formattedDateEnd`]="{ item }">
+                  {{ item.formattedDateEnd }}
+                </template>
+                <template v-slot:[`item.issue_status`]="{ item }">
+                  <!-- <v-icon
+                    v-if="item.issue_status == 'active'"
+                    style="color: #1cff17"
+                    >mdi-circle</v-icon
+                  > -->
+                  <!-- <v-icon
+                    v-if="item.issue_status == 'open'"
+                    style="color: gainsboro"
+                    >mdi-circle</v-icon
+                  > -->
+                  {{ item.issue_status }}
+                </template>
+                <template v-slot:[`item.issue_priotity`]="{ item }">
+                  <v-icon style="color: #ff0000">mdi-flag-outline</v-icon>
+                </template>
+                <template v-slot:[`item.issue_assignees`]>
+                  <v-icon style="color: black">mdi-account-circle</v-icon>
+                  <!-- {{ item.issue_assignees }} -->
+                  <p v-show="item.issue_assign == ''">N/A</p>
+                </template>
+                <template v-slot:[`item.actions`]="{ item }">
+                  <v-icon
+                    class="mr-2"
+                    @click="
+                      showIssueDetailDialog(
+                        item.id,
+                        item.issue_id,
+                        item.issue_type,
+                        item.screen_id,
+                        item.issue_status,
+                        item.issue_priority,
+                        item.formattedDateEnd,
+                        item.issue_name,
+                        item.issue_des_sa,
+                        item.issue_informer,
+                        item.issue_assign,
+                        item.issue_qc,
+                        item.issue_filename,
+                        item.formattedDateAccepting,
+                        item.issue_manday,
+                        item.formattedDateStart,
+                        item.formattedDateExpected,
+                        item.formattedDateComplete,
+                        item.issue_des_implementer,
+                        item.issue_des_dev,
+                        item.issue_des,
+                        item.issue_customer,
+                        item.issue_doc_id,
+                        item.issue_type_sa,
+                        item.created_at,
+                        item.issue_status_developer,
+                        item.issue_status_implement,
+                        item.issue_round
+                      )
+                    "
+                    size="20"
+                    color="primary"
+                  >
+                    mdi-information-outline
+                  </v-icon>
+                </template>
+              </v-data-table>
+              <!-- *Table 2 unassignedIssues-->
+              <v-data-table
+                :headers="headers"
+                :items="system.unassignedIssuesPNC"
+                sort-by="calories"
+                class="v-data-table elevation-1"
+                v-remove-row-borders
+              >
+                <template v-slot:top>
+                  <v-toolbar flat>
+                    <v-toolbar-title>
+                      <h5
+                        class="pa-1"
+                        style="background-color: #aaaaaa; text-align: left"
+                      >
+                        unassignedIssues
+                      </h5>
+                    </v-toolbar-title>
+                  </v-toolbar>
+                </template>
+                <template v-slot:[`item.issue_name`]="{ item }">
+                  <v-icon>mdi-format-list-bulleted</v-icon>
+                  {{ item.issue_name }}
+                </template>
+                <template v-slot:[`item.issue_type`]="{ item }">
+                  {{ item.issue_type }}
+                </template>
+                <template v-slot:[`item.issue_status`]="{ item }">
+                  <!-- <v-icon style="color: #1cff17">mdi-circle</v-icon> -->
+                  {{ item.issue_status }}
+                </template>
+                <template v-slot:[`item.issue_Priotity`]="{ item }">
+                  <v-icon style="color: #ff0000">mdi-flag-outline</v-icon>
+                  {{ item.issue_Priotity }}
+                </template>
+                <template #item.issue_assign="{ value }"> No assign </template>
+                <template v-slot:item.actions="{ item }">
+                  <v-icon
+                    class="mr-2"
+                    @click="
+                      showIssueDetailDialog(
+                        item.id,
+                        item.issue_id,
+                        item.issue_type,
+                        item.screen_id,
+                        item.issue_status,
+                        item.issue_priority,
+                        item.formattedDateEnd,
+                        item.issue_name,
+                        item.issue_des_sa,
+                        item.issue_informer,
+                        item.issue_assign,
+                        item.issue_qc,
+                        item.issue_filename,
+                        item.formattedDateAccepting,
+                        item.issue_manday,
+                        item.formattedDateStart,
+                        item.formattedDateExpected,
+                        item.formattedDateComplete,
+                        item.issue_des_implementer,
+                        item.issue_des_dev,
+                        item.issue_des,
+                        item.issue_customer,
+                        item.issue_doc_id,
+                        item.issue_type_sa,
+                        item.created_at,
+                        item.issue_status_developer,
+                        item.issue_status_implement,
+                        item.issue_round
+                      )
+                    "
+                    size="20"
+                    color="primary"
+                  >
+                    mdi-information-outline
+                  </v-icon>
+                </template>
+              </v-data-table>
+            </v-tab-item>
+            <v-tab-item>
               <!-- *card History -->
               <!-- *Table assignedIssues -->
               <v-data-table
@@ -890,6 +1066,7 @@ export default {
         issue_status_implement: "",
         issue_round: "",
         impleSection: false,
+        userId: "",
       },
       infoCreate: {
         systemName: "",
@@ -937,9 +1114,6 @@ export default {
     await this.getSystems();
     await this.getIssue();
   },
-  // updated() {
-  //   console.log(this.formattedDateAccepting, "this.formattedDateAccepting");
-  // },
   computed: {
     userId() {
       if (typeof window !== "undefined") {
@@ -980,13 +1154,13 @@ export default {
       this.systemslength = this.project[0].systems.length;
     },
     async getIssue() {
+      console.log("getIssue()");
       try {
         const res = await this.$axios.get(
           "/issues/getAll?project_id=" + this.id
         );
         this.issue = res.data;
         this.runningNumber = this.issue.length + 1;
-        // console.log(this.runningNumber, "this.runningNumber");
         this.issue.forEach((issue) => {
           const dateEnd = moment(issue.issue_end, "YYYY-MM-DDTHH:mm:ss.SSSZ");
           issue.formattedDateEnd = dateEnd.format("YYYY-MM-DD");
@@ -1024,7 +1198,7 @@ export default {
                 issue.system_id === system.id &&
                 issue.issue_assign !== "" &&
                 issue.issue_assign !== null &&
-                issue.issue_status_implement !== "แก้ไขเรียบร้อย"
+                issue.issue_status_implement !== "ตรวจสอบผ่าน"
             )
           );
           Vue.set(
@@ -1034,7 +1208,7 @@ export default {
               (issue) =>
                 issue.system_id === system.id &&
                 (issue.issue_assign === "" || issue.issue_assign === null) &&
-                issue.issue_status_implement !== "แก้ไขเรียบร้อย"
+                issue.issue_status_implement !== "ตรวจสอบผ่าน"
             )
           );
           Vue.set(
@@ -1046,7 +1220,7 @@ export default {
                 issue.issue_assign !== "" &&
                 issue.issue_assign !== null &&
                 issue.issue_type === "PNI" &&
-                issue.issue_status_implement !== "แก้ไขเรียบร้อย"
+                issue.issue_status_implement !== "ตรวจสอบผ่าน"
             )
           );
           Vue.set(
@@ -1057,7 +1231,7 @@ export default {
                 issue.system_id === system.id &&
                 (issue.issue_assign === "" || issue.issue_assign === null) &&
                 issue.issue_type === "PNI" &&
-                issue.issue_status_implement !== "แก้ไขเรียบร้อย"
+                issue.issue_status_implement !== "ตรวจสอบผ่าน"
             )
           );
           Vue.set(
@@ -1069,7 +1243,7 @@ export default {
                 issue.issue_assign !== "" &&
                 issue.issue_assign !== null &&
                 issue.issue_type === "PNC" &&
-                issue.issue_status_implement !== "แก้ไขเรียบร้อย"
+                issue.issue_status_implement !== "ตรวจสอบผ่าน"
             )
           );
           Vue.set(
@@ -1080,7 +1254,30 @@ export default {
                 issue.system_id === system.id &&
                 (issue.issue_assign === "" || issue.issue_assign === null) &&
                 issue.issue_type === "PNC" &&
-                issue.issue_status_implement !== "แก้ไขเรียบร้อย"
+                issue.issue_status_implement !== "ตรวจสอบผ่าน"
+            )
+          );
+          Vue.set(
+            system,
+            "assignedIssuesNewReq",
+            this.issue.filter(
+              (issue) =>
+                issue.system_id === system.id &&
+                issue.issue_assign !== "" &&
+                issue.issue_assign !== null &&
+                issue.issue_type === "New Req" &&
+                issue.issue_status_implement !== "ตรวจสอบผ่าน"
+            )
+          );
+          Vue.set(
+            system,
+            "unassignedIssuessNewReq",
+            this.issue.filter(
+              (issue) =>
+                issue.system_id === system.id &&
+                (issue.issue_assign === "" || issue.issue_assign === null) &&
+                issue.issue_type === "New Req" &&
+                issue.issue_status_implement !== "ตรวจสอบผ่าน"
             )
           );
           Vue.set(
@@ -1089,7 +1286,7 @@ export default {
             this.issue.filter(
               (issue) =>
                 issue.system_id === system.id &&
-                issue.issue_status_implement === "แก้ไขเรียบร้อย"
+                issue.issue_status_implement === "ตรวจสอบผ่าน"
             )
           );
         });
@@ -1132,6 +1329,7 @@ export default {
       issueImplementerStatus,
       issueRound
     ) {
+      this.selected.userId = this.userId;
       //formattedDateAccepting
       this.selected.formattedDateAccepting =
         issueformattedDateAccepting == null ||
@@ -1194,7 +1392,6 @@ export default {
       this.$axios.get("/screens/getOne/" + issueScreenid).then((res) => {
         const screen = res.data[0].screen_name;
         this.selected.screenName = screen;
-        // console.log(screen, "screen screen screen");
       });
       this.selected.issue_status_developer = issueDeveloperStatus;
       if (issueDeveloperStatus === "แก้ไขเรียบร้อย") {
