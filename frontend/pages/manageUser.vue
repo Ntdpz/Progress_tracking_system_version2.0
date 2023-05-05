@@ -938,8 +938,9 @@ export default {
           );
         });
     },
-    getImageUrl(fileName) {
-      return require(`../static/uploads/${fileName}`);
+    getImageUrl(fileName, backendPath) {
+      return require(`@/static/uploads/${fileName}`);
+      // return require(`../../backend/static/uploads/${fileName}`);
     },
 
     editItem(item) {
