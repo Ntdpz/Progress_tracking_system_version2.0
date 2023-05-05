@@ -262,7 +262,7 @@ router.put("/updateIssueAdmin/:id", upload.single("file"), (req, res) => {
     issue_des_dev,
     issue_status_developer,
     issue_status_implement,
-    issue_round
+    issue_round,
   } = req.body;
   connection.query(
     "SELECT issue_filename FROM issues WHERE id = ?",
@@ -307,7 +307,7 @@ router.put("/updateIssueAdmin/:id", upload.single("file"), (req, res) => {
             issue_status_developer,
             issue_status_implement,
             issue_round,
-            id
+            id,
           ],
           (err, results, fields) => {
             if (err) {
@@ -324,7 +324,6 @@ router.put("/updateIssueAdmin/:id", upload.single("file"), (req, res) => {
     }
   );
 });
-
 
 //* Update issue by implementer
 router.put("/updateIssueImplementer/:id", async (req, res) => {
@@ -399,54 +398,79 @@ router.put("/updateIssueImplementer/:id", async (req, res) => {
   );
 });
 
+// //* DELETE issue by ID
+// router.delete("/delete/:id", async (req, res) => {
+//   const id = req.params.id;
+//   connection.query(
+//     "SELECT issues FROM issue_filename WHERE id = ?",
+//     [id],
+//     (err, results, fields) => {
+//       if (err) {
+//         console.log("Error database", err);
+//         return res.status(400).send();
+//       }
+//       if (results.length === 0) {
+//         return res.status(404).json({ message: "File not found" });
+//       }
+//       const issue_filename = results[0].issue_filename;
+//       if (!issue_filename) {
+//         return connection.query(
+//           "DELETE FROM issues WHERE id = ?",
+//           [id],
+//           (err, results, fields) => {
+//             if (err) {
+//               console.log("Error database", err);
+//               return res.status(400).send();
+//             }
+//             return res.status(200).json({ message: "successfully deleted!" });
+//           }
+//         );
+//       }
+//       const filePath = path.join("../frontend/static/uploadfiles/", pdf);
+//       try {
+//         fs.unlinkSync(filePath);
+//         connection.query(
+//           "DELETE FROM issues WHERE issue_filename = ?",
+//           [id],
+//           (err, results, fields) => {
+//             if (err) {
+//               console.log("Error database", err);
+//               return res.status(400).send();
+//             }
+//             return res.status(200).json({ message: "successfully deleted!" });
+//           }
+//         );
+//       } catch (err) {
+//         console.log(err);
+//         return res.status(500).send();
+//       }
+//     }
+//   );
+// });
+
 //* DELETE issue by ID
 router.delete("/delete/:id", async (req, res) => {
   const id = req.params.id;
-  connection.query(
-    "SELECT issues FROM issue_filename WHERE id = ?",
-    [id],
-    (err, results, fields) => {
-      if (err) {
-        console.log("Error database", err);
-        return res.status(400).send();
+
+  try {
+    connection.query(
+      "DELETE FROM issues WHERE id = ?",
+      [id],
+      (err, results, fields) => {
+        if (err) {
+          console.log(err);
+          return res.status(400).send();
+        }
+        if (results.affectedRows === 0) {
+          return res.status(404).json({ message: "No issue with that id!" });
+        }
+        return res.status(200).json({ message: "issue successfully!" });
       }
-      if (results.length === 0) {
-        return res.status(404).json({ message: "File not found" });
-      }
-      const issue_filename = results[0].issue_filename;
-      if (!issue_filename) {
-        return connection.query(
-          "DELETE FROM issues WHERE id = ?",
-          [id],
-          (err, results, fields) => {
-            if (err) {
-              console.log("Error database", err);
-              return res.status(400).send();
-            }
-            return res.status(200).json({ message: "successfully deleted!" });
-          }
-        );
-      }
-      const filePath = path.join("../frontend/static/uploadfiles/", pdf);
-      try {
-        fs.unlinkSync(filePath);
-        connection.query(
-          "DELETE FROM issues WHERE issue_filename = ?",
-          [id],
-          (err, results, fields) => {
-            if (err) {
-              console.log("Error database", err);
-              return res.status(400).send();
-            }
-            return res.status(200).json({ message: "successfully deleted!" });
-          }
-        );
-      } catch (err) {
-        console.log(err);
-        return res.status(500).send();
-      }
-    }
-  );
+    );
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send();
+  }
 });
 
 router.post("/addUserIssue", async (req, res) => {
