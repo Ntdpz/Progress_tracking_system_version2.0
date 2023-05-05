@@ -66,6 +66,7 @@
               :userLastname="user_lastname"
               :userId="userId"
               :runningNumber="runningNumber"
+              @button-clicked="getIssue()"
             />
           </v-row>
           <!-- *tabs -->
@@ -170,6 +171,8 @@
             :IssueImplementerStatus="selected.issue_status_implement"
             :IssueRound="selected.issue_round"
             :ImpleSection="selected.impleSection"
+            :UserId="selected.userId"
+            @button-clicked="getIssue()"
           />
           <dialog-issue-dev
             :dialog.sync="dialogIssueDev"
@@ -207,6 +210,8 @@
             :IssueImplementerStatus="selected.issue_status_implement"
             :IssueRound="selected.issue_round"
             :ImpleSection="selected.impleSection"
+            :UserId="selected.userId"
+            @button-clicked="getIssue()"
           />
           <v-tabs-items v-model="tab">
             <v-tab-item>
@@ -904,18 +909,6 @@
                 class="v-data-table elevation-1 mb-2"
                 v-remove-row-borders
               >
-                <!-- <template v-slot:top>
-                  <v-toolbar flat>
-                    <v-toolbar-title>
-                      <h5
-                        class="pa-1"
-                        style="background-color: #1cff17; text-align: left"
-                      >
-                        History
-                      </h5>
-                    </v-toolbar-title>
-                  </v-toolbar>
-                </template> -->
                 <template v-slot:[`item.issue_name`]="{ item }">
                   <v-icon>mdi-format-list-bulleted</v-icon>
                   {{ item.issue_name }} /{{ item.issue_id }}
@@ -924,16 +917,6 @@
                   {{ item.formattedDateEnd }}
                 </template>
                 <template v-slot:[`item.issue_status`]="{ item }">
-                  <!-- <v-icon
-                    v-if="item.issue_status == 'active'"
-                    style="color: #1cff17"
-                    >mdi-circle</v-icon
-                  > -->
-                  <!-- <v-icon
-                    v-if="item.issue_status == 'open'"
-                    style="color: gainsboro"
-                    >mdi-circle</v-icon
-                  > -->
                   {{ item.issue_status }}
                 </template>
                 <template v-slot:[`item.issue_priotity`]="{ item }">
@@ -1020,7 +1003,6 @@ export default {
       id: this.$route.params.id,
       tab: null,
       dialog: false,
-      sub_project_count: "2",
       date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
         .toISOString()
         .substr(0, 10),

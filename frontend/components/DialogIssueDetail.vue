@@ -8,7 +8,7 @@
         <v-card-title class="pt-3" style="background-color: #883cfe">
           <h5 style="color: white">
             รายละเอียดปัญหาที่พบ | โครงการ : {{ ProjectName }} > ระบบ :
-            {{ SystemName }}
+            {{ SystemName }} {{ id }}
           </h5>
         </v-card-title>
         <v-row class="ml-2 mr-2 mt-2">
@@ -31,6 +31,7 @@
                   placeholder="Issue Name"
                   outlined
                   dense
+                  :disabled="isIssueInProcess"
                   v-model="IssueName"
                 ></v-text-field>
               </v-col>
@@ -40,6 +41,7 @@
                   label="PNI/PNC/New Req"
                   dense
                   outlined
+                  :disabled="isIssueInProcess"
                   v-model="IssueType"
                   @change="selectedType()"
                 ></v-select>
@@ -53,6 +55,7 @@
                   dense
                   outlined
                   v-model="ScreenName"
+                  :disabled="isIssueInProcess"
                   item-text="screen_name"
                   item-value="screen_name"
                   return-object="false"
@@ -68,6 +71,7 @@
                   placeholder="ผู้จดแจ้ง"
                   outlined
                   dense
+                  :disabled="isIssueInProcess"
                   v-model="IssueInformer"
                 ></v-text-field>
               </v-col>
@@ -77,6 +81,7 @@
                   label="ความสำคัญ"
                   dense
                   outlined
+                  :disabled="isIssueInProcess"
                   prepend-icon="mdi-flag-outline"
                   v-model="IssuePriority"
                 ></v-select>
@@ -85,6 +90,7 @@
                 <v-select
                   :items="issue_status_default"
                   label="สถานะ"
+                  :disabled="isIssueInProcess"
                   placeholder="สถานะ"
                   dense
                   outlined
@@ -119,6 +125,7 @@
                         readonly
                         v-bind="attrs"
                         v-on="on"
+                        :disabled="isIssueInProcess"
                       ></v-text-field>
                     </template>
                     <v-date-picker
@@ -135,6 +142,7 @@
                   label="Dev"
                   dense
                   outlined
+                  :disabled="isIssueInProcess"
                   menu-props="auto"
                   item-text="user_firstname"
                   v-model="IssueAssign"
@@ -149,6 +157,7 @@
                   dense
                   outlined
                   menu-props="auto"
+                  :disabled="isIssueInProcess"
                   item-text="user_firstname"
                   v-model="IssueQC"
                   @change="checkAssign2()"
@@ -162,6 +171,7 @@
                   name="input-7-4"
                   label="Note"
                   v-model="IssueDes"
+                  :disabled="isIssueInProcess"
                   style=""
                 ></v-textarea
               ></v-col>
@@ -174,6 +184,7 @@
                   <v-text-field
                     label="Issue Informer"
                     placeholder="Issue Informer"
+                    :disabled="isIssueInProcess"
                     outlined
                     dense
                     v-model="IssueDocId"
@@ -187,6 +198,7 @@
                     label="Issue Informer"
                     placeholder="Issue Informer"
                     outlined
+                    :disabled="isIssueInProcess"
                     dense
                     v-model="IssueCustomer"
                   ></v-text-field>
@@ -201,6 +213,7 @@
                   <v-text-field
                     label="Issue Informer"
                     placeholder="Issue Informer"
+                    :disabled="isIssueInProcess"
                     outlined
                     dense
                     v-model="IssueTypeSA"
@@ -213,6 +226,7 @@
                   <v-textarea
                     solo
                     name="input-7-4"
+                    :disabled="isIssueInProcess"
                     label="Note"
                     v-model="IssueDesSA"
                   ></v-textarea>
@@ -486,6 +500,7 @@
           </v-col>
         </v-row>
         <v-card-actions>
+          <v-btn color="error" @click="issueReject()"><h4>Reject</h4></v-btn>
           <v-spacer></v-spacer>
           <v-btn color="error" @click="handleClose()"><h4>Cancel</h4></v-btn>
           <v-btn color="primary" @click="saveIssue()"><h4>Update</h4></v-btn>
@@ -577,6 +592,11 @@ export default {
   async mounted() {
     console.log("mounted");
     await this.getDefault();
+  },
+  computed: {
+    isIssueInProcess() {
+      return this.IssueStatus !== "รอแก้ไข";
+    },
   },
   watch: {
     dialog(newVal) {
@@ -958,6 +978,18 @@ export default {
         this.user_lastname = res.data[0].user_lastname;
         this.user_position = res.data[0].user_position;
       });
+    },
+    issueReject() {
+      try {
+        this.$axios.delete("/issues/delete/" + this.id).then((res) => {
+          alert("Reject Success!!");
+          this.$emit("button-clicked");
+          this.handleClose();
+        });
+      } catch (error) {
+        console.log(error);
+        alert("Reject: " + error);
+      }
     },
     selectedType() {},
   },
