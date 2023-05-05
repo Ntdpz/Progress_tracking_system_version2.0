@@ -268,7 +268,7 @@
                   <v-icon
                     class="mr-2"
                     v-if="
-                      user_position === 'Implementer' &&
+                      user_position === 'Implementer' && user_role !== 'Admin' &&
                       item.issue_qc !== user_firstname &&
                       item.issue_informer !== user_firstname
                     "
@@ -281,7 +281,7 @@
                   <v-icon
                     class="mr-2"
                     v-else-if="
-                      user_position === 'Developer' &&
+                      user_position === 'Developer' && user_role !== 'Admin' &&
                       item.issue_assign !== user_firstname
                     "
                     :disabled="true"
@@ -466,7 +466,7 @@
                   <v-icon
                     class="mr-2"
                     v-if="
-                      user_position === 'Implementer' &&
+                      user_position === 'Implementer' && user_role !== 'Admin' &&
                       item.issue_qc !== user_firstname &&
                       item.issue_informer !== user_firstname
                     "
@@ -479,7 +479,7 @@
                   <v-icon
                     class="mr-2"
                     v-else-if="
-                      user_position === 'Developer' &&
+                      user_position === 'Developer' && user_role !== 'Admin' &&
                       item.issue_assign !== user_firstname
                     "
                     :disabled="true"
@@ -663,7 +663,7 @@
                   <v-icon
                     class="mr-2"
                     v-if="
-                      user_position === 'Implementer' &&
+                      user_position === 'Implementer' && user_role !== 'Admin' &&
                       item.issue_qc !== user_firstname &&
                       item.issue_informer !== user_firstname
                     "
@@ -676,7 +676,7 @@
                   <v-icon
                     class="mr-2"
                     v-else-if="
-                      user_position === 'Developer' &&
+                      user_position === 'Developer' && user_role !== 'Admin' &&
                       item.issue_assign !== user_firstname
                     "
                     :disabled="true"
@@ -860,7 +860,7 @@
                   <v-icon
                     class="mr-2"
                     v-if="
-                      user_position === 'Implementer' &&
+                      user_position === 'Implementer' && user_role !== 'Admin' &&
                       item.issue_qc !== user_firstname &&
                       item.issue_informer !== user_firstname
                     "
@@ -872,7 +872,7 @@
                   </v-icon>
                   <v-icon
                       class="mr-2"
-                      v-else-if="user_position === 'Developer' &&
+                      v-else-if="user_position === 'Developer' && user_role !== 'Admin' &&
                         item.issue_assign !== user_firstname
                         "
                       :disabled="true"
