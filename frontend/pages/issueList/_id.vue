@@ -15,7 +15,7 @@
     <!-- * box -->
     <v-expansion-panels
       class="mb-6"
-      v-for="(system, index) in systems"
+      v-for="(system, index) in systemsList"
       :key="index"
     >
       <v-expansion-panel>
@@ -1070,8 +1070,11 @@ export default {
         { text: "Actions", value: "actions", sortable: false },
       ],
       issue: [],
+      issueDev:[],
       project: [],
+      projectDev:[],
       systems: [],
+      systemsDev:[],
       default: [],
       projectName: "",
       projectId: "",
@@ -1087,13 +1090,22 @@ export default {
   async created() {
     await this.getUser();
     await this.getProject();
+    await this.getProjectDev();
     await this.getSystems();
+    await this.getSystemsDev();
     await this.getIssue();
+    console.log(this.projectDev, "projectDev");
+
+    console.log(this.systemsDev, "systemsDev");
+    console.log(this.systems, "systems");
+
   },
   async mounted() {
     await this.getUser();
     await this.getProject();
+    await this.getProjectDev();
     await this.getSystems();
+    await this.getSystemsDev();
     await this.getIssue();
   },
   computed: {
@@ -1103,6 +1115,15 @@ export default {
       }
       return null; // or some default value if localStorage is not available
     },
+    systemsList() {
+      if (this.user_role === "Admin" || this.user_position === "Implementer") {
+        return this.systems;
+      } else if (this.user_role === "User" && this.user_position === "Developer") {
+        return this.systemsDev;
+      } else {
+        return [];
+      }
+    }
   },
   methods: {
     async getUser() {
@@ -1114,12 +1135,33 @@ export default {
         this.user_role = res.data[0].user_role;
       });
     },
+    async getProjectDev() {
+      await this.$axios.get("/projects/getOne/" + this.id).then((res) => {
+        this.projectDev = res.data;
+      });
+      // this.systemsDev = this.projectDev[0];
+    },
+    async getSystemsDev() {
+      await this.$axios.get("/systems/getAll").then((res) => {
+        // Loop through each project and assign the associated systems
+        this.projectDev.forEach((projectDev) => {
+          Vue.set(
+            projectDev,
+            "systemsDevs",
+            res.data.filter((system) => system.project_id === projectDev.id)
+          );
+        });
+
+      });
+      this.systemsDev = this.projectDev[0].systemsDevs;
+    },
     async getProject() {
       await this.$axios.get("/projects/getOne/" + this.id).then((res) => {
         this.project = res.data;
         this.projectName = this.project[0].project_name;
         this.projectId = this.project[0].id;
       });
+      
     },
     async getSystems() {
       await this.$axios.get("/systems/getAll").then((res) => {
@@ -1135,6 +1177,7 @@ export default {
       this.systems = this.project[0].systems;
       this.systemslength = this.project[0].systems.length;
     },
+
     async getIssue() {
       console.log("getIssue()");
       try {
@@ -1171,6 +1214,7 @@ export default {
           );
           issue.formattedDateComplete = dateComplete.format("YYYY-MM-DD");
         });
+
         this.systems.forEach((system) => {
           Vue.set(
             system,
@@ -1272,6 +1316,110 @@ export default {
             )
           );
         });
+
+        this.systemsDev.forEach((system) => {
+          Vue.set(
+            system,
+            "assignedIssues",
+            this.issue.filter(
+              (issue) =>
+                issue.system_id === system.id &&
+                issue.issue_assign == this.user_firstname &&
+                issue.issue_assign !== null &&
+                issue.issue_status_implement !== "ตรวจสอบผ่าน"
+            )
+          );
+          Vue.set(
+            system,
+            "unassignedIssues",
+            this.issue.filter(
+              (issue) =>
+                issue.system_id === system.id &&
+                (issue.issue_assign === "" || issue.issue_assign === null) &&
+                issue.issue_status_implement !== "ตรวจสอบผ่าน"
+            )
+          );
+          Vue.set(
+            system,
+            "assignedIssuesPNI",
+            this.issue.filter(
+              (issue) =>
+                issue.system_id === system.id &&
+                issue.issue_assign == this.user_firstname &&
+                issue.issue_assign !== null &&
+                issue.issue_type === "PNI" &&
+                issue.issue_status_implement !== "ตรวจสอบผ่าน"
+            )
+          );
+          Vue.set(
+            system,
+            "unassignedIssuesPNI",
+            this.issue.filter(
+              (issue) =>
+                issue.system_id === system.id &&
+                (issue.issue_assign === "" || issue.issue_assign === null) &&
+                issue.issue_type === "PNI" &&
+                issue.issue_status_implement !== "ตรวจสอบผ่าน"
+            )
+          );
+          Vue.set(
+            system,
+            "assignedIssuesPNC",
+            this.issue.filter(
+              (issue) =>
+                issue.system_id === system.id &&
+                issue.issue_assign == this.user_firstname &&
+                issue.issue_assign !== null &&
+                issue.issue_type === "PNC" &&
+                issue.issue_status_implement !== "ตรวจสอบผ่าน"
+            )
+          );
+          Vue.set(
+            system,
+            "unassignedIssuesPNC",
+            this.issue.filter(
+              (issue) =>
+                issue.system_id === system.id &&
+                (issue.issue_assign === "" || issue.issue_assign === null) &&
+                issue.issue_type === "PNC" &&
+                issue.issue_status_implement !== "ตรวจสอบผ่าน"
+            )
+          );
+          Vue.set(
+            system,
+            "assignedIssuesNewReq",
+            this.issue.filter(
+              (issue) =>
+                issue.system_id === system.id &&
+                issue.issue_assign == this.user_firstname &&
+                issue.issue_assign !== null &&
+                issue.issue_type === "New Req" &&
+                issue.issue_status_implement !== "ตรวจสอบผ่าน"
+            )
+          );
+          Vue.set(
+            system,
+            "unassignedIssuessNewReq",
+            this.issue.filter(
+              (issue) =>
+                issue.system_id === system.id &&
+                (issue.issue_assign === "" || issue.issue_assign === null) &&
+                issue.issue_type === "New Req" &&
+                issue.issue_status_implement !== "ตรวจสอบผ่าน"
+            )
+          );
+          Vue.set(
+            system,
+            "assignedIssuesHistory",
+            this.issue.filter(
+              (issue) =>
+                issue.system_id === system.id &&
+                (issue.issue_assign === "" || issue.issue_assign === null) &&
+                issue.issue_status_implement === "ตรวจสอบผ่าน"
+            )
+          );
+        });
+
       } catch (err) {
         console.error(err);
       }
