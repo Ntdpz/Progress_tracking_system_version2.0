@@ -205,10 +205,9 @@ export default{
 </script>
  -->
 <script>
-import DialogCreateProject from "../components/DialogCreateProject.vue";
 import Searchbar from "../components/Searchbar.vue";
 export default {
-  components: { Searchbar, DialogCreateProject },
+  components: { Searchbar},
   layout: "admin",
   data() {
     return {
