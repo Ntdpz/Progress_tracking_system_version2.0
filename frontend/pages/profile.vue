@@ -414,7 +414,7 @@ export default {
       });
     },
     titleName() {
-      const regex = /^(Mr\.|Miss\.)\s+(.*)$/; // Regular expression to match title and name
+      const regex = /^(Mr\.|Miss\.|นาย|นาง|นางสาว)\s+(.*)$/; // Regular expression to match title and name
       const matches = this.user_firstname.match(regex);
       if (matches) {
         console.log(matches);
