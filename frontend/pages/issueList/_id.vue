@@ -267,6 +267,32 @@
                 <template v-slot:[`item.actions`]="{ item }">
                   <v-icon
                     class="mr-2"
+                    v-if="
+                      user_position === 'Implementer' &&
+                      item.issue_qc !== user_firstname &&
+                      item.issue_informer !== user_firstname
+                    "
+                    :disabled="true"
+                    size="20"
+                    color="primary"
+                  >
+                    mdi-information-outline
+                  </v-icon>
+                  <v-icon
+                    class="mr-2"
+                    v-else-if="
+                      user_position === 'Developer' &&
+                      item.issue_assign !== user_firstname
+                    "
+                    :disabled="true"
+                    size="20"
+                    color="primary"
+                  >
+                    mdi-information-outline
+                  </v-icon>
+                  <v-icon
+                    class="mr-2"
+                    v-else
                     @click="
                       showIssueDetailDialog(
                         item.id,
@@ -439,6 +465,32 @@
                 <template v-slot:[`item.actions`]="{ item }">
                   <v-icon
                     class="mr-2"
+                    v-if="
+                      user_position === 'Implementer' &&
+                      item.issue_qc !== user_firstname &&
+                      item.issue_informer !== user_firstname
+                    "
+                    :disabled="true"
+                    size="20"
+                    color="primary"
+                  >
+                    mdi-information-outline
+                  </v-icon>
+                  <v-icon
+                    class="mr-2"
+                    v-else-if="
+                      user_position === 'Developer' &&
+                      item.issue_assign !== user_firstname
+                    "
+                    :disabled="true"
+                    size="20"
+                    color="primary"
+                  >
+                    mdi-information-outline
+                  </v-icon>
+                  <v-icon
+                    class="mr-2"
+                    v-else
                     @click="
                       showIssueDetailDialog(
                         item.id,
@@ -610,6 +662,32 @@
                 <template v-slot:[`item.actions`]="{ item }">
                   <v-icon
                     class="mr-2"
+                    v-if="
+                      user_position === 'Implementer' &&
+                      item.issue_qc !== user_firstname &&
+                      item.issue_informer !== user_firstname
+                    "
+                    :disabled="true"
+                    size="20"
+                    color="primary"
+                  >
+                    mdi-information-outline
+                  </v-icon>
+                  <v-icon
+                    class="mr-2"
+                    v-else-if="
+                      user_position === 'Developer' &&
+                      item.issue_assign !== user_firstname
+                    "
+                    :disabled="true"
+                    size="20"
+                    color="primary"
+                  >
+                    mdi-information-outline
+                  </v-icon>
+                  <v-icon
+                    class="mr-2"
+                    v-else
                     @click="
                       showIssueDetailDialog(
                         item.id,
@@ -733,7 +811,7 @@
               <!-- *Table assignedIssues -->
               <v-data-table
                 :headers="headers"
-                :items="system.assignedIssuesPNC"
+                :items="system.assignedIssuesNewReq"
                 sort-by="calories"
                 class="v-data-table elevation-1 mb-2"
                 v-remove-row-borders
@@ -781,6 +859,31 @@
                 <template v-slot:[`item.actions`]="{ item }">
                   <v-icon
                     class="mr-2"
+                    v-if="
+                      user_position === 'Implementer' &&
+                      item.issue_qc !== user_firstname &&
+                      item.issue_informer !== user_firstname
+                    "
+                    :disabled="true"
+                    size="20"
+                    color="primary"
+                  >
+                    mdi-information-outline
+                  </v-icon>
+                  <v-icon
+                      class="mr-2"
+                      v-else-if="user_position === 'Developer' &&
+                        item.issue_assign !== user_firstname
+                        "
+                      :disabled="true"
+                      size="20"
+                      color="primary"
+                    >
+                      mdi-information-outline
+                    </v-icon>
+                  <v-icon
+                    class="mr-2"
+                    v-else
                     @click="
                       showIssueDetailDialog(
                         item.id,
@@ -823,7 +926,7 @@
               <!-- *Table 2 unassignedIssues-->
               <v-data-table
                 :headers="headers"
-                :items="system.unassignedIssuesPNC"
+                :items="system.unassignedIssuesNewReq"
                 sort-by="calories"
                 class="v-data-table elevation-1"
                 v-remove-row-borders
@@ -930,6 +1033,7 @@
                 <template v-slot:[`item.actions`]="{ item }">
                   <v-icon
                     class="mr-2"
+                    disabled
                     @click="
                       showIssueDetailDialog(
                         item.id,
@@ -1070,11 +1174,14 @@ export default {
         { text: "Actions", value: "actions", sortable: false },
       ],
       issue: [],
-      issueDev:[],
+      issueDev: [],
+      issueImple: [],
       project: [],
-      projectDev:[],
+      projectDev: [],
+      projectImple: [],
       systems: [],
-      systemsDev:[],
+      systemsDev: [],
+      systemsImple: [],
       default: [],
       projectName: "",
       projectId: "",
@@ -1091,21 +1198,32 @@ export default {
     await this.getUser();
     await this.getProject();
     await this.getProjectDev();
+    await this.getProjectImple();
     await this.getSystems();
     await this.getSystemsDev();
+    await this.getSystemsImple();
     await this.getIssue();
     console.log(this.projectDev, "projectDev");
-
     console.log(this.systemsDev, "systemsDev");
+    console.log(this.projectImple, "projectImple");
+    // console.log(
+    //   this.systemsImple[0].assignedIssues[0].issue_qc,
+    //   "systemsImple"
+    // );
+    // console.log(
+    //   this.systemsImple[0].assignedIssues[0].issue_informer,
+    //   "systemsImpleInformer"
+    // );
     console.log(this.systems, "systems");
-
   },
   async mounted() {
     await this.getUser();
     await this.getProject();
     await this.getProjectDev();
+    await this.getProjectImple();
     await this.getSystems();
     await this.getSystemsDev();
+    await this.getSystemsImple();
     await this.getIssue();
   },
   computed: {
@@ -1118,12 +1236,27 @@ export default {
     systemsList() {
       if (this.user_role === "Admin" || this.user_position === "Implementer") {
         return this.systems;
-      } else if (this.user_role === "User" && this.user_position === "Developer") {
-        return this.systemsDev;
+      } else if (
+        this.user_role === "User" &&
+        this.user_position === "Developer"
+      ) {
+        return this.systems;
+        // return this.systemsDev; // Dev ถ้าต้องการดูของตัวเองให้เปิด
       } else {
         return [];
       }
-    }
+    },
+    // disabledButton() {
+    //   if (this.user_role === "Admin" || this.user_position === "Developer") {
+    //     return false;
+    //   } else if (this.user_role === "User" && this.user_position === "Implementer") {
+    //     if () {
+    //       return true;
+    //     }
+    //   } else {
+    //     return [];
+    //   }
+    // },
   },
   methods: {
     async getUser() {
@@ -1151,9 +1284,27 @@ export default {
             res.data.filter((system) => system.project_id === projectDev.id)
           );
         });
-
       });
       this.systemsDev = this.projectDev[0].systemsDevs;
+    },
+    async getProjectImple() {
+      await this.$axios.get("/projects/getOne/" + this.id).then((res) => {
+        this.projectImple = res.data;
+      });
+      // this.systemsDev = this.projectDev[0];
+    },
+    async getSystemsImple() {
+      await this.$axios.get("/systems/getAll").then((res) => {
+        // Loop through each project and assign the associated systems
+        this.projectImple.forEach((projectImple) => {
+          Vue.set(
+            projectImple,
+            "systemsImples",
+            res.data.filter((system) => system.project_id === projectImple.id)
+          );
+        });
+      });
+      this.systemsImple = this.projectImple[0].systemsImples;
     },
     async getProject() {
       await this.$axios.get("/projects/getOne/" + this.id).then((res) => {
@@ -1161,7 +1312,6 @@ export default {
         this.projectName = this.project[0].project_name;
         this.projectId = this.project[0].id;
       });
-      
     },
     async getSystems() {
       await this.$axios.get("/systems/getAll").then((res) => {
@@ -1420,6 +1570,118 @@ export default {
           );
         });
 
+        this.systemsImple.forEach((system) => {
+          Vue.set(
+            system,
+            "assignedIssues",
+            this.issue.filter(
+              (issue) =>
+                (issue.system_id === system.id &&
+                  issue.issue_assign != "" &&
+                  issue.issue_assign !== null &&
+                  issue.issue_status_implement !== "ตรวจสอบผ่าน" &&
+                  issue.issue_informer == this.user_firstname) ||
+                issue.issue_qc == this.user_firstname
+            )
+          );
+          Vue.set(
+            system,
+            "unassignedIssues",
+            this.issue.filter(
+              (issue) =>
+                issue.system_id === system.id &&
+                (issue.issue_assign != "" || issue.issue_assign === null) &&
+                issue.issue_status_implement !== "ตรวจสอบผ่าน"
+            )
+          );
+          Vue.set(
+            system,
+            "assignedIssuesPNI",
+            this.issue.filter(
+              (issue) =>
+                (issue.system_id === system.id &&
+                  issue.issue_assign != "" &&
+                  issue.issue_assign !== null &&
+                  issue.issue_type === "PNI" &&
+                  issue.issue_status_implement !== "ตรวจสอบผ่าน" &&
+                  issue.issue_informer == this.user_firstname) ||
+                issue.issue_qc == this.user_firstname
+            )
+          );
+          Vue.set(
+            system,
+            "unassignedIssuesPNI",
+            this.issue.filter(
+              (issue) =>
+                issue.system_id === system.id &&
+                (issue.issue_assign === "" || issue.issue_assign === null) &&
+                issue.issue_type === "PNI" &&
+                issue.issue_status_implement !== "ตรวจสอบผ่าน"
+            )
+          );
+          Vue.set(
+            system,
+            "assignedIssuesPNC",
+            this.issue.filter(
+              (issue) =>
+                (issue.system_id === system.id &&
+                  issue.issue_assign != "" &&
+                  issue.issue_assign !== null &&
+                  issue.issue_type === "PNC" &&
+                  issue.issue_status_implement !== "ตรวจสอบผ่าน" &&
+                  issue.issue_informer == this.user_firstname) ||
+                issue.issue_qc == this.user_firstname
+            )
+          );
+          Vue.set(
+            system,
+            "unassignedIssuesPNC",
+            this.issue.filter(
+              (issue) =>
+                issue.system_id === system.id &&
+                (issue.issue_assign === "" || issue.issue_assign === null) &&
+                issue.issue_type === "PNC" &&
+                issue.issue_status_implement !== "ตรวจสอบผ่าน"
+            )
+          );
+          Vue.set(
+            system,
+            "assignedIssuesNewReq",
+            this.issue.filter(
+              (issue) =>
+                (issue.system_id === system.id &&
+                  issue.issue_assign != "" &&
+                  issue.issue_assign !== null &&
+                  issue.issue_type === "New Req" &&
+                  issue.issue_status_implement !== "ตรวจสอบผ่าน" &&
+                  issue.issue_informer == this.user_firstname) ||
+                issue.issue_qc == this.user_firstname
+            )
+          );
+          Vue.set(
+            system,
+            "unassignedIssuessNewReq",
+            this.issue.filter(
+              (issue) =>
+                issue.system_id === system.id &&
+                (issue.issue_assign != "" || issue.issue_assign === null) &&
+                issue.issue_type === "New Req" &&
+                issue.issue_status_implement !== "ตรวจสอบผ่าน"
+            )
+          );
+          Vue.set(
+            system,
+            "assignedIssuesHistory",
+            this.issue.filter(
+              (issue) =>
+                (issue.system_id === system.id &&
+                  (issue.issue_assign != "" || issue.issue_assign === null) &&
+                  issue.issue_status_implement === "ตรวจสอบผ่าน" &&
+                  issue.issue_informer == this.user_firstname) ||
+                issue.issue_qc == this.user_firstname
+            )
+          );
+        });
       } catch (err) {
         console.error(err);
       }
