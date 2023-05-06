@@ -2,7 +2,7 @@
   <div class="body">
     <v-row class="mb-3">
       <v-text-title class="center ml-4 mr-4 mt-3 mb-1" style="font-weight: bold; font-size: 20px">
-        Project List
+        จัดการโครงการ
       </v-text-title>
       <v-divider class="mt-3 mb-1" inset vertical style="background-color: black"></v-divider>
       <div style="
@@ -20,23 +20,23 @@
     <v-divider></v-divider>
     <v-row class="mt-4 ml-1 mb-2" no-gutters>
       <v-col cols="3">
-        <h4>Project</h4>
+        <h4>โครงการ</h4>
         <p style="color: #b6b5b5; font-size: 16px" class="">
-          {{ this.projectList.length }} Projects
+          มี {{ this.projectList.length }} โครงการ
         </p>
       </v-col>
 
       <v-col cols="2">
-        <h4 class="">Code</h4>
+        <h4 >รหัสพนักงาน</h4>
       </v-col>
       <v-col cols="2">
-        <h4 class="">Start</h4>
+        <h4 style="margin-left:-7%" >เริ่มโครงการ</h4>
       </v-col>
       <v-col cols="2">
-        <h4 class="">End</h4>
+        <h4 style="margin-left: -16%;">จบโครงการ</h4>
       </v-col>
-      <v-col cols="2">
-        <h4 class="">Agency</h4>
+      <v-col cols="3">
+        <h4 style="margin-left: -16%;">หน่วยงาน</h4>
       </v-col>
       <v-col cols="1"></v-col>
       <!-- <v-col cols="1"></v-col> -->
@@ -45,7 +45,7 @@
     <v-btn v-if="userposition != 'Developer' || userrole == 'Admin'" class="new-btn ma-2 text-left" outlined
       color="indigo" dark block @click="openDialog('create')">
       <span class="mdi mdi-plus-circle-outline" style="font-size: 20px; color: black"></span>
-      <h4 style="color: black">CREATE PROJECT</h4>
+      <h4 style="color: black"> &nbsp;&nbsp; สร้างโครงการใหม่</h4>
     </v-btn>
     <v-dialog v-model="dialog" max-width="500px" :retain-focus="false">
       <v-card>
@@ -54,7 +54,7 @@
             <v-row>
               <h5>
                 {{
-                  mode === "create" ? "Create Project" : "Edit Project"
+                  mode === "create" ? "สร้างโครงการใหม่" : "แก้ไขโครงการ"
                 }}
               </h5>
             </v-row>
@@ -65,7 +65,7 @@
             <v-container>
               <v-row>
                 <v-col cols="12">
-                  <v-text-field label="Project Name" placeholder="Project Name" outlined dense :rules="rules"
+                  <v-text-field label="ชื่อโครงการ" placeholder="ชื่อโครงการ" outlined dense :rules="rules"
                     v-model="editedItem.project_name"></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="6" md="4">
@@ -74,24 +74,24 @@
                 </v-col>
                 <v-col cols="12" sm="8" md="8">
 
-                  <v-text-field label="Project ID" placeholder="Project ID" outlined dense :rules="rules"
+                  <v-text-field label="รหัสโครงการ" placeholder="รหัสโครงการ" outlined dense :rules="rules"
                     v-model="editedItem.project_id"></v-text-field>
                 </v-col>
                 <v-col cols="12" class="pb-0">
-                  <v-text-field label="Agency" placeholder="Agency" outlined dense :rules="rules"
+                  <v-text-field label="หน่วยงาน" placeholder="หน่วยงาน" outlined dense :rules="rules"
                     v-model="editedItem.project_agency"></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="6" md="6" v-show="mode == 'create'">
                   <v-menu ref="menuDateStart" v-model="menuDateStart" :close-on-content-click="false"
                     transition="scale-transition" offset-y min-width="290px">
                     <template v-slot:activator="{ on, attrs }">
-                      <v-text-field v-model="dateStart" label="Picker in menu" :rules="rules"
+                      <v-text-field v-model="dateStart" label="วันเริ่มโครงการ" :rules="rules"
                         prepend-icon="mdi mdi-calendar-clock-outline" readonly v-bind="attrs" v-on="on"></v-text-field>
                     </template>
                     <v-date-picker v-model="dateStart" no-title scrollable>
                       <v-spacer></v-spacer>
-                      <v-btn text color="primary" @click="menuDateStart = false">Cancel</v-btn>
-                      <v-btn text color="primary" @click="$refs.menuDateStart.save(dateStart)">OK</v-btn>
+                      <v-btn text color="primary" @click="menuDateStart = false">ยกเลิก</v-btn>
+                      <v-btn text color="primary" @click="$refs.menuDateStart.save(dateStart)">ตกลง</v-btn>
                     </v-date-picker>
                   </v-menu>
                 </v-col>
@@ -99,22 +99,22 @@
                   <v-menu ref="menuDateEnd" v-model="menuDateEnd" :close-on-content-click="false"
                     transition="scale-transition" offset-y min-width="290px">
                     <template v-slot:activator="{ on, attrs }">
-                      <v-text-field v-model="dateEnd" label="Picker in menu" :rules="rules"
+                      <v-text-field v-model="dateEnd" label="วันจบโครงการ" :rules="rules"
                         prepend-icon="mdi mdi-calendar-clock-outline" readonly v-bind="attrs" v-on="on"></v-text-field>
                     </template>
                     <v-date-picker v-model="dateEnd" no-title scrollable>
                       <v-spacer></v-spacer>
-                      <v-btn text color="primary" @click="menuDateEnd = false">Cancel</v-btn>
-                      <v-btn text color="primary" @click="$refs.menuDateEnd.save(dateEnd)">OK</v-btn>
+                      <v-btn text color="primary" @click="menuDateEnd = false">ยกเลิก</v-btn>
+                      <v-btn text color="primary" @click="$refs.menuDateEnd.save(dateEnd)">ตกลง</v-btn>
                     </v-date-picker>
                   </v-menu>
                 </v-col>
                 <v-col cols="12" sm="6" md="6" v-show="mode == 'edit'">
-                  <v-text-field label="Date Start" placeholder="Date Start" outlined dense
+                  <v-text-field label="วันเริ่มโครงการ" placeholder="วันเริ่มโครงการ" outlined dense
                     v-model="editedItem.formattedDateStart"></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="6" md="6" v-show="mode == 'edit'">
-                  <v-text-field label="Date End" placeholder="Date End" outlined dense
+                  <v-text-field label="วันจบโครงการ" placeholder="วันจบโครงการ" outlined dense
                     v-model="editedItem.formattedDateEnd"></v-text-field>
                 </v-col>
               </v-row>
@@ -123,14 +123,14 @@
           </v-card-text>
           <v-card-actions>
             <v-btn color="error" dark @click="DeleteAllProject()" v-show="mode == 'edit'">
-              <h5>Delete</h5>
+              <h5>ลบโครงการ</h5>
             </v-btn>
             <v-spacer></v-spacer>
             <v-btn color="primary" text @click="clearCreateProject">
-              <h5>Close</h5>
+              <h5>ปิด</h5>
             </v-btn>
             <v-btn color="primary" dark type="submit">
-              <h5>{{ mode === "create" ? "Create" : "Save" }}</h5>
+              <h5>{{ mode === "create" ? "สร้างโครงการ" : "อัปเดต" }}</h5>
             </v-btn>
           </v-card-actions>
         </v-form>
@@ -149,7 +149,7 @@
               <v-col cols="3">
                 <h4>{{ project.project_name }}</h4>
                 <p class="mt-1" style="color: #b6b5b5; font-size: 16px">
-                  {{ getSystemCount(project) }} Sub System
+                  มี {{ getSystemCount(project) }} ระบบย่อย
                 </p>
               </v-col>
               <v-col> </v-col>
@@ -184,14 +184,14 @@
                   <v-btn class="new-btn ma-2 text-left" outlined color="indigo" dark v-bind="attrs" v-on="on" block
                     @click="dialogSystem(projectList[index])">
                     <span class="mdi mdi-plus-circle-outline" style="font-size: 20px; color: black"></span>
-                    <h4 style="color: black">Create System</h4>
+                    <h4 style="color: black"> &nbsp;&nbsp; สร้างระบบใหม่</h4>
                   </v-btn>
                 </template>
                 <v-card>
                   <v-card-title>
                     <v-col cols="12">
                       <v-row>
-                        <h5>Create System</h5>
+                        <h5>สร้างระบบใหม่</h5>
                       </v-row>
                     </v-col>
                   </v-card-title>
@@ -200,24 +200,24 @@
                       <v-container>
                         <v-row>
                           <v-col cols="12">
-                            <p>Create system form Project ID</p>
-                            <v-text-field :rules="rules" label="Project ID" placeholder="Project ID" outlined dense
+                            <p>สร้างโครงการจากรหัสโครงการ</p>
+                            <v-text-field :rules="rules" label="รหัสโครงการ" placeholder="รหัสโครงการ" outlined dense
                               disabled v-model="editedItem.project_id" required></v-text-field>
                           </v-col>
                           <v-col cols="12">
-                            <v-text-field :rules="rules" label="System ID" placeholder="System ID" outlined dense
+                            <v-text-field :rules="rules" label="รหัสของระบบ" placeholder="รหัสของระบบ" outlined dense
                               v-model="system.system_id" required></v-text-field>
                           </v-col>
                           <v-col cols="12">
-                            <v-text-field :rules="rules" label="System Name (TH)" placeholder="System Name (TH)" outlined
+                            <v-text-field :rules="rules" label="ชื่อระบบ (ภาษาไทย)" placeholder="ชื่อระบบ (ภาษาไทย)" outlined
                               dense v-model="system.system_nameTH" required></v-text-field>
                           </v-col>
                           <v-col cols="12">
-                            <v-text-field :rules="rules" label="System Name (EN)" placeholder="System Name (EN)" outlined
+                            <v-text-field :rules="rules" label="ชื่อระบบ (ภาษาอังกฤษ)" placeholder="ชื่อระบบ (ภาษาอังกฤษ)" outlined
                               dense v-model="system.system_nameEN" required></v-text-field>
                           </v-col>
                           <v-col cols="12" sm="6" md="6">
-                            <v-text-field :rules="rules" label="Short system name" placeholder="Short system name"
+                            <v-text-field :rules="rules" label="ชื่อย่อของระบบ" placeholder="ชื่อย่อของระบบ"
                               outlined dense v-model="system.system_shortname" required></v-text-field>
                           </v-col>
                           <v-col cols="12">
@@ -226,16 +226,16 @@
                           </v-col>
                           <v-col class="col-12" sm="12" md="12">
                             <!--  -->
-                            <v-select :rules="rules" required label="Choose developer" v-model="choose_user_id"
+                            <v-select :rules="rules" required label="เลือก Developer" v-model="choose_user_id"
                               :items="data_position_Developer" item-text="user_firstname" item-value="id" outlined chips
-                              multiple>
+                              multiple >
                               <template v-slot:item="{ item }">
                                 {{ item.user_firstname }}
                               </template>
                             </v-select>
                           </v-col>
                           <v-col class="col-12" sm="12" md="12">
-                            <v-select :rules="rules" required label="Choose implementer" style="text-align-last: left"
+                            <v-select :rules="rules" required label="เลือก Implementer" style="text-align-last: left"
                               v-model="choose_user_id" :items="data_position_Implementer" item-text="user_firstname"
                               item-value="id" outlined chips multiple>
                               <template v-slot:item="{ item }">
@@ -250,10 +250,10 @@
                     <v-card-actions>
                       <v-spacer></v-spacer>
                       <v-btn color="primary" text @click="dialogSubsystem = false">
-                        Close
+                        ยกเลิก
                       </v-btn>
                       <v-btn color="primary" dark type="submit">
-                        Create
+                        สร้างระบบ
                       </v-btn>
                     </v-card-actions>
                   </v-form>
@@ -270,13 +270,17 @@
                 <v-icon color="primary">mdi-format-list-bulleted</v-icon>
                 {{ item.system_nameTH }}
               </template>
+              <template v-slot:[`item.id_system`]="{ item }">
+                <v-icon color="primary">mdi-format-list-bulleted</v-icon>
+                {{ item.system_id }}
+              </template>
               <template v-slot:[`item.short_name`]="{ item }">
                 <v-icon color="primary">mdi-format-list-bulleted</v-icon>
                 {{ item.system_shortname }}
               </template>
-              <template v-slot:[`item.member`]="{ item }">
+              <!-- <template v-slot:[`item.member`]="{ item }">
                 {{ item.system_member }}
-              </template>
+              </template> -->
               <template v-slot:[`item.actions`]="{ item }">
                 <v-btn color="primary" icon :to="`/systemdetail/${item.id}`">
                   <v-icon class="mr-2 ml-2" size="20" color="primary">
@@ -298,7 +302,7 @@
               <v-col cols="3">
                 <h4>{{ project.project_name }}</h4>
                 <p class="mt-1" style="color: #b6b5b5; font-size: 16px">
-                  {{ getSystemCount(project) }} Sub System
+                  มี {{ getSystemCount(project) }} Sub System
                 </p>
               </v-col>
               <v-col> </v-col>
@@ -334,13 +338,17 @@
                 <v-icon color="primary">mdi-format-list-bulleted</v-icon>
                 {{ item.system_nameTH }}
               </template>
+              <template v-slot:[`item.id_system`]="{ item }">
+                <v-icon color="primary">mdi-format-list-bulleted</v-icon>
+                {{ item.system_id }}
+              </template>
               <template v-slot:[`item.short_name`]="{ item }">
                 <v-icon color="primary">mdi-format-list-bulleted</v-icon>
                 {{ item.system_shortname }}
               </template>
-              <template v-slot:[`item.member`]="{ item }">
+              <!-- <template v-slot:[`item.member`]="{ item }">
                 {{ item.system_member }}
-              </template>
+              </template> -->
               <template v-slot:[`item.actions`]="{ item }">
                 <v-btn color="primary" icon :to="`/systemdetail/${item.id}`">
                   <v-icon class="mr-2 ml-2" size="20" color="primary">
@@ -388,7 +396,7 @@ export default {
     return {
       // new Date().toISOString().substr(0, 10)
       dateStart: new Date().toISOString().substr(0, 10),
-      dateEnd: moment().format('DD-MM-YYYY'),
+      dateEnd: new Date().toISOString().substr(0, 10),
       menuDateStart: false,
       menuDateStartEdit: false,
       dateStartEdit: new Date().toISOString().substr(0, 10),
@@ -401,14 +409,15 @@ export default {
       dialogValidate: false,
       headers: [
         {
-          text: "Name",
+          text: "ชื่อระบบ",
           align: "start",
           sortable: false,
           value: "name",
         },
-        { text: "Short system name", value: "short_name", sortable: false },
-        { text: "Member", value: "member" },
-        { text: "Actions", value: "actions", sortable: false },
+        { text: "รหัสของระบบ", value: "id_system", sortable: false },
+        { text: "ชื่อย่อระบบ", value: "short_name", sortable: false },
+        // { text: "สมาชิก", value: "member" },
+        { text: "จัดการ", value: "actions", sortable: false },
         // { text: "Actions", value: "actions", sortable: false },
       ],
       system: {
@@ -448,7 +457,7 @@ export default {
       projectOwner: [],
       projectListAdmin: [],
       loading: false,
-      rules: [(value) => !!value || "Required field."],
+      rules: [(value) => !!value || "*กรุณาใส่ข้อมูลให้ถูกต้อง*"],
     };
   },
   updated() {

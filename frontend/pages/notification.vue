@@ -1,6 +1,6 @@
 <template>
   <div>
-    <searchbar title="Notifications" />
+    <searchbar title="แจ้งเตือน" />
     <v-divider></v-divider>
     <div>
       <v-card v-for="n in 1" :key="n" class="mt-10 mb-10" elevation="8">

@@ -9,7 +9,7 @@
                 <v-toolbar-title
                   class="font-weight-bold ml-2 mt-3"
                   style="font-size: 30px"
-                  >Login</v-toolbar-title
+                  >เข้าสู่ระบบ</v-toolbar-title
                 >
               </v-toolbar>
 
@@ -18,14 +18,14 @@
                   <v-col class="ma-0 pa-0">
                     <v-card-subtitle
                       style="text-align: left; font-weight: bold; color: black"
-                      >Employee ID</v-card-subtitle
+                      >รหัสพนักงาน</v-card-subtitle
                     >
                   </v-col>
                 </v-row>
                 <v-form @submit.prevent="handleLogin" ref="form">
                   <v-text-field
                     class="mb-2"
-                    placeholder="Enter your employee ID."
+                    placeholder="กรุณาใส่รหัสพนักงานของคุณ"
                     v-model="user_id"
                     type="text"
                     outlined
@@ -42,13 +42,13 @@
                           font-weight: bold;
                           color: black;
                         "
-                        >Password</v-card-subtitle
+                        >รหัสผ่าน</v-card-subtitle
                       >
                     </v-col>
                   </v-row>
                   <v-text-field
                     class="mb-2"
-                    placeholder="Enter 6 charactor or more"
+                    placeholder="กรุณาใส่รหัสผ่านให้ถูกต้อง"
                     v-model="user_password"
                     type="password"
                     outlined
@@ -69,7 +69,7 @@
                     color="#883CFE"
                     width="90%"
                     type="submit"
-                    >Login</v-btn
+                    >เข้าสู่ระบบ</v-btn
                   >
                 </v-form>
               </v-card-text>
@@ -89,7 +89,7 @@
                     style="
                       place-content: center;
                       font-size: 24px;
-                      font-weigth: bold;
+                      font-weight: bold;
                     "
                   >
                     บัญชีของคุณถูกล็อก
@@ -129,7 +129,7 @@
                     style="
                       place-content: center;
                       font-size: 24px;
-                      font-weigth: bold;
+                      font-weight: bold;
                     "
                   >
                     <h4>
@@ -175,7 +175,7 @@ export default {
       checkbox: false,
       dialog: false,
       dialogWrong: false,
-      countlogin: 0,
+      countLogin: 0,
 
       rules: [(value) => !!value || "กรุณากรอกข้อมูลให้ครบถ้วน."],
     };
@@ -199,9 +199,15 @@ export default {
           this.error = response.data.message;
         }
       } catch (error) {
-        this.dialogWrong = true;
+        this.countLogin = this.countLogin + 1;
         console.error(error);
+        console.error(this.countLogin);
         this.error = "An error occurred";
+        if (this.countLogin > 3) {
+          this.dialog = true;
+        } else {
+          this.dialogWrong = true;
+        }
       }
     },
   },

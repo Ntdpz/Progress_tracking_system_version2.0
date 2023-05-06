@@ -164,9 +164,11 @@ export default {
   },
   created() {
     this.getUser();
+    this.checkRole();
   },
   mounted() {
     this.$refs.calendar.checkChange();
+    
   },
   computed: {
     userId() {
@@ -292,6 +294,14 @@ export default {
     },
     rnd(a, b) {
       return Math.floor((b - a + 1) * Math.random()) + a;
+    },
+    checkRole() {
+      if (this.user_role != 'Admin') {
+        return this.updateRangeOwner();
+    } else if (this.user_role == 'Admin') {
+        return this.updateRange();
+    };
+      return;
     },
   },
 };

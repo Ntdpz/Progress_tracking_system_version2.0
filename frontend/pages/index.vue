@@ -1,11 +1,11 @@
 <template>
   <div class="content mx-auto">
     <!-- *Search bar -->
-    <searchbar title="Home" />
+    <searchbar title="หน้าหลัก" />
     <v-divider></v-divider>
     <!-- *Profile bar -->
     <v-row class="mb-6" no-gutters justify-start>
-      <p>User ID: {{ userId }}</p>
+      <!-- <p>User ID: {{ userId }}</p> -->
       <v-col class="mr-10" style="flex-grow: 0 !important">
         <v-avatar class="ml-6 mt-4" style="width: 100px; height: 100px">
           <!-- <img src="https://cdn.vuetifyjs.com/images/john.jpg" alt="John" /> -->
@@ -31,7 +31,7 @@
           <v-text style="font-size: 20px">{{ this.user_status }}</v-text>
           <br />
           <v-text style="font-size: 20px"
-            >User role: {{ this.user_role }}</v-text
+            >บทบาท: {{ this.user_role }}</v-text
           ></v-col
         >
       </v-col>
@@ -48,7 +48,7 @@
         <v-row class="mb-0">
           <v-col col="6" sm="6" md="6" lg="6">
             <v-text class="font-weight-bold" style="font-size: 24px"
-              >Your Project</v-text
+              >โครงการของคุณ</v-text
             >
           </v-col>
           <v-col col="6" sm="6" md="6" lg="6" style="text-align: right">
@@ -101,6 +101,7 @@
             col="3"
             sm="3"
             md="3"
+            xl="3"
             lg="2"
           >
             <template>
@@ -182,7 +183,7 @@
           </v-card>
         </v-dialog>
         <v-btn color="error" class="mt-5" dark @click="logout">
-          <h5>Logout</h5>
+          <h5>ออกจากระบบ</h5>
         </v-btn>
       </v-card>
     </v-container>

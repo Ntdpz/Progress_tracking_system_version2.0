@@ -42,7 +42,7 @@
         >
           <template v-slot:activator>
             <v-list-item-content>
-              <v-list-item-title>Project</v-list-item-title>
+              <v-list-item-title>โครงการ</v-list-item-title>
             </v-list-item-content>
           </template>
 
@@ -145,19 +145,19 @@ export default {
         {
           action: "mdi-view-list",
           active: false,
-          title: "Project",
+          title: "โครงการ",
           projectList: [],
         },
       ],
       items: [
         {
           icon: "mdi-home",
-          title: "Home",
+          title: "หน้าหลัก",
           to: "/",
         },
         {
           icon: "mdi-bell-badge",
-          title: "Notification",
+          title: "แจ้งเตือน",
           to: "/notification",
         },
       ],
@@ -165,7 +165,7 @@ export default {
         {
           action: "mdi-view-list",
           active: false,
-          title: "Project",
+          title: "โครงการ",
           projectList: [],
         },
       ],
@@ -207,22 +207,22 @@ export default {
         );
         items.splice(0, 0, {
           icon: "mdi-view-dashboard",
-          title: "Dashboard",
+          title: "แดชบอร์ด",
           to: "/dashboard",
         });
         items.splice(0, 0, {
           icon: "mdi-account",
-          title: "Manage User",
+          title: "จัดการผู้ใช้งานระบบ",
           to: "/manageUser",
         });
         items.splice(0, 0, {
           icon: "mdi-view-list",
-          title: "Manage Project",
+          title: "จัดการโครงการ",
           to: "/manageProject",
         });
         items.splice(0, 0, {
           icon: "mdi-calendar-month",
-          title: "Schedule",
+          title: "ตารางงาน",
           to: "/schedule",
         });
         return items;
@@ -235,12 +235,12 @@ export default {
         );
         items.splice(0, 0, {
           icon: "mdi-calendar-month",
-          title: "Schedule",
+          title: "ตารางงาน",
           to: "/schedule",
         });
         items.splice(0, 0, {
           icon: "mdi-view-list",
-          title: "Manage Project",
+          title: "จัดการโครงการ",
           to: "/manageProject",
         });
 
