@@ -2,7 +2,7 @@
   <v-layout row justify-center>
     <v-dialog v-model="dialog" persistent max-width="750">
       <v-card>
-        <v-card-title class="pt-3" style="background-color: #883cfe">
+        <v-card-title class="pt-3 mb-2" style="background-color: #883cfe">
           <h5 style="color: white">
             สร้างปัญหาใหม่ | {{ projectName }} ({{ projectids }})>
             {{ systemName }} ({{ systemids }})

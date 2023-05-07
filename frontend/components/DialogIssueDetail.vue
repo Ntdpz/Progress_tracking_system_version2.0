@@ -8,7 +8,7 @@
         <v-card-title class="pt-3" style="background-color: #883cfe">
           <h5 style="color: white">
             รายละเอียดปัญหาที่พบ | โครงการ : {{ ProjectName }} > ระบบ :
-            {{ SystemName }} {{ id }}
+            {{ SystemName }}
           </h5>
           <v-spacer></v-spacer>
           <v-btn :to="`/history/${id}`" v-if="history">History</v-btn>
@@ -802,6 +802,10 @@ export default {
           console.error(error);
           alert("Error submitting form");
         }
+      }
+      if (this.IssueAccepting !== null) {
+        this.IssueStatus = "กำลังแก้ไข";
+        this.IssueDeveloperStatus = "กำลังแก้ไข";
       }
       const data = {
         screen_id: this.IssueScreenId,

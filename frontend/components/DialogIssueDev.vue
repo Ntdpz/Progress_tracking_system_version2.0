@@ -807,6 +807,10 @@ export default {
           alert("Error submitting form");
         }
       }
+            if (this.IssueAccepting !== null) {
+        this.IssueStatus = "กำลังแก้ไข";
+        this.IssueDeveloperStatus = "กำลังแก้ไข";
+      }
       const data = {
         screen_id: this.IssueScreenId,
         system_id: this.SystemId,
