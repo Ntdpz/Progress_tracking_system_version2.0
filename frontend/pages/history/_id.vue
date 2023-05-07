@@ -107,15 +107,15 @@
               <v-col
                 ><v-row>
                   <p style="font-weight: bold">วันที่รับปัญหา :</p>
-                  {{ item.formattedDateAccepting }}
+                  {{ item.formattedIssue_accepting }}
                 </v-row>
                 <v-row>
                   <p style="font-weight: bold">วันที่เริ่ม :</p>
-                  {{ item.formattedDateStart }}</v-row
+                  {{ item.formattedIssue_start }}</v-row
                 >
                 <v-row
                   ><p style="font-weight: bold">วันที่คาดว่าจะแก้ไขเสร็จ :</p>
-                  {{ item.formattedDateExpected }}
+                  {{ item.formattedIssue_expected }}
                 </v-row>
                 <v-row
                   ><p style="font-weight: bold">คำอธิบายของผู้พัฒนา :</p>
@@ -133,7 +133,7 @@
                 </v-row>
                 <v-row>
                   <p style="font-weight: bold">วันที่แก้ไขเสร็จ :</p>
-                  {{ item.formattedDateComplete }}
+                  {{ item.formattedIssue_complete }}
                 </v-row></v-col
               >
             </v-row>
@@ -196,7 +196,7 @@ export default {
         },
         { text: "ปัญหา", value: "issue_name" },
         { text: "ประเภทปัญหา", value: "issue_type" },
-        { text: "วันกำหนดส่ง", value: "formattedDateEnd" },
+        { text: "วันกำหนดส่ง", value: "formattedIssue_end" },
         { text: "สถานะปัญหา", value: "issue_status" },
         { text: "ความสำคัญของปัญหา", value: "issue_priority" },
         { text: "ผู้พัฒนา", value: "issue_assign" },
@@ -228,39 +228,31 @@ export default {
           "/history_issues/getAll?issues_id=" + this.id
         );
         this.items = res.data;
+        console.log("items", this.items);
         this.items.forEach((issue) => {
-          const dateEnd = moment(issue.issue_end, "YYYY-MM-DDTHH:mm:ss.SSSZ");
-          const outputDateEnd = moment(dateEnd).add(543, "years");
-          issue.formattedDateEnd = outputDateEnd.format("DD-MM-YYYY");
+          const dateFields = [
+            "issue_end",
+            "issue_accepting",
+            "issue_start",
+            "issue_expected",
+            "issue_complete",
+          ];
 
-          const dateAccepting = moment(
-            issue.issue_accepting,
-            "YYYY-MM-DDTHH:mm:ss.SSSZ"
-          );
-          const outputDateAccepting = moment(dateAccepting).add(543, "years");
-          issue.formattedDateAccepting =
-            outputDateAccepting.format("DD-MM-YYYY");
-
-          const dateStart = moment(
-            issue.issue_start,
-            "YYYY-MM-DDTHH:mm:ss.SSSZ"
-          );
-          const outputDateStart = moment(dateStart).add(543, "years");
-          issue.formattedDateStart = outputDateStart.format("DD-MM-YYYY");
-
-          const dateExpected = moment(
-            issue.issue_expected,
-            "YYYY-MM-DDTHH:mm:ss.SSSZ"
-          );
-          const outputDateExpected = moment(dateExpected).add(543, "years");
-          issue.formattedDateExpected = outputDateExpected.format("DD-MM-YYYY");
-
-          const dateComplete = moment(
-            issue.issue_complete,
-            "YYYY-MM-DDTHH:mm:ss.SSSZ"
-          );
-          const outputDateComplete = moment(dateComplete).add(543, "years");
-          issue.formattedDateComplete = outputDateComplete.format("DD-MM-YYYY");
+          dateFields.forEach((field) => {
+            const date = issue[field];
+            if (date) {
+              const formattedDate = moment(date, "YYYY-MM-DDTHH:mm:ss.SSSZ")
+                .add(543, "years")
+                .format("DD-MM-YYYY");
+              issue[
+                `formatted${field.charAt(0).toUpperCase() + field.slice(1)}`
+              ] = formattedDate;
+            } else {
+              issue[
+                `formatted${field.charAt(0).toUpperCase() + field.slice(1)}`
+              ] = "No Date";
+            }
+          });
         });
         this.screen_id = this.items[0].screen_id;
         this.system_id = this.items[0].system_id;

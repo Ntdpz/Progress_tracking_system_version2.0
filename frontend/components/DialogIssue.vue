@@ -2,18 +2,13 @@
   <v-layout row justify-center>
     <v-dialog v-model="dialog" persistent max-width="750">
       <v-card>
-        <v-card-title>
-          <v-col cols="12">
-            <v-row>
-              <h5 v-show="mode === 'create'">สร้างปัญหาใหม่ |</h5>
-              <h5 v-show="mode === 'edit'">แก้ไขปัญหา |</h5>
-              <p style="font-size: 16px; margin-left: 2%">
-                {{ projectName }} ({{ projectids }})> {{ systemName }} ({{
-                  systemids
-                }})
-              </p>
-            </v-row>
-          </v-col>
+        <v-card-title class="pt-3" style="background-color: #883cfe">
+          <h5 style="color: white">
+            สร้างปัญหาใหม่ | {{ projectName }} ({{ projectids }})>
+            {{ systemName }} ({{ systemids }})
+          </h5>
+          <v-spacer></v-spacer>
+          <v-btn :to="`/history/${id}`" v-if="history">History</v-btn>
         </v-card-title>
         <v-card-text>
           <v-container>
@@ -306,9 +301,9 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="primary" text @click.native="close"> ปิด </v-btn>
+          <v-btn color="error" @click.native="close"> <h4>ปิด</h4> </v-btn>
           <v-btn color="primary" dark @click="saveIssue()">
-            สร้างปัญหาใหม่
+            <h4>สร้างปัญหาใหม่</h4>
           </v-btn>
         </v-card-actions>
       </v-card>
