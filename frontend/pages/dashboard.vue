@@ -178,7 +178,7 @@ export default {
   methods: {
     clicks(title) {
       this.select = title;
-      console.log(this.select);
+      // console.log(this.select);
     },
   },
 };

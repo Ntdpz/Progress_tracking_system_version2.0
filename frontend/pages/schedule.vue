@@ -172,7 +172,6 @@ export default {
   data() {
     const date = new Date();
     const month = date.toLocaleString("default", { month: "long" });
-    console.log(month);
     const today = new Date();
     const months = today.getMonth() + 1;
     const year = today.getFullYear();
@@ -247,7 +246,6 @@ export default {
         this.user_status = res.data[0].user_status;
         this.user_pic = res.data[0].user_pic;
         this.user_role = res.data[0].user_role;
-        // console.log(this.user_firstname);
       });
     },
     ClickDay() {
@@ -322,7 +320,6 @@ export default {
         }));
 
         this.events = events;
-        console.log(this.events, "this.events");
       } catch (error) {
         console.error(error);
       }
@@ -332,9 +329,6 @@ export default {
         await this.$axios.get("/users/getOne/" + this.userId).then((res) => {
           this.user_firstname = res.data[0].user_firstname;
         });
-        console.log(typeof this.user_firstname);
-        console.log(this.user_firstname);
-
         const { data } = await this.$axios.get(
           `/issues/getOneName/${this.user_firstname}`,
           {}
@@ -350,7 +344,6 @@ export default {
         }));
 
         this.events = events;
-        console.log(this.events, "this.events");
       } catch (error) {
         console.error(error);
       }

@@ -12,14 +12,15 @@ function generateId() {
   return id;
 }
 
-router.get("/", async (req, res) => {
-  try {
-    return res.send("Hello");
-  } catch (err) {
-    console.log(err);
-    return res.status(500).send();
-  }
-});
+// router.get("/", async (req, res) => {
+//   try {
+//       return res.send("Hello");
+//   } catch (err) {
+//       console.log(err);
+//       return res.status(500).send();
+//   }
+// });
+
 
 //history_issues
 router.get("/getAll", async (req, res) => {

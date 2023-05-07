@@ -361,7 +361,7 @@
                       <v-col cols="8">
                         <v-row>
                           <v-col>
-                            <p class="pa-2">Status</p>
+                            <p class="pa-2">สถานะ</p>
                             <v-select
                               :items="issue_status_developer_default"
                               label="สถานะ"
@@ -662,7 +662,6 @@ export default {
               project_id: this.ProjectId,
             })
             .then((res) => {
-              // console.log("POST success for user ID: " + this.userSendWork);
               // alert("addUser_Screen Success!!");
             });
         } catch (error) {
@@ -874,7 +873,6 @@ export default {
           "/history_issues/createIssueHistory/",
           dataHistoryUpdate
         );
-        console.log("post success");
         this.$emit("button-clicked");
         this.handleClose();
         const promise = new Promise((resolve, reject) => {
@@ -883,7 +881,7 @@ export default {
         });
         promise.then(() => {
           setTimeout(() => {
-            alert("success");
+            alert("update success");
           }, 2000);
         });
       } catch (error) {

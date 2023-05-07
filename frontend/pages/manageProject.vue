@@ -644,9 +644,6 @@ export default {
       rules: [(value) => !!value || "*กรุณาใส่ข้อมูลให้ถูกต้อง*"],
     };
   },
-  updated() {
-    // console.log(this.choose_user_id);
-  },
   async created() {
     await this.getUser();
     await this.initialize();
@@ -667,8 +664,6 @@ export default {
     },
   },
   mounted() {
-    // this.getSystems();
-    // this.getProject();
     this.getSystemsOwner();
   },
   methods: {
@@ -683,7 +678,6 @@ export default {
         this.userlastname = res.data[0].user_lastname;
         this.userposition = res.data[0].user_position;
         this.userrole = res.data[0].user_role;
-        // console.log(this.userid, this.userposition, this.userrole);
       });
     },
     ClearSystemField() {
@@ -691,14 +685,6 @@ export default {
     },
     async CreateAllSystem() {
       try {
-        //   console.log(this.$refs.myForm);
-        //   if (!this.$refs.myForm.validate()) {
-        //     this.$refs.myForm.validate();
-        //     console.log("1");
-        // } else {
-        //     this.$refs.myForm.validate();
-        //     console.log("2");
-        // }
         if (
           this.system.system_id.trim() == "" ||
           this.system.system_nameTH.trim() == "" ||
@@ -709,32 +695,20 @@ export default {
           this.dialogValidate = true;
         } else {
           await this.createSystem();
-          // console.log("Create system successfully!");
           await this.getsystemID();
-          // console.log("Get SystemID successfully!");
           await this.getProjectId();
-          // console.log("Get ProjectId successfully!");
           await this.addUser_project();
-          // console.log("Get ProjectId successfully!");
           await this.addUser_system(this.systemId);
+<<<<<<< HEAD
           // console.log("Create successfully!");
           this.ClearSubsystem();
           
+=======
+>>>>>>> acb06163b8002abd2b57610264879eaffcd72887
         }
       } catch (error) {
         console.log(error);
       }
-
-      // await this.createSystem();
-      // // console.log("Create system successfully!");
-      // await this.getsystemID();
-      // // console.log("Get SystemID successfully!");
-      // await this.getProjectId();
-      // // console.log("Get ProjectId successfully!");
-      // await this.addUser_project();
-      // // console.log("Get ProjectId successfully!");
-      // await this.addUser_system(this.systemId);
-      // // console.log("Create successfully!");
     },
     async getsystemID() {
       await this.$axios
@@ -751,8 +725,6 @@ export default {
           system_id: systemID,
           project_id: this.projectIds,
         });
-        // console.log("POST success for system ID: " + systemID);
-        // alert("Post Success!!");
         await this.getProject();
         await this.getSystems();
         this.dialogSuccess = true;
@@ -768,9 +740,13 @@ export default {
         await this.$axios.post("/user_projects/createUser_project", {
           user_id: this.choose_user_id,
           project_id: this.projectIds,
+<<<<<<< HEAD
         }); 
         // console.log("POSTsuccess for system ID: " + systemID);
         // alert("Post Success!!");
+=======
+        });
+>>>>>>> acb06163b8002abd2b57610264879eaffcd72887
         await this.getProject();
         await this.getSystems();
         this.dialogSubsystem = false;
@@ -785,15 +761,17 @@ export default {
       this.system.system_nameTH = "";
       this.system.system_nameEN = "";
       this.system.system_shortname = "";
+<<<<<<< HEAD
       this.system.system_analyst = "";
       this.choose_user_id = [];
+=======
+>>>>>>> acb06163b8002abd2b57610264879eaffcd72887
     },
     async getProjectId() {
       await this.$axios
         .get("/projects/getAll?project_id=" + this.editedItem.project_id)
         .then((data) => {
           this.projectIds = data.data[0].id;
-          // console.log(this.projectIds);
         });
     },
     async getPosition_Developer() {
@@ -804,7 +782,6 @@ export default {
           this.name_Dev = this.data_position_Developer.map(
             (item) => item.user_firstname
           );
-          // console.log(data.data);
         });
     },
     async getPosition_Implementer() {
@@ -815,48 +792,8 @@ export default {
           this.name_Implementer = this.data_position_Implementer.map(
             (item) => item.user_firstname
           );
-          // console.log(this.name_Implementer);
         });
     },
-    // async getSystemsOwner() {
-    //     try {
-    //       this.loading = true;
-    //       this.projectOwner = [];
-    //       // const havesystems = [];
-    //       // const projectsWithSystems = [];
-    //       // console.log(this.systemOwner.length, "this.systemOwner.length");
-    //       // console.log(this.projectListAdmin, "this.projectListAdmin");
-    //       this.projectList.forEach((project, i) => {
-    //           this.projectList[i].systems.splice(0, this.projectList[i].systems.length);
-    //       });
-    //       this.projectListAdmin.forEach((project, i) => {
-    //         // console.log(project, "projectList");
-    //         // console.log(project.systems, "project.systems");
-    //         // this.projectList[i].systems.splice(0, this.projectList[i].systems.length); // Clear systems array
-    //         project.systems.forEach((system, s) => {
-    //           this.systemOwner.forEach((owner, num) => {
-    //             // console.log(owner.system_id, owner, "systems Owner");
-    //             if (project.systems[s].id === owner.system_id) {
-    //               // console.log(project.systems[s].id + "===" + owner.system_id + "??");
-    //               // this.projectList[i].systems.push(this.projectListAdmin[i].systems[s]);
-    //               // this.projectList[i].systems.splice(0, this.projectList[i].systems.length); // Clear systems array
-
-    //               this.projectList[i].systems.push({ ...this.projectListAdmin[i].systems[s] }); // Create a copy before pushing
-    //             } else {
-    //               console.log("Project not push");
-    //             }
-    //           });
-    //         });
-    //       });
-    //         // projectsWithSystems now contains only projects from this.projectList which have systems installed
-    //         // console.log(projectsWithSystems);
-    //         console.log(this.projectList, "this.projectList");
-    //       // console.log(this.userrole);
-    //       this.loading = false;
-    //     } catch (error) {
-    //       console.log(error);
-    //     }
-    //   },
 
     async getSystemsOwner() {
       try {
@@ -876,7 +813,7 @@ export default {
                   ...this.projectListAdmin[i].systems[s],
                 });
               } else {
-                console.log("System not push");
+                // console.log("System not push");
               }
             });
           });
@@ -890,45 +827,42 @@ export default {
     async getProject() {
       await this.$axios.get("/projects/getAll").then((res) => {
         this.projectList = res.data;
-        // console.log(this.projectList);
+
         this.projectList.forEach((project) => {
           const date = moment(
             project.project_start,
             "YYYY-MM-DDTHH:mm:ss.SSSZ"
           );
           project.formattedDateStart = date.format("YYYY-MM-DD");
-          // console.log(project.formattedDateStart);
+
           const dateEnd = moment(
             project.project_end,
             "YYYY-MM-DDTHH:mm:ss.SSSZ"
           );
           project.formattedDateEnd = dateEnd.format("YYYY-MM-DD");
-          // console.log(project.formattedDateEnd);
         });
       });
     },
     async getProject2() {
       await this.$axios.get("/projects/getAll").then((data) => {
         this.projectListAdmin = data.data;
-        // console.log(this.projectList);
+
         this.projectListAdmin.forEach((project) => {
           const date = moment(
             project.project_start,
             "YYYY-MM-DDTHH:mm:ss.SSSZ"
           );
           project.formattedDateStart = date.format("YYYY-MM-DD");
-          // console.log(project.formattedDateStart);
+
           const dateEnd = moment(
             project.project_end,
             "YYYY-MM-DDTHH:mm:ss.SSSZ"
           );
           project.formattedDateEnd = dateEnd.format("YYYY-MM-DD");
-          // console.log(project.formattedDateEnd);
         });
       });
     },
     async saveProject() {
-      console.log(this.$refs.form);
       if (!this.$refs.form.validate()) {
         this.$refs.form.validate();
       } else {
@@ -941,9 +875,6 @@ export default {
               `/projects/updateProject/${this.editedItem.id}`,
               this.editedItem
             );
-            // console.log("put success");
-            // window.location.reload();
-
             const promise = new Promise((resolve, reject) => {
               resolve();
               this.getUser();
@@ -975,8 +906,7 @@ export default {
             await this.$refs.form.validate();
 
             await this.$axios.post("/projects/createProject", this.editedItem);
-            // console.log("post success");
-            // window.location.reload();
+
             const promise = new Promise((resolve, reject) => {
               resolve();
               this.dialog = false;
@@ -1014,23 +944,20 @@ export default {
     },
     async DeleteAllProject() {
       await this.deleteUser_screens();
-      // console.log("success User_screen");
       await this.deleteUserSystem();
-      // console.log("success User_system");
       await this.deleteUserProject();
-      // console.log("success User_project");
       await this.deleteScreenByIdProject();
-      // console.log("success screen");
       await this.deleteSystem();
-      // console.log("success system");
       await this.deleteProject();
-      // console.log("success project");
-      // alert("success delete all");
+
       this.dialogDeleteSuccess = true;
-      // window.location.reload();
       this.dialog = false;
+<<<<<<< HEAD
       this.clearCreateProject();
       // this.loading = true;
+=======
+
+>>>>>>> acb06163b8002abd2b57610264879eaffcd72887
       const promise = new Promise((resolve, reject) => {
         resolve();
         this.loading = true;
@@ -1055,7 +982,7 @@ export default {
     async deleteProject() {
       try {
         await this.$axios.delete("/projects/delete/" + this.editedItem.id);
-        console.log("delete success");
+        // console.log("delete success");
       } catch (error) {
         console.error(error);
         alert("Error delete form");
@@ -1108,7 +1035,6 @@ export default {
             // alert("user_system no have data");
           } else if (responseData.error && response.status != 404) {
             // alert(responseData.error);
-            console.log(responseData.error);
           }
           // window.location.reload();
         }
@@ -1139,10 +1065,7 @@ export default {
           // alert("Delete Screen Success!");
           // this.deleteSystem();
         })
-        .then((response) => {
-          console.log(response);
-          // console.log("delete success");
-        })
+        .then((response) => {})
         .catch((err) => {
           if (err.response && err.response.status === 404) {
             // do nothing when 404 error occurs
@@ -1159,13 +1082,8 @@ export default {
         this.editedIndex = this.projectList.indexOf(projectList);
         this.editedItem = Object.assign({}, projectList);
         this.dialog = true;
-        // console.log(mode, projectList);
       } else if (mode === "create") {
         this.dialog = true;
-        // console.log(mode);
-        // if (this.$refs.form) {
-        //   // this.$refs.form.reset();
-        // }
       }
     },
     async getSystemOwner() {
@@ -1173,7 +1091,6 @@ export default {
         .get("/user_systems/getOneUserID/" + this.userId)
         .then((data) => {
           this.systemOwner = data.data;
-          // console.log(this.systemOwner, "systemOwner");
         })
         .catch((err) => {
           if (err.response && err.response.status === 404) {
@@ -1203,24 +1120,18 @@ export default {
           );
         });
       });
-      // console.log(this.projectList[0].systems[0] , "systemListtt");
     },
     getSystemCount(project) {
       return project.systems ? project.systems.length : 0;
     },
     async dialogSystem(projectList) {
-      // console.log(projectList.id);
       this.editedIndex = this.projectList.indexOf(projectList);
       this.editedItem = Object.assign({}, projectList);
       this.system.project_id = projectList.id;
-      // console.log(this.system.project_id + "id is post");
-      // console.log(this.projectList.project_id);
     },
     async createSystem() {
       try {
         await this.$axios.post("/systems/createSystem", this.system);
-        // console.log("post success");
-        // window.location.reload();
         const promise = new Promise((resolve, reject) => {
           resolve();
           this.dialog = false;

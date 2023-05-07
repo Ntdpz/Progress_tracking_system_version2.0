@@ -8,16 +8,18 @@
         <v-card-title class="pt-3" style="background-color: #883cfe">
           <h5 style="color: white">
             รายละเอียดปัญหาที่พบ | โครงการ : {{ ProjectName }} > ระบบ :
-            {{ SystemName }} {{ id }}
+            {{ SystemName }} {{ user_position }}
           </h5>
+          <v-spacer></v-spacer>
+          <v-btn :to="`/history/${id}`" v-if="history">History</v-btn>
         </v-card-title>
         <v-row class="ml-2 mr-2 mt-2">
           <v-col>
             <v-row>
               <v-col cols="12" sm="4" md="4" class="pb-0">
                 <v-text-field
-                  label="Issue ID"
-                  placeholder="Issue ID"
+                  label="เลขที่ปัญหา"
+                  placeholder="เลขที่ปัญหา"
                   disabled
                   outlined
                   dense
@@ -27,8 +29,8 @@
               </v-col>
               <v-col cols="12" sm="8" md="8" class="pb-0">
                 <v-text-field
-                  label="Issue Name"
-                  placeholder="Issue Name"
+                  label="ปัญหา"
+                  placeholder="ปัญหา"
                   outlined
                   dense
                   :disabled="isIssueInProcess"
@@ -38,7 +40,7 @@
               <v-col cols="12" sm="6" md="4" class="pb-0">
                 <v-select
                   :items="type_select"
-                  label="PNI/PNC/New Req"
+                  label="ประเภทปัญหา"
                   dense
                   outlined
                   :disabled="isIssueInProcess"
@@ -51,7 +53,7 @@
                   @mousemove="getDefault()"
                   @change="getUserSystems(ScreenName.id)"
                   :items="screen_selectDefault"
-                  label="Screen No."
+                  label="รหัสหน้าจอ"
                   dense
                   outlined
                   v-model="ScreenName"
@@ -139,7 +141,7 @@
                 <v-select
                   return-object="false"
                   :items="position_Developers"
-                  label="Dev"
+                  label="ผู้พัฒนา"
                   dense
                   outlined
                   :disabled="isIssueInProcess"
@@ -153,7 +155,7 @@
                 <v-select
                   return-object="false"
                   :items="position_Implementer"
-                  label="QC"
+                  label="ผู่ตรวจสอบ"
                   dense
                   outlined
                   menu-props="auto"
@@ -169,7 +171,7 @@
                 <v-textarea
                   solo
                   name="input-7-4"
-                  label="Note"
+                  label="คำอธิบายปัญหา"
                   v-model="IssueDes"
                   :disabled="isIssueInProcess"
                   style=""
@@ -178,41 +180,35 @@
             </v-row>
             <!-- Type PNC option -->
             <v-row v-if="IssueType == 'PNC'">
-              <v-col cols="6" class="pb-0">
-                <v-row>
-                  <p class="pa-2">Document No.</p>
-                  <v-text-field
-                    label="Issue Informer"
-                    placeholder="Issue Informer"
-                    :disabled="isIssueInProcess"
-                    outlined
-                    dense
-                    v-model="IssueDocId"
-                  ></v-text-field>
-                </v-row>
+              <v-col cols="12" sm="4" md="6" class="pb-0">
+                <v-text-field
+                  label="เลขที่เอกสาร"
+                  placeholder="เลขที่เอกสาร"
+                  :disabled="isIssueInProcess"
+                  outlined
+                  dense
+                  v-model="IssueDocId"
+                ></v-text-field>
               </v-col>
-              <v-col cols="6" class="pb-0">
-                <v-row>
-                  <p class="pa-2">Customer Name</p>
-                  <v-text-field
-                    label="Issue Informer"
-                    placeholder="Issue Informer"
-                    outlined
-                    :disabled="isIssueInProcess"
-                    dense
-                    v-model="IssueCustomer"
-                  ></v-text-field>
-                </v-row>
+              <v-col cols="12" sm="8" md="6" class="pb-0">
+                <v-text-field
+                  label="ชื่อลูกค้า"
+                  placeholder="ชื่อลูกค้า"
+                  outlined
+                  :disabled="isIssueInProcess"
+                  dense
+                  v-model="IssueCustomer"
+                ></v-text-field>
               </v-col>
             </v-row>
             <!-- Type New Req option -->
             <v-row v-if="IssueType == 'New Req'">
               <v-col cols="6" class="pb-0">
                 <v-row>
-                  <p class="pa-2">Type New Req</p>
+                  <p class="pa-2">ประเภทความต้องการใหม่</p>
                   <v-text-field
-                    label="Issue Informer"
-                    placeholder="Issue Informer"
+                    label="ประเภทความต้องการใหม่"
+                    placeholder="ประเภทความต้องการใหม่"
                     :disabled="isIssueInProcess"
                     outlined
                     dense
@@ -222,12 +218,12 @@
               </v-col>
               <v-col cols="6" class="pb-0">
                 <v-row>
-                  <p class="pa-2">Note to SA</p>
+                  <p class="pa-2">คำอธิบายถึง SA</p>
                   <v-textarea
                     solo
                     name="input-7-4"
                     :disabled="isIssueInProcess"
-                    label="Note"
+                    label="คำอธิบายถึง SA"
                     v-model="IssueDesSA"
                   ></v-textarea>
                 </v-row>
@@ -250,7 +246,7 @@
                   class="pb-0 pt-0"
                   style="background-color: #883cfe"
                 >
-                  <h3 style="color: white">Developer Section</h3>
+                  <h3 style="color: white">ส่วนของผู้พัฒนา</h3>
                   <template v-slot:actions>
                     <v-icon color="white"> $expand </v-icon>
                   </template>
@@ -274,7 +270,7 @@
                             <template v-slot:activator="{ on, attrs }">
                               <v-text-field
                                 v-model="IssueAccepting"
-                                label="Date of Accepting"
+                                label="วันที่รับ"
                                 prepend-icon="mdi-calendar"
                                 readonly
                                 v-bind="attrs"
@@ -304,7 +300,7 @@
                             <template v-slot:activator="{ on, attrs }">
                               <v-text-field
                                 v-model="IssueStart"
-                                label="Start Date"
+                                label="วันที่เริ่ม"
                                 prepend-icon="mdi-calendar"
                                 readonly
                                 v-bind="attrs"
@@ -330,7 +326,7 @@
                             <template v-slot:activator="{ on, attrs }">
                               <v-text-field
                                 v-model="IssueExpected"
-                                label="Expected Completion Date"
+                                label="วันที่คาดว่าแก้ไขเสร็จ"
                                 prepend-icon="mdi-calendar"
                                 readonly
                                 v-bind="attrs"
@@ -347,33 +343,32 @@
                     </v-row>
                     <v-col cols="6">
                       <v-row v-if="mandayProps">
-                        <p class="pa-2">Manday</p>
-                        <v-text-field
+                        <p class="pa-2">Manday {{ IssueManday }}</p>
+                        <!-- <v-text-field
                           label="Manday"
                           placeholder="Manday"
                           outlined
                           dense
-                          disabled
                           v-model="IssueManday"
-                        ></v-text-field>
+                        ></v-text-field> -->
                       </v-row>
                     </v-col>
                     <v-divider></v-divider>
                     <v-row class="text-h6 mt-2 mb-2">
-                      <h6>Developer Section 2</h6>
+                      <h6>ส่วนของผู้พัฒนา</h6>
                     </v-row>
                     <v-row>
                       <v-col cols="8">
                         <v-row>
                           <v-col>
-                            <p class="pa-2">Status</p>
+                            <p class="pa-2">สถานะ</p>
                             <v-select
                               :items="issue_status_developer_default"
                               label="สถานะ"
                               placeholder="สถานะ"
                               dense
-                              disabled
                               outlined
+                              disabled
                               v-model="IssueDeveloperStatus"
                               @change="checkSendWork()"
                             ></v-select>
@@ -384,7 +379,7 @@
                               return-object="false"
                               :items="position_Developers_System"
                               @change="getUserScreen(IssueAssign.id)"
-                              label="Dev"
+                              label="ผู้พัฒนา"
                               dense
                               outlined
                               menu-props="auto"
@@ -399,9 +394,7 @@
                       <v-col cols="6">
                         <v-row>
                           <!-- Completion date-->
-                          <p class="pa-2">
-                            Completion date - {{ IssueComplete }}
-                          </p>
+                          <p class="pa-2">วันที่เสร็จ - {{ IssueComplete }}</p>
                           <!-- <v-menu
                             v-model="completionMenu"
                             :close-on-content-click="false"
@@ -411,7 +404,7 @@
                             <template v-slot:activator="{ on, attrs }">
                               <v-text-field
                                 v-model="IssueComplete"
-                                label="Completion date"
+                                label="วันที่เสร็จ"
                                 prepend-icon="mdi-calendar"
                                 readonly
                                 v-bind="attrs"
@@ -428,13 +421,13 @@
                     </v-row>
                     <v-row>
                       <v-col cols="6">
-                        <p class="">Cause / Remedy</p>
+                        <p class="">คำอธิบาย</p>
                         <v-textarea
                           solo
-                          name="input-7-4"
-                          label="Note"
-                          v-model="IssueDesDev"
                           disabled
+                          name="input-7-4"
+                          label="คำอธิบายของผู้พัฒนา"
+                          v-model="IssueDesDev"
                         ></v-textarea>
                       </v-col>
                     </v-row>
@@ -450,7 +443,7 @@
                   class="pb-0 pt-0"
                   style="background-color: #883cfe"
                 >
-                  <h3 style="color: white">Implements Section</h3>
+                  <h3 style="color: white">ส่วนของผู้ตรวจสอบ</h3>
                   <template v-slot:actions>
                     <v-icon color="white"> $expand </v-icon>
                   </template>
@@ -461,11 +454,12 @@
                       <v-col cols="8">
                         <v-row>
                           <v-col>
-                            <p class="pa-2">Status</p>
+                            <p class="pa-2">สถานะการตรวจสอบ</p>
                             <v-select
                               :items="issue_status_implement_default"
                               label="สถานะ"
                               placeholder="สถานะ"
+                              disabled
                               dense
                               outlined
                               v-model="IssueImplementerStatus"
@@ -487,11 +481,12 @@
                     </v-row>
                     <v-row>
                       <v-col cols="12" class="pt-0">
-                        <p class="">Cause / Remedy</p>
+                        <p class="">คำอธิบายของผู้ตรวจสอบ</p>
                         <v-textarea
                           solo
+                          disabled
                           name="input-7-4"
-                          label="Note"
+                          label="คำอธิบายของผู้ตรวจสอบ"
                           v-model="IssueDesImplementer"
                         ></v-textarea>
                       </v-col>
@@ -505,8 +500,8 @@
         <v-card-actions>
           <v-btn color="error" @click="issueReject()"><h4>Reject</h4></v-btn>
           <v-spacer></v-spacer>
-          <v-btn color="error" @click="handleClose()"><h4>Cancel</h4></v-btn>
-          <v-btn color="primary" @click="saveIssue()"><h4>Update</h4></v-btn>
+          <v-btn color="error" @click="handleClose()"><h4>ปิด</h4></v-btn>
+          <v-btn color="primary" @click="saveIssue()"><h4>อัปเดต</h4></v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -564,7 +559,6 @@ export default {
     return {
       loading: false,
       mandayProps: true,
-      mandaySeleted: false,
       completionMenu: false,
       //menu
       acceptMenu: false,
@@ -590,10 +584,11 @@ export default {
       user_lastname: "",
       user_position: "",
       userSendWork: null,
+      //history btn
+      history: false,
     };
   },
   async mounted() {
-    console.log("mounted");
     await this.getDefault();
   },
   computed: {
@@ -606,13 +601,13 @@ export default {
       if (newVal) {
         this.getUserSystemsOncreated();
         this.getUser();
+        this.checkHistory();
       }
     },
   },
   methods: {
     getUserScreen(selectedUserID) {
       this.userSendWork = selectedUserID;
-      console.log("User send work", this.userSendWork);
     },
     checkSendWork() {
       if (this.IssueDeveloperStatus == "แก้ไขไม่ได้") {
@@ -649,12 +644,10 @@ export default {
       }
     },
     checkAssign() {
-      console.log("checkAssigndev", this.IssueAssign);
       const dev = this.IssueAssign?.user_firstname ?? null;
       this.IssueAssign = dev;
     },
     checkAssign2() {
-      console.log("checkAssignqc", this.IssueQC);
       const qc = this.IssueQC?.user_firstname ?? null;
       this.IssueQC = qc;
     },
@@ -673,12 +666,10 @@ export default {
               project_id: this.ProjectId,
             })
             .then((res) => {
-              console.log("POST success for user ID: " + this.userSendWork);
-              alert("addUser_Screen Success!!");
+              // alert("addUser_Screen Success!!");
             });
         } catch (error) {
           console.log("user_screen: " + error);
-          alert("user_screen: " + error);
         }
       }
       if (this.IssueDeveloperStatus == "แก้ไขไม่ได้") {
@@ -686,7 +677,7 @@ export default {
           screen_id: this.IssueScreenId,
           system_id: this.SystemId,
           project_id: this.ProjectId,
-          issues_id:this.id,
+          issues_id: this.id,
           issue_name: this.IssueName,
           issue_id: this.IssueId,
           issue_type: this.IssueType,
@@ -721,7 +712,6 @@ export default {
             "/history_issues/createIssueHistory/",
             dataHistoryDev
           );
-          console.log("post history dev");
           this.$emit("button-clicked");
           this.handleClose();
           const promise = new Promise((resolve, reject) => {
@@ -766,7 +756,7 @@ export default {
           screen_id: this.IssueScreenId,
           system_id: this.SystemId,
           project_id: this.ProjectId,
-          issues_id:this.id,
+          issues_id: this.id,
           issue_name: this.IssueName,
           issue_id: this.IssueId,
           issue_type: this.IssueType,
@@ -801,7 +791,6 @@ export default {
             "/history_issues/createIssueHistory/",
             dataHistory
           );
-          console.log("pout success");
           this.$emit("button-clicked");
           this.handleClose();
           const promise = new Promise((resolve, reject) => {
@@ -852,7 +841,7 @@ export default {
         screen_id: this.IssueScreenId,
         system_id: this.SystemId,
         project_id: this.ProjectId,
-        issues_id:this.id,
+        issues_id: this.id,
         issue_name: this.IssueName,
         issue_id: this.IssueId,
         issue_type: this.IssueType,
@@ -888,7 +877,6 @@ export default {
           "/history_issues/createIssueHistory/",
           dataHistoryUpdate
         );
-        console.log("put success && history");
         this.$emit("button-clicked");
         this.handleClose();
         const promise = new Promise((resolve, reject) => {
@@ -897,7 +885,7 @@ export default {
         });
         promise.then(() => {
           setTimeout(() => {
-            alert("success");
+            alert("update success");
           }, 2000);
         });
       } catch (error) {
@@ -906,6 +894,7 @@ export default {
       }
     },
     handleClose() {
+      this.history = false;
       this.sendWork = false;
       this.$emit("update:dialog", false);
     },
@@ -919,13 +908,8 @@ export default {
         );
         this.screen_selectDefault = resScreen.data;
 
-        console.log(this.screen_selectDefault, "this.screen_selectDefault ");
-
         const resDefault = await this.$axios.get("/default_settings/getAll");
         this.default = resDefault.data;
-
-        // console.log(this.default, "this.dataDefault");
-
         this.default.forEach((item) => {
           if (item.issue_type) {
             this.type_select.push(item.issue_type);
@@ -942,14 +926,12 @@ export default {
           if (item.implement_status) {
             this.issue_status_implement_default.push(item.implement_status);
           }
-          // console.log(this.priotity_select, "this.priotity_select");
         });
       } catch (error) {
         console.error(error);
       }
     },
     async getUserSystemsOncreated() {
-      console.log("getUserSystemsOncreated");
       await this.$axios
         .get("/user_screens/getOneScreenID/" + this.IssueScreenId)
         .then((data) => {
@@ -994,7 +976,19 @@ export default {
         });
       } catch (error) {
         console.log(error);
-        alert("Reject: " + error);
+      }
+    },
+    checkHistory() {
+      try {
+        this.$axios
+          .get("/history_issues/getAll?issues_id=" + this.id)
+          .then((res) => {
+            if (res.data.length > 0) {
+              this.history = true;
+            }
+          });
+      } catch (error) {
+        console.log(error);
       }
     },
     selectedType() {},

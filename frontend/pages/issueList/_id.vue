@@ -1222,18 +1222,6 @@ export default {
     await this.getSystemsDev();
     await this.getSystemsImple();
     await this.getIssue();
-    console.log(this.projectDev, "projectDev");
-    console.log(this.systemsDev, "systemsDev");
-    console.log(this.projectImple, "projectImple");
-    // console.log(
-    //   this.systemsImple[0].assignedIssues[0].issue_qc,
-    //   "systemsImple"
-    // );
-    // console.log(
-    //   this.systemsImple[0].assignedIssues[0].issue_informer,
-    //   "systemsImpleInformer"
-    // );
-    console.log(this.systems, "systems");
   },
   async mounted() {
     await this.getUser();
@@ -1349,7 +1337,6 @@ export default {
     },
 
     async getIssue() {
-      console.log("getIssue()");
       try {
         const res = await this.$axios.get(
           "/issues/getAll?project_id=" + this.id

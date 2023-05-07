@@ -9,15 +9,6 @@ function generateId() {
   return id;
 }
 
-router.get("/test", async (req, res) => {
-  try {
-    return "Hello";
-  } catch (err) {
-    console.log(err);
-    return res.status(500).send();
-  }
-});
-
 // * GET All FROM notifications
 router.get("/getAll", async (req, res) => {
   try {

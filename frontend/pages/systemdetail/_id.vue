@@ -15,19 +15,27 @@
         style="background-color: black"
       ></v-divider>
       <template>
+<<<<<<< HEAD
         <v-banner
           class="mt-0 ml-4"
           style="
+=======
+        <v-banner class="mt-0 ml-4" style="
+>>>>>>> acb06163b8002abd2b57610264879eaffcd72887
             display: flex;
             align-items: center;
             justify-content: center;
             height: 30px;
             border-radius: 30px;
             padding: 0 0px;
+<<<<<<< HEAD
           "
           outlined
           elevation="2"
         >
+=======
+          " outlined elevation="2">
+>>>>>>> acb06163b8002abd2b57610264879eaffcd72887
           <form class="center" @submit.prevent="search">
             <v-icon color="purple">mdi-magnify</v-icon>
             <input
@@ -81,6 +89,7 @@
                 >
               </v-btn>
               <v-spacer></v-spacer>
+<<<<<<< HEAD
               <v-btn
                 v-if="userposition != 'Developer' || userrole == 'Admin'"
                 @click="
@@ -93,6 +102,14 @@
                 color="primary"
                 style="color: white; border-radius: 10px; font-weight: bold"
               >
+=======
+              <v-btn v-if="userposition != 'Developer' || userrole == 'Admin'" @click="
+                (dialog_newscreen = true),
+                resetday(),
+                (menuDateStart = false),
+                (menuDateEnd = false)
+                " elevation="2" color="primary" style="color: white; border-radius: 10px; font-weight: bold">
+>>>>>>> acb06163b8002abd2b57610264879eaffcd72887
                 <v-icon left> mdi-plus-circle-outline </v-icon>สร้างหน้าจอใหม่
               </v-btn>
             </v-card-title>
@@ -102,9 +119,13 @@
               <v-card>
                 <v-col>
                   <v-card outlined tile height="100%" style="border: none">
+<<<<<<< HEAD
                     <v-card-title class="mr-0 pa-0"
                       >สร้างหน้าจอใหม่</v-card-title
                     >
+=======
+                    <v-card-title class="mr-0 pa-0">สร้างหน้าจอใหม่</v-card-title>
+>>>>>>> acb06163b8002abd2b57610264879eaffcd72887
                     <v-container fluid>
                       <v-row>
                         <v-col>
@@ -118,6 +139,7 @@
                             <!--  -->
                             <form>
                               <div class="d-flex justify-center">
+<<<<<<< HEAD
                                 <label
                                   class="mt-0 avatar-upload"
                                   style="
@@ -138,6 +160,16 @@
                                     v-if="!photo"
                                     >mdi-cloud-upload-outline</v-icon
                                   >
+=======
+                                <label class="mt-0 avatar-upload" style="
+                                    display: flex;
+                                    justify-content: center;
+                                    align-items: center;
+                                  ">
+                                  <input type="file" ref="fileInput" @change="uploadFile" />
+                                  <v-icon class="center mt-0" color="black" size="30px"
+                                    v-if="!photo">mdi-cloud-upload-outline</v-icon>
+>>>>>>> acb06163b8002abd2b57610264879eaffcd72887
                                   <img v-if="photo" :src="photo" />
                                 </label>
                               </div>
@@ -281,10 +313,14 @@
                           </v-col>
                         </v-row>
                         <v-row>
+<<<<<<< HEAD
                           <v-col
                             class="mb-0 pb-0 hidden-sm-and-up"
                             style="place-self: center"
                           >
+=======
+                          <v-col class="mb-0 pb-0 hidden-sm-and-up" style="place-self: center">
+>>>>>>> acb06163b8002abd2b57610264879eaffcd72887
                             <h4 class="">ระดับหน้าจอ</h4>
                           </v-col>
                         </v-row>
@@ -310,10 +346,14 @@
                           </v-col>
                         </v-row>
                         <v-row>
+<<<<<<< HEAD
                           <v-col
                             class="mb-0 pb-0 hidden-sm-and-up"
                             style="place-self: center"
                           >
+=======
+                          <v-col class="mb-0 pb-0 hidden-sm-and-up" style="place-self: center">
+>>>>>>> acb06163b8002abd2b57610264879eaffcd72887
                             <h4 class="">ประเภทหน้าจอ</h4>
                           </v-col>
                         </v-row>
@@ -405,6 +445,7 @@
                                 scrollable
                               >
                                 <v-spacer></v-spacer>
+<<<<<<< HEAD
                                 <v-btn
                                   text
                                   color="primary"
@@ -421,6 +462,14 @@
                                   "
                                   >ตกลง</v-btn
                                 >
+=======
+                                <v-btn text color="primary" @click="menuDateStart = false">ยกเลิก</v-btn>
+                                <v-btn text color="primary" @click="
+                                  $refs.menuDateStart.save(
+                                    newscreen_dateStart
+                                  )
+                                  ">ตกลง</v-btn>
+>>>>>>> acb06163b8002abd2b57610264879eaffcd72887
                               </v-date-picker>
                             </v-menu>
                           </v-col>
@@ -449,6 +498,7 @@
                                 scrollable
                               >
                                 <v-spacer></v-spacer>
+<<<<<<< HEAD
                                 <v-btn
                                   text
                                   color="primary"
@@ -463,6 +513,12 @@
                                   "
                                   >ตกลง</v-btn
                                 >
+=======
+                                <v-btn text color="primary" @click="menuDateEnd = false">ยกเลิก</v-btn>
+                                <v-btn text color="primary" @click="
+                                  $refs.menuDateEnd.save(newscreen_dateEnd)
+                                  ">ตกลง</v-btn>
+>>>>>>> acb06163b8002abd2b57610264879eaffcd72887
                               </v-date-picker>
                             </v-menu>
                           </v-col>
@@ -912,6 +968,7 @@
               md="4"
             >
               <v-responsive :aspect-ratio="4 / 3" class="ma-4 mt-0">
+<<<<<<< HEAD
                 <v-card
                   :to="`/screendetail/${item.id}`"
                   class="elevation-0"
@@ -926,6 +983,11 @@
                     aspect-ratio="1"
                     class="d-block mx-auto"
                   />
+=======
+                <v-card :to="`/screendetail/${item.id}`" class="elevation-0" outlined rounded>
+                  <v-img :src="getImageUrl(item.screen_pic)" max-height="200px" max-width="250px" contain aspect-ratio="1"
+                    class="d-block mx-auto" />
+>>>>>>> acb06163b8002abd2b57610264879eaffcd72887
                   <v-card-title style="color: black">
                     รหัสหน้าจอ: {{ item.screen_id }}
                   </v-card-title>
@@ -1126,12 +1188,7 @@ export default {
     },
   },
   updated() {
-    // this.calculateManDay();
-    // console.log(this.user_id);
-    // console.log(this.implementer);
     this.sumUser = this.user_developer.concat(this.user_implementer);
-    console.log(this.sumUser);
-    // this.sumUserIds = this.sumUser.map((user) => user.id);
   },
   methods: {
     async getUser() {
@@ -1141,7 +1198,6 @@ export default {
         this.userlastname = res.data[0].user_lastname;
         this.userposition = res.data[0].user_position;
         this.userrole = res.data[0].user_role;
-        // console.log(this.user_position);
       });
     },
     clicks(title) {
@@ -1153,11 +1209,8 @@ export default {
         .get("/screens/getAll?system_id=" + this.id)
         .then((data) => {
           this.AllScreens = data.data;
-          console.log(this.AllScreens.length);
-
+          this.AllScreens.length;
           this.count_screens();
-          // this.count_screen = this.AllScreens.length;
-          // console.log(this.count_screen);
         });
     },
     async getNewScreenAndAddUserScreen() {
@@ -1167,10 +1220,7 @@ export default {
           .get("/screens/getAll?screen_id=" + this.screenID)
           .then((data) => {
             this.screen_idd = data.data[0].id;
-            // this.addUser_Screen(screen_id);
           });
-        // console.log(this.screen_idd);
-        // console.log("post User_Screen success!");
       } catch (error) {
         console.log(error);
         alert(error);
@@ -1184,7 +1234,6 @@ export default {
           this.name_Dev = this.develop_system.map(
             (item) => item.user_firstname
           );
-          // console.log(data.data);
         });
     },
     async getPosition_Implementer() {
@@ -1195,7 +1244,6 @@ export default {
           this.name_Implementer = this.develop_system.map(
             (item) => item.user_firstname
           );
-          // console.log(this.name_Implementer);
         });
     },
     async getUserSystems() {
@@ -1217,9 +1265,6 @@ export default {
 
           this.user_developer = this.data_position_Developer;
           this.user_implementer = this.data_position_Implementer;
-          console.log(this.user_developer, "user_developer");
-          console.log(this.user_implementer, "user_implementer");
-          console.log(data.data, "data.data");
         });
     },
     async addUser_Screen(screenID) {
@@ -1230,8 +1275,6 @@ export default {
           system_id: this.id,
           project_id: this.projectID,
         });
-        // console.log("POST success for user ID: " + screenID);
-        // alert("Success!!");
       } catch (error) {
         console.log(error);
         alert("user_screen: " + error);
@@ -1260,16 +1303,13 @@ export default {
           this.dialogFail = true;
         } else {
           // this.calculateManDay();
-          console.log("Man-day calculation completed successfully.");
           await this.createScreen();
-          // console.log("Screen creation completed successfully.");
+
           await this.getNewScreenAndAddUserScreen();
-          // console.log(
-          //   "New screen and user screen association completed successfully."
-          // );
+
           await this.addUser_Screen(this.screen_idd);
           this.dialogSuccess = true;
-          // console.log("User screen creation completed successfully.");
+
           this.ClearText();
           this.dialog_newscreen = false;
         }
@@ -1278,16 +1318,6 @@ export default {
         alert(error);
       }
     },
-    // calculateManDay() {
-    //   const dateStart = new Date(this.newscreen_dateStart);
-    //   const dateEnd = new Date(this.newscreen_dateEnd);
-    //   const timeDiff = Math.abs(dateEnd.getTime() - dateStart.getTime());
-    //   this.manday = Math.ceil(timeDiff / (1000 * 3600 * 24)); // convert to days and round up
-    //   console.log(
-    //     `The difference between ${this.newscreen_dateStart} and ${this.newscreen_dateEnd} is ${this.manday} days`
-    //   );
-    //   return;
-    // },
     resetday() {
       this.today = new Date();
       this.dateEnd = new Date();
@@ -1301,8 +1331,7 @@ export default {
       this.imageFileUpload = input2.files[0];
       try {
         this.photo = URL.createObjectURL(this.imageFileUpload);
-        // console.log(this.imageFileUpload);
-        // Do something with the file, for example upload to a server
+
       } catch (error) {
         console.error(error);
         this.photo = null;
@@ -1320,9 +1349,6 @@ export default {
         this.system_nameEN = data.data[0].system_nameEN;
         this.short_system_name = data.data[0].system_shortname;
         this.short_system_analyst = data.data[0].system_analyst;
-        // console.clear();
-        // console.log("this.projectID");
-        // console.log(this.projectID);
         this.getProjectID();
       });
     },
@@ -1349,10 +1375,6 @@ export default {
           system_member: "",
         })
         .then((response) => {
-          // console.log(response);
-          // console.log("Update success");
-          // alert("Update success");
-          // window.location.reload();
         })
         .catch((err) => {
           console.log(err);
@@ -1389,8 +1411,7 @@ export default {
           system_id: systemID,
           project_id: this.projectID,
         });
-        // console.log("POST success for system ID: " + systemID);
-        // alert("Post Success!!");
+
       } catch (error) {
         console.log(error);
         alert("user_system: " + error);
@@ -1402,8 +1423,7 @@ export default {
           user_id: this.sumUser,
           project_id: this.projectID,
         });
-        // console.log("POST success for system ID: " + systemID);
-        // alert("Post Success!!");
+
         await this.getProject();
         await this.getSystems();
         this.dialogSubsystem = false;
