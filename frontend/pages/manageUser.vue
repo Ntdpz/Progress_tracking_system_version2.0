@@ -1547,7 +1547,6 @@ export default {
       try {
         this.$refs.formUpdate.validate();
 
-<<<<<<< HEAD
         const formData = new FormData();
         formData.append("image", this.imageManageUpload);
         formData.append(
@@ -1566,8 +1565,6 @@ export default {
         await this.$axios
           .put("/users/updateUsers/" + this.editedItem.id + "/image", formData)
           .then((response) => {
-            // console.log(response);
-            // console.log("Update success");
             this.getAll();
             this.getPosition_Developer();
             this.getPosition_Implementer();
@@ -1584,37 +1581,12 @@ export default {
       } catch (error) {
         console.log(error);
       }
-=======
-      await this.$axios
-        .put("/users/updateUsers/" + this.editedItem.id + "/image", formData)
-        .then((response) => {
-          this.getAll();
-          this.getPosition_Developer();
-          this.getPosition_Implementer();
-          this.getPosition_ProgramManagement();
-          this.getPosition_SystemAnalyst();
-          this.getPosition_ReportDeveloper();
-          alert("Update success");
-          this.dialog_manage = false;
-        })
-        .catch((err) => {
-          console.log(err);
-          alert(err);
-        });
->>>>>>> acb06163b8002abd2b57610264879eaffcd72887
     },
 
     deleteUser() {
       this.$axios
         .delete("/users/deleteUser/" + this.editedItem.id)
         .then((response) => {
-<<<<<<< HEAD
-          // console.log(response);
-          // console.log("Delete success");
-          alert("Delete success");
-          this.dialog_manage = false;
-=======
->>>>>>> acb06163b8002abd2b57610264879eaffcd72887
           this.getAll();
           this.getPosition_Developer();
           this.getPosition_Implementer();

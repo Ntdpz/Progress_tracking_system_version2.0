@@ -699,12 +699,8 @@ export default {
           await this.getProjectId();
           await this.addUser_project();
           await this.addUser_system(this.systemId);
-<<<<<<< HEAD
-          // console.log("Create successfully!");
           this.ClearSubsystem();
           
-=======
->>>>>>> acb06163b8002abd2b57610264879eaffcd72887
         }
       } catch (error) {
         console.log(error);
@@ -740,13 +736,7 @@ export default {
         await this.$axios.post("/user_projects/createUser_project", {
           user_id: this.choose_user_id,
           project_id: this.projectIds,
-<<<<<<< HEAD
-        }); 
-        // console.log("POSTsuccess for system ID: " + systemID);
-        // alert("Post Success!!");
-=======
         });
->>>>>>> acb06163b8002abd2b57610264879eaffcd72887
         await this.getProject();
         await this.getSystems();
         this.dialogSubsystem = false;
@@ -761,11 +751,8 @@ export default {
       this.system.system_nameTH = "";
       this.system.system_nameEN = "";
       this.system.system_shortname = "";
-<<<<<<< HEAD
       this.system.system_analyst = "";
       this.choose_user_id = [];
-=======
->>>>>>> acb06163b8002abd2b57610264879eaffcd72887
     },
     async getProjectId() {
       await this.$axios
@@ -952,12 +939,7 @@ export default {
 
       this.dialogDeleteSuccess = true;
       this.dialog = false;
-<<<<<<< HEAD
       this.clearCreateProject();
-      // this.loading = true;
-=======
-
->>>>>>> acb06163b8002abd2b57610264879eaffcd72887
       const promise = new Promise((resolve, reject) => {
         resolve();
         this.loading = true;

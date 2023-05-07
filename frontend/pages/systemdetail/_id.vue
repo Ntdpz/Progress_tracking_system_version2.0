@@ -15,27 +15,19 @@
         style="background-color: black"
       ></v-divider>
       <template>
-<<<<<<< HEAD
         <v-banner
           class="mt-0 ml-4"
           style="
-=======
-        <v-banner class="mt-0 ml-4" style="
->>>>>>> acb06163b8002abd2b57610264879eaffcd72887
             display: flex;
             align-items: center;
             justify-content: center;
             height: 30px;
             border-radius: 30px;
             padding: 0 0px;
-<<<<<<< HEAD
           "
           outlined
           elevation="2"
         >
-=======
-          " outlined elevation="2">
->>>>>>> acb06163b8002abd2b57610264879eaffcd72887
           <form class="center" @submit.prevent="search">
             <v-icon color="purple">mdi-magnify</v-icon>
             <input
@@ -89,7 +81,6 @@
                 >
               </v-btn>
               <v-spacer></v-spacer>
-<<<<<<< HEAD
               <v-btn
                 v-if="userposition != 'Developer' || userrole == 'Admin'"
                 @click="
@@ -102,14 +93,6 @@
                 color="primary"
                 style="color: white; border-radius: 10px; font-weight: bold"
               >
-=======
-              <v-btn v-if="userposition != 'Developer' || userrole == 'Admin'" @click="
-                (dialog_newscreen = true),
-                resetday(),
-                (menuDateStart = false),
-                (menuDateEnd = false)
-                " elevation="2" color="primary" style="color: white; border-radius: 10px; font-weight: bold">
->>>>>>> acb06163b8002abd2b57610264879eaffcd72887
                 <v-icon left> mdi-plus-circle-outline </v-icon>สร้างหน้าจอใหม่
               </v-btn>
             </v-card-title>
@@ -119,13 +102,7 @@
               <v-card>
                 <v-col>
                   <v-card outlined tile height="100%" style="border: none">
-<<<<<<< HEAD
-                    <v-card-title class="mr-0 pa-0"
-                      >สร้างหน้าจอใหม่</v-card-title
-                    >
-=======
                     <v-card-title class="mr-0 pa-0">สร้างหน้าจอใหม่</v-card-title>
->>>>>>> acb06163b8002abd2b57610264879eaffcd72887
                     <v-container fluid>
                       <v-row>
                         <v-col>
@@ -139,7 +116,6 @@
                             <!--  -->
                             <form>
                               <div class="d-flex justify-center">
-<<<<<<< HEAD
                                 <label
                                   class="mt-0 avatar-upload"
                                   style="
@@ -160,16 +136,6 @@
                                     v-if="!photo"
                                     >mdi-cloud-upload-outline</v-icon
                                   >
-=======
-                                <label class="mt-0 avatar-upload" style="
-                                    display: flex;
-                                    justify-content: center;
-                                    align-items: center;
-                                  ">
-                                  <input type="file" ref="fileInput" @change="uploadFile" />
-                                  <v-icon class="center mt-0" color="black" size="30px"
-                                    v-if="!photo">mdi-cloud-upload-outline</v-icon>
->>>>>>> acb06163b8002abd2b57610264879eaffcd72887
                                   <img v-if="photo" :src="photo" />
                                 </label>
                               </div>
@@ -313,14 +279,10 @@
                           </v-col>
                         </v-row>
                         <v-row>
-<<<<<<< HEAD
                           <v-col
                             class="mb-0 pb-0 hidden-sm-and-up"
                             style="place-self: center"
                           >
-=======
-                          <v-col class="mb-0 pb-0 hidden-sm-and-up" style="place-self: center">
->>>>>>> acb06163b8002abd2b57610264879eaffcd72887
                             <h4 class="">ระดับหน้าจอ</h4>
                           </v-col>
                         </v-row>
@@ -346,14 +308,10 @@
                           </v-col>
                         </v-row>
                         <v-row>
-<<<<<<< HEAD
                           <v-col
                             class="mb-0 pb-0 hidden-sm-and-up"
                             style="place-self: center"
                           >
-=======
-                          <v-col class="mb-0 pb-0 hidden-sm-and-up" style="place-self: center">
->>>>>>> acb06163b8002abd2b57610264879eaffcd72887
                             <h4 class="">ประเภทหน้าจอ</h4>
                           </v-col>
                         </v-row>
@@ -445,7 +403,6 @@
                                 scrollable
                               >
                                 <v-spacer></v-spacer>
-<<<<<<< HEAD
                                 <v-btn
                                   text
                                   color="primary"
@@ -462,14 +419,6 @@
                                   "
                                   >ตกลง</v-btn
                                 >
-=======
-                                <v-btn text color="primary" @click="menuDateStart = false">ยกเลิก</v-btn>
-                                <v-btn text color="primary" @click="
-                                  $refs.menuDateStart.save(
-                                    newscreen_dateStart
-                                  )
-                                  ">ตกลง</v-btn>
->>>>>>> acb06163b8002abd2b57610264879eaffcd72887
                               </v-date-picker>
                             </v-menu>
                           </v-col>
@@ -498,7 +447,6 @@
                                 scrollable
                               >
                                 <v-spacer></v-spacer>
-<<<<<<< HEAD
                                 <v-btn
                                   text
                                   color="primary"
@@ -513,12 +461,6 @@
                                   "
                                   >ตกลง</v-btn
                                 >
-=======
-                                <v-btn text color="primary" @click="menuDateEnd = false">ยกเลิก</v-btn>
-                                <v-btn text color="primary" @click="
-                                  $refs.menuDateEnd.save(newscreen_dateEnd)
-                                  ">ตกลง</v-btn>
->>>>>>> acb06163b8002abd2b57610264879eaffcd72887
                               </v-date-picker>
                             </v-menu>
                           </v-col>
@@ -968,7 +910,6 @@
               md="4"
             >
               <v-responsive :aspect-ratio="4 / 3" class="ma-4 mt-0">
-<<<<<<< HEAD
                 <v-card
                   :to="`/screendetail/${item.id}`"
                   class="elevation-0"
@@ -983,11 +924,6 @@
                     aspect-ratio="1"
                     class="d-block mx-auto"
                   />
-=======
-                <v-card :to="`/screendetail/${item.id}`" class="elevation-0" outlined rounded>
-                  <v-img :src="getImageUrl(item.screen_pic)" max-height="200px" max-width="250px" contain aspect-ratio="1"
-                    class="d-block mx-auto" />
->>>>>>> acb06163b8002abd2b57610264879eaffcd72887
                   <v-card-title style="color: black">
                     รหัสหน้าจอ: {{ item.screen_id }}
                   </v-card-title>
@@ -1331,7 +1267,6 @@ export default {
       this.imageFileUpload = input2.files[0];
       try {
         this.photo = URL.createObjectURL(this.imageFileUpload);
-
       } catch (error) {
         console.error(error);
         this.photo = null;
@@ -1374,8 +1309,7 @@ export default {
           system_analyst: this.short_system_analyst,
           system_member: "",
         })
-        .then((response) => {
-        })
+        .then((response) => {})
         .catch((err) => {
           console.log(err);
           // alert(err);
@@ -1411,7 +1345,6 @@ export default {
           system_id: systemID,
           project_id: this.projectID,
         });
-
       } catch (error) {
         console.log(error);
         alert("user_system: " + error);
