@@ -431,6 +431,7 @@
                     style="text-align-last: left"
                     hide-details="auto"
                     type="number"
+                    :disabled="disabled"
                     dense
                     outlined
                   >

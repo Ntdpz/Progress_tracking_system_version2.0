@@ -190,7 +190,7 @@
             <v-btn
               color="error"
               dark
-              @click="DeleteAllProject()"
+              @click="DeleteAllProject(), (clearCreateProject())"
               v-show="mode == 'edit'"
             >
               <h5>ลบโครงการ</h5>
@@ -408,7 +408,7 @@
                       <v-btn
                         color="primary"
                         text
-                        @click="dialogSubsystem = false"
+                        @click="(dialogSubsystem = false),(ClearSubsystem())"
                       >
                         ยกเลิก
                       </v-btn>
@@ -686,6 +686,9 @@ export default {
         // console.log(this.userid, this.userposition, this.userrole);
       });
     },
+    ClearSystemField() {
+      
+    },
     async CreateAllSystem() {
       try {
         //   console.log(this.$refs.myForm);
@@ -697,11 +700,11 @@ export default {
         //     console.log("2");
         // }
         if (
-          this.system.system_id == "" ||
-          this.system.system_nameTH == "" ||
-          this.system.system_nameEN == "" ||
-          this.system.system_shortname == "" ||
-          this.system.system_analyst == ""
+          this.system.system_id.trim() == "" ||
+          this.system.system_nameTH.trim() == "" ||
+          this.system.system_nameEN.trim() == "" ||
+          this.system.system_shortname.trim() == "" ||
+          this.system.system_analyst.trim() == ""
         ) {
           this.dialogValidate = true;
         } else {
@@ -715,6 +718,8 @@ export default {
           // console.log("Get ProjectId successfully!");
           await this.addUser_system(this.systemId);
           // console.log("Create successfully!");
+          this.ClearSubsystem();
+          
         }
       } catch (error) {
         console.log(error);
@@ -763,8 +768,8 @@ export default {
         await this.$axios.post("/user_projects/createUser_project", {
           user_id: this.choose_user_id,
           project_id: this.projectIds,
-        });
-        // console.log("POST success for system ID: " + systemID);
+        }); 
+        // console.log("POSTsuccess for system ID: " + systemID);
         // alert("Post Success!!");
         await this.getProject();
         await this.getSystems();
@@ -780,7 +785,8 @@ export default {
       this.system.system_nameTH = "";
       this.system.system_nameEN = "";
       this.system.system_shortname = "";
-      // this.choose_user_id = [];
+      this.system.system_analyst = "";
+      this.choose_user_id = [];
     },
     async getProjectId() {
       await this.$axios
@@ -950,6 +956,7 @@ export default {
               this.getSystemOwner();
               this.getSystemsOwner();
               this.dialog = false;
+              this.clearCreateProject();
             });
             promise.then(() => {
               setTimeout(() => {
@@ -987,6 +994,7 @@ export default {
               setTimeout(() => {
                 // alert("success");
                 this.dialogSuccess = true;
+                this.clearCreateProject();
               }, 2000);
             });
           } catch (error) {
@@ -1021,6 +1029,7 @@ export default {
       this.dialogDeleteSuccess = true;
       // window.location.reload();
       this.dialog = false;
+      this.clearCreateProject();
       // this.loading = true;
       const promise = new Promise((resolve, reject) => {
         resolve();

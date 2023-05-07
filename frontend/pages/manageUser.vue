@@ -860,7 +860,9 @@
             <v-dialog v-model="dialog_manage" width="900px" max-height="100%">
               <v-card class="mx-auto" height="580px" max-height="100%">
                 <v-card-title>
-                  <span class="text-h5" style="font-weight: bold;">จัดการผู้ใช้งานระบบ</span>
+                  <span class="text-h5" style="font-weight: bold"
+                    >จัดการผู้ใช้งานระบบ</span
+                  >
                 </v-card-title>
                 <!-- Form -->
                 <v-form ref="form">
@@ -905,243 +907,256 @@
                     </v-col>
                     <!-- Input Form -->
                     <v-col col="12" sm="12" md="10">
-                      <v-card
-                        style="border: none"
-                        class="pa-2"
-                        outlined
-                        tile
-                        height="100%"
-                      >
-                        <div>
-                          <v-row
-                            class="mr-2"
-                            style="margin-bottom: -2%; font-size: 14px"
-                          >
-                            <v-col class="hidden-xs-only" cols="12" sm="3">
-                              คำนำหน้าชื่อ
-                            </v-col>
-                            <v-col class="hidden-xs-only" cols="12" sm="4">
-                              ชื่อจริง
-                            </v-col>
+                        <v-form ref="formUpdate" @submit.prevent="updateUser2">
+                        <v-card
+                          style="border: none"
+                          class="pa-2"
+                          outlined
+                          tile
+                          height="100%"
+                        >
+                          <div>
+                            <v-row
+                              class="mr-2"
+                              style="margin-bottom: -2%; font-size: 14px"
+                            >
+                              <v-col class="hidden-xs-only" cols="12" sm="3">
+                                คำนำหน้าชื่อ
+                              </v-col>
+                              <v-col class="hidden-xs-only" cols="12" sm="4">
+                                ชื่อจริง
+                              </v-col>
 
-                            <v-col
-                              class="hidden-xs-only"
-                              cols="12"
-                              sm="5"
-                              style="margin-right: -1%; padding-right: 0%"
-                            >
-                              นามสกุล
-                            </v-col>
-                          </v-row>
-                          <!--  -->
-                          <v-row class="mr-2 mt-0" style="margin-bottom: -8%">
-                            <v-col
-                              cols="12"
-                              sm="3"
-                              style="margin-right: -1%; padding-right: 0%"
-                            >
-                              <v-select
-                                :rules="[rules.required]"
-                                v-model="editedItem.misname"
-                                :items="dataDefault_nametitle"
-                                label="Mr/Miss"
-                                dense
-                                rounded
-                                solo
-                              ></v-select>
-                            </v-col>
-                            <v-col cols="12" sm="4">
-                              <v-text-field
-                                :rules="[rules.required]"
-                                v-model="editedItem.user_firstname"
-                                label="ชื่อจริง"
-                                dense
-                                rounded
-                                solo
-                              ></v-text-field>
-                            </v-col>
-                            <v-col cols="12" sm="5">
-                              <v-text-field
-                                :rules="[rules.required]"
-                                v-model="editedItem.user_lastname"
-                                label="นามสกุล"
-                                dense
-                                rounded
-                                solo
-                              ></v-text-field>
-                            </v-col>
-                          </v-row>
-                          <!--  -->
-                          <v-row
-                            class="mr-2 mt-6"
-                            style="margin-bottom: -2%; font-size: 14px"
-                          >
-                            <v-col class="hidden-xs-only" cols="12" sm="4">
-                              รหัสพนักงาน
-                            </v-col>
-                            <v-col class="hidden-xs-only" cols="12" sm="4">
-                              ตำแหน่ง
-                            </v-col>
-                            <v-col
-                              class="hidden-xs-only"
-                              cols="12"
-                              sm="4"
-                              style="margin-right: -1%; padding-right: 0%"
-                            >
-                              แผนก
-                            </v-col>
-                          </v-row>
-                          <!--  -->
-                          <v-row class="mr-2 mt-0" style="margin-bottom: -6%">
-                            <v-col cols="12" sm="4">
-                              <v-text-field
-                                :rules="[rules.required]"
-                                v-model="editedItem.user_id"
-                                label="รหัสพนักงาน"
-                                dense
-                                rounded
-                                solo
-                              ></v-text-field>
-                            </v-col>
-                            <v-col cols="12" sm="4">
-                              <v-select
-                                :rules="[rules.required]"
-                                v-model="editedItem.user_position"
-                                :items="dataDefault_position"
-                                label="ตำแหน่ง"
-                                dense
-                                rounded
-                                solo
-                              ></v-select>
-                            </v-col>
-                            <v-col cols="12" sm="4">
-                              <v-select
-                                :rules="[rules.required]"
-                                v-model="editedItem.user_department"
-                                :items="dataDefault_department"
-                                label="แผนก"
-                                dense
-                                rounded
-                                solo
-                              ></v-select>
-                            </v-col>
-                          </v-row>
-                          <!--  -->
-                          <v-row
-                            class="mr-2 mt-2"
-                            style="margin-bottom: -2%; font-size: 14px"
-                          >
-                            <v-col class="hidden-xs-only" cols="12" sm="12">
-                              อีเมลล์
-                            </v-col>
-                          </v-row>
+                              <v-col
+                                class="hidden-xs-only"
+                                cols="12"
+                                sm="5"
+                                style="margin-right: -1%; padding-right: 0%"
+                              >
+                                นามสกุล
+                              </v-col>
+                            </v-row>
+                            <!--  -->
 
-                          <v-row class="mr-2 mt-0" style="margin-bottom: -6%">
-                            <v-col cols="12" sm="12">
-                              <v-text-field
-                                :rules="[rules.required, rules.email]"
-                                v-model="editedItem.user_email"
-                                label="อีเมลล์"
-                                dense
-                                rounded
-                                solo
-                              ></v-text-field>
-                            </v-col>
-                          </v-row>
-                          <!--  -->
-                          <v-row
-                            class="mr-2 mt-2"
-                            style="margin-bottom: -2%; font-size: 14px"
-                          >
-                            <v-col class="hidden-xs-only" cols="12" sm="12">
-                              รหัสผ่าน
-                            </v-col>
-                          </v-row>
-                          <!--  -->
-                          <v-row class="mr-2 mt-0" style="margin-bottom: -4%">
-                            <v-col class="" cols="12" sm="12">
-                              <v-text-field
-                                v-model="editedItem.user_password"
-                                label="รหัสผ่าน"
-                                :append-icon="
-                                  showpassword_managebt
-                                    ? 'mdi-eye'
-                                    : 'mdi-eye-off'
-                                "
-                                @click:append="
-                                  showpassword_managebt = !showpassword_managebt
-                                "
-                                :type="
-                                  showpassword_managebt ? 'text' : 'password'
-                                "
-                                dense
-                                rounded
-                                solo
-                              ></v-text-field>
-                            </v-col>
-                          </v-row>
-                          <!--  -->
-                          <v-row
-                            class="mr-2 mt-0"
-                            style="margin-bottom: -2%; font-size: 14px"
-                          >
-                            <v-col class="hidden-xs-only" cols="12" sm="6">
-                              สถานะ
-                            </v-col>
-                            <v-col class="hidden-xs-only" cols="12" sm="6">
-                              บทบาท
-                            </v-col>
-                          </v-row>
+                            <v-row class="mr-2 mt-0" style="margin-bottom: -8%">
+                              <v-col
+                                cols="12"
+                                sm="3"
+                                style="margin-right: -1%; padding-right: 0%"
+                              >
+                                <v-select
+                                  :rules="[rules.required]"
+                                  v-model="editedItem.misname"
+                                  :items="dataDefault_nametitle"
+                                  label="Mr/Miss"
+                                  dense
+                                  rounded
+                                  solo
+                                ></v-select>
+                              </v-col>
+                              <v-col cols="12" sm="4">
+                                <v-text-field
+                                  :rules="[rules.required]"
+                                  v-model="editedItem.user_firstname"
+                                  label="ชื่อจริง"
+                                  dense
+                                  rounded
+                                  solo
+                                ></v-text-field>
+                              </v-col>
+                              <v-col cols="12" sm="5">
+                                <v-text-field
+                                  :rules="[rules.required]"
+                                  v-model="editedItem.user_lastname"
+                                  label="นามสกุล"
+                                  dense
+                                  rounded
+                                  solo
+                                ></v-text-field>
+                              </v-col>
+                            </v-row>
+                            <!--  -->
+                            <v-row
+                              class="mr-2 mt-6"
+                              style="margin-bottom: -2%; font-size: 14px"
+                            >
+                              <v-col class="hidden-xs-only" cols="12" sm="4">
+                                รหัสพนักงาน
+                              </v-col>
+                              <v-col class="hidden-xs-only" cols="12" sm="4">
+                                ตำแหน่ง
+                              </v-col>
+                              <v-col
+                                class="hidden-xs-only"
+                                cols="12"
+                                sm="4"
+                                style="margin-right: -1%; padding-right: 0%"
+                              >
+                                แผนก
+                              </v-col>
+                            </v-row>
+                            <!--  -->
+                            <v-row class="mr-2 mt-0" style="margin-bottom: -6%">
+                              <v-col cols="12" sm="4">
+                                <v-text-field
+                                  :rules="[rules.required]"
+                                  v-model="editedItem.user_id"
+                                  label="รหัสพนักงาน"
+                                  dense
+                                  rounded
+                                  solo
+                                ></v-text-field>
+                              </v-col>
+                              <v-col cols="12" sm="4">
+                                <v-select
+                                  :rules="[rules.required]"
+                                  v-model="editedItem.user_position"
+                                  :items="dataDefault_position"
+                                  label="ตำแหน่ง"
+                                  dense
+                                  rounded
+                                  solo
+                                ></v-select>
+                              </v-col>
+                              <v-col cols="12" sm="4">
+                                <v-select
+                                  :rules="[rules.required]"
+                                  v-model="editedItem.user_department"
+                                  :items="dataDefault_department"
+                                  label="แผนก"
+                                  dense
+                                  rounded
+                                  solo
+                                ></v-select>
+                              </v-col>
+                            </v-row>
+                            <!--  -->
+                            <v-row
+                              class="mr-2 mt-2"
+                              style="margin-bottom: -2%; font-size: 14px"
+                            >
+                              <v-col class="hidden-xs-only" cols="12" sm="12">
+                                อีเมลล์
+                              </v-col>
+                            </v-row>
 
-                          <v-row class="mr-2 mt-0">
-                            <v-col cols="12" sm="6">
-                              <v-select
-                                :rules="[rules.required]"
-                                v-model="editedItem.user_status"
-                                :items="dataDefault_status_user"
-                                label="สถานะ"
-                                dense
-                                rounded
-                                solo
-                              ></v-select>
-                            </v-col>
-                            <v-col cols="12" sm="6">
-                              <v-select
-                                :rules="[rules.required]"
-                                v-model="editedItem.user_role"
-                                :items="dataDefault_role_user"
-                                label="บทบาท"
-                                dense
-                                rounded
-                                solo
-                              ></v-select>
-                            </v-col>
-                          </v-row>
-                          <v-row
-                            class="mr-6 mt-0 mb-1"
-                            style="justify-content: right"
-                          >
-                            <v-btn
-                              class="mr-4"
-                              elevation="2"
-                              color="error"
-                              style="color: white; border-radius: 10px"
-                              @click="deleteUser()"
+                            <v-row class="mr-2 mt-0" style="margin-bottom: -6%">
+                              <v-col cols="12" sm="12">
+                                <v-text-field
+                                  :rules="[rules.required, rules.email]"
+                                  v-model="editedItem.user_email"
+                                  label="อีเมลล์"
+                                  dense
+                                  rounded
+                                  solo
+                                ></v-text-field>
+                              </v-col>
+                            </v-row>
+                            <!--  -->
+                            <v-row
+                              class="mr-2 mt-2"
+                              style="margin-bottom: -2%; font-size: 14px"
                             >
-                              <h4>ลบผู้ใช้</h4>
-                            </v-btn>
-                            <v-btn
-                              elevation="2"
-                              color="primary"
-                              style="color: white; border-radius: 10px"
-                              @click="updateUser2()"
+                              <v-col class="hidden-xs-only" cols="12" sm="12">
+                                รหัสผ่าน
+                              </v-col>
+                            </v-row>
+                            <!--  -->
+                            <v-row class="mr-2 mt-0" style="margin-bottom: -4%">
+                              <v-col class="" cols="12" sm="12">
+                                <v-text-field
+                                  :rules="[rules.required, rules.counter]"
+                                  v-model="editedItem.user_password"
+                                  label="รหัสผ่าน"
+                                  :append-icon="
+                                    showpassword_managebt
+                                      ? 'mdi-eye'
+                                      : 'mdi-eye-off'
+                                  "
+                                  @click:append="
+                                    showpassword_managebt =
+                                      !showpassword_managebt
+                                  "
+                                  :type="
+                                    showpassword_managebt ? 'text' : 'password'
+                                  "
+                                  dense
+                                  rounded
+                                  solo
+                                ></v-text-field>
+                              </v-col>
+                            </v-row>
+                            <!--  -->
+                            <v-row
+                              class="mr-2 mt-0"
+                              style="margin-bottom: -2%; font-size: 14px"
                             >
-                              <h4>อัปเดต</h4>
-                            </v-btn>
-                          </v-row>
-                        </div>
-                      </v-card>
-                    </v-col>
+                              <v-col class="hidden-xs-only" cols="12" sm="6">
+                                สถานะ
+                              </v-col>
+                              <v-col class="hidden-xs-only" cols="12" sm="6">
+                                บทบาท
+                              </v-col>
+                            </v-row>
+
+                            <v-row class="mr-2 mt-0">
+                              <v-col cols="12" sm="6">
+                                <v-select
+                                  :rules="[rules.required]"
+                                  v-model="editedItem.user_status"
+                                  :items="dataDefault_status_user"
+                                  label="สถานะ"
+                                  dense
+                                  rounded
+                                  solo
+                                ></v-select>
+                              </v-col>
+                              <v-col cols="12" sm="6">
+                                <v-select
+                                  :rules="[rules.required]"
+                                  v-model="editedItem.user_role"
+                                  :items="dataDefault_role_user"
+                                  label="บทบาท"
+                                  dense
+                                  rounded
+                                  solo
+                                ></v-select>
+                              </v-col>
+                            </v-row>
+                            <v-row class="mr-6 mt-0 mb-1">
+                              <v-btn
+                                class="mr-4"
+                                elevation="2"
+                                color="error"
+                                style="color: white; border-radius: 10px"
+                                @click="deleteUser()"
+                              >
+                                <h4>ลบผู้ใช้</h4>
+                              </v-btn>
+                              <v-spacer></v-spacer>
+                              <v-btn
+                                class="mr-4"
+                                elevation="2"
+                                color="error"
+                                style="color: white; border-radius: 10px"
+                                @click="dialog_manage = false"
+                              >
+                                <h4>ปิด</h4>
+                              </v-btn>
+                              <!-- @click="updateUser2()" -->
+                              <v-btn
+                                elevation="2"
+                                color="primary"
+                                style="color: white; border-radius: 10px"
+                                type="submit"
+                              >
+                                <h4>อัปเดต</h4>
+                              </v-btn>
+                            </v-row>
+                          </div>
+                        </v-card>
+                      </v-form>
+                      </v-col>
                   </v-row>
                 </v-form>
                 <!-- End Form -->
@@ -1532,39 +1547,61 @@ export default {
     },
 
     async updateUser2() {
-      const formData = new FormData();
-      formData.append("image", this.imageManageUpload);
-      formData.append(
-        "user_firstname",
-        this.editedItem.misname + " " + this.editedItem.user_firstname
-      );
-      formData.append("user_lastname", this.editedItem.user_lastname);
-      formData.append("user_id", this.editedItem.user_id);
-      formData.append("user_position", this.editedItem.user_position);
-      formData.append("user_department", this.editedItem.user_department);
-      formData.append("user_email", this.editedItem.user_email);
-      formData.append("user_password", this.editedItem.user_password);
-      formData.append("user_status", this.editedItem.user_status);
-      formData.append("user_role", this.editedItem.user_role);
+      if (
+        this.editedItem.misname.trim() == "" ||
+        this.editedItem.user_firstname.trim() == "" ||
+        this.editedItem.user_lastname.trim() == "" ||
+        this.editedItem.user_id.trim() == "" ||
+        this.editedItem.user_position.trim() == "" ||
+        this.editedItem.user_department.trim() == "" ||
+        this.editedItem.user_email.trim() == "" ||
+        this.editedItem.user_password.trim() == "" ||
+        this.editedItem.user_status.trim() == "" ||
+        this.editedItem.user_role.trim() == ""
+      ) {
+        await this.$refs.formUpdate.validate();
+        alert("Please fill in all required fields.");
+        return;
+      }
+      try {
+        this.$refs.formUpdate.validate();
 
-      await this.$axios
-        .put("/users/updateUsers/" + this.editedItem.id + "/image", formData)
-        .then((response) => {
-          // console.log(response);
-          // console.log("Update success");
-          this.getAll();
-          this.getPosition_Developer();
-          this.getPosition_Implementer();
-          this.getPosition_ProgramManagement();
-          this.getPosition_SystemAnalyst();
-          this.getPosition_ReportDeveloper();
-          alert("Update success");
-          this.dialog_manage = false;
-        })
-        .catch((err) => {
-          console.log(err);
-          alert(err);
-        });
+        const formData = new FormData();
+        formData.append("image", this.imageManageUpload);
+        formData.append(
+          "user_firstname",
+          this.editedItem.misname + " " + this.editedItem.user_firstname
+        );
+        formData.append("user_lastname", this.editedItem.user_lastname);
+        formData.append("user_id", this.editedItem.user_id);
+        formData.append("user_position", this.editedItem.user_position);
+        formData.append("user_department", this.editedItem.user_department);
+        formData.append("user_email", this.editedItem.user_email);
+        formData.append("user_password", this.editedItem.user_password);
+        formData.append("user_status", this.editedItem.user_status);
+        formData.append("user_role", this.editedItem.user_role);
+
+        await this.$axios
+          .put("/users/updateUsers/" + this.editedItem.id + "/image", formData)
+          .then((response) => {
+            // console.log(response);
+            // console.log("Update success");
+            this.getAll();
+            this.getPosition_Developer();
+            this.getPosition_Implementer();
+            this.getPosition_ProgramManagement();
+            this.getPosition_SystemAnalyst();
+            this.getPosition_ReportDeveloper();
+            alert("Update success");
+            this.dialog_manage = false;
+          })
+          .catch((err) => {
+            console.log(err);
+            alert(err);
+          });
+      } catch (error) {
+        console.log(error);
+      }
     },
 
     deleteUser() {
@@ -1573,14 +1610,14 @@ export default {
         .then((response) => {
           // console.log(response);
           // console.log("Delete success");
+          alert("Delete success");
+          this.dialog_manage = false;
           this.getAll();
           this.getPosition_Developer();
           this.getPosition_Implementer();
           this.getPosition_ProgramManagement();
           this.getPosition_SystemAnalyst();
           this.getPosition_ReportDeveloper();
-          alert("Delete success");
-          this.dialog_manage = false;
         })
         .catch((err) => {
           console.log(err);
