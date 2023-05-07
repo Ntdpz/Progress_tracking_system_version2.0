@@ -183,7 +183,7 @@
           </v-card>
         </v-dialog>
         <v-btn color="error" class="mt-5" dark @click="logout">
-          <h5>ออกจากระบบ</h5>
+          <h4>ออกจากระบบ</h4>
         </v-btn>
       </v-card>
     </v-container>
@@ -208,7 +208,7 @@ export default{
 <script>
 import Searchbar from "../components/Searchbar.vue";
 export default {
-  components: { Searchbar},
+  components: { Searchbar },
   layout: "admin",
   data() {
     return {

@@ -1,14 +1,14 @@
 <template>
   <div class="body">
     <!-- *Search bar* -->
-    <Searchbar title="Issue List" />
+    <Searchbar title="รายการปัญหา " />
     <v-divider></v-divider>
 
     <!-- *Header* -->
     <v-row class="mt-4 ml-2 mb-2">
-      <h4>{{ this.projectName }} ({{ this.projectId }})</h4>
+      <h4>{{ this.projectName }} ({{ this.project_id }})</h4>
       <p style="color: #b6b5b5; font-size: 16px" class="ml-2">
-        {{ this.systemslength }} Sub Systems
+        {{ this.systemslength }} ระบบ
       </p>
     </v-row>
 
@@ -24,7 +24,7 @@
             <v-row no-gutters>
               <v-col cols="12">
                 <v-row style="margin-top: 1px">
-                  <h4>{{ system.id }} {{ system.system_nameTH }}</h4>
+                  <h4>{{ system.system_nameTH }} ({{ system.system_id }})</h4>
                   <!-- <p style="color: #b6b5b5; font-size: 16px; margin-left: 5%">
                     3 Issue
                   </p> -->
@@ -46,20 +46,28 @@
               v-bind="attrs"
               v-on="on"
               block
-              @click="showIssueCreateDialog(system.system_nameTH, system.id)"
+              @click="
+                showIssueCreateDialog(
+                  system.system_nameTH,
+                  system.id,
+                  system.system_id
+                )
+              "
             >
               <span
                 class="mdi mdi-plus-circle-outline"
                 style="font-size: 20px; color: black"
               ></span>
-              <h4 style="color: black">Create New Issue</h4>
+              <h4 style="color: black">สร้างปัญหาใหม่</h4>
             </v-btn>
             <!-- *dialog -->
             <dialog-issue
               :dialog.sync="dialog"
               :projectName="projectName"
               :systemName="infoCreate.systemName"
+              :systemids="infoCreate.system_id"
               :projectId="projectId"
+              :projectids="project_id"
               :systemId="infoCreate.systemId"
               mode="create"
               :userFirstname="user_firstname"
@@ -80,7 +88,7 @@
             class="mt-5"
           >
             <v-tab>
-              <h3 style="color: black">All</h3>
+              <h3 style="color: black">ทั้งหมด</h3>
             </v-tab>
             <v-tab>
               <h3 style="color: black">PNI</h3>
@@ -92,7 +100,7 @@
               <h3 style="color: black">NewReq</h3>
             </v-tab>
             <v-tab>
-              <h3 style="color: black">History</h3>
+              <h3 style="color: black">ประวัติ</h3>
             </v-tab>
           </v-tabs>
           <!-- Dialog Admin Dev Implementer -->
@@ -231,7 +239,7 @@
                         class="pa-1"
                         style="background-color: #1cff17; text-align: left"
                       >
-                        assignedIssues
+                        ปัญหาที่มีคนรับผิดชอบ
                       </h5>
                     </v-toolbar-title>
                   </v-toolbar>
@@ -268,7 +276,8 @@
                   <v-icon
                     class="mr-2"
                     v-if="
-                      user_position === 'Implementer' && user_role !== 'Admin' &&
+                      user_position === 'Implementer' &&
+                      user_role !== 'Admin' &&
                       item.issue_qc !== user_firstname &&
                       item.issue_informer !== user_firstname
                     "
@@ -281,7 +290,8 @@
                   <v-icon
                     class="mr-2"
                     v-else-if="
-                      user_position === 'Developer' && user_role !== 'Admin' &&
+                      user_position === 'Developer' &&
+                      user_role !== 'Admin' &&
                       item.issue_assign !== user_firstname
                     "
                     :disabled="true"
@@ -348,7 +358,7 @@
                         class="pa-1"
                         style="background-color: #aaaaaa; text-align: left"
                       >
-                        unassignedIssues
+                        ปัญหาที่ไม่มีคนรับผิดชอบ
                       </h5>
                     </v-toolbar-title>
                   </v-toolbar>
@@ -429,7 +439,7 @@
                         class="pa-1"
                         style="background-color: #1cff17; text-align: left"
                       >
-                        assignedIssues
+                        ปัญหาที่มีคนรับผิดชอบ
                       </h5>
                     </v-toolbar-title>
                   </v-toolbar>
@@ -466,7 +476,8 @@
                   <v-icon
                     class="mr-2"
                     v-if="
-                      user_position === 'Implementer' && user_role !== 'Admin' &&
+                      user_position === 'Implementer' &&
+                      user_role !== 'Admin' &&
                       item.issue_qc !== user_firstname &&
                       item.issue_informer !== user_firstname
                     "
@@ -479,7 +490,8 @@
                   <v-icon
                     class="mr-2"
                     v-else-if="
-                      user_position === 'Developer' && user_role !== 'Admin' &&
+                      user_position === 'Developer' &&
+                      user_role !== 'Admin' &&
                       item.issue_assign !== user_firstname
                     "
                     :disabled="true"
@@ -545,7 +557,7 @@
                         class="pa-1"
                         style="background-color: #aaaaaa; text-align: left"
                       >
-                        unassignedIssues
+                        ปัญหาที่ไม่มีคนรับผิดชอบ
                       </h5>
                     </v-toolbar-title>
                   </v-toolbar>
@@ -626,7 +638,7 @@
                         class="pa-1"
                         style="background-color: #1cff17; text-align: left"
                       >
-                        assignedIssues
+                        ปัญหาที่มีคนรับผิดชอบ
                       </h5>
                     </v-toolbar-title>
                   </v-toolbar>
@@ -663,7 +675,8 @@
                   <v-icon
                     class="mr-2"
                     v-if="
-                      user_position === 'Implementer' && user_role !== 'Admin' &&
+                      user_position === 'Implementer' &&
+                      user_role !== 'Admin' &&
                       item.issue_qc !== user_firstname &&
                       item.issue_informer !== user_firstname
                     "
@@ -676,7 +689,8 @@
                   <v-icon
                     class="mr-2"
                     v-else-if="
-                      user_position === 'Developer' && user_role !== 'Admin' &&
+                      user_position === 'Developer' &&
+                      user_role !== 'Admin' &&
                       item.issue_assign !== user_firstname
                     "
                     :disabled="true"
@@ -742,7 +756,7 @@
                         class="pa-1"
                         style="background-color: #aaaaaa; text-align: left"
                       >
-                        unassignedIssues
+                        ปัญหาที่ไม่มีคนรับผิดชอบ
                       </h5>
                     </v-toolbar-title>
                   </v-toolbar>
@@ -823,7 +837,7 @@
                         class="pa-1"
                         style="background-color: #1cff17; text-align: left"
                       >
-                        assignedIssues
+                        ปัญหาที่มีคนรับผิดชอบ
                       </h5>
                     </v-toolbar-title>
                   </v-toolbar>
@@ -860,7 +874,8 @@
                   <v-icon
                     class="mr-2"
                     v-if="
-                      user_position === 'Implementer' && user_role !== 'Admin' &&
+                      user_position === 'Implementer' &&
+                      user_role !== 'Admin' &&
                       item.issue_qc !== user_firstname &&
                       item.issue_informer !== user_firstname
                     "
@@ -871,16 +886,18 @@
                     mdi-information-outline
                   </v-icon>
                   <v-icon
-                      class="mr-2"
-                      v-else-if="user_position === 'Developer' && user_role !== 'Admin' &&
-                        item.issue_assign !== user_firstname
-                        "
-                      :disabled="true"
-                      size="20"
-                      color="primary"
-                    >
-                      mdi-information-outline
-                    </v-icon>
+                    class="mr-2"
+                    v-else-if="
+                      user_position === 'Developer' &&
+                      user_role !== 'Admin' &&
+                      item.issue_assign !== user_firstname
+                    "
+                    :disabled="true"
+                    size="20"
+                    color="primary"
+                  >
+                    mdi-information-outline
+                  </v-icon>
                   <v-icon
                     class="mr-2"
                     v-else
@@ -938,7 +955,7 @@
                         class="pa-1"
                         style="background-color: #aaaaaa; text-align: left"
                       >
-                        unassignedIssues
+                        ปัญหาที่ไม่มีคนรับผิดชอบ
                       </h5>
                     </v-toolbar-title>
                   </v-toolbar>
@@ -1157,21 +1174,22 @@ export default {
       infoCreate: {
         systemName: "",
         systemId: "",
+        system_id: "",
       },
       headers: [
         {
-          text: "Issues ID",
+          text: "เลขที่ปัญหา",
           align: "start",
           sortable: false,
           value: "issue_id",
         },
-        { text: "Issues Name", value: "issue_name" },
-        { text: "Issues Type", value: "issue_type" },
-        { text: "End Date", value: "formattedDateEnd" },
-        { text: "Status", value: "issue_status" },
-        { text: "Priotity", value: "issue_priority" },
-        { text: "Assigned To", value: "issue_assign" },
-        { text: "Actions", value: "actions", sortable: false },
+        { text: "ชื่อปัญหา", value: "issue_name" },
+        { text: "ประเทภปัญหา", value: "issue_type" },
+        { text: "วันกำหนดส่ง", value: "formattedDateEnd" },
+        { text: "สถานะ", value: "issue_status" },
+        { text: "ความสำคัญของปัญหา", value: "issue_priority" },
+        { text: "ผู้รับผิดชอบ", value: "issue_assign" },
+        { text: "จัดการ", value: "actions", sortable: false },
       ],
       issue: [],
       issueDev: [],
@@ -1185,6 +1203,7 @@ export default {
       default: [],
       projectName: "",
       projectId: "",
+      project_id: "",
       systemslength: "",
       user_id: "",
       user_firstname: "",
@@ -1311,6 +1330,7 @@ export default {
         this.project = res.data;
         this.projectName = this.project[0].project_name;
         this.projectId = this.project[0].id;
+        this.project_id = this.project[0].project_id;
       });
     },
     async getSystems() {
@@ -1686,9 +1706,10 @@ export default {
         console.error(err);
       }
     },
-    showIssueCreateDialog(systemName, systemId) {
+    showIssueCreateDialog(systemName, systemId, systemids) {
       this.infoCreate.systemName = systemName;
       this.infoCreate.systemId = systemId;
+      this.infoCreate.system_id = systemids;
       this.dialog = true;
     },
     showIssueDetailDialog(

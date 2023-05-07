@@ -1,46 +1,7 @@
 <template>
   <div>
     <!-- title -->
-    <v-row class="mb-3">
-      <b
-        class="center ml-4 mr-4 mt-0 mb-1"
-        style="font-weight: bold; font-size: 20px"
-      >
-        รหัสหน้าจอ {{ screensID.screen_id }} : ชื่อหน้าจอ
-        {{ screensID.screen_name }}
-      </b>
-      <v-divider
-        class="mt-0 mb-1"
-        inset
-        vertical
-        style="background-color: black"
-      ></v-divider>
-      <template>
-        <v-banner
-          class="mt-0 ml-4"
-          style="
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 30px;
-            border-radius: 30px;
-            padding: 0 0px;
-          "
-          outlined
-          elevation="2"
-        >
-          <form class="center">
-            <v-icon color="purple">mdi-magnify</v-icon>
-            <input
-              class="mr-3"
-              type="text"
-              v-model="query"
-              placeholder="Search some screen"
-            />
-          </form>
-        </v-banner>
-      </template>
-    </v-row>
+    <searchbar title="รายละเอียดหน้าจอ" />
     <v-divider></v-divider>
     <!-- Screen detail -->
     <v-container>
@@ -87,7 +48,7 @@
             width="45%"
             outlined
             flex="true"
-            style="display: flex;"
+            style="display: flex"
           >
             <div v-if="loading">
               <v-progress-circular
@@ -570,7 +531,9 @@
 
 <script>
 import moment from "moment";
+import Searchbar from "../../components/Searchbar.vue";
 export default {
+  components: { Searchbar },
   layout: "admin",
   data() {
     return {

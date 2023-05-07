@@ -1,26 +1,43 @@
 <template>
   <v-container class="mt-0 pt-0">
-    <v-row class="fill-height ">
+    <v-row class="fill-height">
       <v-col class="mt-0 pt-0">
         <v-sheet height="64">
           <v-toolbar flat>
             <template>
-              <v-banner class="mt-0 ml-0" style="
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                height: 30px;
-                border-radius: 30px;
-                padding: 0 0px;
-              " outlined elevation="2">
+              <v-banner
+                class="mt-0 ml-0"
+                style="
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  height: 30px;
+                  border-radius: 30px;
+                  padding: 0 0px;
+                "
+                outlined
+                elevation="2"
+              >
                 <form class="center">
-                  <v-icon class="hidden-sm-and-down" color="purple">mdi-magnify</v-icon>
-                  <input class="mr-3" type="text" v-model="query" placeholder="Search some task" />
+                  <v-icon class="hidden-sm-and-down" color="purple"
+                    >mdi-magnify</v-icon
+                  >
+                  <input
+                    class="mr-3"
+                    type="text"
+                    v-model="query"
+                    placeholder="Search some task"
+                  />
                 </form>
               </v-banner>
             </template>
 
-            <v-divider class="mr-4 ml-4" inset vertical style="background-color: black"></v-divider>
+            <v-divider
+              class="mr-4 ml-4"
+              inset
+              vertical
+              style="background-color: black"
+            ></v-divider>
             <v-toolbar-title v-if="$refs.calendar">
               {{ $refs.calendar.title }}
             </v-toolbar-title>
@@ -29,52 +46,96 @@
               <v-icon small> mdi-chevron-left </v-icon>
             </v-btn>
             <v-btn outlined class="" color="grey darken-2" @click="setToday">
-              Today
+              วันนี้
             </v-btn>
             <v-btn fab text small color="grey darken-2" @click="next">
               <v-icon small> mdi-chevron-right </v-icon>
             </v-btn>
             <v-spacer></v-spacer>
             <v-chip>
-              <v-chip @click="ClickDay(), (type = 'day')" style="border: none" :style="{
+              <v-chip
+                @click="ClickDay(), (type = 'day')"
+                style="border: none"
+                :style="{
                   backgroundColor: colorday ? '#883cfe' : null,
                   color: colorday ? 'white' : 'black',
-                }" class="mr-2">
-                Day
+                }"
+                class="mr-2"
+              >
+                วัน
               </v-chip>
-              <v-chip class="mr-2" @click="ClickWeek(), (type = 'week')" style="border: none" :style="{
+              <v-chip
+                class="mr-2"
+                @click="ClickWeek(), (type = 'week')"
+                style="border: none"
+                :style="{
                   backgroundColor: colorweek ? '#883cfe' : null,
                   color: colorweek ? 'white' : 'black',
-                }">
-                Week
+                }"
+              >
+                สัปดาห์
               </v-chip>
-              <v-chip class="mr-2" @click="ClickMonth(), (type = 'month')" style="border: none" :style="{
+              <v-chip
+                class="mr-2"
+                @click="ClickMonth(), (type = 'month')"
+                style="border: none"
+                :style="{
                   backgroundColor: colormonth ? '#883cfe' : null,
                   color: colormonth ? 'white' : 'black',
-                }">
-                Month
+                }"
+              >
+                เดือน
               </v-chip>
-              <v-chip class="mr-2" @click="Click4Day(), (type = '4day')" style="border: none" :style="{
+              <!-- <v-chip
+                class="mr-2"
+                @click="Click4Day(), (type = '4day')"
+                style="border: none"
+                :style="{
                   backgroundColor: color4day ? '#883cfe' : null,
                   color: color4day ? 'white' : 'black',
-                }">
+                }"
+              >
                 4 Day
-              </v-chip>
+              </v-chip> -->
             </v-chip>
           </v-toolbar>
         </v-sheet>
         <v-sheet height="77vh">
-
-          <v-calendar v-if="user_role != 'Admin'" ref="calendar" v-model="focus" color="primary" :events="events"
-            :event-color="getEventColor" :type="type" @click:event="showEvent" @click:more="viewDay" @click:date="viewDay"
-            @change="updateRangeOwner">
+          <v-calendar
+            v-if="user_role != 'Admin'"
+            ref="calendar"
+            v-model="focus"
+            color="primary"
+            :events="events"
+            :event-color="getEventColor"
+            :type="type"
+            @click:event="showEvent"
+            @click:more="viewDay"
+            @click:date="viewDay"
+            @change="updateRangeOwner"
+          >
           </v-calendar>
-          <v-calendar v-else-if="user_role == 'Admin'" ref="calendar" v-model="focus" color="primary" :events="events"
-            :event-color="getEventColor" :type="type" @click:event="showEvent" @click:more="viewDay" @click:date="viewDay"
-            @change="updateRange">
+          <v-calendar
+            v-else-if="user_role == 'Admin'"
+            ref="calendar"
+            v-model="focus"
+            color="primary"
+            :events="events"
+            :event-color="getEventColor"
+            :type="type"
+            @click:event="showEvent"
+            @click:more="viewDay"
+            @click:date="viewDay"
+            @change="updateRange"
+          >
           </v-calendar>
 
-          <v-menu v-model="selectedOpen" :close-on-content-click="false" :activator="selectedElement" offset-x>
+          <v-menu
+            v-model="selectedOpen"
+            :close-on-content-click="false"
+            :activator="selectedElement"
+            offset-x
+          >
             <v-card color="grey lighten-4" min-width="350px" flat>
               <v-toolbar :color="selectedEvent.color" dark>
                 <!-- <v-btn icon>
@@ -168,7 +229,6 @@ export default {
   },
   mounted() {
     this.$refs.calendar.checkChange();
-    
   },
   computed: {
     userId() {
@@ -275,7 +335,10 @@ export default {
         console.log(typeof this.user_firstname);
         console.log(this.user_firstname);
 
-        const { data } = await this.$axios.get(`/issues/getOneName/${this.user_firstname}`, {});
+        const { data } = await this.$axios.get(
+          `/issues/getOneName/${this.user_firstname}`,
+          {}
+        );
 
         const events = data.map((issue) => ({
           name: issue.issue_name,
@@ -296,11 +359,11 @@ export default {
       return Math.floor((b - a + 1) * Math.random()) + a;
     },
     checkRole() {
-      if (this.user_role != 'Admin') {
+      if (this.user_role != "Admin") {
         return this.updateRangeOwner();
-    } else if (this.user_role == 'Admin') {
+      } else if (this.user_role == "Admin") {
         return this.updateRange();
-    };
+      }
       return;
     },
   },

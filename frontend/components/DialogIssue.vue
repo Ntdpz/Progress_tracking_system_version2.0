@@ -5,11 +5,11 @@
         <v-card-title>
           <v-col cols="12">
             <v-row>
-              <h5 v-show="mode === 'create'">Create Issue|</h5>
-              <h5 v-show="mode === 'edit'">Edit Issue |</h5>
+              <h5 v-show="mode === 'create'">สร้างปัญหาใหม่ |</h5>
+              <h5 v-show="mode === 'edit'">แก้ไขปัญหา |</h5>
               <p style="font-size: 16px; margin-left: 2%">
-                {{ projectName }} ({{ projectId }})> {{ systemName }} ({{
-                  systemId
+                {{ projectName }} ({{ projectids }})> {{ systemName }} ({{
+                  systemids
                 }})
               </p>
             </v-row>
@@ -20,8 +20,8 @@
             <v-row>
               <v-col cols="12" sm="6" md="4">
                 <v-text-field
-                  label="Issue ID"
-                  placeholder="Issue ID"
+                  label="เลขที่ปัญหา"
+                  placeholder="เลขที่ปัญหา"
                   disabled
                   outlined
                   dense
@@ -30,8 +30,8 @@
               </v-col>
               <v-col cols="12" sm="8" md="8">
                 <v-text-field
-                  label="Issue Name"
-                  placeholder="Issue Name"
+                  label="ชื่อปัญหา"
+                  placeholder="ชื่อปัญหา"
                   outlined
                   dense
                   @change="getScreenDefault()"
@@ -53,7 +53,7 @@
                   @mousemove="getScreenDefault()"
                   @change="getUserSystems(selectedScreen.id)"
                   :items="screen_selectDefault"
-                  label="Screen No."
+                  label="เลชที่หน้าจอ : ชื่อหน้าจอ"
                   dense
                   outlined
                   v-model="selectedScreen"
@@ -78,7 +78,7 @@
               <v-col cols="12" sm="6" md="4">
                 <v-select
                   :items="priotity_select"
-                  label="Priotity"
+                  label="ความสำคัญของปัญหา"
                   dense
                   outlined
                   prepend-icon="mdi-flag-outline"
@@ -176,7 +176,7 @@
                 </p>
                 <v-select
                   :items="position_Developers"
-                  label="Dev"
+                  label="ผู้พัฒนา"
                   dense
                   outlined
                   item-text="user_firstname"
@@ -194,7 +194,7 @@
                 </p>
                 <v-select
                   :items="position_Implementer"
-                  label="QC"
+                  label="ผู้ตรวจสอบ"
                   dense
                   outlined
                   item-text="user_firstname"
@@ -204,8 +204,8 @@
               </v-col>
               <v-col cols="12" sm="6" md="4" v-show="PNC">
                 <v-text-field
-                  label="Document No."
-                  placeholder="Document No."
+                  label="เลขที่เอกสาร"
+                  placeholder="เลขที่เอกสาร"
                   outlined
                   dense
                   v-model="form.issue_doc_id"
@@ -213,8 +213,8 @@
               </v-col>
               <v-col cols="12" sm="8" md="8" v-show="PNC">
                 <v-text-field
-                  label="Customer Name"
-                  placeholder="Customer Name"
+                  label="ชื่อลูกค้า"
+                  placeholder="ชื่อลูกค้า"
                   outlined
                   dense
                   v-model="form.issue_customer"
@@ -223,7 +223,7 @@
               <v-col cols="12" sm="6" md="6" v-show="Newreq">
                 <v-container fluid class="ma-0 pa-0">
                   <!-- <p>Type Issue {{ selected }}</p> -->
-                  <p>Type Issue</p>
+                  <p>ประเทภของปัญหา</p>
                   <v-row>
                     <v-col>
                       <v-row>
@@ -275,11 +275,11 @@
                 </v-container>
               </v-col>
               <v-col cols="12" sm="6" md="6" v-show="Newreq">
-                <p>Note for SA</p>
+                <p>คำอธิบายถึง SA</p>
                 <v-textarea
                   solo
                   name="input-7-4"
-                  label="Note for SA"
+                  label="คำอธิบายถึง SA"
                   v-model="form.issue_des_sa"
                 ></v-textarea>
               </v-col>
@@ -287,7 +287,7 @@
                 <v-textarea
                   solo
                   name="input-7-4"
-                  label="Description"
+                  label="คำอธิบายปัญหา"
                   v-model="form.issue_des"
                 ></v-textarea>
               </v-col>
@@ -296,7 +296,7 @@
                   v-model="form.issue_filename"
                   ref="fileInput"
                   @change="uploadFile()"
-                  label="File input"
+                  label="อัปโหลดไฟล์"
                   outlined
                   dense
                 ></v-file-input>
@@ -306,8 +306,8 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="primary" text @click.native="close"> Close </v-btn>
-          <v-btn color="primary" dark @click="saveIssue()"> Create </v-btn>
+          <v-btn color="primary" text @click.native="close"> ปิด </v-btn>
+          <v-btn color="primary" dark @click="saveIssue()"> สร้างปัญหาใหม่ </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -321,7 +321,9 @@ export default {
     projectName: String,
     systemName: String,
     projectId: String,
+    projectids: String,
     systemId: String,
+    systemids: String,
     userFirstname: String,
     userLastname: String,
     userId: String,
