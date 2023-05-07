@@ -19,7 +19,7 @@
           prepend-inner-icon="mdi-magnify"
           rounded
           color="primary"
-          placeholder="Search"
+          placeholder="search"
         ></v-text-field>
       </v-card-text>
     </v-card>

@@ -53,8 +53,11 @@
               class="mr-2"
               style="margin-bottom: -2%; font-weight: bold; color: black"
             >
-              <v-col class="hidden-xs-only" cols="7" xs="7" sm="7" md="7">
-                First Name
+            <v-col class="hidden-xs-only" cols="2" xs="2" sm="2" md="2">
+                คำนำหน้าชื่อ
+              </v-col>
+              <v-col class="hidden-xs-only" cols="5" xs="5" sm="5" md="5">
+                ชื่อจริง
               </v-col>
               <v-col
                 class="hidden-xs-only"
@@ -64,7 +67,7 @@
                 md="5"
                 style="margin-right: -1%; padding-right: 0%"
               >
-                Last Name
+                นามสกุล
               </v-col>
             </v-row>
 
@@ -120,9 +123,9 @@
               class="mr-2 mt-0"
               style="margin-bottom: -2%; font-weight: bold; color: black"
             >
-              <v-col class="hidden-xs-only" cols="4" sm="4"> Code </v-col>
-              <v-col class="hidden-xs-only" cols="4" sm="4"> Position </v-col>
-              <v-col class="hidden-xs-only" cols="4" sm="4"> Department </v-col>
+              <v-col class="hidden-xs-only" cols="4" sm="4"> รหัสพนักงาน </v-col>
+              <v-col class="hidden-xs-only" cols="4" sm="4"> ตำแหน่ง </v-col>
+              <v-col class="hidden-xs-only" cols="4" sm="4"> แผนก </v-col>
             </v-row>
             <v-row
               class="mr-2 mt-0"
@@ -156,7 +159,7 @@
               class="mr-2 mt-0"
               style="margin-bottom: -2%; font-weight: bold; color: black"
             >
-              <v-col class="hidden-xs-only" cols="12" sm="12"> E-mail </v-col>
+              <v-col class="hidden-xs-only" cols="12" sm="12"> อีเมลล์ </v-col>
             </v-row>
             <v-row
               class="mr-2 mt-0"
@@ -174,7 +177,7 @@
               class="mr-2 mt-0"
               style="margin-bottom: -2%; font-weight: bold; color: black"
             >
-              <v-col class="hidden-xs-only" cols="12" sm="12"> Password </v-col>
+              <v-col class="hidden-xs-only" cols="12" sm="12"> รหัสผ่าน </v-col>
             </v-row>
             <v-row
               class="mr-2 mt-0"
@@ -197,8 +200,8 @@
               class="mr-2 mt-0"
               style="margin-bottom: -2%; font-weight: bold; color: black"
             >
-              <v-col class="hidden-xs-only" cols="6" sm="6"> Status </v-col>
-              <v-col class="hidden-xs-only" cols="6" sm="6"> Role </v-col>
+              <v-col class="hidden-xs-only" cols="6" sm="6"> สถานะ </v-col>
+              <v-col class="hidden-xs-only" cols="6" sm="6"> บทบาท </v-col>
             </v-row>
             <v-row
               class="mr-2 mt-0"
@@ -238,7 +241,7 @@
                 color="primary"
                 @click="updateUser()"
                 style="color: white; border-radius: 10px"
-                >Update
+                >อัปเดต
               </v-btn>
             </v-row>
             <!--  -->
@@ -248,7 +251,7 @@
             <v-card width="100%" height="100%">
               <v-card-title>
                 <span class="text-h5" style="font-weight: bold; color: black"
-                  >Change Password</span
+                  >เปลี่ยนรหัสผ่าน</span
                 >
               </v-card-title>
               <v-container>
@@ -258,13 +261,13 @@
                   sm="12"
                   style="margin-bottom: -2%; font-weight: bold; font-size: 16px"
                 >
-                  Old Password
+                  รหัสผ่านปัจจุบัน
                 </v-col>
                 <v-col class="mt-0 mb-0 pb-0" cols="12">
                   <v-text-field
                     v-model="o_password"
                     solo
-                    label="Old Password"
+                    label="รหัสผ่านปัจจุบัน"
                     type="password"
                   ></v-text-field>
                 </v-col>
@@ -274,7 +277,7 @@
                   sm="12"
                   style="margin-bottom: -2%; font-weight: bold"
                 >
-                  New Password
+                  รหัสผ่านใหม่
                 </v-col>
                 <v-col class="mt-0 mb-0 pb-0" cols="12">
                   <v-text-field
@@ -283,7 +286,7 @@
                     :type="show2 ? 'text' : 'password'"
                     @click:append="show2 = !show2"
                     solo
-                    label="New Password"
+                    label="รหัสผ่านใหม่"
                   ></v-text-field>
                 </v-col>
                 <v-col
@@ -292,7 +295,7 @@
                   sm="12"
                   style="margin-bottom: -2%; font-weight: bold"
                 >
-                  Confirm Password Again
+                  ยืนยันรหัสผ่านใหม่
                 </v-col>
                 <v-col class="mt-0 mb-0 pb-0" cols="12">
                   <v-text-field
@@ -301,7 +304,7 @@
                     :type="show1 ? 'text' : 'password'"
                     @click:append="show1 = !show1"
                     solo
-                    label="Confirm Password Again"
+                    label="ยืนยันรหัสผ่านใหม่"
                   ></v-text-field>
                 </v-col>
                 <!--  -->
@@ -318,7 +321,7 @@
                     color="error"
                     @click="(show3 = false), clearChangePassword()"
                     style="color: white; border-radius: 10px"
-                    >Cancel
+                    >ยกเลิก
                   </v-btn>
                   <v-btn
                     class="mr-2"
@@ -326,7 +329,7 @@
                     color="primary"
                     @click="checkPassword()"
                     style="color: white; border-radius: 10px"
-                    >Save
+                    >ยืนยัน
                   </v-btn>
                 </v-row>
               </v-container>

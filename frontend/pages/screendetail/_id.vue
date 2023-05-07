@@ -6,7 +6,8 @@
         class="center ml-4 mr-4 mt-0 mb-1"
         style="font-weight: bold; font-size: 20px"
       >
-        Screen {{ screensID.screen_id }} : {{ screensID.screen_name }}
+        รหัสหน้าจอ {{ screensID.screen_id }} : ชื่อหน้าจอ
+        {{ screensID.screen_name }}
       </b>
       <v-divider
         class="mt-0 mb-1"
@@ -63,7 +64,8 @@
               >
                 <v-icon size="35px">mdi-arrow-left-circle</v-icon>
               </v-btn>
-              Screen {{ screensID.screen_id }} : {{ screensID.screen_name }}
+              รหัสหน้าจอ {{ screensID.screen_id }} : ชื่อหน้าจอ
+              {{ screensID.screen_name }}
             </v-card-title>
           </v-card>
         </v-col>
@@ -71,14 +73,22 @@
       <!-- รูป กับรายลละเอียด -->
       <v-row no-gutters>
         <v-col
-          class="mb-12"
+          class="mb-2"
           col="12"
           sm="12"
           md="12"
           style="text-align: -webkit-center"
         >
           <!-- height="100%" -->
-          <v-card class="ma-1 mt-0" tile height="100%" width="50%">
+          <v-card
+            class="ma-1 mt-0"
+            tile
+            height="350px"
+            width="45%"
+            outlined
+            flex="true"
+            style="display: flex;"
+          >
             <div v-if="loading">
               <v-progress-circular
                 class="center"
@@ -91,27 +101,27 @@
             <v-img
               v-else-if="selectedImage"
               :src="selectedImage"
-              max-height="450px"
+              max-height="300px"
               aspect-ratio="1"
               contain
             ></v-img>
             <v-img
               v-else-if="screensID"
               :src="getImageUrl(screensID.screen_pic)"
-              max-hight="450px"
+              max-hight="300px"
               aspect-ratio="1"
               contain
             ></v-img>
           </v-card>
           <v-btn
-            class=""
+            class="mt-4"
             elevation="2"
             color="primary"
             style="color: white; border-radius: 10px"
             @click="selectImage"
             :disabled="disabled"
-            >Change Image...</v-btn
-          >
+            >เปลี่ยนรูปภาพ...
+          </v-btn>
         </v-col>
 
         <v-col col="12" sm="12" md="12">
@@ -122,7 +132,7 @@
                   class="mb-0 pb-0 hidden-sm-and-up"
                   style="place-self: center"
                 >
-                  <h4 class="">Screen ID</h4>
+                  <h4 class="">รหัสหน้าจอ</h4>
                 </v-col>
               </v-row>
               <v-row>
@@ -132,7 +142,7 @@
                   md="4"
                   style="place-self: center"
                 >
-                  <h4 class="">Screen ID</h4>
+                  <h4 class="">รหัสหน้าจอ</h4>
                 </v-col>
 
                 <v-col class="col-12" sm="8" md="8">
@@ -151,7 +161,7 @@
                   class="mb-0 pb-0 hidden-sm-and-up"
                   style="place-self: center"
                 >
-                  <h4 class="">Screen Name</h4>
+                  <h4 class="">ชื่อหน้าจอ</h4>
                 </v-col>
               </v-row>
               <v-row>
@@ -161,7 +171,7 @@
                   md="4"
                   style="place-self: center"
                 >
-                  <h4 class="">Screen Name</h4>
+                  <h4 class="">ชื่อหน้าจอ</h4>
                 </v-col>
                 <v-col class="col-12" sm="8" md="8">
                   <v-text-field
@@ -253,7 +263,7 @@
                   class="mb-0 pb-0 hidden-sm-and-up"
                   style="place-self: center"
                 >
-                  <h4 class="">Status</h4>
+                  <h4 class="">สถานะ</h4>
                 </v-col>
               </v-row>
               <v-row>
@@ -263,7 +273,7 @@
                   md="4"
                   style="place-self: center"
                 >
-                  <h4 class="">Status</h4>
+                  <h4 class="">สถานะ</h4>
                 </v-col>
                 <v-col sm="8" md="8">
                   <template>
@@ -281,7 +291,7 @@
                   class="mb-0 pb-0 hidden-sm-and-up"
                   style="place-self: center"
                 >
-                  <h4 class="">Level</h4>
+                  <h4 class="">ระดับหน้าจอ</h4>
                 </v-col>
               </v-row>
               <v-row>
@@ -291,7 +301,7 @@
                   md="4"
                   style="place-self: center"
                 >
-                  <h4 class="">Level</h4>
+                  <h4 class="">ระดับหน้าจอ</h4>
                 </v-col>
                 <v-col class="" sm="8" md="8">
                   <v-select
@@ -311,7 +321,7 @@
                   class="mb-0 pb-0 hidden-sm-and-up"
                   style="place-self: center"
                 >
-                  <h4 class="">Screen Type</h4>
+                  <h4 class="">ประเภทหน้าจอ</h4>
                 </v-col>
               </v-row>
               <v-row>
@@ -321,7 +331,7 @@
                   md="4"
                   style="place-self: center"
                 >
-                  <h4 class="">Screen Type</h4>
+                  <h4 class="">ประเภทหน้าจอ</h4>
                 </v-col>
                 <v-col class="" sm="8" md="8">
                   <v-select
@@ -341,7 +351,7 @@
                   class="mb-0 pb-0 hidden-sm-and-up"
                   style="place-self: center"
                 >
-                  <h4 class="">Start-End</h4>
+                  <h4 class="">วันเริ่ม-วันจบ</h4>
                 </v-col>
               </v-row>
               <v-row>
@@ -351,7 +361,7 @@
                   md="4"
                   style="place-self: center"
                 >
-                  <h4 class="">Start-End</h4>
+                  <h4 class="">วันเริ่ม-วันจบ</h4>
                 </v-col>
                 <!-- ปุ่มเลือกวันที่-->
                 <v-col cols="12" sm="4" md="4">
@@ -367,7 +377,7 @@
                     <template v-slot:activator="{ on, attrs }">
                       <v-text-field
                         v-model="screensID.screen_start"
-                        label="Start"
+                        label="วันเริ่ม"
                         prepend-icon="mdi mdi-calendar-clock-outline"
                         readonly
                         v-bind="attrs"
@@ -381,7 +391,7 @@
                     >
                       <v-spacer></v-spacer>
                       <v-btn text color="primary" @click="menuDateStart = false"
-                        >Cancel</v-btn
+                        >ยกเลิก</v-btn
                       >
                       <v-btn
                         text
@@ -389,7 +399,7 @@
                         @click="
                           $refs.menuDateStart.save(screensID.screen_start)
                         "
-                        >OK</v-btn
+                        >ตกลง</v-btn
                       >
                     </v-date-picker>
                   </v-menu>
@@ -407,7 +417,7 @@
                     <template v-slot:activator="{ on, attrs }">
                       <v-text-field
                         v-model="screensID.screen_end"
-                        label="End"
+                        label="วันจบ"
                         prepend-icon="mdi mdi-calendar-clock-outline"
                         readonly
                         v-bind="attrs"
@@ -421,13 +431,13 @@
                     >
                       <v-spacer></v-spacer>
                       <v-btn text color="primary" @click="menuDateEnd = false"
-                        >Cancel</v-btn
+                        >ยกเลิก</v-btn
                       >
                       <v-btn
                         text
                         color="primary"
                         @click="$refs.menuDateEnd.save(screensID.screen_end)"
-                        >OK</v-btn
+                        >ตกลง</v-btn
                       >
                     </v-date-picker>
                   </v-menu>
@@ -439,7 +449,7 @@
                   class="mb-0 pb-0 hidden-sm-and-up"
                   style="place-self: center"
                 >
-                  <h4 class="">Manday</h4>
+                  <h4 class="">จำนวนวัน</h4>
                 </v-col>
               </v-row>
               <v-row>
@@ -448,7 +458,7 @@
                   cols="4"
                   style="place-self: center"
                 >
-                  <h4 class="">Manday</h4>
+                  <h4 class="">จำนวนวัน</h4>
                 </v-col>
                 <v-col class="col-10" sm="6" md="6">
                   <!-- <h4 class="">
@@ -466,7 +476,7 @@
                   </v-text-field>
                 </v-col>
                 <v-col style="place-self: center">
-                  <h4 class="">Days</h4>
+                  <h4 class="">วัน</h4>
                 </v-col>
                 <!-- <v-col style="place-self: center">
                   <h4 class="">Days</h4>
@@ -483,7 +493,7 @@
                     @click="deleteScreenAndUserScreen()"
                     :disabled="disabled"
                   >
-                    Delete
+                    ลบ
                   </v-btn>
                 </v-col>
                 <v-col xs="12" sm="6" md="9" class="d-flex justify-end">
@@ -495,7 +505,7 @@
                     style="color: white; border-radius: 10px"
                     :disabled="disabledEdit"
                   >
-                    Edit
+                    แก้ไข
                   </v-btn>
                   <v-btn
                     elevation="2"
@@ -504,7 +514,7 @@
                     @click="update()"
                     :disabled="disabled"
                   >
-                    Update
+                    อัปเดต
                   </v-btn>
                 </v-col>
                 <!--  -->
@@ -519,7 +529,7 @@
                     </v-row>
                     <v-row class="ma-0 pa-0" style="place-content: center">
                       <v-card-title>
-                        ตอนนี้ คุณสามารถ ลบ และ แก้ไข ได้แล้ว
+                        ตอนนี้คุณสามารถ ลบ และ แก้ไข ได้แล้ว
                       </v-card-title>
                     </v-row>
 
@@ -534,7 +544,7 @@
                             (disabledEdit = true)
                         "
                       >
-                        OK
+                        ตกลง
                       </v-btn>
                     </v-card-actions>
                   </v-card>

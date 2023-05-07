@@ -3,7 +3,7 @@
     <!-- title -->
     <v-row class="mb-3">
       <title class="center ml-4 mr-4 mt-0 mb-1" style="font-weight: bold; font-size: 20px">
-        System Detail
+        รายละเอียดระบบ
       </title>
       <v-divider class="mt-0 mb-1" inset vertical style="background-color: black"></v-divider>
       <template>
@@ -33,10 +33,10 @@
               <v-btn class="mr-2" icon @click="back" color="primary" size="35px" left>
                 <v-icon size="35px">mdi-arrow-left-circle</v-icon>
               </v-btn>
-              {{ dataSystem.system_nameTH }}({{ dataSystem.system_shortname }})
-              ของ Project: {{ projectName.project_name }} ●
+              {{ dataSystem.system_nameTH }}: {{ dataSystem.system_id }} ({{ dataSystem.system_shortname }})
+              ของโครงการ: {{ projectName.project_name }} ●
               <b class="ml-1" style="color: #b6b5b5">
-                {{ count_screen }}
+                มี {{ count_screen }}
               </b>
               <!-- <v-avatar class="ml-4" color="primary" size="20"> </v-avatar>
               <v-avatar class="ml-4" color="error" size="20"> </v-avatar> -->
@@ -48,7 +48,7 @@
               <v-btn v-if="userposition != 'Developer' || userrole == 'Admin'"
                 @click="(dialog_newscreen = true), resetday(), (menuDateStart = false), (menuDateEnd = false)" elevation="2"
                 color="primary" style="color: white; border-radius: 10px; font-weight: bold">
-                <v-icon left> mdi-plus-circle-outline </v-icon>New Screen
+                <v-icon left> mdi-plus-circle-outline </v-icon>สร้างหน้าจอใหม่
               </v-btn>
             </v-card-title>
             <!-- button + dialog new screen -->
@@ -57,7 +57,8 @@
               <v-card>
                 <v-col>
                   <v-card outlined tile height="100%" style="border: none">
-                    <v-container fluid>
+                    <v-card-title class="mr-0 pa-0">สร้างหน้าจอใหม่</v-card-title>
+                    <v-container fluid>                     
                       <v-row>
                         <v-col>
                           <v-card style="border: none" class="mx-auto text-center" outlined tile height="100%">
@@ -85,12 +86,12 @@
                       <v-form ref="form" @submit.prevent="CreateAllScreen">
                         <v-row>
                           <v-col class="mb-0 pb-0 hidden-sm-and-up" style="place-self: center">
-                            <h4 class="">Screen Code</h4>
+                            <h4 class="">รหัสหน้าจอ</h4>
                           </v-col>
                         </v-row>
                         <v-row>
                           <v-col class="hidden-xs-only" sm="4" md="4" style="place-self: center">
-                            <h4 class="">Screen Code</h4>
+                            <h4 class="">รหัสหน้าจอ</h4>
                           </v-col>
 
                           <v-col class="col-12" sm="8" md="8">
@@ -100,12 +101,12 @@
                         </v-row>
                         <v-row>
                           <v-col class="mb-0 pb-0 hidden-sm-and-up" style="place-self: center">
-                            <h4 class="">Screen Name</h4>
+                            <h4 class="">ชื่อหน้าจอ</h4>
                           </v-col>
                         </v-row>
                         <v-row>
                           <v-col class="hidden-xs-only" sm="4" md="4" style="place-self: center">
-                            <h4 class="">Screen Name</h4>
+                            <h4 class="">ชื่อหน้าจอ</h4>
                           </v-col>
                           <v-col class="col-12" sm="8" md="8">
                             <v-text-field :rules="rules" style="text-align-last: left" v-model="screenname"
@@ -153,12 +154,12 @@
                         <v-row>
 
                           <v-col class="mb-0 pb-0 hidden-sm-and-up" style="place-self: center">
-                            <h4 class="">Level</h4>
+                            <h4 class="">ระดับหน้าจอ</h4>
                           </v-col>
                         </v-row>
                         <v-row>
                           <v-col class="hidden-xs-only" sm="4" md="4" style="place-self: center">
-                            <h4 class="">Level</h4>
+                            <h4 class="">ระดับหน้าจอ</h4>
                           </v-col>
                           <v-col class="" sm="8" md="8">
                             <v-select style="text-align-last: center" v-model="level" :items="selectlevel"
@@ -168,12 +169,12 @@
                         <v-row>
 
                           <v-col class="mb-0 pb-0 hidden-sm-and-up" style="place-self: center">
-                            <h4 class="">Screen Type</h4>
+                            <h4 class="">ประเภทหน้าจอ</h4>
                           </v-col>
                         </v-row>
                         <v-row>
                           <v-col class="hidden-xs-only" sm="4" md="4" style="place-self: center">
-                            <h4 class="">Screen Type</h4>
+                            <h4 class="">ประเภทหน้าจอ</h4>
                           </v-col>
                           <v-col class="" sm="8" md="8">
                             <v-select style="text-align-last: center" v-model="screentype" :items="SelectScreenType"
@@ -182,12 +183,12 @@
                         </v-row>
                         <v-row>
                           <v-col class="mb-0 pb-0 hidden-sm-and-up" style="place-self: center">
-                            <h4 class="">Status</h4>
+                            <h4 class="">สถานะ</h4>
                           </v-col>
                         </v-row>
                         <v-row>
                           <v-col class="hidden-xs-only" sm="4" md="4" style="place-self: center">
-                            <h4 class="">Status</h4>
+                            <h4 class="">สถานะ</h4>
                           </v-col>
                           <v-col class="col-10" sm="6" md="6">
                             <h4 class=""><v-icon color="error">mdi-circle</v-icon> {{ status }}</h4>
@@ -195,28 +196,28 @@
                         </v-row>
                         <v-row>
                           <v-col class="mb-0 pb-0 hidden-sm-and-up" style="place-self: center">
-                            <h4 class="">Start-End</h4>
+                            <h4 class="">วันเริ่ม-วันจบ</h4>
                           </v-col>
                         </v-row>
                         <v-row>
                           <v-col class="hidden-xs-only" sm="4" md="4" style="place-self: center">
-                            <h4 class="">Start-End</h4>
+                            <h4 class="">วันเริ่ม-วันจบ</h4>
                           </v-col>
                           <!-- ปุ่มเลือกวันที่-->
                           <v-col cols="12" sm="4" md="4">
                             <v-menu ref="menuDateStart" v-model="menuDateStart" :close-on-content-click="false"
                               transition="scale-transition" offset-y min-width="290px">
                               <template v-slot:activator="{ on, attrs }">
-                                <v-text-field v-model="newscreen_dateStart" label="Start"
+                                <v-text-field v-model="newscreen_dateStart" label="วันเริ่ม"
                                   prepend-icon="mdi mdi-calendar-clock-outline" readonly v-bind="attrs"
                                   v-on="on"></v-text-field>
                               </template>
                               <v-date-picker v-model="newscreen_dateStart" no-title scrollable>
                                 <v-spacer></v-spacer>
-                                <v-btn text color="primary" @click="menuDateStart = false">Cancel</v-btn>
+                                <v-btn text color="primary" @click="menuDateStart = false">ยกเลิก</v-btn>
                                 <v-btn text color="primary" @click="
                                   $refs.menuDateStart.save(newscreen_dateStart)
-                                ">OK</v-btn>
+                                ">ตกลง</v-btn>
                               </v-date-picker>
                             </v-menu>
                           </v-col>
@@ -224,16 +225,16 @@
                             <v-menu ref="menuDateEnd" v-model="menuDateEnd" :close-on-content-click="false"
                               transition="scale-transition" offset-y min-width="290px">
                               <template v-slot:activator="{ on, attrs }">
-                                <v-text-field v-model="newscreen_dateEnd" label="End"
+                                <v-text-field v-model="newscreen_dateEnd" label="วันจบ"
                                   prepend-icon="mdi mdi-calendar-clock-outline" readonly v-bind="attrs"
                                   v-on="on"></v-text-field>
                               </template>
                               <v-date-picker v-model="newscreen_dateEnd" no-title scrollable>
                                 <v-spacer></v-spacer>
-                                <v-btn text color="primary" @click="menuDateEnd = false">Cancel</v-btn>
+                                <v-btn text color="primary" @click="menuDateEnd = false">ยกเลิก</v-btn>
                                 <v-btn text color="primary" @click="
                                   $refs.menuDateEnd.save(newscreen_dateEnd)
-                                ">OK</v-btn>
+                                ">ตกลง</v-btn>
                               </v-date-picker>
                             </v-menu>
                           </v-col>
@@ -241,29 +242,29 @@
                         </v-row>
                         <v-row>
                           <v-col class="mb-0 pb-0 hidden-sm-and-up" style="place-self: center">
-                            <h4 class="">Manday</h4>
+                            <h4 class="">จำนวนวัน</h4>
                           </v-col>
                         </v-row>
                         <v-row>
                           <v-col class="hidden-xs-only" cols="4" style="place-self: center">
-                            <h4 class="">Manday</h4>
+                            <h4 class="">จำนวนวัน</h4>
                           </v-col>
                           <v-col class="col-10" sm="6" md="6">
                             <v-text-field :rules="rules" v-model="manday" style="text-align-last: left"
                               hide-details="auto" type="number" dense outlined></v-text-field>
                           </v-col>
                           <v-col style="place-self: center">
-                            <h4 class="">Days</h4>
+                            <h4 class="">วัน</h4>
                           </v-col>
                         </v-row>
                         <!--  -->
                         <v-row class="" style="justify-content: right">
                           <v-btn @click="(dialog_newscreen = false), ClearText()" class="mr-2" elevation="2" color="error"
-                            style="color: white; border-radius: 10px">Cancel
+                            style="color: white; border-radius: 10px">ยกเลิก
                           </v-btn>
 
                           <v-btn type="submit" class="mr-2" elevation="2" color="primary"
-                            style="color: white; border-radius: 10px">Create
+                            style="color: white; border-radius: 10px">สร้างหน้าจอใหม่
                           </v-btn>
                         </v-row>
                       </v-form>
@@ -279,18 +280,18 @@
               <v-card class="mt-0" tile outlined style="box-shadow: none; border: none">
                 <!-- code text fields system  -->
                 <v-container fluid>
-                  <v-card-title> System Detail </v-card-title>
+                  <v-card-title> รายละเอียดระบบ </v-card-title>
                   <!-- กล่องข้อความ 1 -->
                   <v-row>
                     <v-col>
                       <v-row>
                         <v-col class="mb-0 pb-0 hidden-sm-and-up" style="place-self: center">
-                          <v-card-text class="">System ID</v-card-text>
+                          <v-card-text class="">รหัสของระบบ</v-card-text>
                         </v-col>
                       </v-row>
                       <v-row>
                         <v-col class="hidden-xs-only" sm="4" md="4" style="place-self: center">
-                          <v-card-text class="">System ID</v-card-text>
+                          <v-card-text class="">รหัสของระบบ</v-card-text>
                         </v-col>
                         <v-col class="col-12" sm="8" md="8" style="align-self: center">
                           <v-text-field style="text-align-last: left" v-model="system_id" hide-details="auto" dense
@@ -304,12 +305,12 @@
                     <v-col>
                       <v-row>
                         <v-col class="mb-0 pb-0 hidden-sm-and-up" style="place-self: center">
-                          <v-card-text class="">System Name(TH)</v-card-text>
+                          <v-card-text class="">ชื่อระบบ (ภาษาไทย)</v-card-text>
                         </v-col>
                       </v-row>
                       <v-row>
                         <v-col class="hidden-xs-only" sm="4" md="4" style="place-self: center">
-                          <v-card-text class="">System Name(TH)</v-card-text>
+                          <v-card-text class="">ชื่อระบบ (ภาษาไทย)</v-card-text>
                         </v-col>
                         <v-col class="col-12" sm="8" md="8" style="align-self: center">
                           <v-text-field style="text-align-last: left" v-model="system_nameTH" hide-details="auto" dense
@@ -323,12 +324,12 @@
                     <v-col>
                       <v-row>
                         <v-col class="mb-0 pb-0 hidden-sm-and-up" style="place-self: center">
-                          <v-card-text class="">System Name(EN)</v-card-text>
+                          <v-card-text class="">ชื่อระบบ (ภาษาอังกฤษ)</v-card-text>
                         </v-col>
                       </v-row>
                       <v-row>
                         <v-col class="hidden-xs-only" sm="4" md="4" style="place-self: center">
-                          <v-card-text class="">System Name(EN)</v-card-text>
+                          <v-card-text class="">ชื่อระบบ (ภาษาอังกฤษ)</v-card-text>
                         </v-col>
                         <v-col class="col-12" sm="8" md="8" style="align-self: center">
                           <v-text-field style="text-align-last: left" v-model="system_nameEN" hide-details="auto" dense
@@ -342,12 +343,12 @@
                     <v-col>
                       <v-row>
                         <v-col class="mb-0 pb-0 hidden-sm-and-up" style="place-self: center">
-                          <v-card-text class="">Shot system name</v-card-text>
+                          <v-card-text class="">ชื่อย่อระบบ</v-card-text>
                         </v-col>
                       </v-row>
                       <v-row>
                         <v-col class="hidden-xs-only" sm="4" md="4" style="place-self: center">
-                          <v-card-text class="">Shot system name</v-card-text>
+                          <v-card-text class="">ชื่อย่อระบบ</v-card-text>
                         </v-col>
                         <v-col class="col-12" sm="8" md="8" style="align-self: center">
                           <v-text-field style="text-align-last: left" v-model="short_system_name" hide-details="auto"
@@ -427,14 +428,14 @@
                   <!-- button -->
                   <v-card-actions>
                     <v-btn @click="dialog_delete = true" color="error" dark>
-                      <h5>Delete</h5>
+                      <h5>ลบ</h5>
                     </v-btn>
                     <v-spacer></v-spacer>
                     <v-btn @click="editSystem = false" color="primary" text>
-                      <h5>Close</h5>
+                      <h5>ปิด</h5>
                     </v-btn>
                     <v-btn @click="(editSystem = false), AllUpdate()" color="primary" dark>
-                      <h5>update</h5>
+                      <h5>อัปเดต</h5>
                     </v-btn>
                   </v-card-actions>
                   <!--  -->
@@ -444,20 +445,19 @@
                         <v-icon size="70px" class="mt-2" color="error">mdi-alert-outline</v-icon>
                       </div>
                       <v-card-title>
-                        Are you such
+                        คูณแน่ใจที่จะลบหรือไม่?
                         <b style="color: red">&nbsp; delete &nbsp;</b> system?
                       </v-card-title>
                       <v-card-text>
-                        If delete system, All screen in this system will also be
-                        deleted.
+                        ถ้าลบระบบแล้ว หน้าจอทั้งหมดในระบบจะถูกลบไปด้วย.
                       </v-card-text>
                       <v-card-actions>
                         <v-spacer></v-spacer>
                         <v-btn @click="(dialog_delete = false), (editSystem = false)" color="primary" text>
-                          <h5>Cancle</h5>
+                          <h5>ยกเลิก</h5>
                         </v-btn>
                         <v-btn @click="deleteAll()" color="primary" dark>
-                          <h5>Delete</h5>
+                          <h5>ลบ</h5>
                         </v-btn>
                       </v-card-actions>
                     </v-card>
@@ -471,17 +471,17 @@
         </v-col>
       </v-row>
       <!-- card screen -->
-      <v-container class="">
+      <v-container>
         <v-row no-gutters>
           <template v-if="AllScreens.length">
             <v-col v-for="(item, i) in AllScreens" :key="i" col="4" sm="4" md="4">
               <v-responsive :aspect-ratio="4 / 3" class="ma-4 mt-0">
                 <v-card :to="`/screendetail/${item.id}`" class="elevation-0" outlined rounded>
-                  <v-img :src="getImageUrl(item.screen_pic)" max-height="250px" contain aspect-ratio="1"
+                  <v-img :src="getImageUrl(item.screen_pic)" max-height="200px" max-width="250px" contain aspect-ratio="1"
                     class="d-block mx-auto" />
-                  <v-card-title> ScreenID: {{ item.screen_id }} </v-card-title>
+                  <v-card-title style="color: black" > รหัสหน้าจอ: {{ item.screen_id }} </v-card-title>
                   <v-card-subtitle style="color: black">
-                    Screen Name: {{ item.screen_name }}
+                    ชื่อหน้าจอ: {{ item.screen_name }}
                   </v-card-subtitle>
                 </v-card>
               </v-responsive>
@@ -492,7 +492,7 @@
               <v-divider class="full-width"></v-divider>
               <v-row class="center">
                 <div class="ma-6">
-                  <h1>No have Screen</h1>
+                  <h1>ไม่มีหน้าจอ</h1>
                 </div>
               </v-row>
               <v-divider class="full-width"></v-divider>
@@ -500,6 +500,9 @@
           </template>
         </v-row>
       </v-container>
+      <!-- Table Screen -->
+
+      <!--  -->
     </v-container>
     <dialog-success :dialog.sync="dialogSuccess" title="บันทึกข้อมูลเสร็จเรียบร้อย" />
     <dialog-success :dialog.sync="dialogDeleteSuccess" title="ลบข้อมูลเสร็จเรียบร้อย" />
@@ -508,7 +511,7 @@
 </template>
 
 <script>
-import DialogFail from '../../components/DialogFail.vue';
+import DialogFail from "../../components/DialogFail.vue";
 export default {
   components: { DialogFail },
   layout: "admin",
@@ -602,7 +605,6 @@ export default {
     this.sumUser = this.user_developer.concat(this.user_implementer);
     console.log(this.sumUser);
     // this.sumUserIds = this.sumUser.map((user) => user.id);
-
   },
   methods: {
     async getUser() {
@@ -687,8 +689,6 @@ export default {
           console.log(this.user_developer, "user_developer");
           console.log(this.user_implementer, "user_implementer");
           console.log(data.data, "data.data");
-
-
         });
     },
     async addUser_Screen(screenID) {
@@ -709,9 +709,9 @@ export default {
     count_screens() {
       const c = this.AllScreens.length;
       if (c <= 1) {
-        this.count_screen = c + " Screen";
+        this.count_screen = c + " หน้าจอ";
       } else {
-        this.count_screen = c + " Screens";
+        this.count_screen = c + " หน้าจอ";
       }
       return;
     },
@@ -727,20 +727,20 @@ export default {
           this.screentype == null
         ) {
           this.dialogFail = true;
-        } else { 
-        // this.calculateManDay();
-        console.log("Man-day calculation completed successfully.");
-        await this.createScreen();
-        // console.log("Screen creation completed successfully.");
-        await this.getNewScreenAndAddUserScreen();
-        // console.log(
-        //   "New screen and user screen association completed successfully."
-        // );
-        await this.addUser_Screen(this.screen_idd);
-        this.dialogSuccess = true;
-        // console.log("User screen creation completed successfully.");
-        this.ClearText();
-        this.dialog_newscreen = false;
+        } else {
+          // this.calculateManDay();
+          console.log("Man-day calculation completed successfully.");
+          await this.createScreen();
+          // console.log("Screen creation completed successfully.");
+          await this.getNewScreenAndAddUserScreen();
+          // console.log(
+          //   "New screen and user screen association completed successfully."
+          // );
+          await this.addUser_Screen(this.screen_idd);
+          this.dialogSuccess = true;
+          // console.log("User screen creation completed successfully.");
+          this.ClearText();
+          this.dialog_newscreen = false;
         }
       } catch (error) {
         console.log(error);
@@ -1011,13 +1011,12 @@ export default {
         formData.append("screen_manday", this.manday);
         formData.append("screen_type", this.screentype);
 
-          await this.$axios.post("/screens/createScreen", formData, {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          });
-          // console.log("create screen success");
-        
+        await this.$axios.post("/screens/createScreen", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+        // console.log("create screen success");
       } catch (error) {
         console.error(error);
         alert("Error submitting form");

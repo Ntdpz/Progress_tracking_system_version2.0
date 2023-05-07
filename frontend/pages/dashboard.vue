@@ -1,6 +1,6 @@
 <template>
   <div class="mx-auto">
-    <searchbar title="Dashboard" />
+    <searchbar title="แดชบอร์ด" />
     <v-divider></v-divider>
 
     <v-row>
