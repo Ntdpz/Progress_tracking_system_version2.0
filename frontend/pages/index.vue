@@ -262,13 +262,11 @@ export default {
         .get("/user_projects/getOneUserID/" + this.userId)
         .then((res) => {
           this.ownProject = res.data;
-          // console.log("ownProject", this.ownProject);
 
           // Extract the project IDs from the userProjects array
           this.projectIds = this.ownProject.map(
             (project) => project.project_id
           );
-          // console.log("this.projectIds", this.projectIds);
 
           // Fetch project details for each project ID
           const requests = this.projectIds.map((projectId) => {
@@ -276,14 +274,12 @@ export default {
           });
           Promise.all(requests).then((responses) => {
             this.projectDetails = responses.map((res) => res.data);
-            // console.log("projectDetails", this.projectDetails);
           });
         });
     },
     async getProject() {
       await this.$axios.get("/projects/getAll").then((res) => {
         this.projects = res.data;
-        // console.log(this.projects, "projects");
       });
     },
     getImageUrl(fileName) {

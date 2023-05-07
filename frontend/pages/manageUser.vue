@@ -860,7 +860,9 @@
             <v-dialog v-model="dialog_manage" width="900px" max-height="100%">
               <v-card class="mx-auto" height="580px" max-height="100%">
                 <v-card-title>
-                  <span class="text-h5" style="font-weight: bold;">จัดการผู้ใช้งานระบบ</span>
+                  <span class="text-h5" style="font-weight: bold"
+                    >จัดการผู้ใช้งานระบบ</span
+                  >
                 </v-card-title>
                 <!-- Form -->
                 <v-form ref="form">
@@ -1300,13 +1302,11 @@ export default {
     async getUser() {
       await this.$axios.get("/users/getOne/" + this.userId).then((res) => {
         this.check_role = res.data[0].user_role;
-        console.log(this.check_role);
       });
     },
     async getAll() {
       await this.$axios.get("/users/getAll").then((data) => {
         this.data = data.data;
-        console.log(this.data);
         this.splitImage(this.data, this.imageALL);
       });
     },
@@ -1315,7 +1315,6 @@ export default {
         .get("/users/getAll?user_position=Developer")
         .then((data) => {
           this.data_position_Developer = data.data;
-          // console.log(data.data);
           this.splitImage(this.data_position_Developer, this.imageDeveloper);
         });
     },
@@ -1324,7 +1323,6 @@ export default {
         .get("/users/getAll?user_position=Implementer")
         .then((data) => {
           this.data_position_Implementer = data.data;
-          // console.log(data.data);
           this.splitImage(
             this.data_position_Implementer,
             this.imageImplementer
@@ -1336,7 +1334,6 @@ export default {
         .get("/users/getAll?user_position=Program%20Management")
         .then((data) => {
           this.data_position_ProgramManagement = data.data;
-          // console.log(data.data);
           this.splitImage(
             this.data_position_ProgramManagement,
             this.imageProgramManagement
@@ -1348,7 +1345,6 @@ export default {
         .get("/users/getAll?user_position=System%20Analyst")
         .then((data) => {
           this.data_position_SystemAnalyst = data.data;
-          // console.log(data.data);
           this.splitImage(
             this.data_position_SystemAnalyst,
             this.imageSystemAnalyst
@@ -1360,7 +1356,6 @@ export default {
         .get("/users/getAll?user_position=Report%20Developer")
         .then((data) => {
           this.data_position_ReportDeveloper = data.data;
-          // console.log(data.data);
           this.splitImage(
             this.data_position_ReportDeveloper,
             this.imageReportDeveloper
@@ -1377,17 +1372,13 @@ export default {
       const parts = item.user_pic.split("\\");
       const directory = parts[1];
       this.imageManage = parts[parts.length - 1];
-      // console.log(this.imageManage);
-      // console.log(item.user_firstname);
       const regex = /^(Mr\.|Miss\.|นาย|นาง|นางสาว)\s+(.*)$/; // Regular expression to match title and name
       const matches = item.user_firstname.match(regex);
       if (matches) {
-        // console.log(matches);
         this.editedItem.misname = matches[1];
         const name2 = matches[2].trim();
         const nameParts = name2.split(" ");
         this.editedItem.user_firstname = nameParts[0];
-        console.log(this.editedItem.user_firstname);
       }
       this.dialog_manage = true;
     },
@@ -1428,7 +1419,6 @@ export default {
             "Content-Type": "multipart/form-data",
           },
         });
-        console.log("post success1111");
         const promise = new Promise((resolve, reject) => {
           this.dialog = false;
           this.getAll();
@@ -1449,9 +1439,6 @@ export default {
             this.getPosition_SystemAnalyst();
             this.getPosition_ReportDeveloper();
             this.clearInfoNewUser();
-            console.log("Successfully");
-            // alert("Success! The new user has been created.");
-            // window.location.href = "http://localhost:3000/manageUser"; // replace with your actual URL
           }, 2000);
         });
       } catch (error) {
@@ -1468,7 +1455,6 @@ export default {
         const fileName = parts[parts.length - 1];
         const extractedFile = { id: file.id, directory, fileName };
         image.push(extractedFile);
-        // console.log(image);
       });
     },
 
@@ -1477,8 +1463,6 @@ export default {
       this.imageFileUpload = input2.files[0];
       try {
         this.photo = URL.createObjectURL(this.imageFileUpload);
-        console.log(this.imageFileUpload);
-        // Do something with the file, for example upload to a server
       } catch (error) {
         console.error(error);
         this.photo = null;
@@ -1491,7 +1475,6 @@ export default {
       try {
         // editedItem.photo
         this.avatar = URL.createObjectURL(this.imageManageUpload);
-        console.log(this.imageManageUpload);
         // Do something with the file, for example upload to a server
       } catch (error) {
         console.error(error);
@@ -1550,8 +1533,6 @@ export default {
       await this.$axios
         .put("/users/updateUsers/" + this.editedItem.id + "/image", formData)
         .then((response) => {
-          // console.log(response);
-          // console.log("Update success");
           this.getAll();
           this.getPosition_Developer();
           this.getPosition_Implementer();
@@ -1571,8 +1552,6 @@ export default {
       this.$axios
         .delete("/users/deleteUser/" + this.editedItem.id)
         .then((response) => {
-          // console.log(response);
-          // console.log("Delete success");
           this.getAll();
           this.getPosition_Developer();
           this.getPosition_Implementer();

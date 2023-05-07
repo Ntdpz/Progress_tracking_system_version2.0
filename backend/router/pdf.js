@@ -7,15 +7,6 @@ const path = require("path");
 const uuid = require("uuid");
 const crypto = require("crypto");
 
-router.get("/test", async (req, res) => {
-    try {
-        return res.send("Hello");
-    } catch (err) {
-        console.log(err);
-        return res.status(500).send();
-    }
-});
-
 function generateId() {
     const maxId = 999999999;
     const minId = 100000000;

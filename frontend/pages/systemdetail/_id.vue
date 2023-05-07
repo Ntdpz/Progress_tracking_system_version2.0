@@ -8,13 +8,13 @@
       <v-divider class="mt-0 mb-1" inset vertical style="background-color: black"></v-divider>
       <template>
         <v-banner class="mt-0 ml-4" style="
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              height: 30px;
-              border-radius: 30px;
-              padding: 0 0px;
-            " outlined elevation="2">
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 30px;
+            border-radius: 30px;
+            padding: 0 0px;
+          " outlined elevation="2">
           <form class="center" @submit.prevent="search">
             <v-icon color="purple">mdi-magnify</v-icon>
             <input class="mr-3" type="text" v-model="query" placeholder="Search some system" />
@@ -33,11 +33,10 @@
               <v-btn class="mr-2" icon @click="back" color="primary" size="35px" left>
                 <v-icon size="35px">mdi-arrow-left-circle</v-icon>
               </v-btn>
-              {{ dataSystem.system_nameTH }}: {{ dataSystem.system_id }} ({{ dataSystem.system_shortname }})
-              ของโครงการ: {{ projectName.project_name }} ●
-              <b class="ml-1" style="color: #b6b5b5">
-                มี {{ count_screen }}
-              </b>
+              {{ dataSystem.system_nameTH }}: {{ dataSystem.system_id }} ({{
+                dataSystem.system_shortname
+              }}) ของโครงการ: {{ projectName.project_name }} ●
+              <b class="ml-1" style="color: #b6b5b5"> มี {{ count_screen }} </b>
               <!-- <v-avatar class="ml-4" color="primary" size="20"> </v-avatar>
               <v-avatar class="ml-4" color="error" size="20"> </v-avatar> -->
               <v-btn v-if="userposition != 'Developer' || userrole == 'Admin'" class="ml-3" icon color="primary"
@@ -45,9 +44,12 @@
                 <v-icon size="35px" @click="editSystem = true">mdi mdi-square-edit-outline</v-icon>
               </v-btn>
               <v-spacer></v-spacer>
-              <v-btn v-if="userposition != 'Developer' || userrole == 'Admin'"
-                @click="(dialog_newscreen = true), resetday(), (menuDateStart = false), (menuDateEnd = false)" elevation="2"
-                color="primary" style="color: white; border-radius: 10px; font-weight: bold">
+              <v-btn v-if="userposition != 'Developer' || userrole == 'Admin'" @click="
+                (dialog_newscreen = true),
+                resetday(),
+                (menuDateStart = false),
+                (menuDateEnd = false)
+                " elevation="2" color="primary" style="color: white; border-radius: 10px; font-weight: bold">
                 <v-icon left> mdi-plus-circle-outline </v-icon>สร้างหน้าจอใหม่
               </v-btn>
             </v-card-title>
@@ -58,7 +60,7 @@
                 <v-col>
                   <v-card outlined tile height="100%" style="border: none">
                     <v-card-title class="mr-0 pa-0">สร้างหน้าจอใหม่</v-card-title>
-                    <v-container fluid>                     
+                    <v-container fluid>
                       <v-row>
                         <v-col>
                           <v-card style="border: none" class="mx-auto text-center" outlined tile height="100%">
@@ -66,10 +68,10 @@
                             <form>
                               <div class="d-flex justify-center">
                                 <label class="mt-0 avatar-upload" style="
-                                      display: flex;
-                                      justify-content: center;
-                                      align-items: center;
-                                    ">
+                                    display: flex;
+                                    justify-content: center;
+                                    align-items: center;
+                                  ">
                                   <input type="file" ref="fileInput" @change="uploadFile" />
                                   <v-icon class="center mt-0" color="black" size="30px"
                                     v-if="!photo">mdi-cloud-upload-outline</v-icon>
@@ -152,7 +154,6 @@
                           </v-col>
                         </v-row>
                         <v-row>
-
                           <v-col class="mb-0 pb-0 hidden-sm-and-up" style="place-self: center">
                             <h4 class="">ระดับหน้าจอ</h4>
                           </v-col>
@@ -167,7 +168,6 @@
                           </v-col>
                         </v-row>
                         <v-row>
-
                           <v-col class="mb-0 pb-0 hidden-sm-and-up" style="place-self: center">
                             <h4 class="">ประเภทหน้าจอ</h4>
                           </v-col>
@@ -191,7 +191,10 @@
                             <h4 class="">สถานะ</h4>
                           </v-col>
                           <v-col class="col-10" sm="6" md="6">
-                            <h4 class=""><v-icon color="error">mdi-circle</v-icon> {{ status }}</h4>
+                            <h4 class="">
+                              <v-icon color="error">mdi-circle</v-icon>
+                              {{ status }}
+                            </h4>
                           </v-col>
                         </v-row>
                         <v-row>
@@ -216,8 +219,10 @@
                                 <v-spacer></v-spacer>
                                 <v-btn text color="primary" @click="menuDateStart = false">ยกเลิก</v-btn>
                                 <v-btn text color="primary" @click="
-                                  $refs.menuDateStart.save(newscreen_dateStart)
-                                ">ตกลง</v-btn>
+                                  $refs.menuDateStart.save(
+                                    newscreen_dateStart
+                                  )
+                                  ">ตกลง</v-btn>
                               </v-date-picker>
                             </v-menu>
                           </v-col>
@@ -234,7 +239,7 @@
                                 <v-btn text color="primary" @click="menuDateEnd = false">ยกเลิก</v-btn>
                                 <v-btn text color="primary" @click="
                                   $refs.menuDateEnd.save(newscreen_dateEnd)
-                                ">ตกลง</v-btn>
+                                  ">ตกลง</v-btn>
                               </v-date-picker>
                             </v-menu>
                           </v-col>
@@ -479,7 +484,9 @@
                 <v-card :to="`/screendetail/${item.id}`" class="elevation-0" outlined rounded>
                   <v-img :src="getImageUrl(item.screen_pic)" max-height="200px" max-width="250px" contain aspect-ratio="1"
                     class="d-block mx-auto" />
-                  <v-card-title style="color: black" > รหัสหน้าจอ: {{ item.screen_id }} </v-card-title>
+                  <v-card-title style="color: black">
+                    รหัสหน้าจอ: {{ item.screen_id }}
+                  </v-card-title>
                   <v-card-subtitle style="color: black">
                     ชื่อหน้าจอ: {{ item.screen_name }}
                   </v-card-subtitle>
@@ -599,12 +606,7 @@ export default {
     },
   },
   updated() {
-    // this.calculateManDay();
-    // console.log(this.user_id);
-    // console.log(this.implementer);
     this.sumUser = this.user_developer.concat(this.user_implementer);
-    console.log(this.sumUser);
-    // this.sumUserIds = this.sumUser.map((user) => user.id);
   },
   methods: {
     async getUser() {
@@ -614,7 +616,6 @@ export default {
         this.userlastname = res.data[0].user_lastname;
         this.userposition = res.data[0].user_position;
         this.userrole = res.data[0].user_role;
-        // console.log(this.user_position);
       });
     },
     async getScreens() {
@@ -622,11 +623,8 @@ export default {
         .get("/screens/getAll?system_id=" + this.id)
         .then((data) => {
           this.AllScreens = data.data;
-          console.log(this.AllScreens.length);
-
+          this.AllScreens.length;
           this.count_screens();
-          // this.count_screen = this.AllScreens.length;
-          // console.log(this.count_screen);
         });
     },
     async getNewScreenAndAddUserScreen() {
@@ -636,10 +634,7 @@ export default {
           .get("/screens/getAll?screen_id=" + this.screenID)
           .then((data) => {
             this.screen_idd = data.data[0].id;
-            // this.addUser_Screen(screen_id);
           });
-        // console.log(this.screen_idd);
-        // console.log("post User_Screen success!");
       } catch (error) {
         console.log(error);
         alert(error);
@@ -653,7 +648,6 @@ export default {
           this.name_Dev = this.develop_system.map(
             (item) => item.user_firstname
           );
-          // console.log(data.data);
         });
     },
     async getPosition_Implementer() {
@@ -664,7 +658,6 @@ export default {
           this.name_Implementer = this.develop_system.map(
             (item) => item.user_firstname
           );
-          // console.log(this.name_Implementer);
         });
     },
     async getUserSystems() {
@@ -686,9 +679,6 @@ export default {
 
           this.user_developer = this.data_position_Developer;
           this.user_implementer = this.data_position_Implementer;
-          console.log(this.user_developer, "user_developer");
-          console.log(this.user_implementer, "user_implementer");
-          console.log(data.data, "data.data");
         });
     },
     async addUser_Screen(screenID) {
@@ -699,8 +689,6 @@ export default {
           system_id: this.id,
           project_id: this.projectID,
         });
-        // console.log("POST success for user ID: " + screenID);
-        // alert("Success!!");
       } catch (error) {
         console.log(error);
         alert("user_screen: " + error);
@@ -729,16 +717,13 @@ export default {
           this.dialogFail = true;
         } else {
           // this.calculateManDay();
-          console.log("Man-day calculation completed successfully.");
           await this.createScreen();
-          // console.log("Screen creation completed successfully.");
+
           await this.getNewScreenAndAddUserScreen();
-          // console.log(
-          //   "New screen and user screen association completed successfully."
-          // );
+
           await this.addUser_Screen(this.screen_idd);
           this.dialogSuccess = true;
-          // console.log("User screen creation completed successfully.");
+
           this.ClearText();
           this.dialog_newscreen = false;
         }
@@ -747,16 +732,6 @@ export default {
         alert(error);
       }
     },
-    // calculateManDay() {
-    //   const dateStart = new Date(this.newscreen_dateStart);
-    //   const dateEnd = new Date(this.newscreen_dateEnd);
-    //   const timeDiff = Math.abs(dateEnd.getTime() - dateStart.getTime());
-    //   this.manday = Math.ceil(timeDiff / (1000 * 3600 * 24)); // convert to days and round up
-    //   console.log(
-    //     `The difference between ${this.newscreen_dateStart} and ${this.newscreen_dateEnd} is ${this.manday} days`
-    //   );
-    //   return;
-    // },
     resetday() {
       this.today = new Date();
       this.dateEnd = new Date();
@@ -770,8 +745,7 @@ export default {
       this.imageFileUpload = input2.files[0];
       try {
         this.photo = URL.createObjectURL(this.imageFileUpload);
-        // console.log(this.imageFileUpload);
-        // Do something with the file, for example upload to a server
+
       } catch (error) {
         console.error(error);
         this.photo = null;
@@ -789,9 +763,6 @@ export default {
         this.system_nameEN = data.data[0].system_nameEN;
         this.short_system_name = data.data[0].system_shortname;
         this.short_system_analyst = data.data[0].system_analyst;
-        // console.clear();
-        // console.log("this.projectID");
-        // console.log(this.projectID);
         this.getProjectID();
       });
     },
@@ -818,10 +789,6 @@ export default {
           system_member: "",
         })
         .then((response) => {
-          // console.log(response);
-          // console.log("Update success");
-          // alert("Update success");
-          // window.location.reload();
         })
         .catch((err) => {
           console.log(err);
@@ -858,8 +825,7 @@ export default {
           system_id: systemID,
           project_id: this.projectID,
         });
-        // console.log("POST success for system ID: " + systemID);
-        // alert("Post Success!!");
+
       } catch (error) {
         console.log(error);
         alert("user_system: " + error);
@@ -871,8 +837,7 @@ export default {
           user_id: this.sumUser,
           project_id: this.projectID,
         });
-        // console.log("POST success for system ID: " + systemID);
-        // alert("Post Success!!");
+
         await this.getProject();
         await this.getSystems();
         this.dialogSubsystem = false;

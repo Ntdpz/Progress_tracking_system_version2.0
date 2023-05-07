@@ -606,7 +606,6 @@ export default {
         this.userlastname = res.data[0].user_lastname;
         this.userposition = res.data[0].user_position;
         this.userrole = res.data[0].user_role;
-        // console.log(this.user_position);
       });
     },
     async getScreenID() {
@@ -675,16 +674,6 @@ export default {
           this.user_implementer = this.data_position_Implementer;
         });
     },
-    // calculateManDay() {
-    //   const dateStart = new Date(this.screensID.screen_start);
-    //   const dateEnd = new Date(this.screensID.screen_end);
-    //   const timeDiff = Math.abs(dateEnd.getTime() - dateStart.getTime());
-    //   this.screensID.screen_manday = Math.ceil(timeDiff / (1000 * 3600 * 24)); // convert to days and round up
-    //   console.log(
-    //     `The difference between ${this.screensID.screen_start} and ${this.screensID.screen_end} is ${this.screensID.screen_manday} days`
-    //   );
-    //   return;
-    // },
     resetday() {
       this.today = new Date();
       this.dateEnd = new Date();
@@ -742,7 +731,7 @@ export default {
         await this.$axios
           .delete("/user_screens/deleteScreenID/" + this.id)
           .then((res) => {
-            console.log("delete success");
+            // console.log("delete success");
             // alert("delete user_screen success");
           })
           .catch((err) => {

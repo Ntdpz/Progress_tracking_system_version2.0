@@ -2,16 +2,6 @@ const express = require("express");
 const router = express.Router();
 const connection = require("../db");
 
-
-router.get("/test", async (req, res) => {
-    try {
-        return res.send("Hello");
-    } catch (err) {
-        console.log(err);
-        return res.status(500).send();
-    }
-});
-
 // * GET All FROM default_settings
 router.get("/getAll", async (req, res) => {
     try {

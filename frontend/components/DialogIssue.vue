@@ -307,7 +307,9 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="primary" text @click.native="close"> ปิด </v-btn>
-          <v-btn color="primary" dark @click="saveIssue()"> สร้างปัญหาใหม่ </v-btn>
+          <v-btn color="primary" dark @click="saveIssue()">
+            สร้างปัญหาใหม่
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -408,9 +410,6 @@ export default {
       let formData = new FormData();
       if (this.form.issue_filename) {
         formData.append("file", this.form.issue_filename);
-        console.log(formData.getAll("file"));
-        console.log(this.form.issue_filename); //ไว้ post
-        console.log(this.form.issue_filename.name); //ชื่อไฟล์
       } else {
         console.log("No file");
       }
@@ -466,7 +465,6 @@ export default {
           this.position_Implementer = data.data.filter(
             (item) => item.user_position === "Implementer"
           );
-          // console.log(this.position_Developers);
         });
     },
     async saveIssue() {
@@ -508,7 +506,6 @@ export default {
         };
         try {
           await this.$axios.post("/issues/createIssue", data);
-          console.log("post success");
           this.close();
           const promise = new Promise((resolve, reject) => {
             resolve();
@@ -553,7 +550,6 @@ export default {
       try {
         const res = await this.$axios.get("/default_settings/getAll");
         this.default = res.data;
-        // console.log(this.default, "this.dataDefault");
         this.default.forEach((item) => {
           if (item.issue_type) {
             this.type_select.push(item.issue_type);

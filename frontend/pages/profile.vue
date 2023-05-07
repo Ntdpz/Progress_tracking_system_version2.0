@@ -53,7 +53,7 @@
               class="mr-2"
               style="margin-bottom: -2%; font-weight: bold; color: black"
             >
-            <v-col class="hidden-xs-only" cols="2" xs="2" sm="2" md="2">
+              <v-col class="hidden-xs-only" cols="2" xs="2" sm="2" md="2">
                 คำนำหน้าชื่อ
               </v-col>
               <v-col class="hidden-xs-only" cols="5" xs="5" sm="5" md="5">
@@ -123,7 +123,9 @@
               class="mr-2 mt-0"
               style="margin-bottom: -2%; font-weight: bold; color: black"
             >
-              <v-col class="hidden-xs-only" cols="4" sm="4"> รหัสพนักงาน </v-col>
+              <v-col class="hidden-xs-only" cols="4" sm="4">
+                รหัสพนักงาน
+              </v-col>
               <v-col class="hidden-xs-only" cols="4" sm="4"> ตำแหน่ง </v-col>
               <v-col class="hidden-xs-only" cols="4" sm="4"> แผนก </v-col>
             </v-row>
@@ -313,7 +315,8 @@
                   style="
                     justify-content: right;
                     font-weight: bold;
-                    color: black; "
+                    color: black;
+                  "
                 >
                   <v-btn
                     class="mr-2"
@@ -353,7 +356,6 @@ export default {
       n_password: "",
       cf_password: "",
       id: "",
-      password: "Password",
       user_id: "",
       user_firstname: "",
       user_lastname: "",
@@ -370,7 +372,6 @@ export default {
       user_pic: null,
       imageUpload: null,
       avatar: null,
-      defaultImage: "Avatar.jpg",
       dataDefault: [],
       dataDefault_role_user: [],
       dataDefault_nametitle: [],
@@ -385,7 +386,6 @@ export default {
     this.titleName();
   },
   created() {
-    console.log("created");
     this.getUser();
     this.getAllDefault();
   },
@@ -400,7 +400,6 @@ export default {
   methods: {
     async getUser() {
       await this.$axios.get("/users/getOne/" + this.userId).then((res) => {
-        console.log(res.data, "getUser");
         this.id = res.data[0].id;
         this.user_id = res.data[0].user_id;
         this.user_firstname = res.data[0].user_firstname;
@@ -412,7 +411,6 @@ export default {
         this.user_email = res.data[0].user_email;
         this.user_department = res.data[0].user_department;
         this.user_pic = res.data[0].user_pic;
-        console.log(this.user_pic);
         this.titleName();
       });
     },
@@ -420,10 +418,8 @@ export default {
       const regex = /^(Mr\.|Miss\.|นาย|นาง|นางสาว)\s+(.*)$/; // Regular expression to match title and name
       const matches = this.user_firstname.match(regex);
       if (matches) {
-        console.log(matches);
         this.name = matches[1];
         this.firstname = matches[2].trim();
-        console.log(this.firstname);
       }
     },
     clearChangePassword() {
@@ -443,7 +439,6 @@ export default {
       try {
         // editedItem.photo
         this.avatar = URL.createObjectURL(this.imageUpload);
-        console.log(this.imageUpload);
         // Do something with the file, for example upload to a server
       } catch (error) {
         console.error(error);
@@ -493,7 +488,7 @@ export default {
           await this.$axios
             .put("/users/updateUsers/" + this.id + "/image", formData)
             .then((response) => {
-              console.log(response);
+              // console.log(response);
               alert("Update success");
               // ดัก error รูปภาพโหลดไม่ทัน
               const promise = new Promise((resolve, reject) => {
@@ -524,7 +519,6 @@ export default {
       await this.$axios.get("/default_settings/getAll").then((data) => {
         this.dataDefault = data.data;
         // console.clear();
-        console.log(this.dataDefault);
         this.dataDefault.forEach((item) => {
           if (item.role_user) {
             this.dataDefault_role_user.push(item.role_user);

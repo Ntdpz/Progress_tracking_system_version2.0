@@ -2,15 +2,6 @@ const express = require("express");
 const router = express.Router();
 const connection = require("../db");
 
-router.get("/test", async (req, res) => {
-  try {
-    return "Hello";
-  } catch (err) {
-    console.log(err);
-    return res.status(500).send();
-  }
-});
-
 function generateId() {
   const maxId = 999999999;
   const minId = 100000000;

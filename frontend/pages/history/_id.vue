@@ -288,12 +288,6 @@ export default {
       this.project_ids = resProject.data[0].project_id;
       this.system_ids = resProject.data[0].system_id;
       this.screen_ids = resProject.data[0].screen_id;
-      // console.log(
-      //   "test res",
-      //   resProject.data[0].project_name,
-      //   resSystem.data[0].system_nameTH,
-      //   resScreen.data[0].screen_name
-      // );
     },
   },
 };
