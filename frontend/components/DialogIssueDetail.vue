@@ -10,6 +10,8 @@
             รายละเอียดปัญหาที่พบ | โครงการ : {{ ProjectName }} > ระบบ :
             {{ SystemName }} {{ id }}
           </h5>
+          <v-spacer></v-spacer>
+          <v-btn :to="`/history/${id}`" v-if="history">History</v-btn>
         </v-card-title>
         <v-row class="ml-2 mr-2 mt-2">
           <v-col>
@@ -178,31 +180,25 @@
             </v-row>
             <!-- Type PNC option -->
             <v-row v-if="IssueType == 'PNC'">
-              <v-col cols="6" class="pb-0">
-                <v-row>
-                  <p class="pa-2">Document No.</p>
-                  <v-text-field
-                    label="Issue Informer"
-                    placeholder="Issue Informer"
-                    :disabled="isIssueInProcess"
-                    outlined
-                    dense
-                    v-model="IssueDocId"
-                  ></v-text-field>
-                </v-row>
+              <v-col cols="12" sm="4" md="6" class="pb-0">
+                <v-text-field
+                  label="เลขที่เอกสาร"
+                  placeholder="เลขที่เอกสาร"
+                  :disabled="isIssueInProcess"
+                  outlined
+                  dense
+                  v-model="IssueDocId"
+                ></v-text-field>
               </v-col>
-              <v-col cols="6" class="pb-0">
-                <v-row>
-                  <p class="pa-2">Customer Name</p>
-                  <v-text-field
-                    label="Issue Informer"
-                    placeholder="Issue Informer"
-                    outlined
-                    :disabled="isIssueInProcess"
-                    dense
-                    v-model="IssueCustomer"
-                  ></v-text-field>
-                </v-row>
+              <v-col cols="12" sm="8" md="6" class="pb-0">
+                <v-text-field
+                  label="ชื่อลูกค้า"
+                  placeholder="ชื่อลูกค้า"
+                  outlined
+                  :disabled="isIssueInProcess"
+                  dense
+                  v-model="IssueCustomer"
+                ></v-text-field>
               </v-col>
             </v-row>
             <!-- Type New Req option -->
@@ -561,7 +557,6 @@ export default {
     return {
       loading: false,
       mandayProps: true,
-      mandaySeleted: false,
       completionMenu: false,
       //menu
       acceptMenu: false,
@@ -587,10 +582,11 @@ export default {
       user_lastname: "",
       user_position: "",
       userSendWork: null,
+      //history btn
+      history: false,
     };
   },
   async mounted() {
-    console.log("mounted");
     await this.getDefault();
   },
   computed: {
@@ -603,13 +599,13 @@ export default {
       if (newVal) {
         this.getUserSystemsOncreated();
         this.getUser();
+        this.checkHistory();
       }
     },
   },
   methods: {
     getUserScreen(selectedUserID) {
       this.userSendWork = selectedUserID;
-      console.log("User send work", this.userSendWork);
     },
     checkSendWork() {
       if (this.IssueDeveloperStatus == "แก้ไขไม่ได้") {
@@ -646,12 +642,10 @@ export default {
       }
     },
     checkAssign() {
-      console.log("checkAssigndev", this.IssueAssign);
       const dev = this.IssueAssign?.user_firstname ?? null;
       this.IssueAssign = dev;
     },
     checkAssign2() {
-      console.log("checkAssignqc", this.IssueQC);
       const qc = this.IssueQC?.user_firstname ?? null;
       this.IssueQC = qc;
     },
@@ -670,12 +664,11 @@ export default {
               project_id: this.ProjectId,
             })
             .then((res) => {
-              console.log("POST success for user ID: " + this.userSendWork);
-              alert("addUser_Screen Success!!");
+              // console.log("POST success for user ID: " + this.userSendWork);
+              // alert("addUser_Screen Success!!");
             });
         } catch (error) {
           console.log("user_screen: " + error);
-          alert("user_screen: " + error);
         }
       }
       if (this.IssueDeveloperStatus == "แก้ไขไม่ได้") {
@@ -683,6 +676,7 @@ export default {
           screen_id: this.IssueScreenId,
           system_id: this.SystemId,
           project_id: this.ProjectId,
+          issues_id: this.id,
           issue_name: this.IssueName,
           issue_id: this.IssueId,
           issue_type: this.IssueType,
@@ -717,7 +711,6 @@ export default {
             "/history_issues/createIssueHistory/",
             dataHistoryDev
           );
-          console.log("post history dev");
           this.$emit("button-clicked");
           this.handleClose();
           const promise = new Promise((resolve, reject) => {
@@ -762,6 +755,7 @@ export default {
           screen_id: this.IssueScreenId,
           system_id: this.SystemId,
           project_id: this.ProjectId,
+          issues_id: this.id,
           issue_name: this.IssueName,
           issue_id: this.IssueId,
           issue_type: this.IssueType,
@@ -796,7 +790,6 @@ export default {
             "/history_issues/createIssueHistory/",
             dataHistory
           );
-          console.log("pout success");
           this.$emit("button-clicked");
           this.handleClose();
           const promise = new Promise((resolve, reject) => {
@@ -847,6 +840,7 @@ export default {
         screen_id: this.IssueScreenId,
         system_id: this.SystemId,
         project_id: this.ProjectId,
+        issues_id: this.id,
         issue_name: this.IssueName,
         issue_id: this.IssueId,
         issue_type: this.IssueType,
@@ -882,7 +876,7 @@ export default {
           "/history_issues/createIssueHistory/",
           dataHistoryUpdate
         );
-        console.log("put success && history");
+        console.log("post success");
         this.$emit("button-clicked");
         this.handleClose();
         const promise = new Promise((resolve, reject) => {
@@ -900,6 +894,7 @@ export default {
       }
     },
     handleClose() {
+      this.history = false;
       this.sendWork = false;
       this.$emit("update:dialog", false);
     },
@@ -913,13 +908,8 @@ export default {
         );
         this.screen_selectDefault = resScreen.data;
 
-        console.log(this.screen_selectDefault, "this.screen_selectDefault ");
-
         const resDefault = await this.$axios.get("/default_settings/getAll");
         this.default = resDefault.data;
-
-        // console.log(this.default, "this.dataDefault");
-
         this.default.forEach((item) => {
           if (item.issue_type) {
             this.type_select.push(item.issue_type);
@@ -936,14 +926,12 @@ export default {
           if (item.implement_status) {
             this.issue_status_implement_default.push(item.implement_status);
           }
-          // console.log(this.priotity_select, "this.priotity_select");
         });
       } catch (error) {
         console.error(error);
       }
     },
     async getUserSystemsOncreated() {
-      console.log("getUserSystemsOncreated");
       await this.$axios
         .get("/user_screens/getOneScreenID/" + this.IssueScreenId)
         .then((data) => {
@@ -988,7 +976,19 @@ export default {
         });
       } catch (error) {
         console.log(error);
-        alert("Reject: " + error);
+      }
+    },
+    checkHistory() {
+      try {
+        this.$axios
+          .get("/history_issues/getAll?issues_id=" + this.id)
+          .then((res) => {
+            if (res.data.length > 0) {
+              this.history = true;
+            }
+          });
+      } catch (error) {
+        console.log(error);
       }
     },
     selectedType() {},

@@ -24,7 +24,14 @@ router.get("/", async (req, res) => {
 //history_issues
 router.get("/getAll", async (req, res) => {
   try {
-    connection.query("SELECT * FROM history_issues", (err, results, fields) => {
+    const issuesFilter = req.query.issues_id;
+    let query = "SELECT * FROM history_issues";
+    const queryParams = [];
+    if (issuesFilter) {
+      query += " WHERE issues_id = ?";
+      queryParams.push(issuesFilter);
+    }
+    connection.query(query, queryParams, (err, results, fields) => {
       if (err) {
         console.log(err);
         return res.status(400).send();
@@ -62,6 +69,7 @@ router.post("/createIssueHistory", async (req, res) => {
     screen_id,
     system_id,
     project_id,
+    issues_id,
     issue_name,
     issue_id,
     issue_type,
@@ -94,11 +102,12 @@ router.post("/createIssueHistory", async (req, res) => {
 
   try {
     connection.query(
-      "INSERT INTO history_issues (screen_id, system_id, project_id, issue_name, issue_id, issue_type, issue_informer, issue_priority, issue_end, issue_assign, issue_qc, issue_des, issue_des_sa, issue_type_sa, issue_doc_id, issue_customer, issue_filename, issue_des_dev, issue_des_implementer, issue_start, issue_expected, issue_status, issue_accepting, issue_manday, issue_complete ,issue_status_developer,issue_status_implement,issue_round,user_updated,user_position_updated,user_id_updated) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      "INSERT INTO history_issues (screen_id, system_id, project_id, issues_id, issue_name, issue_id, issue_type, issue_informer, issue_priority, issue_end, issue_assign, issue_qc, issue_des, issue_des_sa, issue_type_sa, issue_doc_id, issue_customer, issue_filename, issue_des_dev, issue_des_implementer, issue_start, issue_expected, issue_status, issue_accepting, issue_manday, issue_complete ,issue_status_developer,issue_status_implement,issue_round,user_updated,user_position_updated,user_id_updated) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
       [
         screen_id,
         system_id,
         project_id,
+        issues_id,
         issue_name,
         issue_id,
         issue_type,
