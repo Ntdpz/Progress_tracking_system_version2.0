@@ -18,8 +18,8 @@
             <v-row>
               <v-col cols="12" sm="4" md="4" class="pb-0">
                 <v-text-field
-                  label="Issue ID"
-                  placeholder="Issue ID"
+                  label="เลขที่ปัญหา"
+                  placeholder="เลขที่ปัญหา"
                   disabled
                   outlined
                   dense
@@ -29,8 +29,8 @@
               </v-col>
               <v-col cols="12" sm="8" md="8" class="pb-0">
                 <v-text-field
-                  label="Issue Name"
-                  placeholder="Issue Name"
+                  label="ปัญหา"
+                  placeholder="ปัญหา"
                   outlined
                   dense
                   :disabled="isIssueInProcess"
@@ -40,7 +40,7 @@
               <v-col cols="12" sm="6" md="4" class="pb-0">
                 <v-select
                   :items="type_select"
-                  label="PNI/PNC/New Req"
+                  label="ประเภทปัญหา"
                   dense
                   outlined
                   :disabled="isIssueInProcess"
@@ -53,7 +53,7 @@
                   @mousemove="getDefault()"
                   @change="getUserSystems(ScreenName.id)"
                   :items="screen_selectDefault"
-                  label="Screen No."
+                  label="รหัสหน้าจอ"
                   dense
                   outlined
                   v-model="ScreenName"
@@ -141,7 +141,7 @@
                 <v-select
                   return-object="false"
                   :items="position_Developers"
-                  label="Dev"
+                  label="ผู้พัฒนา"
                   dense
                   outlined
                   :disabled="isIssueInProcess"
@@ -155,7 +155,7 @@
                 <v-select
                   return-object="false"
                   :items="position_Implementer"
-                  label="QC"
+                  label="ผู่ตรวจสอบ"
                   dense
                   outlined
                   menu-props="auto"
@@ -171,7 +171,7 @@
                 <v-textarea
                   solo
                   name="input-7-4"
-                  label="Note"
+                  label="คำอธิบายปัญหา"
                   v-model="IssueDes"
                   :disabled="isIssueInProcess"
                   style=""
@@ -205,10 +205,10 @@
             <v-row v-if="IssueType == 'New Req'">
               <v-col cols="6" class="pb-0">
                 <v-row>
-                  <p class="pa-2">Type New Req</p>
+                  <p class="pa-2">ประเภทความต้องการใหม่</p>
                   <v-text-field
-                    label="Issue Informer"
-                    placeholder="Issue Informer"
+                    label="ประเภทความต้องการใหม่"
+                    placeholder="ประเภทความต้องการใหม่"
                     :disabled="isIssueInProcess"
                     outlined
                     dense
@@ -218,12 +218,12 @@
               </v-col>
               <v-col cols="6" class="pb-0">
                 <v-row>
-                  <p class="pa-2">Note to SA</p>
+                  <p class="pa-2">คำอธิบายถึง SA</p>
                   <v-textarea
                     solo
                     name="input-7-4"
                     :disabled="isIssueInProcess"
-                    label="Note"
+                    label="คำอธิบายถึง SA"
                     v-model="IssueDesSA"
                   ></v-textarea>
                 </v-row>
@@ -246,7 +246,7 @@
                   class="pb-0 pt-0"
                   style="background-color: #883cfe"
                 >
-                  <h3 style="color: white">Developer Section</h3>
+                  <h3 style="color: white">ส่วนของผู้พัฒนา</h3>
                   <template v-slot:actions>
                     <v-icon color="white"> $expand </v-icon>
                   </template>
@@ -270,7 +270,7 @@
                             <template v-slot:activator="{ on, attrs }">
                               <v-text-field
                                 v-model="IssueAccepting"
-                                label="Date of Accepting"
+                                label="วันที่รับ"
                                 prepend-icon="mdi-calendar"
                                 readonly
                                 v-bind="attrs"
@@ -300,7 +300,7 @@
                             <template v-slot:activator="{ on, attrs }">
                               <v-text-field
                                 v-model="IssueStart"
-                                label="Start Date"
+                                label="วันที่เริ่ม"
                                 prepend-icon="mdi-calendar"
                                 readonly
                                 v-bind="attrs"
@@ -326,7 +326,7 @@
                             <template v-slot:activator="{ on, attrs }">
                               <v-text-field
                                 v-model="IssueExpected"
-                                label="Expected Completion Date"
+                                label="วันที่คาดว่าแก้ไขเสร็จ"
                                 prepend-icon="mdi-calendar"
                                 readonly
                                 v-bind="attrs"
@@ -355,7 +355,7 @@
                     </v-col>
                     <v-divider></v-divider>
                     <v-row class="text-h6 mt-2 mb-2">
-                      <h6>Developer Section 2</h6>
+                      <h6>ส่วนของผู้พัฒนา</h6>
                     </v-row>
                     <v-row>
                       <v-col cols="8">
@@ -378,7 +378,7 @@
                               return-object="false"
                               :items="position_Developers_System"
                               @change="getUserScreen(IssueAssign.id)"
-                              label="Dev"
+                              label="ผู้พัฒนา"
                               dense
                               outlined
                               menu-props="auto"
@@ -393,9 +393,7 @@
                       <v-col cols="6">
                         <v-row>
                           <!-- Completion date-->
-                          <p class="pa-2">
-                            Completion date - {{ IssueComplete }}
-                          </p>
+                          <p class="pa-2">วันที่เสร็จ - {{ IssueComplete }}</p>
                           <v-menu
                             v-model="completionMenu"
                             :close-on-content-click="false"
@@ -405,7 +403,7 @@
                             <template v-slot:activator="{ on, attrs }">
                               <v-text-field
                                 v-model="IssueComplete"
-                                label="Completion date"
+                                label="วันที่เสร็จ"
                                 prepend-icon="mdi-calendar"
                                 readonly
                                 v-bind="attrs"
@@ -422,11 +420,11 @@
                     </v-row>
                     <v-row>
                       <v-col cols="6">
-                        <p class="">Cause / Remedy</p>
+                        <p class="">คำอธิบาย</p>
                         <v-textarea
                           solo
                           name="input-7-4"
-                          label="Note"
+                          label="คำอธิบายของผู้พัฒนา"
                           v-model="IssueDesDev"
                         ></v-textarea>
                       </v-col>
@@ -443,7 +441,7 @@
                   class="pb-0 pt-0"
                   style="background-color: #883cfe"
                 >
-                  <h3 style="color: white">Implements Section</h3>
+                  <h3 style="color: white">ส่วนของผู้ตรวจสอบ</h3>
                   <template v-slot:actions>
                     <v-icon color="white"> $expand </v-icon>
                   </template>
@@ -454,7 +452,7 @@
                       <v-col cols="8">
                         <v-row>
                           <v-col>
-                            <p class="pa-2">Status</p>
+                            <p class="pa-2">สถานะการตรวจสอบ</p>
                             <v-select
                               :items="issue_status_implement_default"
                               label="สถานะ"
@@ -480,11 +478,11 @@
                     </v-row>
                     <v-row>
                       <v-col cols="12" class="pt-0">
-                        <p class="">Cause / Remedy</p>
+                        <p class="">คำอธิบายของผู้ตรวจสอบ</p>
                         <v-textarea
                           solo
                           name="input-7-4"
-                          label="Note"
+                          label="คำอธิบายของผู้ตรวจสอบ"
                           v-model="IssueDesImplementer"
                         ></v-textarea>
                       </v-col>
@@ -498,8 +496,8 @@
         <v-card-actions>
           <v-btn color="error" @click="issueReject()"><h4>Reject</h4></v-btn>
           <v-spacer></v-spacer>
-          <v-btn color="error" @click="handleClose()"><h4>Cancel</h4></v-btn>
-          <v-btn color="primary" @click="saveIssue()"><h4>Update</h4></v-btn>
+          <v-btn color="error" @click="handleClose()"><h4>ปิด</h4></v-btn>
+          <v-btn color="primary" @click="saveIssue()"><h4>อัปเดต</h4></v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
