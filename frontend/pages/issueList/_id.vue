@@ -105,6 +105,7 @@
           </v-tabs>
           <!-- Dialog Admin Dev Implementer -->
           <dialog-issue-detail
+            :history.sync="history"
             :dialog.sync="dialogIssueDetail"
             :ProjectName="projectName"
             :ProjectId="projectId"
@@ -1050,7 +1051,6 @@
                 <template v-slot:[`item.actions`]="{ item }">
                   <v-icon
                     class="mr-2"
-                    disabled
                     @click="
                       showIssueDetailDialog(
                         item.id,
@@ -1081,7 +1081,7 @@
                         item.issue_status_developer,
                         item.issue_status_implement,
                         item.issue_round
-                      )
+                      ), (history == true)
                     "
                     size="20"
                     color="primary"
@@ -1132,6 +1132,7 @@ export default {
       dialogIssueDetail: false,
       dialogIssueImple: false,
       dialogIssueDev: false,
+      history: false,
       selected: {
         Id: "",
         screen_id: "",
@@ -1802,7 +1803,10 @@ export default {
       this.selected.issue_status_implement = issueImplementerStatus;
       this.selected.issue_round = issueRound;
       //check role
-      if (this.user_role == "Admin") {
+      if (this.history == true) {
+        this.dialogIssueDetail = true;
+      }
+      else if (this.user_role == "Admin") {
         this.dialogIssueDetail = true;
       } else if (
         this.user_position == "Implementer" &&
