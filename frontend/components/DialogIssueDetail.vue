@@ -494,10 +494,20 @@
           </v-col>
         </v-row>
         <v-card-actions>
-          <v-btn v-if="history != true" color="error" @click="issueReject()"><h4>Reject</h4></v-btn>
+          <v-btn
+            v-show="(this.HistoryCheck == false)"
+            color="error"
+            @click="issueReject()"
+            ><h4>Reject</h4></v-btn
+          >
           <v-spacer></v-spacer>
           <v-btn color="error" @click="handleClose()"><h4>ปิด</h4></v-btn>
-          <v-btn v-if="history != true" color="primary" @click="saveIssue()"><h4>อัปเดต</h4></v-btn>
+          <v-btn
+            v-show="(this.HistoryCheck == false)"
+            color="primary"
+            @click="saveIssue()"
+            ><h4>อัปเดต</h4></v-btn
+          >
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -546,11 +556,8 @@ export default {
     IssueRound: Number,
     ImpleSection: Boolean,
     UserId: Number,
+    HistoryCheck: Boolean,
     dialog: {
-      type: Boolean,
-      default: false,
-    },
-    history: {
       type: Boolean,
       default: false,
     },
@@ -585,7 +592,7 @@ export default {
       user_position: "",
       userSendWork: null,
       //history btn
-      // history: false,
+      history: false,
     };
   },
   async mounted() {

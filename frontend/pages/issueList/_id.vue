@@ -105,7 +105,6 @@
           </v-tabs>
           <!-- Dialog Admin Dev Implementer -->
           <dialog-issue-detail
-            :history.sync="history"
             :dialog.sync="dialogIssueDetail"
             :ProjectName="projectName"
             :ProjectId="projectId"
@@ -142,6 +141,7 @@
             :IssueRound="selected.issue_round"
             :ImpleSection="selected.impleSection"
             :UserId="selected.userId"
+            :HistoryCheck="selected.history"
             @button-clicked="getIssue()"
           />
           <dialog-issue-imple
@@ -181,6 +181,7 @@
             :IssueRound="selected.issue_round"
             :ImpleSection="selected.impleSection"
             :UserId="selected.userId"
+            :HistoryCheck="selected.history"
             @button-clicked="getIssue()"
           />
           <dialog-issue-dev
@@ -220,6 +221,7 @@
             :IssueRound="selected.issue_round"
             :ImpleSection="selected.impleSection"
             :UserId="selected.userId"
+            :HistoryCheck="selected.history"
             @button-clicked="getIssue()"
           />
           <v-tabs-items v-model="tab">
@@ -306,6 +308,7 @@
                     v-else
                     @click="
                       showIssueDetailDialog(
+                        (history = false),
                         item.id,
                         item.issue_id,
                         item.issue_type,
@@ -334,7 +337,7 @@
                         item.issue_status_developer,
                         item.issue_status_implement,
                         item.issue_round
-                      ), (history == false)
+                      )
                     "
                     size="20"
                     color="primary"
@@ -385,6 +388,7 @@
                     class="mr-2"
                     @click="
                       showIssueDetailDialog(
+                        (history = false),
                         item.id,
                         item.issue_id,
                         item.issue_type,
@@ -413,7 +417,7 @@
                         item.issue_status_developer,
                         item.issue_status_implement,
                         item.issue_round
-                      ), (history == false)
+                      )
                     "
                     size="20"
                     color="primary"
@@ -506,6 +510,7 @@
                     v-else
                     @click="
                       showIssueDetailDialog(
+                        (history = false),
                         item.id,
                         item.issue_id,
                         item.issue_type,
@@ -534,7 +539,7 @@
                         item.issue_status_developer,
                         item.issue_status_implement,
                         item.issue_round
-                      ), (history == false)
+                      )
                     "
                     size="20"
                     color="primary"
@@ -583,36 +588,37 @@
                   <v-icon
                     class="mr-2"
                     @click="
-                      showIssueDetailDialog(
-                        item.id,
-                        item.issue_id,
-                        item.issue_type,
-                        item.screen_id,
-                        item.issue_status,
-                        item.issue_priority,
-                        item.formattedDateEnd,
-                        item.issue_name,
-                        item.issue_des_sa,
-                        item.issue_informer,
-                        item.issue_assign,
-                        item.issue_qc,
-                        item.issue_filename,
-                        item.formattedDateAccepting,
-                        item.issue_manday,
-                        item.formattedDateStart,
-                        item.formattedDateExpected,
-                        item.formattedDateComplete,
-                        item.issue_des_implementer,
-                        item.issue_des_dev,
-                        item.issue_des,
-                        item.issue_customer,
-                        item.issue_doc_id,
-                        item.issue_type_sa,
-                        item.created_at,
-                        item.issue_status_developer,
-                        item.issue_status_implement,
-                        item.issue_round
-                      ), (history == false)
+                      (history = false),
+                        showIssueDetailDialog(
+                          item.id,
+                          item.issue_id,
+                          item.issue_type,
+                          item.screen_id,
+                          item.issue_status,
+                          item.issue_priority,
+                          item.formattedDateEnd,
+                          item.issue_name,
+                          item.issue_des_sa,
+                          item.issue_informer,
+                          item.issue_assign,
+                          item.issue_qc,
+                          item.issue_filename,
+                          item.formattedDateAccepting,
+                          item.issue_manday,
+                          item.formattedDateStart,
+                          item.formattedDateExpected,
+                          item.formattedDateComplete,
+                          item.issue_des_implementer,
+                          item.issue_des_dev,
+                          item.issue_des,
+                          item.issue_customer,
+                          item.issue_doc_id,
+                          item.issue_type_sa,
+                          item.created_at,
+                          item.issue_status_developer,
+                          item.issue_status_implement,
+                          item.issue_round
+                        )
                     "
                     size="20"
                     color="primary"
@@ -704,36 +710,37 @@
                     class="mr-2"
                     v-else
                     @click="
-                      showIssueDetailDialog(
-                        item.id,
-                        item.issue_id,
-                        item.issue_type,
-                        item.screen_id,
-                        item.issue_status,
-                        item.issue_priority,
-                        item.formattedDateEnd,
-                        item.issue_name,
-                        item.issue_des_sa,
-                        item.issue_informer,
-                        item.issue_assign,
-                        item.issue_qc,
-                        item.issue_filename,
-                        item.formattedDateAccepting,
-                        item.issue_manday,
-                        item.formattedDateStart,
-                        item.formattedDateExpected,
-                        item.formattedDateComplete,
-                        item.issue_des_implementer,
-                        item.issue_des_dev,
-                        item.issue_des,
-                        item.issue_customer,
-                        item.issue_doc_id,
-                        item.issue_type_sa,
-                        item.created_at,
-                        item.issue_status_developer,
-                        item.issue_status_implement,
-                        item.issue_round
-                      ), (history == false)
+                      (history = false),
+                        showIssueDetailDialog(
+                          item.id,
+                          item.issue_id,
+                          item.issue_type,
+                          item.screen_id,
+                          item.issue_status,
+                          item.issue_priority,
+                          item.formattedDateEnd,
+                          item.issue_name,
+                          item.issue_des_sa,
+                          item.issue_informer,
+                          item.issue_assign,
+                          item.issue_qc,
+                          item.issue_filename,
+                          item.formattedDateAccepting,
+                          item.issue_manday,
+                          item.formattedDateStart,
+                          item.formattedDateExpected,
+                          item.formattedDateComplete,
+                          item.issue_des_implementer,
+                          item.issue_des_dev,
+                          item.issue_des,
+                          item.issue_customer,
+                          item.issue_doc_id,
+                          item.issue_type_sa,
+                          item.created_at,
+                          item.issue_status_developer,
+                          item.issue_status_implement,
+                          item.issue_round
+                        )
                     "
                     size="20"
                     color="primary"
@@ -782,6 +789,7 @@
                   <v-icon
                     class="mr-2"
                     @click="
+                      history = false;
                       showIssueDetailDialog(
                         item.id,
                         item.issue_id,
@@ -811,7 +819,7 @@
                         item.issue_status_developer,
                         item.issue_status_implement,
                         item.issue_round
-                      ), (history == false)
+                      );
                     "
                     size="20"
                     color="primary"
@@ -903,6 +911,7 @@
                     class="mr-2"
                     v-else
                     @click="
+                      history = false;
                       showIssueDetailDialog(
                         item.id,
                         item.issue_id,
@@ -932,7 +941,7 @@
                         item.issue_status_developer,
                         item.issue_status_implement,
                         item.issue_round
-                      ), (history == false)
+                      );
                     "
                     size="20"
                     color="primary"
@@ -981,6 +990,7 @@
                   <v-icon
                     class="mr-2"
                     @click="
+                      history = false;
                       showIssueDetailDialog(
                         item.id,
                         item.issue_id,
@@ -1010,7 +1020,7 @@
                         item.issue_status_developer,
                         item.issue_status_implement,
                         item.issue_round
-                      ), (history == false)
+                      );
                     "
                     size="20"
                     color="primary"
@@ -1052,36 +1062,37 @@
                   <v-icon
                     class="mr-2"
                     @click="
-                      showIssueDetailDialog(
-                        item.id,
-                        item.issue_id,
-                        item.issue_type,
-                        item.screen_id,
-                        item.issue_status,
-                        item.issue_priority,
-                        item.formattedDateEnd,
-                        item.issue_name,
-                        item.issue_des_sa,
-                        item.issue_informer,
-                        item.issue_assign,
-                        item.issue_qc,
-                        item.issue_filename,
-                        item.formattedDateAccepting,
-                        item.issue_manday,
-                        item.formattedDateStart,
-                        item.formattedDateExpected,
-                        item.formattedDateComplete,
-                        item.issue_des_implementer,
-                        item.issue_des_dev,
-                        item.issue_des,
-                        item.issue_customer,
-                        item.issue_doc_id,
-                        item.issue_type_sa,
-                        item.created_at,
-                        item.issue_status_developer,
-                        item.issue_status_implement,
-                        item.issue_round
-                      ), (history == true)
+                      (history = true),
+                        showIssueDetailDialog(
+                          item.id,
+                          item.issue_id,
+                          item.issue_type,
+                          item.screen_id,
+                          item.issue_status,
+                          item.issue_priority,
+                          item.formattedDateEnd,
+                          item.issue_name,
+                          item.issue_des_sa,
+                          item.issue_informer,
+                          item.issue_assign,
+                          item.issue_qc,
+                          item.issue_filename,
+                          item.formattedDateAccepting,
+                          item.issue_manday,
+                          item.formattedDateStart,
+                          item.formattedDateExpected,
+                          item.formattedDateComplete,
+                          item.issue_des_implementer,
+                          item.issue_des_dev,
+                          item.issue_des,
+                          item.issue_customer,
+                          item.issue_doc_id,
+                          item.issue_type_sa,
+                          item.created_at,
+                          item.issue_status_developer,
+                          item.issue_status_implement,
+                          item.issue_round
+                        )
                     "
                     size="20"
                     color="primary"
@@ -1171,6 +1182,7 @@ export default {
         issue_round: "",
         impleSection: false,
         userId: "",
+        history: "",
       },
       infoCreate: {
         systemName: "",
@@ -1254,18 +1266,8 @@ export default {
         return [];
       }
     },
-    // disabledButton() {
-    //   if (this.user_role === "Admin" || this.user_position === "Developer") {
-    //     return false;
-    //   } else if (this.user_role === "User" && this.user_position === "Implementer") {
-    //     if () {
-    //       return true;
-    //     }
-    //   } else {
-    //     return [];
-    //   }
-    // },
   },
+
   methods: {
     async getUser() {
       await this.$axios.get("/users/getOne/" + this.userId).then((res) => {
@@ -1802,11 +1804,10 @@ export default {
       }
       this.selected.issue_status_implement = issueImplementerStatus;
       this.selected.issue_round = issueRound;
+      this.selected.history = this.history;
+
       //check role
-      if (this.history == true) {
-        this.dialogIssueDetail = true;
-      }
-      else if (this.user_role == "Admin") {
+      if (this.user_role == "Admin") {
         this.dialogIssueDetail = true;
       } else if (
         this.user_position == "Implementer" &&
