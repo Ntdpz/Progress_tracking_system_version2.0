@@ -8,7 +8,7 @@
         <v-card-title class="pt-3" style="background-color: #883cfe">
           <h5 style="color: white">
             รายละเอียดปัญหาที่พบ | โครงการ : {{ ProjectName }} > ระบบ :
-            {{ SystemName }}
+            {{ SystemName }} {{ IssueStatus }}
           </h5>
           <v-spacer></v-spacer>
           <v-btn :to="`/history/${id}`" v-if="history">History</v-btn>
@@ -495,7 +495,7 @@
         </v-row>
         <v-card-actions>
           <v-btn
-            v-show="(this.HistoryCheck == false)"
+            v-show="this.HistoryCheck == false"
             color="error"
             @click="issueReject()"
             ><h4>Reject</h4></v-btn
@@ -503,7 +503,7 @@
           <v-spacer></v-spacer>
           <v-btn color="error" @click="handleClose()"><h4>ปิด</h4></v-btn>
           <v-btn
-            v-show="(this.HistoryCheck == false)"
+            v-show="this.HistoryCheck == false"
             color="primary"
             @click="saveIssue()"
             ><h4>อัปเดต</h4></v-btn
@@ -814,10 +814,10 @@ export default {
           alert("Error submitting form");
         }
       }
-      if (this.IssueAccepting !== null) {
-        this.IssueStatus = "กำลังแก้ไข";
-        this.IssueDeveloperStatus = "กำลังแก้ไข";
-      }
+      // if (this.IssueAccepting !== null) {
+      //   this.IssueStatus = "กำลังแก้ไข";
+      //   this.IssueDeveloperStatus = "กำลังแก้ไข";
+      // }
       const data = {
         screen_id: this.IssueScreenId,
         system_id: this.SystemId,

@@ -307,37 +307,37 @@
                     class="mr-2"
                     v-else
                     @click="
-                      showIssueDetailDialog(
-                        (history = false),
-                        item.id,
-                        item.issue_id,
-                        item.issue_type,
-                        item.screen_id,
-                        item.issue_status,
-                        item.issue_priority,
-                        item.formattedDateEnd,
-                        item.issue_name,
-                        item.issue_des_sa,
-                        item.issue_informer,
-                        item.issue_assign,
-                        item.issue_qc,
-                        item.issue_filename,
-                        item.formattedDateAccepting,
-                        item.issue_manday,
-                        item.formattedDateStart,
-                        item.formattedDateExpected,
-                        item.formattedDateComplete,
-                        item.issue_des_implementer,
-                        item.issue_des_dev,
-                        item.issue_des,
-                        item.issue_customer,
-                        item.issue_doc_id,
-                        item.issue_type_sa,
-                        item.created_at,
-                        item.issue_status_developer,
-                        item.issue_status_implement,
-                        item.issue_round
-                      )
+                      (history = false),
+                        showIssueDetailDialog(
+                          item.id,
+                          item.issue_id,
+                          item.issue_type,
+                          item.screen_id,
+                          item.issue_status,
+                          item.issue_priority,
+                          item.formattedDateEnd,
+                          item.issue_name,
+                          item.issue_des_sa,
+                          item.issue_informer,
+                          item.issue_assign,
+                          item.issue_qc,
+                          item.issue_filename,
+                          item.formattedDateAccepting,
+                          item.issue_manday,
+                          item.formattedDateStart,
+                          item.formattedDateExpected,
+                          item.formattedDateComplete,
+                          item.issue_des_implementer,
+                          item.issue_des_dev,
+                          item.issue_des,
+                          item.issue_customer,
+                          item.issue_doc_id,
+                          item.issue_type_sa,
+                          item.created_at,
+                          item.issue_status_developer,
+                          item.issue_status_implement,
+                          item.issue_round
+                        )
                     "
                     size="20"
                     color="primary"
@@ -387,8 +387,9 @@
                   <v-icon
                     class="mr-2"
                     @click="
+                     (history = false),
                       showIssueDetailDialog(
-                        (history = false),
+                       
                         item.id,
                         item.issue_id,
                         item.issue_type,
@@ -509,8 +510,9 @@
                     class="mr-2"
                     v-else
                     @click="
+                       (history = false),
                       showIssueDetailDialog(
-                        (history = false),
+                     
                         item.id,
                         item.issue_id,
                         item.issue_type,
