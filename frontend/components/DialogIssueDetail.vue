@@ -241,7 +241,12 @@
           </v-col>
           <!-- col ใหญ่ฝั่งขวา -->
           <v-col>
-            <v-expansion-panels class="mb-2">
+            <v-expansion-panels
+              class="mb-2"
+              v-model="panel"
+              :disabled="disabledDev"
+              multiple
+            >
               <v-expansion-panel>
                 <v-expansion-panel-header
                   disable-icon-rotate
@@ -566,6 +571,8 @@ export default {
   },
   data() {
     return {
+      panel: [0],
+      disabledDev: false,
       loading: false,
       mandayProps: true,
       completionMenu: false,
@@ -907,6 +914,8 @@ export default {
       }
     },
     handleClose() {
+      this.panel = [0];
+      this.disabled = false;
       this.history = false;
       this.sendWork = false;
       this.$emit("update:dialog", false);
