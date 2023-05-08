@@ -8,7 +8,6 @@
             {{ systemName }} ({{ systemids }})
           </h5>
           <v-spacer></v-spacer>
-          <v-btn :to="`/history/${id}`" v-if="history">History</v-btn>
         </v-card-title>
         <v-card-text>
           <v-container>

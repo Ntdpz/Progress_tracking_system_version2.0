@@ -11,7 +11,9 @@
             {{ SystemName }} {{ IssueStatus }}
           </h5>
           <v-spacer></v-spacer>
-          <v-btn :to="`/history/${id}`" v-if="history">History</v-btn>
+          <v-btn color="white" :to="`/history/${id}`" v-if="history"
+            >ประวัติ</v-btn
+          >
         </v-card-title>
         <v-row class="ml-2 mr-2 mt-2">
           <v-col>
@@ -498,7 +500,7 @@
             v-show="this.HistoryCheck == false"
             color="error"
             @click="issueReject()"
-            ><h4>Reject</h4></v-btn
+            ><h4>ลบ</h4></v-btn
           >
           <v-spacer></v-spacer>
           <v-btn color="error" @click="handleClose()"><h4>ปิด</h4></v-btn>
