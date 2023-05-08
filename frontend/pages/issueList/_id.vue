@@ -473,6 +473,12 @@
                   <!-- {{ item.issue_assignees }} -->
                   <p v-show="item.issue_assign == ''">N/A</p>
                 </template>
+                <template v-slot:[`item.issue_qc`]="{ item }">
+                  {{ item.issue_qc }}
+                  <p v-show="item.issue_qc == null || item.issue_qc == ''">
+                    No assign
+                  </p>
+                </template>
                 <template v-slot:[`item.actions`]="{ item }">
                   <v-icon
                     class="mr-2"
@@ -673,6 +679,12 @@
                   <v-icon style="color: black">mdi-account-circle</v-icon>
                   <!-- {{ item.issue_assignees }} -->
                   <p v-show="item.issue_assign == ''">N/A</p>
+                </template>
+                <template v-slot:[`item.issue_qc`]="{ item }">
+                  {{ item.issue_qc }}
+                  <p v-show="item.issue_qc == null || item.issue_qc == ''">
+                    No assign
+                  </p>
                 </template>
                 <template v-slot:[`item.actions`]="{ item }">
                   <v-icon
@@ -875,6 +887,12 @@
                   <!-- {{ item.issue_assignees }} -->
                   <p v-show="item.issue_assign == ''">N/A</p>
                 </template>
+                <template v-slot:[`item.issue_qc`]="{ item }">
+                  {{ item.issue_qc }}
+                  <p v-show="item.issue_qc == null || item.issue_qc == ''">
+                    No assign
+                  </p>
+                </template>
                 <template v-slot:[`item.actions`]="{ item }">
                   <v-icon
                     class="mr-2"
@@ -1053,6 +1071,12 @@
                   <v-icon style="color: black">mdi-account-circle</v-icon>
                   <!-- {{ item.issue_assignees }} -->
                   <p v-show="item.issue_assign == ''">N/A</p>
+                </template>
+                <template v-slot:[`item.issue_qc`]="{ item }">
+                  {{ item.issue_qc }}
+                  <p v-show="item.issue_qc == null || item.issue_qc == ''">
+                    No assign
+                  </p>
                 </template>
                 <template v-slot:[`item.actions`]="{ item }">
                   <v-icon
