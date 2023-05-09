@@ -11,14 +11,13 @@
         {{ this.systemslength }} ระบบ
       </p>
     </v-row>
-
     <!-- * box -->
-    <v-expansion-panels
-      class="mb-6"
-      v-for="(system, index) in systemsList"
-      :key="index"
-    >
-      <v-expansion-panel>
+    <v-expansion-panels>
+      <v-expansion-panel
+        class="mb-4"
+        v-for="(system, index) in systemsList"
+        :key="index"
+      >
         <v-expansion-panel-header>
           <template>
             <v-row no-gutters>
