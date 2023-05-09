@@ -527,6 +527,10 @@
       :dialog.sync="dialogDeleteSuccess"
       title="ลบข้อมูลเสร็จเรียบร้อย"
     />
+    <dialog-fail
+    :dialog.sync="dialogScreenHaveIssue"
+    title="ไม่สามารถลบได้ เนื่องจากหน้าจอนี้ติดปัญหาที่หน้ารายการปัญหา"
+    />
   </div>
 </template>
 
@@ -577,6 +581,7 @@ export default {
       userrole: "",
       dialogSuccess: false,
       dialogDeleteSuccess: false,
+      dialogScreenHaveIssue: false,
     };
   },
   created() {
@@ -688,7 +693,7 @@ export default {
       this.dialogSuccess = true;
     },
     async deleteScreenAndUserScreen() {
-      await this.deleteUser_screens();
+      // await this.deleteUser_screens();
       await this.deleteScreen();
     },
     async updateScreen() {
@@ -786,9 +791,11 @@ export default {
         .then((res) => {
           const promise = new Promise((resolve, reject) => {
             resolve();
+            this.deleteUser_screens();
             this.dialogDeleteSuccess = true;
           });
           promise.then(() => {
+            
             setTimeout(() => {
               // alert("update success");
               this.$router.push("/systemdetail/" + this.screensID.system_id);
@@ -799,7 +806,11 @@ export default {
         })
         .catch((err) => {
           console.log(err);
-          alert(err);
+          if (err.response && err.response.status === 400) {
+              this.dialogScreenHaveIssue = true;
+          } else {
+        console.log(err);
+          }
         });
     },
     async getAllDefault() {

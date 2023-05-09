@@ -334,7 +334,7 @@
                         item.issue_status_developer,
                         item.issue_status_implement,
                         item.issue_round
-                      ), (history == false)
+                      ), (history = false)
                     "
                     size="20"
                     color="primary"
@@ -413,7 +413,7 @@
                         item.issue_status_developer,
                         item.issue_status_implement,
                         item.issue_round
-                      ), (history == false)
+                      ), (history = false)
                     "
                     size="20"
                     color="primary"
@@ -534,7 +534,7 @@
                         item.issue_status_developer,
                         item.issue_status_implement,
                         item.issue_round
-                      ), (history == false)
+                      ), (history = false)
                     "
                     size="20"
                     color="primary"
@@ -612,7 +612,7 @@
                         item.issue_status_developer,
                         item.issue_status_implement,
                         item.issue_round
-                      ), (history == false)
+                      ), (history = false)
                     "
                     size="20"
                     color="primary"
@@ -733,7 +733,7 @@
                         item.issue_status_developer,
                         item.issue_status_implement,
                         item.issue_round
-                      ), (history == false)
+                      ), (history = false)
                     "
                     size="20"
                     color="primary"
@@ -811,7 +811,7 @@
                         item.issue_status_developer,
                         item.issue_status_implement,
                         item.issue_round
-                      ), (history == false)
+                      ), (history = false)
                     "
                     size="20"
                     color="primary"
@@ -932,7 +932,7 @@
                         item.issue_status_developer,
                         item.issue_status_implement,
                         item.issue_round
-                      ), (history == false)
+                      ), (history = false)
                     "
                     size="20"
                     color="primary"
@@ -1010,7 +1010,7 @@
                         item.issue_status_developer,
                         item.issue_status_implement,
                         item.issue_round
-                      ), (history == false)
+                      ), (history = false)
                     "
                     size="20"
                     color="primary"
@@ -1081,7 +1081,7 @@
                         item.issue_status_developer,
                         item.issue_status_implement,
                         item.issue_round
-                      ), (history == true)
+                      ), (history = true)
                     "
                     size="20"
                     color="primary"

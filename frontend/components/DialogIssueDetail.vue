@@ -585,7 +585,7 @@ export default {
       user_position: "",
       userSendWork: null,
       //history btn
-      // history: false,
+      //history: false,
     };
   },
   async mounted() {
