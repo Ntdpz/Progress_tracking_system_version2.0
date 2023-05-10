@@ -64,6 +64,9 @@
                   item-value="screen_name"
                   return-object="false"
                 >
+                <template #selection="{ item }">
+                    {{ item.screen_id }}: {{ item.screen_name }}
+                  </template>
                   <template v-slot:item="{ item }">
                     {{ item.screen_id }} : {{ item.screen_name }}
                   </template>
