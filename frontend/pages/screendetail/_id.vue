@@ -145,6 +145,45 @@
                   ></v-text-field>
                 </v-col>
               </v-row>
+
+              <v-row>
+                <v-col
+                  class="mb-0 pb-0 hidden-sm-and-up"
+                  style="place-self: center"
+                >
+                  <h4 class="">System Analyst</h4>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col
+                  class="hidden-xs-only"
+                  sm="4"
+                  md="4"
+                  style="place-self: center"
+                >
+                  <h4 class="">System Analyst</h4>
+                </v-col>
+                <v-col class="col-12" sm="8" md="8">
+                  <v-select
+                    style="text-align-last: left"
+                    v-model="sa"
+                    item-text="user_firstname"
+                    item-value="id"
+                    :items="position_Sa"
+                    hide-details="auto"
+                    dense
+                    outlined
+                    chips
+                    multiple
+                    :disabled="disabled"
+                  >
+                    <template v-slot:item="{ item }">
+                      {{ item.user_firstname }}
+                    </template>
+                  </v-select>
+                </v-col>
+              </v-row>
+
               <v-row>
                 <v-col
                   class="mb-0 pb-0 hidden-sm-and-up"
@@ -546,8 +585,8 @@ export default {
       showIcon: true,
       screencode: "A001",
       screenname: "",
-      developer: "Developer 1",
-      implementer: "Implements 1",
+      // developer: "Developer 1",
+      // implementer: "Implements 1",
       status: "Not Complete",
       level: 100,
       manday: 365,
@@ -566,13 +605,16 @@ export default {
       SelectScreenType: [],
       selectlevel: [],
       userScreens: [],
+      sa:[],
       developer: [],
       implementer: [],
       data_position_Developer: [],
       data_position_Implementer: [],
+      data_position_Sa: [],
       user_id: [],
       position_Implementers: [],
       position_Developers: [],
+      position_Sa:[],
       dataDefault: [],
       userid: "",
       userfirstname: "",
@@ -590,6 +632,7 @@ export default {
     this.getUser_screen();
     this.getPosition_Developer();
     this.getPosition_Implementer();
+    this.getPosition_Sa();
   },
   computed: {
     userId() {
@@ -602,7 +645,7 @@ export default {
   updated() {
     // this.getScreenID();
     // this.calculateManDay();
-    this.user_id = this.developer.concat(this.implementer);
+    this.user_id = this.developer.concat(this.implementer, this.sa);
   },
   methods: {
     async getUser() {
@@ -649,6 +692,9 @@ export default {
           this.implementer = this.userScreens
             .filter((user) => user.user_position === "Implementer")
             .map((user) => user.id);
+          this.sa = this.userScreens
+          .filter((user) => user.user_position === "System Analyst")
+          .map((user) => user.id);
         });
     },
     async getPosition_Developer() {
@@ -665,6 +711,13 @@ export default {
           this.data_position_Implementer = data.data;
         });
     },
+    async getPosition_Sa() {
+      await this.$axios
+        .get("/users/getAll?user_position=System%20Analyst")
+        .then((data) => {
+          this.data_position_Sa = data.data;
+        });
+    },
     async getUserSystems() {
       await this.$axios
         .get("/user_systems/getOneScreenID/" + this.screensID.system_id)
@@ -675,9 +728,9 @@ export default {
           this.position_Developers = data.data.filter(
             (item) => item.user_position === "Developer"
           );
-
-          this.user_developer = this.data_position_Developer;
-          this.user_implementer = this.data_position_Implementer;
+          this.position_Sa = data.data.filter(
+            (item) => item.user_position === "System Analyst"
+          );
         });
     },
     resetday() {
@@ -693,7 +746,7 @@ export default {
       this.dialogSuccess = true;
     },
     async deleteScreenAndUserScreen() {
-      // await this.deleteUser_screens();
+      await this.deleteUser_screens();
       await this.deleteScreen();
     },
     async updateScreen() {
@@ -791,11 +844,10 @@ export default {
         .then((res) => {
           const promise = new Promise((resolve, reject) => {
             resolve();
-            this.deleteUser_screens();
+            // this.deleteUser_screens();
             this.dialogDeleteSuccess = true;
           });
           promise.then(() => {
-            
             setTimeout(() => {
               // alert("update success");
               this.$router.push("/systemdetail/" + this.screensID.system_id);
@@ -806,11 +858,11 @@ export default {
         })
         .catch((err) => {
           console.log(err);
-          if (err.response && err.response.status === 400) {
-              this.dialogScreenHaveIssue = true;
-          } else {
-        console.log(err);
-          }
+        //   if (err.response && err.response.status === 400) {
+        //       this.dialogScreenHaveIssue = true;
+        //   } else {
+        // console.log(err);
+        //   }
         });
     },
     async getAllDefault() {
