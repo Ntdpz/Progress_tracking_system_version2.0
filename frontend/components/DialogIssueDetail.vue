@@ -8,10 +8,12 @@
         <v-card-title class="pt-3" style="background-color: #883cfe">
           <h5 style="color: white">
             รายละเอียดปัญหาที่พบ | โครงการ : {{ ProjectName }} > ระบบ :
-            {{ SystemName }}
+            {{ SystemName }} {{ IssueStatus }}
           </h5>
           <v-spacer></v-spacer>
-          <v-btn :to="`/history/${id}`" v-if="history">History</v-btn>
+          <v-btn color="white" :to="`/history/${id}`" v-if="history"
+            >ประวัติ</v-btn
+          >
         </v-card-title>
         <v-row class="ml-2 mr-2 mt-2">
           <v-col>
@@ -62,6 +64,9 @@
                   item-value="screen_name"
                   return-object="false"
                 >
+                <template #selection="{ item }">
+                    {{ item.screen_id }}: {{ item.screen_name }}
+                  </template>
                   <template v-slot:item="{ item }">
                     {{ item.screen_id }} : {{ item.screen_name }}
                   </template>
@@ -239,7 +244,12 @@
           </v-col>
           <!-- col ใหญ่ฝั่งขวา -->
           <v-col>
-            <v-expansion-panels class="mb-2">
+            <v-expansion-panels
+              class="mb-2"
+              v-model="panel"
+              :disabled="disabledDev"
+              multiple
+            >
               <v-expansion-panel>
                 <v-expansion-panel-header
                   disable-icon-rotate
@@ -253,94 +263,98 @@
                 </v-expansion-panel-header>
                 <v-expansion-panel-content>
                   <v-col class="pt-0">
-                    <v-row class="mt-5">
-                      <v-col cols="6" class="pb-0">
-                        <p>
-                          วันที่รับ -
-                          {{ IssueAccepting }}
-                        </p>
-                        <v-row>
-                          <!-- Date of accepting-->
-                          <v-menu
-                            v-model="acceptMenu"
-                            :close-on-content-click="false"
-                            :nudge-right="40"
-                            transition="scale-transition"
-                          >
-                            <template v-slot:activator="{ on, attrs }">
-                              <v-text-field
+                    <v-form ref="form">
+                      <v-row class="mt-5">
+                        <v-col cols="6" class="pb-0">
+                          <!-- <p>
+                            วันที่รับ -
+                            {{ IssueAccepting }}
+                          </p> -->
+                          <v-row>
+                            <!-- Date of accepting-->
+                            <v-menu
+                              v-model="acceptMenu"
+                              :close-on-content-click="false"
+                              :nudge-right="40"
+                              transition="scale-transition"
+                            >
+                              <template v-slot:activator="{ on, attrs }">
+                                <v-text-field
+                                  v-model="IssueAccepting"
+                                  label="วันที่รับ"
+                                  prepend-icon="mdi-calendar"
+                                  readonly
+                                  v-bind="attrs"
+                                  v-on="on"
+                                  :rules="rules"
+                                ></v-text-field>
+                              </template>
+                              <v-date-picker
                                 v-model="IssueAccepting"
-                                label="วันที่รับ"
-                                prepend-icon="mdi-calendar"
-                                readonly
-                                v-bind="attrs"
-                                v-on="on"
-                              ></v-text-field>
-                            </template>
-                            <v-date-picker
-                              v-model="IssueAccepting"
-                              @input="acceptMenu = false"
-                            ></v-date-picker>
-                          </v-menu>
-                        </v-row>
-                      </v-col>
-                    </v-row>
-                    <v-row> </v-row>
-                    <v-row>
-                      <v-col cols="6" class="mb-5">
-                        <p>วันที่เริ่ม - {{ IssueStart }}</p>
-                        <v-row>
-                          <!-- Start date -->
-                          <v-menu
-                            v-model="startMenu"
-                            :close-on-content-click="false"
-                            :nudge-right="40"
-                            transition="scale-transition"
-                          >
-                            <template v-slot:activator="{ on, attrs }">
-                              <v-text-field
+                                @input="acceptMenu = false"
+                              ></v-date-picker>
+                            </v-menu>
+                          </v-row>
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col cols="6" class="mb-5">
+                          <!-- <p>วันที่เริ่ม - {{ IssueStart }}</p> -->
+                          <v-row>
+                            <!-- Start date -->
+                            <v-menu
+                              v-model="startMenu"
+                              :close-on-content-click="false"
+                              :nudge-right="40"
+                              transition="scale-transition"
+                            >
+                              <template v-slot:activator="{ on, attrs }">
+                                <v-text-field
+                                  v-model="IssueStart"
+                                  label="วันที่เริ่ม"
+                                  prepend-icon="mdi-calendar"
+                                  readonly
+                                  v-bind="attrs"
+                                  v-on="on"
+                                  :rules="rules"
+                                ></v-text-field>
+                              </template>
+                              <v-date-picker
                                 v-model="IssueStart"
-                                label="วันที่เริ่ม"
-                                prepend-icon="mdi-calendar"
-                                readonly
-                                v-bind="attrs"
-                                v-on="on"
-                              ></v-text-field>
-                            </template>
-                            <v-date-picker
-                              v-model="IssueStart"
-                              @input="startMenu = false"
-                            ></v-date-picker>
-                          </v-menu>
-                          <!-- Expected completion Date -->
-                          <p class="ml-4">
-                            วันที่คาดว่าแก้ไขเสร็จ -
-                            {{ IssueExpected }}
-                          </p>
-                          <v-menu
-                            v-model="expectedMenu"
-                            :close-on-content-click="false"
-                            :nudge-right="40"
-                            transition="scale-transition"
-                          >
-                            <template v-slot:activator="{ on, attrs }">
-                              <v-text-field
+                                @input="startMenu = false"
+                              ></v-date-picker>
+                            </v-menu>
+                            <!-- Expected completion Date -->
+                            <!-- <p class="ml-4">
+                              วันที่คาดว่าแก้ไขเสร็จ -
+                              {{ IssueExpected }}
+                            </p> -->
+                            <v-menu
+                              v-model="expectedMenu"
+                              :close-on-content-click="false"
+                              :nudge-right="40"
+                              transition="scale-transition"
+                            >
+                              <template v-slot:activator="{ on, attrs }">
+                                <v-text-field
+                                  v-model="IssueExpected"
+                                  label="วันที่คาดว่าแก้ไขเสร็จ"
+                                  prepend-icon="mdi-calendar"
+                                  readonly
+                                  v-bind="attrs"
+                                  v-on="on"
+                                  :rules="rules"
+                                ></v-text-field>
+                              </template>
+                              <v-date-picker
                                 v-model="IssueExpected"
-                                label="วันที่คาดว่าแก้ไขเสร็จ"
-                                prepend-icon="mdi-calendar"
-                                readonly
-                                v-bind="attrs"
-                                v-on="on"
-                              ></v-text-field>
-                            </template>
-                            <v-date-picker
-                              v-model="IssueExpected"
-                              @input="expectedMenu = false"
-                            ></v-date-picker>
-                          </v-menu>
-                        </v-row>
-                      </v-col>
-                    </v-row>
+                                @input="expectedMenu = false"
+                              ></v-date-picker>
+                            </v-menu>
+                          </v-row>
+                        </v-col>
+                      </v-row>
+                    </v-form>
                     <v-col cols="6">
                       <v-row v-if="mandayProps">
                         <p class="pa-2">Manday</p>
@@ -358,10 +372,10 @@
                       <h6>ส่วนของผู้พัฒนา</h6>
                     </v-row>
                     <v-row>
-                      <v-col cols="8">
+                      <v-col>
                         <v-row>
-                          <v-col>
-                            <p class="pa-2">สถานะ</p>
+                          <v-col cols="4">
+                            <!-- <p class="pa-2">สถานะ</p> -->
                             <v-select
                               :items="issue_status_developer_default"
                               label="สถานะ"
@@ -372,13 +386,13 @@
                               @change="checkSendWork()"
                             ></v-select>
                           </v-col>
-                          <v-col v-if="sendWork">
-                            <p class="pa-2">โปรดเลือกคนที่จะส่งต่องาน</p>
+                          <v-col v-if="sendWork" cols="8">
+                            <!-- <p class="pa-2">โปรดเลือกคนที่จะส่งต่องาน</p> -->
                             <v-select
                               return-object="false"
                               :items="position_Developers_System"
                               @change="getUserScreen(IssueAssign.id)"
-                              label="ผู้พัฒนา"
+                              label="โปรดเลือกคนที่จะส่งต่องาน"
                               dense
                               outlined
                               menu-props="auto"
@@ -389,35 +403,40 @@
                         </v-row>
                       </v-col>
                     </v-row>
-                    <v-row>
-                      <v-col cols="6">
-                        <v-row>
-                          <!-- Completion date-->
-                          <p class="pa-2">วันที่เสร็จ - {{ IssueComplete }}</p>
-                          <v-menu
-                            v-model="completionMenu"
-                            :close-on-content-click="false"
-                            :nudge-right="40"
-                            transition="scale-transition"
-                          >
-                            <template v-slot:activator="{ on, attrs }">
-                              <v-text-field
+                    <v-form ref="formCom">
+                      <v-row>
+                        <v-col cols="6">
+                          <v-row>
+                            <!-- Completion date-->
+                            <!-- <p class="pa-2">
+                              วันที่เสร็จ - {{ IssueComplete }}
+                            </p> -->
+                            <v-menu
+                              v-model="completionMenu"
+                              :close-on-content-click="false"
+                              :nudge-right="40"
+                              transition="scale-transition"
+                            >
+                              <template v-slot:activator="{ on, attrs }">
+                                <v-text-field
+                                  v-model="IssueComplete"
+                                  label="วันที่เสร็จ"
+                                  prepend-icon="mdi-calendar"
+                                  readonly
+                                  v-bind="attrs"
+                                  v-on="on"
+                                  :rules="rules"
+                                ></v-text-field>
+                              </template>
+                              <v-date-picker
                                 v-model="IssueComplete"
-                                label="วันที่เสร็จ"
-                                prepend-icon="mdi-calendar"
-                                readonly
-                                v-bind="attrs"
-                                v-on="on"
-                              ></v-text-field>
-                            </template>
-                            <v-date-picker
-                              v-model="IssueComplete"
-                              @input="completionMenu = false"
-                            ></v-date-picker>
-                          </v-menu>
-                        </v-row>
-                      </v-col>
-                    </v-row>
+                                @input="completionMenu = false"
+                              ></v-date-picker>
+                            </v-menu>
+                          </v-row>
+                        </v-col>
+                      </v-row>
+                    </v-form>
                     <v-row>
                       <v-col cols="6">
                         <p class="">คำอธิบาย</p>
@@ -494,10 +513,20 @@
           </v-col>
         </v-row>
         <v-card-actions>
-          <v-btn v-if="history != true" color="error" @click="issueReject()"><h4>Reject</h4></v-btn>
+          <v-btn
+            v-show="this.HistoryCheck == false"
+            color="error"
+            @click="issueReject()"
+            ><h4>ลบ</h4></v-btn
+          >
           <v-spacer></v-spacer>
           <v-btn color="error" @click="handleClose()"><h4>ปิด</h4></v-btn>
-          <v-btn v-if="history != true" color="primary" @click="saveIssue()"><h4>อัปเดต</h4></v-btn>
+          <v-btn
+            v-show="this.HistoryCheck == false"
+            color="primary"
+            @click="saveIssue()"
+            ><h4>อัปเดต</h4></v-btn
+          >
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -546,17 +575,16 @@ export default {
     IssueRound: Number,
     ImpleSection: Boolean,
     UserId: Number,
+    HistoryCheck: Boolean,
     dialog: {
-      type: Boolean,
-      default: false,
-    },
-    history: {
       type: Boolean,
       default: false,
     },
   },
   data() {
     return {
+      panel: [0],
+      disabledDev: false,
       loading: false,
       mandayProps: true,
       completionMenu: false,
@@ -585,7 +613,9 @@ export default {
       user_position: "",
       userSendWork: null,
       //history btn
-      //history: false,
+      history: false,
+      //validate
+      rules: [(value) => !!value || "Required."],
     };
   },
   async mounted() {
@@ -610,15 +640,26 @@ export default {
       this.userSendWork = selectedUserID;
     },
     checkSendWork() {
+      if (this.IssueDeveloperStatus == "กำลังแก้ไข") {
+        this.$refs.form.validate();
+      }
+      if (this.IssueDeveloperStatus == "แก้ไขเรียบร้อย") {
+        this.$refs.formCom.validate();
+      }
       if (this.IssueDeveloperStatus == "แก้ไขไม่ได้") {
         this.$axios
           .get("/user_systems/getOneScreenID/" + this.SystemId)
           .then((res) => {
             this.position_Developers_System = res.data.filter(
-              (item) => item.user_position === "Developer"
+              (item) =>
+                item.user_position === "Developer" &&
+                item.user_firstname !== this.IssueAssign
             );
           });
+
         this.sendWork = true;
+      } else {
+        this.sendWork = false;
       }
     },
     checkStatus() {
@@ -656,6 +697,7 @@ export default {
       if (this.IssueManday == "") {
         this.IssueManday = 0;
       }
+      //แอดคนเข้า screen
       if (this.userSendWork !== null) {
         try {
           await this.$axios
@@ -672,6 +714,7 @@ export default {
           console.log("user_screen: " + error);
         }
       }
+      //แก้ไขไม่ไ้ด ส่งต่อคนอื่น
       if (this.IssueDeveloperStatus == "แก้ไขไม่ได้") {
         const dataHistoryDev = {
           screen_id: this.IssueScreenId,
@@ -740,6 +783,7 @@ export default {
         this.IssueRound = 0;
         this.IssueAssign = this.IssueAssign.user_firstname;
       }
+      //ตรวจสอบไม่ผ่านเริ่มใหม่ + เก็บรอบ
       if (this.IssueImplementerStatus == "ตรวจสอบไม่ผ่าน") {
         this.IssueRound += 1;
         this.IssueStatus = "รอแก้ไข";
@@ -750,6 +794,7 @@ export default {
         this.IssueImplementerStatus = null;
         this.IssueStatus = "ตรวจสอบไม่ผ่าน";
       }
+      //ตรวจสอบผ่านเก็บประวัติ ปิดจบ
       if (this.IssueImplementerStatus == "ตรวจสอบผ่าน") {
         this.IssueStatus = "ตรวจสอบผ่าน";
         const dataHistory = {
@@ -807,97 +852,113 @@ export default {
           alert("Error submitting form");
         }
       }
-      if (this.IssueAccepting !== null) {
-        this.IssueStatus = "กำลังแก้ไข";
-        this.IssueDeveloperStatus = "กำลังแก้ไข";
-      }
-      const data = {
-        screen_id: this.IssueScreenId,
-        system_id: this.SystemId,
-        project_id: this.ProjectId,
-        issue_name: this.IssueName,
-        issue_id: this.IssueId,
-        issue_type: this.IssueType,
-        issue_informer: this.IssueInformer,
-        issue_priority: this.IssuePriority,
-        issue_end: this.IssueEndDate,
-        issue_assign: this.IssueAssign,
-        issue_qc: this.IssueQC,
-        issue_des: this.IssueDes,
-        issue_des_sa: this.IssueDesSA,
-        issue_type_sa: this.IssueTypeSA,
-        issue_doc_id: this.IssueDocId,
-        issue_customer: this.IssueCustomer,
-        issue_filename: this.IssueFilename,
-        issue_des_dev: this.IssueDesDev,
-        issue_des_implementer: this.IssueDesImplementer,
-        issue_start: this.IssueStart,
-        issue_expected: this.IssueExpected,
-        issue_status: this.IssueStatus,
-        issue_accepting: this.IssueAccepting,
-        issue_manday: this.IssueManday,
-        issue_complete: this.IssueComplete,
-        issue_status_developer: this.IssueDeveloperStatus,
-        issue_status_implement: this.IssueImplementerStatus,
-        issue_round: this.IssueRound,
-      };
-      const dataHistoryUpdate = {
-        screen_id: this.IssueScreenId,
-        system_id: this.SystemId,
-        project_id: this.ProjectId,
-        issues_id: this.id,
-        issue_name: this.IssueName,
-        issue_id: this.IssueId,
-        issue_type: this.IssueType,
-        issue_informer: this.IssueInformer,
-        issue_priority: this.IssuePriority,
-        issue_end: this.IssueEndDate,
-        issue_assign: this.IssueAssign,
-        issue_qc: this.IssueQC,
-        issue_des: this.IssueDes,
-        issue_des_sa: this.IssueDesSA,
-        issue_type_sa: this.IssueTypeSA,
-        issue_doc_id: this.IssueDocId,
-        issue_customer: this.IssueCustomer,
-        issue_filename: this.IssueFilename,
-        issue_des_dev: this.IssueDesDev,
-        issue_des_implementer: this.IssueDesImplementer,
-        issue_start: this.IssueStart,
-        issue_expected: this.IssueExpected,
-        issue_status: this.IssueStatus,
-        issue_accepting: this.IssueAccepting,
-        issue_manday: this.IssueManday,
-        issue_complete: this.IssueComplete,
-        issue_status_developer: this.IssueDeveloperStatus,
-        issue_status_implement: this.IssueImplementerStatus,
-        issue_round: this.IssueRound,
-        user_updated: this.user_firstname,
-        user_position_updated: this.user_position,
-        user_id_updated: this.user_id,
-      };
-      try {
-        await this.$axios.put("/issues/updateIssueAdmin/" + this.id, data);
-        await this.$axios.post(
-          "/history_issues/createIssueHistory/",
-          dataHistoryUpdate
-        );
-        this.$emit("button-clicked");
-        this.handleClose();
-        const promise = new Promise((resolve, reject) => {
-          resolve();
-          this.close();
-        });
-        promise.then(() => {
-          setTimeout(() => {
-            alert("update success");
-          }, 2000);
-        });
-      } catch (error) {
-        console.error(error);
-        alert("Error submitting form");
+      //มาเช็๕ว่ากำลังแก้ไข แล้วค่าวันที่ว่างมั้ย???
+      if (
+        this.IssueDeveloperStatus == "กำลังแก้ไข" &&
+        this.IssueAccepting === null &&
+        this.IssueStart === null &&
+        this.IssueExpected === null
+      ) {
+        alert("Accepting date is required");
+      } else if (
+        this.IssueDeveloperStatus == "แก้ไขเรียบร้อย" &&
+        this.IssueComplete === null
+      ) {
+        alert("Complete date is required");
+      } else {
+        // your Axios post request here
+        const data = {
+          screen_id: this.IssueScreenId,
+          system_id: this.SystemId,
+          project_id: this.ProjectId,
+          issue_name: this.IssueName,
+          issue_id: this.IssueId,
+          issue_type: this.IssueType,
+          issue_informer: this.IssueInformer,
+          issue_priority: this.IssuePriority,
+          issue_end: this.IssueEndDate,
+          issue_assign: this.IssueAssign,
+          issue_qc: this.IssueQC,
+          issue_des: this.IssueDes,
+          issue_des_sa: this.IssueDesSA,
+          issue_type_sa: this.IssueTypeSA,
+          issue_doc_id: this.IssueDocId,
+          issue_customer: this.IssueCustomer,
+          issue_filename: this.IssueFilename,
+          issue_des_dev: this.IssueDesDev,
+          issue_des_implementer: this.IssueDesImplementer,
+          issue_start: this.IssueStart,
+          issue_expected: this.IssueExpected,
+          issue_status: this.IssueStatus,
+          issue_accepting: this.IssueAccepting,
+          issue_manday: this.IssueManday,
+          issue_complete: this.IssueComplete,
+          issue_status_developer: this.IssueDeveloperStatus,
+          issue_status_implement: this.IssueImplementerStatus,
+          issue_round: this.IssueRound,
+        };
+        const dataHistoryUpdate = {
+          screen_id: this.IssueScreenId,
+          system_id: this.SystemId,
+          project_id: this.ProjectId,
+          issues_id: this.id,
+          issue_name: this.IssueName,
+          issue_id: this.IssueId,
+          issue_type: this.IssueType,
+          issue_informer: this.IssueInformer,
+          issue_priority: this.IssuePriority,
+          issue_end: this.IssueEndDate,
+          issue_assign: this.IssueAssign,
+          issue_qc: this.IssueQC,
+          issue_des: this.IssueDes,
+          issue_des_sa: this.IssueDesSA,
+          issue_type_sa: this.IssueTypeSA,
+          issue_doc_id: this.IssueDocId,
+          issue_customer: this.IssueCustomer,
+          issue_filename: this.IssueFilename,
+          issue_des_dev: this.IssueDesDev,
+          issue_des_implementer: this.IssueDesImplementer,
+          issue_start: this.IssueStart,
+          issue_expected: this.IssueExpected,
+          issue_status: this.IssueStatus,
+          issue_accepting: this.IssueAccepting,
+          issue_manday: this.IssueManday,
+          issue_complete: this.IssueComplete,
+          issue_status_developer: this.IssueDeveloperStatus,
+          issue_status_implement: this.IssueImplementerStatus,
+          issue_round: this.IssueRound,
+          user_updated: this.user_firstname,
+          user_position_updated: this.user_position,
+          user_id_updated: this.user_id,
+        };
+        try {
+          await this.$axios.put("/issues/updateIssueAdmin/" + this.id, data);
+          await this.$axios.post(
+            "/history_issues/createIssueHistory/",
+            dataHistoryUpdate
+          );
+          this.$emit("button-clicked");
+          this.handleClose();
+          const promise = new Promise((resolve, reject) => {
+            resolve();
+            this.close();
+          });
+          promise.then(() => {
+            setTimeout(() => {
+              alert("update success");
+            }, 2000);
+          });
+        } catch (error) {
+          console.error(error);
+          alert("Error submitting form");
+        }
       }
     },
     handleClose() {
+      this.$refs.form.reset();
+      this.$refs.formCom.reset();
+      this.panel = [0];
+      this.disabled = false;
       this.history = false;
       this.sendWork = false;
       this.$emit("update:dialog", false);
