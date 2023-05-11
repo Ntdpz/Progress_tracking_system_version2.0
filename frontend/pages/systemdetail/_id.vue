@@ -102,7 +102,9 @@
               <v-card>
                 <v-col>
                   <v-card outlined tile height="100%" style="border: none">
-                    <v-card-title class="mr-0 pa-0">สร้างหน้าจอใหม่</v-card-title>
+                    <v-card-title class="mr-0 pa-0"
+                      >สร้างหน้าจอใหม่</v-card-title
+                    >
                     <v-container fluid>
                       <v-row>
                         <v-col>
@@ -204,6 +206,45 @@
                             ></v-text-field>
                           </v-col>
                         </v-row>
+
+                        <v-row>
+                          <v-col
+                            class="mb-0 pb-0 hidden-sm-and-up"
+                            style="place-self: center"
+                          >
+                            <h4 class="">System Analyst</h4>
+                          </v-col>
+                        </v-row>
+                        <v-row>
+                          <v-col
+                            class="hidden-xs-only"
+                            sm="4"
+                            md="4"
+                            style="place-self: center"
+                          >
+                            <h4 class="">System Analyst</h4>
+                          </v-col>
+                          <v-col class="col-12" sm="8" md="8">
+                            <v-select
+                              style="text-align-last: left"
+                              v-model="user_id"
+                              :items="position_Sa"
+                              item-text="user_firstname"
+                              item-value="id"
+                              hide-details="auto"
+                              dense
+                              outlined
+                              chips
+                              multiple
+                              persistent-hint
+                            >
+                              <template v-slot:item="{ item }">
+                                {{ item.user_firstname }}
+                              </template>
+                            </v-select>
+                          </v-col>
+                        </v-row>
+
                         <v-row>
                           <v-col
                             class="mb-0 pb-0 hidden-sm-and-up"
@@ -714,13 +755,30 @@
                           md="8"
                           style="align-self: center"
                         >
-                          <v-text-field
+                          <!-- <v-text-field
                             style="text-align-last: left"
                             v-model="short_system_analyst"
                             hide-details="auto"
                             dense
                             outlined
-                          ></v-text-field>
+                          ></v-text-field> -->
+                          <v-select
+                            style="text-align-last: left"
+                            v-model="user_sa"
+                            :items="sa_system"
+                            item-text="user_firstname"
+                            item-value="id"
+                            hide-details="auto"
+                            dense
+                            outlined
+                            chips
+                            multiple
+                            persistent-hint
+                          >
+                            <template v-slot:item="{ item }">
+                              {{ item.user_firstname }}
+                            </template>
+                          </v-select>
                         </v-col>
                       </v-row>
                     </v-col>
@@ -1019,9 +1077,11 @@ export default {
       user_id: [],
       user_developer: [],
       user_implementer: [],
+      user_sa: [],
       sumUserIds: [],
       sumUser: [],
       status: "Not Complete",
+      level: "",
       selectlevel: [],
       manday: null,
       mode: "create",
@@ -1043,8 +1103,10 @@ export default {
       menuDateEnd: true,
       data_position_Developer: [],
       data_position_Implementer: [],
+      data_position_Sa: [],
       develop_system: [],
       implementer_system: [],
+      sa_system: [],
       name_Dev: [],
       name_Implementer: [],
       imageImplementer: null,
@@ -1113,6 +1175,7 @@ export default {
     this.getScreens();
     this.getPosition_Developer();
     this.getPosition_Implementer();
+    this.getPosition_Sa();
     this.getUserSystems();
   },
   computed: {
@@ -1124,7 +1187,10 @@ export default {
     },
   },
   updated() {
-    this.sumUser = this.user_developer.concat(this.user_implementer);
+    this.sumUser = this.user_developer.concat(
+      this.user_implementer,
+      this.user_sa
+    );
   },
   methods: {
     async getUser() {
@@ -1167,9 +1233,6 @@ export default {
         .get("/users/getAll?user_position=Developer")
         .then((data) => {
           this.develop_system = data.data;
-          this.name_Dev = this.develop_system.map(
-            (item) => item.user_firstname
-          );
         });
     },
     async getPosition_Implementer() {
@@ -1177,9 +1240,13 @@ export default {
         .get("/users/getAll?user_position=Implementer")
         .then((data) => {
           this.implementer_system = data.data;
-          this.name_Implementer = this.develop_system.map(
-            (item) => item.user_firstname
-          );
+        });
+    },
+    async getPosition_Sa() {
+      await this.$axios
+        .get("/users/getAll?user_position=System%20Analyst")
+        .then((data) => {
+          this.sa_system = data.data;
         });
     },
     async getUserSystems() {
@@ -1192,15 +1259,22 @@ export default {
           this.data_position_Developer = data.data
             .filter((item) => item.user_position === "Developer")
             .map((user) => user.id);
+          this.data_position_Sa = data.data
+            .filter((item) => item.user_position === "System Analyst")
+            .map((user) => user.id);
           this.position_Implementers = data.data.filter(
             (item) => item.user_position === "Implementer"
           );
           this.position_Developers = data.data.filter(
             (item) => item.user_position === "Developer"
           );
+          this.position_Sa = data.data.filter(
+            (item) => item.user_position === "System Analyst"
+          );
 
           this.user_developer = this.data_position_Developer;
           this.user_implementer = this.data_position_Implementer;
+          this.user_sa = this.data_position_Sa;
         });
     },
     async addUser_Screen(screenID) {
@@ -1240,9 +1314,7 @@ export default {
         } else {
           // this.calculateManDay();
           await this.createScreen();
-
           await this.getNewScreenAndAddUserScreen();
-
           await this.addUser_Screen(this.screen_idd);
           this.dialogSuccess = true;
 
@@ -1385,35 +1457,42 @@ export default {
         if (response.status === 200) {
           // alert("delete user_screen success");
           // window.location.reload();
+        } else if (response.status === 400) {
+          // handle error 400
+          console.log("Error 400: Bad Request");
+          alert("An error occurred while deleting user_screen.");
         }
       } catch (err) {
-        if (err.response && err.response.status === 404) {
-          // do nothing when 404 error occurs
-          return;
+        if (err.response) {
+          if (err.response.status === 404) {
+            // do nothing when 404 error occurs
+            return;
+          } else if (err.response.status === 400) {
+            // handle error 400
+            console.log("Error 400: Bad Request");
+            alert("An error occurred while deleting user_screen.");
+          }
         }
         console.log(err);
         alert("An error occurred while deleting user_screen.");
       }
     },
     async deleteSystem() {
-      this.$axios
-        .delete("/systems/delete/" + this.id)
-        .then((res) => {
-          // alert("Detete System Success!");
-          this.$router.push("/manageProject");
-        })
-        .then((response) => {
-          // console.log(response);
-          // console.log("Update success");
-          // alert("Update success");
-          // window.location.reload();
-          this.dialogDeleteSuccess = true;
-        })
-        .catch((err) => {
+      try {
+        await this.$axios.delete("/systems/delete/" + this.id);
+        this.$router.push("/manageProject");
+        this.dialogDeleteSuccess = true;
+      } catch (err) {
+        if (err.response && err.response.status === 400) {
+          console.log("Error 400: Bad Request");
+          alert("ไม่สามารถลบได้เนื่องจากติดหน้าแก้ไขปัญหา");
+        } else {
           console.log(err);
-          alert(err);
-        });
+          alert("An error occurred while deleting the system.");
+        }
+      }
     },
+
     async deleteScreenByIdSystem() {
       this.$axios
         .delete("/screens/deleteScreen/" + this.id)
@@ -1430,6 +1509,8 @@ export default {
         .catch((err) => {
           if (err.response && err.response.status === 404) {
             // do nothing when 404 error occurs
+          } else if (err.response && err.response.status === 400) {
+            console.log(err);
           } else {
             console.log(err);
             // alert(err);

@@ -1,5 +1,5 @@
 <template >
-    <v-dialog v-model="dialog" persistent max-width="400px" max-height="100%">
+    <v-dialog v-model="dialog" persistent max-width="470px" max-height="100%">
         <v-card width="100%" max-height="100%">
             <v-row class="ma-0 pa-0" style="place-content: center;">
                 <v-card-title>
@@ -7,7 +7,7 @@
                 </v-card-title>
             </v-row>
             <v-row class="ma-0 pa-0" style="place-content: center;">
-                <v-card-title class="text-h5">
+                <v-card-title class="text-h5" style="place-content: center;">
                     {{ title }}
                 </v-card-title>
             </v-row>

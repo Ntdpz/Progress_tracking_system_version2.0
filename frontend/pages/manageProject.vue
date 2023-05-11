@@ -351,15 +351,22 @@
                             ></v-text-field>
                           </v-col>
                           <v-col cols="12">
-                            <v-text-field
+                            <v-select
                               :rules="rules"
-                              label="System Analyst"
-                              placeholder="System Analyst"
-                              outlined
-                              dense
-                              v-model="system.system_analyst"
                               required
-                            ></v-text-field>
+                              label="เลือก System Analyst"
+                              v-model="choose_user_id"
+                              :items="data_position_Sa"
+                              item-text="user_firstname"
+                              item-value="id"
+                              outlined
+                              chips
+                              multiple
+                            >
+                              <template v-slot:item="{ item }">
+                                {{ item.user_firstname }}
+                              </template>
+                            </v-select>
                           </v-col>
                           <v-col class="col-12" sm="12" md="12">
                             <!--  -->
@@ -627,8 +634,8 @@ export default {
       },
       data_position_Developer: [],
       data_position_Implementer: [],
+      data_position_Sa: [],
       choose_user_id: [],
-      name_Dev: [],
       systemId: null,
       projectIds: null,
       //
@@ -652,6 +659,7 @@ export default {
     await this.getSystems();
     await this.getPosition_Developer();
     await this.getPosition_Implementer();
+    await this.getPosition_Sa();
     await this.getSystemOwner();
     await this.getSystemsOwner();
   },
@@ -689,18 +697,15 @@ export default {
           this.system.system_id.trim() == "" ||
           this.system.system_nameTH.trim() == "" ||
           this.system.system_nameEN.trim() == "" ||
-          this.system.system_shortname.trim() == "" ||
-          this.system.system_analyst.trim() == ""
+          this.system.system_shortname.trim() == ""
         ) {
           this.dialogValidate = true;
         } else {
           await this.createSystem();
           await this.getsystemID();
           await this.getProjectId();
-          await this.addUser_project();
-          await this.addUser_system(this.systemId);
-          this.ClearSubsystem();
-          
+          await this.addUser_project(this.projectIds);
+          await this.addUser_system(this.systemId);  
         }
       } catch (error) {
         console.log(error);
@@ -711,7 +716,7 @@ export default {
         .get("/systems/getAll?system_id=" + this.system.system_id)
         .then((data) => {
           this.systemId = data.data[0].id;
-          // console.log(this.systemId);
+          console.log(this.systemId);
         });
     },
     async addUser_system(systemID) {
@@ -731,16 +736,12 @@ export default {
         alert("user_system: " + error);
       }
     },
-    async addUser_project() {
+    async addUser_project(projectId) {
       try {
         await this.$axios.post("/user_projects/createUser_project", {
           user_id: this.choose_user_id,
-          project_id: this.projectIds,
+          project_id: projectId,
         });
-        await this.getProject();
-        await this.getSystems();
-        this.dialogSubsystem = false;
-        this.ClearSubsystem();
       } catch (error) {
         console.log(error);
       }
@@ -766,9 +767,6 @@ export default {
         .get("/users/getAll?user_position=Developer")
         .then((data) => {
           this.data_position_Developer = data.data;
-          this.name_Dev = this.data_position_Developer.map(
-            (item) => item.user_firstname
-          );
         });
     },
     async getPosition_Implementer() {
@@ -776,9 +774,13 @@ export default {
         .get("/users/getAll?user_position=Implementer")
         .then((data) => {
           this.data_position_Implementer = data.data;
-          this.name_Implementer = this.data_position_Implementer.map(
-            (item) => item.user_firstname
-          );
+        });
+    },
+    async getPosition_Sa() {
+      await this.$axios
+        .get("/users/getAll?user_position=System%20Analyst")
+        .then((data) => {
+          this.data_position_Sa = data.data;
         });
     },
 

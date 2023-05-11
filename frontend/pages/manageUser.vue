@@ -907,7 +907,7 @@
                     </v-col>
                     <!-- Input Form -->
                     <v-col col="12" sm="12" md="10">
-                        <v-form ref="formUpdate" @submit.prevent="updateUser2">
+                      <v-form ref="formUpdate" @submit.prevent="updateUser2">
                         <v-card
                           style="border: none"
                           class="pa-2"
@@ -1156,7 +1156,7 @@
                           </div>
                         </v-card>
                       </v-form>
-                      </v-col>
+                    </v-col>
                   </v-row>
                 </v-form>
                 <!-- End Form -->
@@ -1621,8 +1621,6 @@ export default {
       this.department = "";
       this.email = "";
       this.password = "";
-      this.stratiform = "";
-      this.role = "";
     },
     async getAllDefault() {
       await this.$axios.get("/default_settings/getAll").then((data) => {
