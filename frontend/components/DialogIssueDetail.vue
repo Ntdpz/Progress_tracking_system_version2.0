@@ -954,8 +954,6 @@ export default {
       }
     },
     handleClose() {
-      this.$refs.form.reset();
-      this.$refs.formCom.reset();
       this.panel = [0];
       this.disabled = false;
       this.history = false;

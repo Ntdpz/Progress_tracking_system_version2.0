@@ -459,7 +459,6 @@ export default {
       this.form.issue_complete = "";
     },
     async close() {
-      this.$refs.form.reset();
       this.$emit("button-clicked");
       await this.resetForm();
       this.$emit("update:dialog", false);
