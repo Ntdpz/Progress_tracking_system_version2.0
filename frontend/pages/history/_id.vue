@@ -82,7 +82,7 @@
               </v-col>
               <v-col>
                 <v-row
-                  ><p style="font-weight: bold">ผู้จดแจ้ง :</p>
+                  ><p style="font-weight: bold">ผู้แจ้งปัญหา :</p>
                   {{ item.issue_informer }}
                 </v-row>
                 <v-row

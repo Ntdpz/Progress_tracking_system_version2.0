@@ -55,7 +55,7 @@
                   @mousemove="getDefault()"
                   @change="getUserSystems(ScreenName.id)"
                   :items="screen_selectDefault"
-                  label="รหัสหน้าจอ"
+                  label="เลขที่หน้าจอ : ชื่อหน้าจอ"
                   dense
                   outlined
                   v-model="ScreenName"
@@ -64,7 +64,7 @@
                   item-value="screen_name"
                   return-object="false"
                 >
-                <template #selection="{ item }">
+                  <template #selection="{ item }">
                     {{ item.screen_id }}: {{ item.screen_name }}
                   </template>
                   <template v-slot:item="{ item }">
@@ -864,7 +864,6 @@ export default {
       ) {
         alert("Complete date is required");
       } else {
-        // your Axios post request here
         const data = {
           screen_id: this.IssueScreenId,
           system_id: this.SystemId,
