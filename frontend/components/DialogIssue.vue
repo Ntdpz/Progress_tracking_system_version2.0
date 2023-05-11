@@ -1,315 +1,327 @@
 <template>
   <v-layout row justify-center>
-    <v-dialog v-model="dialog" persistent max-width="750">
-      <v-card>
-        <v-card-title class="pt-3 mb-2" style="background-color: #883cfe">
-          <h5 style="color: white">
-            สร้างปัญหาใหม่ | {{ projectName }} ({{ projectids }})>
-            {{ systemName }} ({{ systemids }})
-          </h5>
-          <v-spacer></v-spacer>
-        </v-card-title>
-        <v-card-text>
-          <v-container>
-            <v-row>
-              <v-col cols="12" sm="6" md="4">
-                <v-text-field
-                  label="เลขที่ปัญหา"
-                  placeholder="เลขที่ปัญหา"
-                  disabled
-                  outlined
-                  dense
-                  v-model="form.issue_id"
-                ></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="8" md="8">
-                <v-text-field
-                  label="ชื่อปัญหา"
-                  placeholder="ชื่อปัญหา"
-                  outlined
-                  dense
-                  @change="getScreenDefault()"
-                  v-model="form.issue_name"
-                ></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="6" md="4">
-                <v-select
-                  :items="type_select"
-                  label="PNI/PNC/New Req"
-                  dense
-                  outlined
-                  v-model="form.issue_type"
-                  @change="selectedType()"
-                ></v-select>
-              </v-col>
-              <v-col cols="12" sm="6" md="8">
-                <v-select
-                  @mousemove="getScreenDefault()"
-                  @change="getUserSystems(selectedScreen.id)"
-                  :items="screen_selectDefault"
-                  label="เลชที่หน้าจอ : ชื่อหน้าจอ"
-                  dense
-                  outlined
-                  v-model="selectedScreen"
-                  item-text="screen_name"
-                  item-value="screen_name"
-                  return-object="false"
-                >
-                  <template #selection="{ item }">
-                    {{ item.screen_id }}: {{ item.screen_name }}
-                  </template>
-                  <template v-slot:item="{ item }">
-                    {{ item.screen_id }} : {{ item.screen_name }}
-                  </template>
-                </v-select>
-              </v-col>
-              <v-col cols="12" sm="6" md="4">
-                <v-text-field
-                  label="ผู้จดแจ้ง"
-                  placeholder="ผู้จดแจ้ง"
-                  outlined
-                  dense
-                  v-model="form.issue_informer"
-                ></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="6" md="4">
-                <v-select
-                  :items="priotity_select"
-                  label="ความสำคัญของปัญหา"
-                  dense
-                  outlined
-                  prepend-icon="mdi-flag-outline"
-                  v-model="form.issue_priority"
-                ></v-select>
-              </v-col>
-              <v-col cols="12" sm="6" md="4">
-                <v-select
-                  :items="issue_status_default"
-                  label="สถานะ"
-                  placeholder="สถานะ"
-                  dense
-                  outlined
-                  v-model="form.issue_status"
-                ></v-select>
-              </v-col>
-              <!-- date start -->
-              <v-col cols="12" sm="6" md="6">
-                <v-menu
-                  ref="menuDateStart"
-                  v-model="menuStart"
-                  :close-on-content-click="false"
-                  transition="scale-transition"
-                  offset-y
-                  min-width="auto"
-                  disabled
-                >
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-text-field
-                      v-model="dateStart"
-                      label="วันที่สร้าง"
-                      prepend-icon="mdi-calendar"
-                      readonly
-                      v-bind="attrs"
-                      v-on="on"
-                      class="pt-0"
-                      disabled
-                    ></v-text-field>
-                  </template>
-                  <v-date-picker v-model="dateStart" no-title scrollable>
-                    <v-spacer></v-spacer>
-                    <v-btn text color="primary" @click="menuStart = false">
-                      Cancel
-                    </v-btn>
-                    <v-btn
-                      text
-                      color="primary"
-                      @click="$refs.menuDateStart.save(dateStart)"
-                    >
-                      OK
-                    </v-btn>
-                  </v-date-picker>
-                </v-menu>
-              </v-col>
+    <v-form ref="form">
+      <v-dialog v-model="dialog" persistent max-width="750">
+        <v-card>
+          <v-card-title class="pt-3 mb-2" style="background-color: #883cfe">
+            <h5 style="color: white">
+              สร้างปัญหาใหม่ | {{ projectName }} ({{ projectids }})>
+              {{ systemName }} ({{ systemids }})
+            </h5>
+            <v-spacer></v-spacer>
+          </v-card-title>
+          <v-card-text>
+            <v-container>
+              <v-row>
+                <v-col cols="12" sm="6" md="4">
+                  <v-text-field
+                    label="เลขที่ปัญหา"
+                    placeholder="เลขที่ปัญหา"
+                    disabled
+                    outlined
+                    dense
+                    v-model="form.issue_id"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" sm="8" md="8">
+                  <v-text-field
+                    label="ชื่อปัญหา"
+                    placeholder="ชื่อปัญหา"
+                    outlined
+                    dense
+                    :rules="rules"
+                    @change="getScreenDefault()"
+                    v-model="form.issue_name"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" sm="6" md="4">
+                  <v-select
+                    :items="type_select"
+                    label="PNI/PNC/New Req"
+                    dense
+                    outlined
+                    :rules="rules"
+                    v-model="form.issue_type"
+                    @change="selectedType()"
+                  ></v-select>
+                </v-col>
+                <v-col cols="12" sm="6" md="8">
+                  <v-select
+                    @mousemove="getScreenDefault()"
+                    @change="getUserSystems(selectedScreen.id)"
+                    :items="screen_selectDefault"
+                    label="เลขที่หน้าจอ : ชื่อหน้าจอ"
+                    dense
+                    outlined
+                    v-model="selectedScreen"
+                    item-text="screen_name"
+                    item-value="screen_name"
+                    return-object="false"
+                    :rules="rules"
+                  >
+                    <template #selection="{ item }">
+                      {{ item.screen_id }}: {{ item.screen_name }}
+                    </template>
+                    <template v-slot:item="{ item }">
+                      {{ item.screen_id }} : {{ item.screen_name }}
+                    </template>
+                  </v-select>
+                </v-col>
+                <v-col cols="12" sm="6" md="4">
+                  <v-text-field
+                    label="ผู้จดแจ้ง"
+                    placeholder="ผู้จดแจ้ง"
+                    outlined
+                    dense
+                    v-model="form.issue_informer"
+                    :rules="rules"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" sm="6" md="4">
+                  <v-select
+                    :items="priotity_select"
+                    label="ความสำคัญของปัญหา"
+                    dense
+                    outlined
+                    prepend-icon="mdi-flag-outline"
+                    v-model="form.issue_priority"
+                    :rules="rules"
+                  ></v-select>
+                </v-col>
+                <v-col cols="12" sm="6" md="4">
+                  <v-select
+                    :items="issue_status_default"
+                    label="สถานะ"
+                    placeholder="สถานะ"
+                    dense
+                    outlined
+                    v-model="form.issue_status"
+                    :rules="rules"
+                  ></v-select>
+                </v-col>
+                <!-- date start -->
+                <v-col cols="12" sm="6" md="6">
+                  <v-menu
+                    ref="menuDateStart"
+                    v-model="menuStart"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                    offset-y
+                    min-width="auto"
+                    disabled
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-text-field
+                        v-model="dateStart"
+                        label="วันที่สร้าง"
+                        prepend-icon="mdi-calendar"
+                        readonly
+                        v-bind="attrs"
+                        v-on="on"
+                        class="pt-0"
+                        disabled
+                      ></v-text-field>
+                    </template>
+                    <v-date-picker v-model="dateStart" no-title scrollable>
+                      <v-spacer></v-spacer>
+                      <v-btn text color="primary" @click="menuStart = false">
+                        Cancel
+                      </v-btn>
+                      <v-btn
+                        text
+                        color="primary"
+                        @click="$refs.menuDateStart.save(dateStart)"
+                      >
+                        OK
+                      </v-btn>
+                    </v-date-picker>
+                  </v-menu>
+                </v-col>
 
-              <!-- date end -->
-              <v-col cols="12" sm="6" md="6">
-                <v-menu
-                  ref="menu"
-                  v-model="menu"
-                  :close-on-content-click="false"
-                  transition="scale-transition"
-                  offset-y
-                  min-width="auto"
-                >
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-text-field
-                      v-model="date"
-                      label="วันกำหนดส่ง"
-                      prepend-icon="mdi-calendar"
-                      readonly
-                      v-bind="attrs"
-                      v-on="on"
-                      class="pt-0"
-                    ></v-text-field>
-                  </template>
-                  <v-date-picker v-model="date" no-title scrollable>
-                    <v-spacer></v-spacer>
-                    <v-btn text color="primary" @click="menu = false">
-                      Cancel
-                    </v-btn>
-                    <v-btn text color="primary" @click="$refs.menu.save(date)">
-                      OK
-                    </v-btn>
-                  </v-date-picker>
-                </v-menu>
-              </v-col>
-              <v-col cols="12" sm="4" md="6">
-                <p
-                  v-show="selectedScreen == null"
-                  style="color: red"
-                  class="ma-0"
-                >
-                  โปรดเลือกหน้าจอก่อน
-                </p>
-                <v-select
-                  :items="position_Developers"
-                  label="ผู้พัฒนา"
-                  dense
-                  outlined
-                  item-text="user_firstname"
-                  v-model="form.issue_assign"
-                  return-object="false"
-                ></v-select>
-              </v-col>
-              <v-col cols="12" sm="4" md="6">
-                <p
-                  v-show="selectedScreen == null"
-                  style="color: red"
-                  class="ma-0"
-                >
-                  โปรดเลือกหน้าจอก่อน
-                </p>
-                <v-select
-                  :items="position_Implementer"
-                  label="ผู้ตรวจสอบ"
-                  dense
-                  outlined
-                  item-text="user_firstname"
-                  v-model="form.issue_qc"
-                  return-object="false"
-                ></v-select>
-              </v-col>
-              <v-col cols="12" sm="6" md="4" v-show="PNC">
-                <v-text-field
-                  label="เลขที่เอกสาร"
-                  placeholder="เลขที่เอกสาร"
-                  outlined
-                  dense
-                  v-model="form.issue_doc_id"
-                ></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="8" md="8" v-show="PNC">
-                <v-text-field
-                  label="ชื่อลูกค้า"
-                  placeholder="ชื่อลูกค้า"
-                  outlined
-                  dense
-                  v-model="form.issue_customer"
-                ></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="6" md="6" v-show="Newreq">
-                <v-container fluid class="ma-0 pa-0">
-                  <!-- <p>Type Issue {{ selected }}</p> -->
-                  <p>ประเทภของปัญหา</p>
-                  <v-row>
-                    <v-col>
-                      <v-row>
-                        <v-checkbox
-                          v-model="form.issue_type_sa"
-                          label="UI"
-                          value="UI"
-                        ></v-checkbox>
-                      </v-row>
-                      <v-row>
-                        <v-checkbox
-                          v-model="form.issue_type_sa"
-                          label="Business"
-                          value="Business"
-                        ></v-checkbox>
-                      </v-row>
-                      <v-row>
-                        <v-checkbox
-                          v-model="form.issue_type_sa"
-                          label="Data"
-                          value="Data"
-                        ></v-checkbox
-                      ></v-row>
-                    </v-col>
-                    <v-col>
-                      <v-row>
-                        <v-checkbox
-                          v-model="form.issue_type_sa"
-                          label="Servies"
-                          value="Servies"
-                        ></v-checkbox>
-                      </v-row>
-                      <v-row>
-                        <v-checkbox
-                          v-model="form.issue_type_sa"
-                          label="Report"
-                          value="Report"
-                        ></v-checkbox>
-                      </v-row>
-                      <v-row>
-                        <v-checkbox
-                          v-model="form.issue_type_sa"
-                          label="Training"
-                          value="Training"
-                        ></v-checkbox>
-                      </v-row>
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </v-col>
-              <v-col cols="12" sm="6" md="6" v-show="Newreq">
-                <p>คำอธิบายถึง SA</p>
-                <v-textarea
-                  solo
-                  name="input-7-4"
-                  label="คำอธิบายถึง SA"
-                  v-model="form.issue_des_sa"
-                ></v-textarea>
-              </v-col>
-              <v-col cols="12" class="mt-0">
-                <v-textarea
-                  solo
-                  name="input-7-4"
-                  label="คำอธิบายปัญหา"
-                  v-model="form.issue_des"
-                ></v-textarea>
-              </v-col>
-              <v-col cols="12">
-                <v-file-input
-                  v-model="form.issue_filename"
-                  ref="fileInput"
-                  @change="uploadFile()"
-                  label="อัปโหลดไฟล์"
-                  outlined
-                  dense
-                ></v-file-input>
-              </v-col>
-            </v-row>
-          </v-container>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="error" @click.native="close"> <h4>ปิด</h4> </v-btn>
-          <v-btn color="primary" dark @click="saveIssue()">
-            <h4>สร้างปัญหาใหม่</h4>
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+                <!-- date end -->
+                <v-col cols="12" sm="6" md="6">
+                  <v-menu
+                    ref="menu"
+                    v-model="menu"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                    offset-y
+                    min-width="auto"
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-text-field
+                        v-model="date"
+                        label="วันกำหนดส่ง"
+                        prepend-icon="mdi-calendar"
+                        readonly
+                        v-bind="attrs"
+                        v-on="on"
+                        class="pt-0"
+                      ></v-text-field>
+                    </template>
+                    <v-date-picker v-model="date" no-title scrollable>
+                      <v-spacer></v-spacer>
+                      <v-btn text color="primary" @click="menu = false">
+                        Cancel
+                      </v-btn>
+                      <v-btn
+                        text
+                        color="primary"
+                        @click="$refs.menu.save(date)"
+                      >
+                        OK
+                      </v-btn>
+                    </v-date-picker>
+                  </v-menu>
+                </v-col>
+                <v-col cols="12" sm="4" md="6">
+                  <p
+                    v-show="selectedScreen == null"
+                    style="color: red"
+                    class="ma-0"
+                  >
+                    โปรดเลือกหน้าจอก่อน
+                  </p>
+                  <v-select
+                    :items="position_Developers"
+                    label="ผู้พัฒนา"
+                    dense
+                    outlined
+                    item-text="user_firstname"
+                    v-model="form.issue_assign"
+                    return-object="false"
+                  ></v-select>
+                </v-col>
+                <v-col cols="12" sm="4" md="6">
+                  <p
+                    v-show="selectedScreen == null"
+                    style="color: red"
+                    class="ma-0"
+                  >
+                    โปรดเลือกหน้าจอก่อน
+                  </p>
+                  <v-select
+                    :items="position_Implementer"
+                    label="ผู้ตรวจสอบ"
+                    dense
+                    outlined
+                    item-text="user_firstname"
+                    v-model="form.issue_qc"
+                    return-object="false"
+                  ></v-select>
+                </v-col>
+                <v-col cols="12" sm="6" md="4" v-show="PNC">
+                  <v-text-field
+                    label="เลขที่เอกสาร"
+                    placeholder="เลขที่เอกสาร"
+                    outlined
+                    dense
+                    v-model="form.issue_doc_id"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" sm="8" md="8" v-show="PNC">
+                  <v-text-field
+                    label="ชื่อลูกค้า"
+                    placeholder="ชื่อลูกค้า"
+                    outlined
+                    dense
+                    v-model="form.issue_customer"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" sm="6" md="6" v-show="Newreq">
+                  <v-container fluid class="ma-0 pa-0">
+                    <!-- <p>Type Issue {{ selected }}</p> -->
+                    <p>ประเทภของปัญหา</p>
+                    <v-row>
+                      <v-col>
+                        <v-row>
+                          <v-checkbox
+                            v-model="form.issue_type_sa"
+                            label="UI"
+                            value="UI"
+                          ></v-checkbox>
+                        </v-row>
+                        <v-row>
+                          <v-checkbox
+                            v-model="form.issue_type_sa"
+                            label="Business"
+                            value="Business"
+                          ></v-checkbox>
+                        </v-row>
+                        <v-row>
+                          <v-checkbox
+                            v-model="form.issue_type_sa"
+                            label="Data"
+                            value="Data"
+                          ></v-checkbox
+                        ></v-row>
+                      </v-col>
+                      <v-col>
+                        <v-row>
+                          <v-checkbox
+                            v-model="form.issue_type_sa"
+                            label="Servies"
+                            value="Servies"
+                          ></v-checkbox>
+                        </v-row>
+                        <v-row>
+                          <v-checkbox
+                            v-model="form.issue_type_sa"
+                            label="Report"
+                            value="Report"
+                          ></v-checkbox>
+                        </v-row>
+                        <v-row>
+                          <v-checkbox
+                            v-model="form.issue_type_sa"
+                            label="Training"
+                            value="Training"
+                          ></v-checkbox>
+                        </v-row>
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                </v-col>
+                <v-col cols="12" sm="6" md="6" v-show="Newreq">
+                  <p>คำอธิบายถึง SA</p>
+                  <v-textarea
+                    solo
+                    name="input-7-4"
+                    label="คำอธิบายถึง SA"
+                    v-model="form.issue_des_sa"
+                  ></v-textarea>
+                </v-col>
+                <v-col cols="12" class="mt-0">
+                  <v-textarea
+                    solo
+                    name="input-7-4"
+                    label="คำอธิบายปัญหา"
+                    v-model="form.issue_des"
+                  ></v-textarea>
+                </v-col>
+                <v-col cols="12">
+                  <v-file-input
+                    v-model="form.issue_filename"
+                    ref="fileInput"
+                    @change="uploadFile()"
+                    label="อัปโหลดไฟล์"
+                    outlined
+                    dense
+                  ></v-file-input>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="error" @click.native="close"> <h4>ปิด</h4> </v-btn>
+            <v-btn color="primary" dark @click="saveIssue()">
+              <h4>สร้างปัญหาใหม่</h4>
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-form>
   </v-layout>
 </template>
 
@@ -382,6 +394,7 @@ export default {
       position_Developers: [],
       position_Implementer: [],
       issue_status_default: [],
+      rules: [(value) => !!value || "Required."],
     };
   },
   async mounted() {
@@ -425,9 +438,7 @@ export default {
       this.form.system_id = "";
       this.form.project_id = "";
       this.form.issue_name = "";
-      // this.form.issue_id = "";
       this.form.issue_type = "";
-      // this.form.issue_informer = "";
       this.form.issue_priority = "";
       this.form.issue_end = "";
       this.form.issue_assign = "";
@@ -448,6 +459,7 @@ export default {
       this.form.issue_complete = "";
     },
     async close() {
+      this.$refs.form.reset();
       this.$emit("button-clicked");
       await this.resetForm();
       this.$emit("update:dialog", false);
@@ -465,7 +477,13 @@ export default {
         });
     },
     async saveIssue() {
-      if (this.mode == "create") {
+      await this.$refs.form.validate();
+      if (
+        this.mode == "create" &&
+        this.form.issue_name !== "" &&
+        this.form.issue_type !== "" &&
+        this.form.issue_priority !== ""
+      ) {
         this.form.issue_end = this.date;
         const selectedScreenId = this.selectedScreen
           ? this.selectedScreen.id

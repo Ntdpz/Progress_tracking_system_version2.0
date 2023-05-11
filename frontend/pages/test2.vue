@@ -1,18 +1,21 @@
 <template>
   <v-form ref="form">
-    <v-text-field
-      v-model="user_id"
-      label="User ID"
-      :rules="rules"
-    ></v-text-field>
-    <v-text-field
-      v-model="user_password"
-      label="Password"
-      :rules="rules"
-      type="password"
-    ></v-text-field>
-    <v-checkbox v-model="checkbox" label="Remember me"></v-checkbox>
-    <v-btn @click="handleLogin">Login</v-btn>
+    <v-btn @click="dialogVisible = true">open</v-btn>
+    <v-dialog v-model="dialogVisible">
+      <v-text-field
+        v-model="user_id"
+        label="User ID"
+        :rules="rules"
+      ></v-text-field>
+      <v-text-field
+        v-model="user_password"
+        label="Password"
+        :rules="rules"
+        type="password"
+      ></v-text-field>
+      <v-checkbox v-model="checkbox" label="Remember me"></v-checkbox>
+      <v-btn @click="handleLogin">Login</v-btn>
+    </v-dialog>
   </v-form>
 </template>
 
@@ -20,6 +23,7 @@
 export default {
   data() {
     return {
+      dialogVisible: false,
       user_id: "",
       user_password: "",
       rules: [

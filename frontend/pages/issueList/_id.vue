@@ -6,7 +6,11 @@
 
     <!-- *Header* -->
     <v-row class="mt-4 ml-2 mb-2">
-      <h4>{{ this.projectName }} ({{ this.project_id }})</h4>
+      <h4>
+        {{ this.project_id }} : {{ this.projectName }} ({{
+          this.project_shortname
+        }})
+      </h4>
       <p style="color: #b6b5b5; font-size: 16px" class="ml-2">
         {{ this.systemslength }} ระบบ
       </p>
@@ -23,7 +27,9 @@
             <v-row no-gutters>
               <v-col cols="12">
                 <v-row style="margin-top: 1px">
-                  <h4>{{ system.system_nameTH }} ({{ system.system_id }})</h4>
+                  <h4>
+                    {{ system.system_shortname }} &nbsp; {{ system.system_nameTH }}
+                  </h4>
                   <!-- <p style="color: #b6b5b5; font-size: 16px; margin-left: 5%">
                     3 Issue
                   </p> -->
@@ -1237,6 +1243,7 @@ export default {
       projectName: "",
       projectId: "",
       project_id: "",
+      project_shortname: "",
       systemslength: "",
       user_id: "",
       user_firstname: "",
@@ -1340,6 +1347,7 @@ export default {
       await this.$axios.get("/projects/getOne/" + this.id).then((res) => {
         this.project = res.data;
         this.projectName = this.project[0].project_name;
+        this.project_shortname = this.project[0].project_shortname;
         this.projectId = this.project[0].id;
         this.project_id = this.project[0].project_id;
       });
