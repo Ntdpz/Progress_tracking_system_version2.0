@@ -5,8 +5,7 @@
         <v-card>
           <v-card-title class="pt-3 mb-2" style="background-color: #883cfe">
             <h5 style="color: white">
-              สร้างปัญหาใหม่ | {{ projectName }} ({{ projectids }})>
-              {{ systemName }} ({{ systemids }})
+              สร้างปัญหาใหม่ | {{ projectName }}&nbsp;{{ systemName }}
             </h5>
             <v-spacer></v-spacer>
           </v-card-title>
@@ -69,8 +68,8 @@
                 </v-col>
                 <v-col cols="12" sm="6" md="4">
                   <v-text-field
-                    label="ผู้จดแจ้ง"
-                    placeholder="ผู้จดแจ้ง"
+                    label="ผู้แจ้งปัญหา"
+                    placeholder="ผู้แจ้งปัญหา"
                     outlined
                     dense
                     v-model="form.issue_informer"
@@ -150,7 +149,7 @@
                   >
                     <template v-slot:activator="{ on, attrs }">
                       <v-text-field
-                        v-model="date"
+                        v-model="formattedDateEnd"
                         label="วันกำหนดส่ง"
                         prepend-icon="mdi-calendar"
                         readonly
@@ -159,7 +158,13 @@
                         class="pt-0"
                       ></v-text-field>
                     </template>
-                    <v-date-picker v-model="date" no-title scrollable>
+                    <v-date-picker
+                      v-model="date"
+                      no-title
+                      scrollable
+                      :min="dateToday"
+                      @change="formattedDate()"
+                    >
                       <v-spacer></v-spacer>
                       <v-btn text color="primary" @click="menu = false">
                         Cancel
@@ -346,6 +351,9 @@ export default {
   },
   data() {
     return {
+      dateToday: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+        .toISOString()
+        .substr(0, 10),
       date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
         .toISOString()
         .substr(0, 10),
@@ -395,12 +403,27 @@ export default {
       position_Implementer: [],
       issue_status_default: [],
       rules: [(value) => !!value || "Required."],
+      formattedDateEnd: new Date(
+        Date.now() - new Date().getTimezoneOffset() * 60000
+      )
+        .toISOString()
+        .substr(0, 10),
     };
+  },
+  created() {
+    this.dateStart = moment().add(543, "years").format("DD-MM-YYYY");
+    this.formattedDateEnd = moment().add(543, "years").format("DD-MM-YYYY");
   },
   async mounted() {
     await this.getDefault();
   },
   methods: {
+    formattedDate() {
+      const formattedDateTwo = moment(this.date)
+        .add(543, "years")
+        .format("DD-MM-YYYY");
+      this.formattedDateEnd = formattedDateTwo;
+    },
     selectedType() {
       if (this.form.issue_type == "PNC") {
         this.PNC = true;
@@ -457,8 +480,10 @@ export default {
       this.form.issue_accepting = "";
       this.form.issue_manday = "";
       this.form.issue_complete = "";
+      this.selectedScreen = null;
     },
     async close() {
+      this.$refs.form.resetValidation();
       this.$emit("button-clicked");
       await this.resetForm();
       this.$emit("update:dialog", false);
@@ -535,6 +560,7 @@ export default {
             this.form.issue_assign = "";
             this.form.issue_qc = "";
             this.form.issue_des = "";
+            this.selectedScreen = null;
             this.form.issue_des_sa = "";
             this.form.issue_type_sa = "";
             this.form.issue_doc_id = "";

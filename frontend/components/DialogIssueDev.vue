@@ -946,6 +946,7 @@ export default {
       }
     },
     handleClose() {
+      this.$refs.form.resetValidation();
       this.panel = [0];
       this.disabled = false;
       this.history = false;
