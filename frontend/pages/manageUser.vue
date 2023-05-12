@@ -83,8 +83,19 @@
                     <template v-slot:[`item.id`]="{ index }">
                       {{ index + 1 }}
                     </template>
+                    <!-- <template v-slot:[`item.user_pic`]="{ index }">
+                      <v-avatar>
+                        <img
+                          :src="`/uploads/${item.user_pic}`"
+                          alt="User avatar"
+                        />
+                      </v-avatar>
+                    </template> -->
                     <template v-slot:[`item.name`]="{ item }">
                       {{ item.user_firstname }}
+                    </template>
+                    <template v-slot:[`item.lastname`]="{ item }">
+                      {{ item.user_lastname }}
                     </template>
                     <template v-slot:[`item.code`]="{ item }">
                       {{ item.user_id }}
@@ -99,7 +110,7 @@
                       {{ item.user_role }}
                     </template>
                     <template v-slot:[`item.photo`]="{ item }">
-                      <div v-for="(info, i) in data" :key="i">
+                      <!-- <div v-for="(info, i) in data" :key="i">
                         <v-avatar
                           v-if="item.id == imageALL[i].id"
                           class="mx-auto"
@@ -107,7 +118,15 @@
                         >
                           <img :src="getImageUrl(imageALL[i].fileName)" />
                         </v-avatar>
-                      </div>
+                      </div> -->
+                      <v-avatar>
+                        <img
+                          :src="`/uploads/${item.user_pic}`"
+                          alt="User avatar"
+                          class="mx-auto"
+                          style="width: 35px; height: 35px"
+                        />
+                      </v-avatar>
                     </template>
 
                     <template v-slot:[`item.status`]="{ item }">
@@ -165,6 +184,9 @@
                     <template v-slot:[`item.name`]="{ item }">
                       {{ item.user_firstname }}
                     </template>
+                    <template v-slot:[`item.lastname`]="{ item }">
+                      {{ item.user_lastname }}
+                    </template>
                     <template v-slot:[`item.code`]="{ item }">
                       {{ item.user_id }}
                     </template>
@@ -178,18 +200,14 @@
                       {{ item.user_role }}
                     </template>
                     <template v-slot:[`item.photo`]="{ item }">
-                      <div
-                        v-for="(info, i) in data_position_Developer"
-                        :key="i"
-                      >
-                        <v-avatar
-                          v-if="item.id == imageDeveloper[i].id"
+                      <v-avatar>
+                        <img
+                          :src="`/uploads/${item.user_pic}`"
+                          alt="User avatar"
                           class="mx-auto"
                           style="width: 35px; height: 35px"
-                        >
-                          <img :src="getImageUrl(imageDeveloper[i].fileName)" />
-                        </v-avatar>
-                      </div>
+                        />
+                      </v-avatar>
                     </template>
                     <template v-slot:[`item.status`]="{ item }">
                       <v-icon
@@ -246,6 +264,9 @@
                     <template v-slot:[`item.name`]="{ item }">
                       {{ item.user_firstname }}
                     </template>
+                    <template v-slot:[`item.lastname`]="{ item }">
+                      {{ item.user_lastname }}
+                    </template>
                     <template v-slot:[`item.code`]="{ item }">
                       {{ item.user_id }}
                     </template>
@@ -259,20 +280,14 @@
                       {{ item.user_role }}
                     </template>
                     <template v-slot:[`item.photo`]="{ item }">
-                      <div
-                        v-for="(info, i) in data_position_Implementer"
-                        :key="i"
-                      >
-                        <v-avatar
-                          v-if="item.id == imageImplementer[i].id"
+                      <v-avatar>
+                        <img
+                          :src="`/uploads/${item.user_pic}`"
+                          alt="User avatar"
                           class="mx-auto"
                           style="width: 35px; height: 35px"
-                        >
-                          <img
-                            :src="getImageUrl(imageImplementer[i].fileName)"
-                          />
-                        </v-avatar>
-                      </div>
+                        />
+                      </v-avatar>
                     </template>
                     <template v-slot:[`item.status`]="{ item }">
                       <v-icon
@@ -329,6 +344,9 @@
                     <template v-slot:[`item.name`]="{ item }">
                       {{ item.user_firstname }}
                     </template>
+                    <template v-slot:[`item.lastname`]="{ item }">
+                      {{ item.user_lastname }}
+                    </template>
                     <template v-slot:[`item.code`]="{ item }">
                       {{ item.user_id }}
                     </template>
@@ -342,22 +360,14 @@
                       {{ item.user_role }}
                     </template>
                     <template v-slot:[`item.photo`]="{ item }">
-                      <div
-                        v-for="(info, i) in data_position_ProgramManagement"
-                        :key="i"
-                      >
-                        <v-avatar
-                          v-if="item.id == imageProgramManagement[i].id"
+                      <v-avatar>
+                        <img
+                          :src="`/uploads/${item.user_pic}`"
+                          alt="User avatar"
                           class="mx-auto"
                           style="width: 35px; height: 35px"
-                        >
-                          <img
-                            :src="
-                              getImageUrl(imageProgramManagement[i].fileName)
-                            "
-                          />
-                        </v-avatar>
-                      </div>
+                        />
+                      </v-avatar>
                     </template>
                     <template v-slot:[`item.status`]="{ item }">
                       <v-icon
@@ -414,6 +424,9 @@
                     <template v-slot:[`item.name`]="{ item }">
                       {{ item.user_firstname }}
                     </template>
+                    <template v-slot:[`item.lastname`]="{ item }">
+                      {{ item.user_lastname }}
+                    </template>
                     <template v-slot:[`item.code`]="{ item }">
                       {{ item.user_id }}
                     </template>
@@ -427,20 +440,14 @@
                       {{ item.user_role }}
                     </template>
                     <template v-slot:[`item.photo`]="{ item }">
-                      <div
-                        v-for="(info, i) in data_position_SystemAnalyst"
-                        :key="i"
-                      >
-                        <v-avatar
-                          v-if="item.id == imageSystemAnalyst[i].id"
+                      <v-avatar>
+                        <img
+                          :src="`/uploads/${item.user_pic}`"
+                          alt="User avatar"
                           class="mx-auto"
                           style="width: 35px; height: 35px"
-                        >
-                          <img
-                            :src="getImageUrl(imageSystemAnalyst[i].fileName)"
-                          />
-                        </v-avatar>
-                      </div>
+                        />
+                      </v-avatar>
                     </template>
                     <template v-slot:[`item.status`]="{ item }">
                       <v-icon
@@ -497,6 +504,9 @@
                     <template v-slot:[`item.name`]="{ item }">
                       {{ item.user_firstname }}
                     </template>
+                    <template v-slot:[`item.lastname`]="{ item }">
+                      {{ item.user_lastname }}
+                    </template>
                     <template v-slot:[`item.code`]="{ item }">
                       {{ item.user_id }}
                     </template>
@@ -510,20 +520,14 @@
                       {{ item.user_role }}
                     </template>
                     <template v-slot:[`item.photo`]="{ item }">
-                      <div
-                        v-for="(info, i) in data_position_ReportDeveloper"
-                        :key="i"
-                      >
-                        <v-avatar
-                          v-if="item.id == imageReportDeveloper[i].id"
+                      <v-avatar>
+                        <img
+                          :src="`/uploads/${item.user_pic}`"
+                          alt="User avatar"
                           class="mx-auto"
                           style="width: 35px; height: 35px"
-                        >
-                          <img
-                            :src="getImageUrl(imageReportDeveloper[i].fileName)"
-                          />
-                        </v-avatar>
-                      </div>
+                        />
+                      </v-avatar>
                     </template>
                     <template v-slot:[`item.status`]="{ item }">
                       <v-icon
@@ -1124,31 +1128,22 @@
                               </v-col>
                             </v-row>
                             <v-row class="mr-6 mt-0 mb-1">
-                              <v-btn
-                                class="mr-4"
-                                elevation="2"
-                                color="error"
-                                style="color: white; border-radius: 10px"
-                                @click="deleteUser()"
-                              >
+                              <v-btn color="error" @click="deleteUser()">
                                 <h4>ลบผู้ใช้</h4>
                               </v-btn>
                               <v-spacer></v-spacer>
                               <v-btn
-                                class="mr-4"
-                                elevation="2"
                                 color="error"
-                                style="color: white; border-radius: 10px"
                                 @click="dialog_manage = false"
                               >
                                 <h4>ปิด</h4>
                               </v-btn>
                               <!-- @click="updateUser2()" -->
                               <v-btn
-                                elevation="2"
                                 color="primary"
-                                style="color: white; border-radius: 10px"
+                                dark
                                 type="submit"
+                                class="ml-3"
                               >
                                 <h4>อัปเดต</h4>
                               </v-btn>
@@ -1247,12 +1242,13 @@ export default {
           sortable: false,
           value: "photo",
         },
-        { text: "ชื่อ", align: "center", value: "name" },
-        { text: "รหัสพนักงาน", align: "center", value: "code" },
-        { text: "ตำแหน่ง", align: "center", value: "position" },
-        { text: "แผนก", align: "center", value: "department" },
-        { text: "สถานะ", align: "center", value: "status" },
-        { text: "บทบาท", align: "center", value: "role" },
+        { text: "ชื่อ", align: "left", value: "name" },
+        { text: "นามสกุล", align: "left", value: "lastname" },
+        { text: "รหัสพนักงาน", align: "left", value: "code" },
+        { text: "ตำแหน่ง", align: "left", value: "position" },
+        { text: "แผนก", align: "left", value: "department" },
+        { text: "สถานะ", align: "left", value: "status" },
+        { text: "บทบาท", align: "left", value: "role" },
         { text: "จัดการ", align: "center", value: "actions", sortable: false },
       ],
       manage: "จัดการ",
@@ -1284,6 +1280,9 @@ export default {
       dataDefault_issue_type: [],
       dataDefault_issue_priotity: [],
       check_role: "",
+      //
+      qcInissue: [],
+      assignInissue: [],
     };
   },
   created() {
@@ -1321,6 +1320,7 @@ export default {
       await this.$axios.get("/users/getAll").then((data) => {
         this.data = data.data;
         this.splitImage(this.data, this.imageALL);
+        console.log(this.data, this.imageALL);
       });
     },
     async getPosition_Developer() {
@@ -1434,23 +1434,30 @@ export default {
         });
         const promise = new Promise((resolve, reject) => {
           this.dialog = false;
+
+          this.getUser();
           this.getAll();
           this.getPosition_Developer();
           this.getPosition_Implementer();
           this.getPosition_ProgramManagement();
           this.getPosition_SystemAnalyst();
           this.getPosition_ReportDeveloper();
+          this.getAllDefault();
+          this.initialize();
           this.clearInfoNewUser();
           resolve();
         });
         promise.then(() => {
           setTimeout(() => {
+            this.getUser();
             this.getAll();
             this.getPosition_Developer();
             this.getPosition_Implementer();
             this.getPosition_ProgramManagement();
             this.getPosition_SystemAnalyst();
             this.getPosition_ReportDeveloper();
+            this.getAllDefault();
+            this.initialize();
             this.clearInfoNewUser();
           }, 2000);
         });
@@ -1512,12 +1519,14 @@ export default {
         .then((response) => {
           console.log(response);
           console.log("Update success");
+          this.getUser();
           this.getAll();
           this.getPosition_Developer();
           this.getPosition_Implementer();
           this.getPosition_ProgramManagement();
           this.getPosition_SystemAnalyst();
           this.getPosition_ReportDeveloper();
+          this.getAllDefault();
           alert("Update success");
           this.dialog_manage = false;
         })
@@ -1565,12 +1574,14 @@ export default {
         await this.$axios
           .put("/users/updateUsers/" + this.editedItem.id + "/image", formData)
           .then((response) => {
+            this.getUser();
             this.getAll();
             this.getPosition_Developer();
             this.getPosition_Implementer();
             this.getPosition_ProgramManagement();
             this.getPosition_SystemAnalyst();
             this.getPosition_ReportDeveloper();
+            this.getAllDefault();
             alert("Update success");
             this.dialog_manage = false;
           })
@@ -1583,21 +1594,50 @@ export default {
       }
     },
 
-    deleteUser() {
-      this.$axios
-        .delete("/users/deleteUser/" + this.editedItem.id)
+    async deleteUser() {
+      //check จากชื่อ
+      await this.$axios
+        .get("/issues/getAll?issue_qc=" + this.editedItem.user_firstname)
         .then((response) => {
-          this.getAll();
-          this.getPosition_Developer();
-          this.getPosition_Implementer();
-          this.getPosition_ProgramManagement();
-          this.getPosition_SystemAnalyst();
-          this.getPosition_ReportDeveloper();
+          this.qcInissue = response.data;
         })
         .catch((err) => {
           console.log(err);
           alert(err);
         });
+      await this.$axios
+        .get("/issues/getAll?issue_assign=" + this.editedItem.user_firstname)
+        .then((response) => {
+          this.assignInissue = response.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          alert(err);
+        });
+      if (this.qcInissue.length > 0) {
+        alert("can't delete user");
+      } else if (this.assignInissue.length > 0) {
+        alert("can't delete user");
+      } else {
+        this.$axios
+          .delete("/users/deleteUser/" + this.editedItem.id)
+          .then((response) => {
+            alert("delete user");
+            this.getUser();
+            this.getAll();
+            this.getPosition_Developer();
+            this.getPosition_Implementer();
+            this.getPosition_ProgramManagement();
+            this.getPosition_SystemAnalyst();
+            this.getPosition_ReportDeveloper();
+            this.getAllDefault();
+            this.dialog_manage = false;
+          })
+          .catch((err) => {
+            console.log(err);
+            alert(err);
+          });
+      }
     },
     titleName() {
       const regex = /^(Mr\.|Miss\.|นาย|นาง|นางสาว)\s+(.*)$/; // Regular expression to match title and name
