@@ -121,7 +121,7 @@
                       </div> -->
                       <v-avatar>
                         <img
-                          :src="`/uploads/${item.user_pic}`"
+                          :src="getImageUrl(item.user_pic)"
                           alt="User avatar"
                           class="mx-auto"
                           style="width: 35px; height: 35px"
@@ -202,7 +202,7 @@
                     <template v-slot:[`item.photo`]="{ item }">
                       <v-avatar>
                         <img
-                          :src="`/uploads/${item.user_pic}`"
+                          :src="getImageUrl(item.user_pic)"
                           alt="User avatar"
                           class="mx-auto"
                           style="width: 35px; height: 35px"
@@ -282,7 +282,7 @@
                     <template v-slot:[`item.photo`]="{ item }">
                       <v-avatar>
                         <img
-                          :src="`/uploads/${item.user_pic}`"
+                          :src="getImageUrl(item.user_pic)"
                           alt="User avatar"
                           class="mx-auto"
                           style="width: 35px; height: 35px"
@@ -362,7 +362,7 @@
                     <template v-slot:[`item.photo`]="{ item }">
                       <v-avatar>
                         <img
-                          :src="`/uploads/${item.user_pic}`"
+                          :src="getImageUrl(item.user_pic)"
                           alt="User avatar"
                           class="mx-auto"
                           style="width: 35px; height: 35px"
@@ -440,9 +440,9 @@
                       {{ item.user_role }}
                     </template>
                     <template v-slot:[`item.photo`]="{ item }">
-                      <v-avatar>
+                     <v-avatar>
                         <img
-                          :src="`/uploads/${item.user_pic}`"
+                          :src="getImageUrl(item.user_pic)"
                           alt="User avatar"
                           class="mx-auto"
                           style="width: 35px; height: 35px"
@@ -522,7 +522,7 @@
                     <template v-slot:[`item.photo`]="{ item }">
                       <v-avatar>
                         <img
-                          :src="`/uploads/${item.user_pic}`"
+                          :src="getImageUrl(item.user_pic)"
                           alt="User avatar"
                           class="mx-auto"
                           style="width: 35px; height: 35px"

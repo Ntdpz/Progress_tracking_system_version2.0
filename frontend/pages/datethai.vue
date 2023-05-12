@@ -8,7 +8,7 @@
         ref="menu"
         v-model="menu"
         :close-on-content-click="false"
-        :return-value.sync="date"
+        :return-value.sync="formattedDateTwo"
         transition="scale-transition"
         offset-y
         min-width="auto"
@@ -16,7 +16,7 @@
         <template v-slot:activator="{ on, attrs }">
           <v-text-field
             v-model="formattedDateTwo"
-            label="Picker in menu"
+            label="รูปแบบไทย"
             prepend-icon="mdi-calendar"
             readonly
             v-bind="attrs"
@@ -44,6 +44,7 @@
         ref="menu"
         v-model="menuStart"
         :close-on-content-click="false"
+        :return-value.sync="dateStart"
         transition="scale-transition"
         offset-y
         min-width="auto"
@@ -58,7 +59,10 @@
             v-on="on"
           ></v-text-field>
         </template>
-        <v-date-picker v-model="dateStart" no-title scrollable> </v-date-picker>
+        <v-date-picker v-model="dateS" no-title scrollable
+          format="yyyy-MM-dd"
+          locale="th"
+          > </v-date-picker>
       </v-menu>
     </v-col>
     <h1>End{{ dateEnd }}</h1>
@@ -67,6 +71,7 @@
         ref="menu"
         v-model="menuEnd"
         :close-on-content-click="false"
+        :return-value.sync="dateEnd"
         transition="scale-transition"
         offset-y
         min-width="auto"
@@ -82,7 +87,9 @@
           ></v-text-field>
         </template>
         <!-- ก็แค่นี้ -->
-        <v-date-picker v-model="dateEnd" no-title scrollable :min="dateStart">
+        <v-date-picker v-model="dateE" no-title scrollable :min="dateS"
+        format="yyyy-MM-dd"
+          locale="th">
         </v-date-picker>
       </v-menu>
     </v-col>
@@ -103,6 +110,12 @@ export default {
       date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
         .toISOString()
         .substr(0, 10),
+      dateS: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+        .toISOString()
+        .substr(0, 10), 
+      dateE: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+        .toISOString()
+        .substr(0, 10), 
       formattedDateTwo: new Date(
         Date.now() - new Date().getTimezoneOffset() * 60000
       )
@@ -115,12 +128,25 @@ export default {
   },
   created() {
     this.formattedDateTwo = moment().add(543, "years").format("DD-MM-YYYY");
+    this.dateStart = moment().add(543, "years").format("DD-MM-YYYY");
+    this.dateEnd = moment().add(543, "years").format("DD-MM-YYYY");
   },
   updated() {
     const formattedDateTwo = moment(this.date)
       .add(543, "years")
       .format("DD-MM-YYYY");
     this.formattedDateTwo = formattedDateTwo;
+    
+    const dateStart = moment(this.dateS)
+      .add(543, "years")
+      .format("DD-MM-YYYY");
+      this.dateStart = dateStart;
+
+          const dateEnd = moment(this.dateE)
+      .add(543, "years")
+      .format("DD-MM-YYYY");
+      this.dateEnd = dateEnd;
+      
   },
 };
 </script>
