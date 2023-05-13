@@ -430,7 +430,7 @@
                             >
                               <template v-slot:activator="{ on, attrs }">
                                 <v-text-field
-                                  v-model="newscreen_dateStart"
+                                  v-model="datestartformat"
                                   label="วันเริ่ม"
                                   prepend-icon="mdi mdi-calendar-clock-outline"
                                   readonly
@@ -442,6 +442,8 @@
                                 v-model="newscreen_dateStart"
                                 no-title
                                 scrollable
+                                format="yyyy-MM-dd"
+                                locale="th"
                               >
                                 <v-spacer></v-spacer>
                                 <v-btn
@@ -474,7 +476,7 @@
                             >
                               <template v-slot:activator="{ on, attrs }">
                                 <v-text-field
-                                  v-model="newscreen_dateEnd"
+                                  v-model="dateendformat"
                                   label="วันจบ"
                                   prepend-icon="mdi mdi-calendar-clock-outline"
                                   readonly
@@ -486,6 +488,9 @@
                                 v-model="newscreen_dateEnd"
                                 no-title
                                 scrollable
+                                :min="newscreen_dateStart"
+                                format="yyyy-MM-dd"
+                                locale="th"
                               >
                                 <v-spacer></v-spacer>
                                 <v-btn
@@ -1055,13 +1060,24 @@
 
 <script>
 import DialogFail from "../../components/DialogFail.vue";
+import moment from "moment";
 export default {
   components: { DialogFail },
   layout: "admin",
   data() {
     return {
-      newscreen_dateStart: new Date().toISOString().substr(0, 10),
-      newscreen_dateEnd: new Date().toISOString().substr(0, 10),
+      newscreen_dateStart: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+        .toISOString()
+        .substr(0, 10), 
+      newscreen_dateEnd: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+        .toISOString()
+        .substr(0, 10),
+      datestartformat: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+        .toISOString()
+        .substr(0, 10),
+        dateendformat: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+        .toISOString()
+        .substr(0, 10),
       id: this.$route.params.id,
       dataSystem: [],
       projectID: null,
@@ -1177,6 +1193,8 @@ export default {
     this.getPosition_Implementer();
     this.getPosition_Sa();
     this.getUserSystems();
+    this.datestartformat = moment().add(543, "years").format("DD-MM-YYYY");
+    this.dateendformat = moment().add(543, "years").format("DD-MM-YYYY");
   },
   computed: {
     userId() {
@@ -1191,6 +1209,15 @@ export default {
       this.user_implementer,
       this.user_sa
     );
+    const datestartformat = moment(this.newscreen_dateStart)
+      .add(543, "years")
+      .format("DD-MM-YYYY");
+    this.datestartformat = datestartformat;
+
+    const dateendformat = moment(this.newscreen_dateEnd)
+      .add(543, "years")
+      .format("DD-MM-YYYY");
+    this.dateendformat = dateendformat;
   },
   methods: {
     async getUser() {

@@ -108,7 +108,7 @@
                   >
                     <template v-slot:activator="{ on, attrs }">
                       <v-text-field
-                        v-model="dateStart"
+                        v-model="dateS"
                         label="วันเริ่มโครงการ"
                         :rules="rules"
                         prepend-icon="mdi mdi-calendar-clock-outline"
@@ -117,7 +117,13 @@
                         v-on="on"
                       ></v-text-field>
                     </template>
-                    <v-date-picker v-model="dateStart" no-title scrollable>
+                    <v-date-picker
+                      v-model="dateStart"
+                      no-title
+                      scrollable
+                      format="yyyy-MM-dd"
+                      locale="th"
+                    >
                       <v-spacer></v-spacer>
                       <v-btn text color="primary" @click="menuDateStart = false"
                         >ยกเลิก</v-btn
@@ -142,7 +148,7 @@
                   >
                     <template v-slot:activator="{ on, attrs }">
                       <v-text-field
-                        v-model="dateEnd"
+                        v-model="dateE"
                         label="วันจบโครงการ"
                         :rules="rules"
                         prepend-icon="mdi mdi-calendar-clock-outline"
@@ -151,7 +157,14 @@
                         v-on="on"
                       ></v-text-field>
                     </template>
-                    <v-date-picker v-model="dateEnd" no-title scrollable>
+                    <v-date-picker
+                      v-model="dateEnd"
+                      no-title
+                      scrollable
+                      :min="dateStart"
+                      format="yyyy-MM-dd"
+                      locale="th"
+                    >
                       <v-spacer></v-spacer>
                       <v-btn text color="primary" @click="menuDateEnd = false"
                         >ยกเลิก</v-btn
@@ -166,22 +179,115 @@
                   </v-menu>
                 </v-col>
                 <v-col cols="12" sm="6" md="6" v-show="mode == 'edit'">
-                  <v-text-field
+                  <!-- <v-text-field
                     label="วันเริ่มโครงการ"
                     placeholder="วันเริ่มโครงการ"
                     outlined
                     dense
                     v-model="editedItem.formattedDateStart"
-                  ></v-text-field>
+                  ></v-text-field> -->
+
+                  <v-menu
+                    ref="menuDateStartEdit"
+                    v-model="menuDateStartEdit"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                    offset-y
+                    min-width="290px"
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-text-field
+                        v-model="dateStartEdit"
+                        label="วันเริ่มโครงการ"
+                        :rules="rules"
+                        prepend-icon="mdi mdi-calendar-clock-outline"
+                        readonly
+                        v-bind="attrs"
+                        v-on="on"
+                      ></v-text-field>
+                    </template>
+                    <v-date-picker
+                      v-model="editedItem.formattedDateStart"
+                      no-title
+                      scrollable
+                      format="yyyy-MM-dd"
+                      locale="th"
+                    >
+                      <v-spacer></v-spacer>
+                      <v-btn
+                        text
+                        color="primary"
+                        @click="menuDateStartEdit = false"
+                        >ยกเลิก</v-btn
+                      >
+                      <v-btn
+                        text
+                        color="primary"
+                        @click="
+                          $refs.menuDateStartEdit.save(
+                            editedItem.formattedDateStart
+                          )
+                        "
+                        >ตกลง</v-btn
+                      >
+                    </v-date-picker>
+                  </v-menu>
                 </v-col>
                 <v-col cols="12" sm="6" md="6" v-show="mode == 'edit'">
-                  <v-text-field
+                  <!-- <v-text-field
                     label="วันจบโครงการ"
                     placeholder="วันจบโครงการ"
                     outlined
                     dense
                     v-model="editedItem.formattedDateEnd"
-                  ></v-text-field>
+                  ></v-text-field> -->
+
+                  <v-menu
+                    ref="menuDateEndEdit"
+                    v-model="menuDateEndEdit"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                    offset-y
+                    min-width="290px"
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-text-field
+                        v-model="dateEndEdit"
+                        label="วันเริ่มโครงการ"
+                        :rules="rules"
+                        prepend-icon="mdi mdi-calendar-clock-outline"
+                        readonly
+                        v-bind="attrs"
+                        v-on="on"
+                      ></v-text-field>
+                    </template>
+                    <v-date-picker
+                      v-model="editedItem.formattedDateEnd"
+                      :min="editedItem.formattedDateStart"
+                      no-title
+                      scrollable
+                      format="yyyy-MM-dd"
+                      locale="th"
+                    >
+                      <v-spacer></v-spacer>
+                      <v-btn
+                        text
+                        color="primary"
+                        @click="menuDateEndEdit = false"
+                        >ยกเลิก</v-btn
+                      >
+                      <v-btn
+                        text
+                        color="primary"
+                        @click="
+                          $refs.menuDateEndEdit.save(
+                            editedItem.formattedDateEnd
+                          )
+                        "
+                        >ตกลง</v-btn
+                      >
+                    </v-date-picker>
+                  </v-menu>
                 </v-col>
               </v-row>
             </v-container>
@@ -190,7 +296,7 @@
             <v-btn
               color="error"
               dark
-              @click="DeleteAllProject(), (clearCreateProject())"
+              @click="DeleteAllProject(), clearCreateProject()"
               v-show="mode == 'edit'"
             >
               <h5>ลบโครงการ</h5>
@@ -230,10 +336,10 @@
                 <h4>{{ project.project_id }}</h4>
               </v-col>
               <v-col cols="2">
-                <h4>{{ project.formattedDateStart }}</h4>
+                <h4>{{ project.showdatestart }}</h4>
               </v-col>
               <v-col cols="2">
-                <h4>{{ project.formattedDateEnd }}</h4>
+                <h4>{{ project.showdateend }}</h4>
               </v-col>
               <v-col cols="2">
                 <h4>{{ project.project_agency }}</h4>
@@ -415,7 +521,7 @@
                       <v-btn
                         color="primary"
                         text
-                        @click="(dialogSubsystem = false),(ClearSubsystem())"
+                        @click="(dialogSubsystem = false), ClearSubsystem()"
                       >
                         ยกเลิก
                       </v-btn>
@@ -486,10 +592,10 @@
                 <h4>{{ project.project_id }}</h4>
               </v-col>
               <v-col cols="2">
-                <h4>{{ project.formattedDateStart }}</h4>
+                <h4>{{ project.showdatestart }}</h4>
               </v-col>
               <v-col cols="2">
-                <h4>{{ project.formattedDateEnd }}</h4>
+                <h4>{{ project.showdateend }}</h4>
               </v-col>
               <v-col cols="2">
                 <h4>{{ project.project_agency }}</h4>
@@ -586,12 +692,34 @@ export default {
   data() {
     return {
       // new Date().toISOString().substr(0, 10)
-      dateStart: new Date().toISOString().substr(0, 10),
-      dateEnd: new Date().toISOString().substr(0, 10),
+      dateStart: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+        .toISOString()
+        .substr(0, 10),
+      dateEnd: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+        .toISOString()
+        .substr(0, 10),
+      dateS: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+        .toISOString()
+        .substr(0, 10),
+      dateE: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+        .toISOString()
+        .substr(0, 10),
       menuDateStart: false,
-      menuDateStartEdit: false,
-      dateStartEdit: new Date().toISOString().substr(0, 10),
       menuDateEnd: false,
+      menuDateStartEdit: false,
+      dateStartEdit: new Date(
+        Date.now() - new Date().getTimezoneOffset() * 60000
+      )
+        .toISOString()
+        .substr(0, 10),
+      menuDateEndEdit: false,
+      dateEndEdit: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+        .toISOString()
+        .substr(0, 10),
+      dateStartShow: null,
+      dateEndShow: null,
+      dateStartDataShow:[],
+      dateEndDataShow:[],
       dialog: false,
       mode: "create",
       dialogSubsystem: false,
@@ -662,6 +790,27 @@ export default {
     await this.getPosition_Sa();
     await this.getSystemOwner();
     await this.getSystemsOwner();
+    this.dateS = moment().add(543, "years").format("DD-MM-YYYY");
+    this.dateE = moment().add(543, "years").format("DD-MM-YYYY");
+    this.dateStartEdit = moment().add(543, "years").format("DD-MM-YYYY");
+    this.dateEndEdit = moment().add(543, "years").format("DD-MM-YYYY");
+  },
+  updated() {
+    const dateS = moment(this.dateStart).add(543, "years").format("DD-MM-YYYY");
+    this.dateS = dateS;
+
+    const dateE = moment(this.dateEnd).add(543, "years").format("DD-MM-YYYY");
+    this.dateE = dateE;
+
+    const dateStartEdit = moment(this.editedItem.formattedDateStart)
+      .add(543, "years")
+      .format("DD-MM-YYYY");
+    this.dateStartEdit = dateStartEdit;
+
+    const dateEndEdit = moment(this.editedItem.formattedDateEnd)
+      .add(543, "years")
+      .format("DD-MM-YYYY");
+    this.dateEndEdit = dateEndEdit;
   },
   computed: {
     userId() {
@@ -688,9 +837,7 @@ export default {
         this.userrole = res.data[0].user_role;
       });
     },
-    ClearSystemField() {
-      
-    },
+    ClearSystemField() {},
     async CreateAllSystem() {
       try {
         if (
@@ -705,7 +852,7 @@ export default {
           await this.getsystemID();
           await this.getProjectId();
           await this.addUser_project(this.projectIds);
-          await this.addUser_system(this.systemId);  
+          await this.addUser_system(this.systemId);
         }
       } catch (error) {
         console.log(error);
@@ -823,12 +970,19 @@ export default {
             "YYYY-MM-DDTHH:mm:ss.SSSZ"
           );
           project.formattedDateStart = date.format("YYYY-MM-DD");
+          project.showdatestart = moment(date).add(543, "years").format("DD-MM-YYYY");
+          // this.dateStartShow  = moment(date).add(543, "years").format("DD-MM-YYYY");
+
+          // this.dateStartDataShow.push(this.dateStartShow);
+          // this.dateStartEdit = date.format("YYYY-MM-DD");
 
           const dateEnd = moment(
             project.project_end,
             "YYYY-MM-DDTHH:mm:ss.SSSZ"
           );
           project.formattedDateEnd = dateEnd.format("YYYY-MM-DD");
+          project.showdateend = moment(dateEnd).add(543, "years").format("DD-MM-YYYY");
+          // this.dateEndEdit = dateEnd.format("YYYY-MM-DD");
         });
       });
     },
@@ -842,12 +996,15 @@ export default {
             "YYYY-MM-DDTHH:mm:ss.SSSZ"
           );
           project.formattedDateStart = date.format("YYYY-MM-DD");
+          project.showdatestart = moment(date).add(543, "years").format("DD-MM-YYYY");
 
           const dateEnd = moment(
             project.project_end,
             "YYYY-MM-DDTHH:mm:ss.SSSZ"
           );
           project.formattedDateEnd = dateEnd.format("YYYY-MM-DD");
+          project.showdateend = moment(dateEnd).add(543, "years").format("DD-MM-YYYY");
+
         });
       });
     },

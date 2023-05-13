@@ -376,7 +376,8 @@
                   >
                     <template v-slot:activator="{ on, attrs }">
                       <v-text-field
-                        v-model="screensID.screen_start"
+                      :disabled="disabled"
+                        v-model="dateStart"
                         label="วันเริ่ม"
                         prepend-icon="mdi mdi-calendar-clock-outline"
                         readonly
@@ -388,6 +389,8 @@
                       v-model="screensID.screen_start"
                       no-title
                       scrollable
+                      format="yyyy-MM-dd"
+                      locale="th"
                     >
                       <v-spacer></v-spacer>
                       <v-btn text color="primary" @click="menuDateStart = false"
@@ -416,7 +419,8 @@
                   >
                     <template v-slot:activator="{ on, attrs }">
                       <v-text-field
-                        v-model="screensID.screen_end"
+                      :disabled="disabled"
+                        v-model="dateEnd"
                         label="วันจบ"
                         prepend-icon="mdi mdi-calendar-clock-outline"
                         readonly
@@ -428,6 +432,9 @@
                       v-model="screensID.screen_end"
                       no-title
                       scrollable
+                      :min="screensID.screen_start"
+                      format="yyyy-MM-dd"
+                      locale="th"
                     >
                       <v-spacer></v-spacer>
                       <v-btn text color="primary" @click="menuDateEnd = false"
@@ -567,8 +574,8 @@
       title="ลบข้อมูลเสร็จเรียบร้อย"
     />
     <dialog-fail
-    :dialog.sync="dialogScreenHaveIssue"
-    title="ไม่สามารถลบได้ เนื่องจากหน้าจอนี้ติดปัญหาที่หน้ารายการปัญหา"
+      :dialog.sync="dialogScreenHaveIssue"
+      title="ไม่สามารถลบได้ เนื่องจากหน้าจอนี้ติดปัญหาที่หน้ารายการปัญหา"
     />
   </div>
 </template>
@@ -581,6 +588,12 @@ export default {
   layout: "admin",
   data() {
     return {
+      dateStart: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+        .toISOString()
+        .substr(0, 10),
+      dateEnd: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+        .toISOString()
+        .substr(0, 10),
       query: "",
       showIcon: true,
       screencode: "A001",
@@ -605,7 +618,7 @@ export default {
       SelectScreenType: [],
       selectlevel: [],
       userScreens: [],
-      sa:[],
+      sa: [],
       developer: [],
       implementer: [],
       data_position_Developer: [],
@@ -614,7 +627,7 @@ export default {
       user_id: [],
       position_Implementers: [],
       position_Developers: [],
-      position_Sa:[],
+      position_Sa: [],
       dataDefault: [],
       userid: "",
       userfirstname: "",
@@ -633,6 +646,12 @@ export default {
     this.getPosition_Developer();
     this.getPosition_Implementer();
     this.getPosition_Sa();
+    this.dateStart = moment(this.screensID.screen_start)
+      .add(543, "years")
+      .format("DD-MM-YYYY");
+    this.dateEnd = moment(this.screensID.screen_end)
+      .add(543, "years")
+      .format("DD-MM-YYYY");
   },
   computed: {
     userId() {
@@ -646,6 +665,15 @@ export default {
     // this.getScreenID();
     // this.calculateManDay();
     this.user_id = this.developer.concat(this.implementer, this.sa);
+    const dateStart = moment(this.screensID.screen_start)
+      .add(543, "years")
+      .format("DD-MM-YYYY");
+    this.dateStart = dateStart;
+
+    const dateEnd = moment(this.screensID.screen_end)
+      .add(543, "years")
+      .format("DD-MM-YYYY");
+    this.dateEnd = dateEnd;
   },
   methods: {
     async getUser() {
@@ -693,8 +721,8 @@ export default {
             .filter((user) => user.user_position === "Implementer")
             .map((user) => user.id);
           this.sa = this.userScreens
-          .filter((user) => user.user_position === "System Analyst")
-          .map((user) => user.id);
+            .filter((user) => user.user_position === "System Analyst")
+            .map((user) => user.id);
         });
     },
     async getPosition_Developer() {
@@ -858,11 +886,11 @@ export default {
         })
         .catch((err) => {
           console.log(err);
-        //   if (err.response && err.response.status === 400) {
-        //       this.dialogScreenHaveIssue = true;
-        //   } else {
-        // console.log(err);
-        //   }
+          //   if (err.response && err.response.status === 400) {
+          //       this.dialogScreenHaveIssue = true;
+          //   } else {
+          // console.log(err);
+          //   }
         });
     },
     async getAllDefault() {
