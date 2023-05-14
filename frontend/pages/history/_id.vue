@@ -4,7 +4,7 @@
     :items="items"
     :single-expand="singleExpand"
     :expanded.sync="expanded"
-    item-key="updated_at"
+    item-key="created_at"
     show-expand
     class="elevation-1"
   >

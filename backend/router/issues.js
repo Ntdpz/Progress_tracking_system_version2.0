@@ -30,8 +30,6 @@ const upload = multer({ storage });
 router.get("/getAll", async (req, res) => {
   const projectFilter = req.query.project_id;
   const systemFilter = req.query.system_id;
-  const assignFilter = req.query.issue_assign;
-  const qcFilter = req.query.issue_qc;
   const assignIdFilter = req.query.user_assign_id;
   const qcIdFilter = req.query.user_qc_id;
   let query = "SELECT * FROM issues";
@@ -42,14 +40,7 @@ router.get("/getAll", async (req, res) => {
   } else if (systemFilter) {
     query += " WHERE system_id = ?";
     queryParams.push(systemFilter);
-    //check จากชื่อ
-  } else if (assignFilter) {
-    query += " WHERE issue_assign = ?";
-    queryParams.push(assignFilter);
-  } else if (qcFilter) {
-    query += " WHERE issue_qc = ?";
-    queryParams.push(qcFilter);
-    //check จาก id
+   //check จาก id
   } else if (assignIdFilter) {
     query += " WHERE user_assign_id = ?";
     queryParams.push(assignIdFilter);

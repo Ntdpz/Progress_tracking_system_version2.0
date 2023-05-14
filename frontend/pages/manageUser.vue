@@ -1597,7 +1597,7 @@ export default {
     async deleteUser() {
       //check จากชื่อ
       await this.$axios
-        .get("/issues/getAll?issue_qc=" + this.editedItem.user_firstname)
+        .get("/issues/getAll?user_qc_id=" + this.editedItem.id)
         .then((response) => {
           this.qcInissue = response.data;
         })
@@ -1606,7 +1606,7 @@ export default {
           alert(err);
         });
       await this.$axios
-        .get("/issues/getAll?issue_assign=" + this.editedItem.user_firstname)
+        .get("/issues/getAll?user_assign_id=" + this.editedItem.id)
         .then((response) => {
           this.assignInissue = response.data;
         })
