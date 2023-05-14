@@ -458,17 +458,17 @@ router.delete("/deleteUser/:id", (req, res) => {
     const imagePath = "../frontend/static/uploads/" + results[0].user_pic;
 
     // Check if the image name is not equal to "DefaultAvatar.jpg"
-    // if (results[0].user_pic !== "DefaultAvatar.jpg") {
-    // // Delete image file from server
-    //   fs.unlink(imagePath, (err) => {
-    //     if (err) {
-    //       console.log(`Error deleting image file: ${err}`);
-    //       res.status(500).send(`Error deleting image file: ${err}`);
-    //       return;
-    //     }
-    //     console.log(`Image file ${imagePath} deleted successfully.`);
-    //   });
-    // }
+    if (results[0].user_pic !== "DefaultAvatar.jpg") {
+    // Delete image file from server
+      fs.unlink(imagePath, (err) => {
+        if (err) {
+          console.log(`Error deleting image file: ${err}`);
+          res.status(500).send(`Error deleting image file: ${err}`);
+          return;
+        }
+        console.log(`Image file ${imagePath} deleted successfully.`);
+      });
+    }
 
     // Delete database entry
     const deleteSql = `DELETE FROM users WHERE id = ${id}`;

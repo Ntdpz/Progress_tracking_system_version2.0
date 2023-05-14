@@ -1584,7 +1584,8 @@ export default {
             this.getAllDefault();
             alert("Update success");
             this.dialog_manage = false;
-          }).catch((err) => {
+          })
+          .catch((err) => {
             console.log(err);
             alert(err);
           });
@@ -1614,11 +1615,17 @@ export default {
           alert(err);
         });
       if (this.qcInissue.length > 0) {
-        alert("can't delete user");
+        alert("ผู้ใช้รายนี้มีรายการปัญหาที่ต้องจัดการก่อน");
       } else if (this.assignInissue.length > 0) {
-        alert("can't delete user");
+        alert("ผู้ใช้รายนี้มีรายการปัญหาที่ต้องจัดการก่อน");
       } else {
-        this.$axios
+        await this.deleteUser_screens();
+        console.log("1");
+        await this.deleteUserSystem();
+        console.log("2");
+        await this.deleteUserProject();
+        console.log("3");
+        await this.$axios
           .delete("/users/deleteUser/" + this.editedItem.id)
           .then((response) => {
             alert("delete user");
@@ -1636,6 +1643,61 @@ export default {
             console.log(err);
             alert(err);
           });
+      }
+    },
+
+    async deleteUser_screens() {
+      try {
+        const response = await this.$axios.delete(
+          "/user_screens/deleteUserID/" + this.editedItem.id
+        );
+        // console.log("delete success");
+        if (response.status === 200 || response.status === 404) {
+        }
+      } catch (err) {
+        if (err.response && err.response.status === 404) {
+          console.log(err.response);
+        }
+        console.log(err);
+      }
+    },
+    async deleteUserSystem() {
+      try {
+        const response = await this.$axios.delete(
+          "/user_systems/deleteUserID/" + this.editedItem.id
+        );
+        if (response.status === 200) {
+        } else if (response.status === 404) {
+          const responseData = response.data;
+          if (responseData) {
+            // alert("user_system no have data");
+          } else if (responseData.error && response.status != 404) {
+            // alert(responseData.error);
+          }
+          // window.location.reload();
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    async deleteUserProject() {
+      try {
+        const response = await this.$axios.delete(
+          "/user_projects/deleteUserID/" + this.editedItem.id
+        );
+        if (response.status === 200) {
+        } else if (response.status === 404) {
+          const responseData = response.data;
+          if (responseData) {
+            // alert("user_system no have data");
+          } else if (responseData.error && response.status != 404) {
+            // alert(responseData.error);
+            console.log(responseData.error);
+          }
+          // window.location.reload();
+        }
+      } catch (err) {
+        console.log(err);
       }
     },
     titleName() {
