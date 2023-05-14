@@ -101,8 +101,24 @@
           </v-toolbar>
         </v-sheet>
         <v-sheet height="77vh">
+            <v-calendar
+            v-if="user_role == 'Admin'"
+            :key="'admin-calendar'"
+            ref="calendar"
+            v-model="focus"
+            color="primary"
+            :events="events"
+            :event-color="getEventColor"
+            :type="type"
+            @click:event="showEvent"
+            @click:more="viewDay"
+            @click:date="viewDay"
+            @change="updateRange"
+          >
+          </v-calendar>
           <v-calendar
-            v-if="user_role != 'Admin'"
+            v-else-if="user_position == 'Developer'"
+            :key="'developer-calendar'"
             ref="calendar"
             v-model="focus"
             color="primary"
@@ -116,7 +132,8 @@
           >
           </v-calendar>
           <v-calendar
-            v-else-if="user_role == 'Admin'"
+            v-else-if="user_position == 'Implementer'"
+            :key="'implementer-calendar'"
             ref="calendar"
             v-model="focus"
             color="primary"
@@ -126,10 +143,9 @@
             @click:event="showEvent"
             @click:more="viewDay"
             @click:date="viewDay"
-            @change="updateRange"
+            @change="updateRangeOwnerQc"
           >
           </v-calendar>
-
           <v-menu
             v-model="selectedOpen"
             :close-on-content-click="false"
@@ -182,6 +198,7 @@ export default {
       user_status: "",
       user_pic: null,
       user_role: "",
+      user_position: "",
       colorday: false,
       colorweek: false,
       colormonth: true,
@@ -230,7 +247,11 @@ export default {
     this.checkRole();
   },
   mounted() {
-    this.$refs.calendar.checkChange();
+    try {
+      this.$refs.calendar.checkChange();
+    } catch (error) {
+      console.log(error);
+    }
   },
   computed: {
     userId() {
@@ -249,6 +270,7 @@ export default {
         this.user_status = res.data[0].user_status;
         this.user_pic = res.data[0].user_pic;
         this.user_role = res.data[0].user_role;
+        this.user_position = res.data[0].user_position;
       });
     },
     ClickDay() {
@@ -329,8 +351,30 @@ export default {
     },
     async updateRangeOwner() {
       try {
+
+
         const { data } = await this.$axios.get(
           `/issues/getOneName/${this.userId}`,
+          {}
+        );
+        const events = data.map((issue) => ({
+          name: issue.issue_name,
+          details: issue.issue_des,
+          start: new Date(issue.issue_end),
+          end: new Date(issue.issue_end),
+          color: "red",
+          timed: !issue.allDay,
+        }));
+
+        this.events = events;
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    async updateRangeOwnerQc() {
+      try {
+        const { data } = await this.$axios.get(
+          `/issues/getOneNameQc/${this.userId}`,
           {}
         );
         const events = data.map((issue) => ({
@@ -351,10 +395,15 @@ export default {
       return Math.floor((b - a + 1) * Math.random()) + a;
     },
     checkRole() {
-      if (this.user_role != "Admin") {
-        return this.updateRangeOwner();
-      } else if (this.user_role == "Admin") {
-        return this.updateRange();
+      if (this.user_role == "Admin") {
+        this.updateRange();
+        return;
+      } else if (this.user_position == "Implementer" && this.user_role != "Admin") {
+        this.updateRangeOwnerQc();
+        return;
+       }else if (this.user_position == "Devloper" && this.user_role != "Admin") {
+        this.updateRangeOwner();
+        return;
       }
       return;
     },

@@ -84,13 +84,34 @@ router.get("/getOne/:id", async (req, res) => {
   }
 });
 
-//* GET one by user_assign_id
+//* GET one dev by user_assign_id
 router.get("/getOneName/:user_assign_id", async (req, res) => {
   const user_assign_id = req.params.user_assign_id;
   try {
     connection.query(
       "SELECT * FROM issues WHERE user_assign_id = ?",
       [user_assign_id],
+      (err, results, fields) => {
+        if (err) {
+          console.log(err);
+          return res.status(400).send();
+        }
+        res.status(200).json(results);
+      }
+    );
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send();
+  }
+});
+
+//* GET one qc by user_qc_id
+router.get("/getOneNameQc/:user_qc_id", async (req, res) => {
+  const user_qc_id = req.params.user_qc_id;
+  try {
+    connection.query(
+      "SELECT * FROM issues WHERE user_qc_id = ?",
+      [user_qc_id],
       (err, results, fields) => {
         if (err) {
           console.log(err);
