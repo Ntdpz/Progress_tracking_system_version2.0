@@ -7,6 +7,7 @@
     item-key="created_at"
     show-expand
     class="elevation-1"
+    :search="search"
   >
     <template v-slot:top>
       <v-toolbar flat>
@@ -17,6 +18,13 @@
           label="Single expand"
           class="mt-2"
         ></v-switch> -->
+        <v-text-field
+          v-model="search"
+          append-icon="mdi-magnify"
+          label="Search"
+          single-line
+          hide-details
+        ></v-text-field>
       </v-toolbar>
     </template>
     <template v-slot:item.index="{ index }">
@@ -178,6 +186,7 @@ export default {
   layout: "admin",
   data() {
     return {
+      search: "",
       id: this.$route.params.id,
       expanded: [],
       singleExpand: false,

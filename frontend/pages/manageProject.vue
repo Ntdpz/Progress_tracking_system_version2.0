@@ -44,14 +44,10 @@
     </v-btn>
     <v-dialog v-model="dialog" max-width="500px" :retain-focus="false">
       <v-card>
-        <v-card-title>
-          <v-col cols="12">
-            <v-row>
-              <h5>
-                {{ mode === "create" ? "สร้างโครงการใหม่" : "แก้ไขโครงการ" }}
-              </h5>
-            </v-row>
-          </v-col>
+        <v-card-title class="pt-3" style="background-color: #883cfe">
+          <h5 style="color: white">
+            {{ mode === "create" ? "สร้างโครงการใหม่" : "แก้ไขโครงการ" }}
+          </h5>
         </v-card-title>
         <v-form ref="form" @submit.prevent="saveProject">
           <v-card-text>
@@ -299,14 +295,14 @@
               @click="DeleteAllProject(), clearCreateProject()"
               v-show="mode == 'edit'"
             >
-              <h5>ลบโครงการ</h5>
+              <h4>ลบโครงการ</h4>
             </v-btn>
             <v-spacer></v-spacer>
-            <v-btn color="primary" text @click="clearCreateProject">
-              <h5>ปิด</h5>
+            <v-btn color="error" dark @click="clearCreateProject">
+              <h4>ปิด</h4>
             </v-btn>
             <v-btn color="primary" dark type="submit">
-              <h5>{{ mode === "create" ? "สร้างโครงการ" : "อัปเดต" }}</h5>
+              <h4>{{ mode === "create" ? "สร้างโครงการ" : "อัปเดต" }}</h4>
             </v-btn>
           </v-card-actions>
         </v-form>
@@ -718,8 +714,8 @@ export default {
         .substr(0, 10),
       dateStartShow: null,
       dateEndShow: null,
-      dateStartDataShow:[],
-      dateEndDataShow:[],
+      dateStartDataShow: [],
+      dateEndDataShow: [],
       dialog: false,
       mode: "create",
       dialogSubsystem: false,
@@ -970,7 +966,9 @@ export default {
             "YYYY-MM-DDTHH:mm:ss.SSSZ"
           );
           project.formattedDateStart = date.format("YYYY-MM-DD");
-          project.showdatestart = moment(date).add(543, "years").format("DD-MM-YYYY");
+          project.showdatestart = moment(date)
+            .add(543, "years")
+            .format("DD-MM-YYYY");
           // this.dateStartShow  = moment(date).add(543, "years").format("DD-MM-YYYY");
 
           // this.dateStartDataShow.push(this.dateStartShow);
@@ -981,7 +979,9 @@ export default {
             "YYYY-MM-DDTHH:mm:ss.SSSZ"
           );
           project.formattedDateEnd = dateEnd.format("YYYY-MM-DD");
-          project.showdateend = moment(dateEnd).add(543, "years").format("DD-MM-YYYY");
+          project.showdateend = moment(dateEnd)
+            .add(543, "years")
+            .format("DD-MM-YYYY");
           // this.dateEndEdit = dateEnd.format("YYYY-MM-DD");
         });
       });
@@ -996,15 +996,18 @@ export default {
             "YYYY-MM-DDTHH:mm:ss.SSSZ"
           );
           project.formattedDateStart = date.format("YYYY-MM-DD");
-          project.showdatestart = moment(date).add(543, "years").format("DD-MM-YYYY");
+          project.showdatestart = moment(date)
+            .add(543, "years")
+            .format("DD-MM-YYYY");
 
           const dateEnd = moment(
             project.project_end,
             "YYYY-MM-DDTHH:mm:ss.SSSZ"
           );
           project.formattedDateEnd = dateEnd.format("YYYY-MM-DD");
-          project.showdateend = moment(dateEnd).add(543, "years").format("DD-MM-YYYY");
-
+          project.showdateend = moment(dateEnd)
+            .add(543, "years")
+            .format("DD-MM-YYYY");
         });
       });
     },

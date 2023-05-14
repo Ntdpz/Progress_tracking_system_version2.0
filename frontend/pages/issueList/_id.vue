@@ -246,6 +246,7 @@
                 sort-by="calories"
                 class="v-data-table elevation-1 mb-2"
                 v-remove-row-borders
+                :search="search"
               >
                 <template v-slot:top>
                   <v-toolbar flat>
@@ -257,6 +258,14 @@
                         ปัญหาที่มีคนรับผิดชอบ
                       </h5>
                     </v-toolbar-title>
+                    <v-spacer></v-spacer>
+                    <v-text-field
+                      v-model="search"
+                      append-icon="mdi-magnify"
+                      label="Search"
+                      single-line
+                      hide-details
+                    ></v-text-field>
                   </v-toolbar>
                 </template>
                 <template v-slot:[`item.issue_name`]="{ item }">
@@ -375,6 +384,14 @@
                         ปัญหาที่ไม่มีคนรับผิดชอบ
                       </h5>
                     </v-toolbar-title>
+                    <v-spacer></v-spacer>
+                    <v-text-field
+                      v-model="search"
+                      append-icon="mdi-magnify"
+                      label="Search"
+                      single-line
+                      hide-details
+                    ></v-text-field>
                   </v-toolbar>
                 </template>
                 <template v-slot:[`item.issue_name`]="{ item }">
@@ -459,6 +476,14 @@
                         ปัญหาที่มีคนรับผิดชอบ
                       </h5>
                     </v-toolbar-title>
+                    <v-spacer></v-spacer>
+                    <v-text-field
+                      v-model="search"
+                      append-icon="mdi-magnify"
+                      label="Search"
+                      single-line
+                      hide-details
+                    ></v-text-field>
                   </v-toolbar>
                 </template>
                 <template v-slot:[`item.issue_name`]="{ item }">
@@ -586,6 +611,14 @@
                         ปัญหาที่ไม่มีคนรับผิดชอบ
                       </h5>
                     </v-toolbar-title>
+                    <v-spacer></v-spacer>
+                    <v-text-field
+                      v-model="search"
+                      append-icon="mdi-magnify"
+                      label="Search"
+                      single-line
+                      hide-details
+                    ></v-text-field>
                   </v-toolbar>
                 </template>
                 <template v-slot:[`item.issue_name`]="{ item }">
@@ -670,6 +703,14 @@
                         ปัญหาที่มีคนรับผิดชอบ
                       </h5>
                     </v-toolbar-title>
+                    <v-spacer></v-spacer>
+                    <v-text-field
+                      v-model="search"
+                      append-icon="mdi-magnify"
+                      label="Search"
+                      single-line
+                      hide-details
+                    ></v-text-field>
                   </v-toolbar>
                 </template>
                 <template v-slot:[`item.issue_name`]="{ item }">
@@ -767,7 +808,7 @@
                           item.created_at,
                           item.issue_status_developer,
                           item.issue_status_implement,
-                           item.issue_round,
+                          item.issue_round,
                           item.user_assign_id,
                           item.user_qc_id
                         )
@@ -797,6 +838,14 @@
                         ปัญหาที่ไม่มีคนรับผิดชอบ
                       </h5>
                     </v-toolbar-title>
+                    <v-spacer></v-spacer>
+                    <v-text-field
+                      v-model="search"
+                      append-icon="mdi-magnify"
+                      label="Search"
+                      single-line
+                      hide-details
+                    ></v-text-field>
                   </v-toolbar>
                 </template>
                 <template v-slot:[`item.issue_name`]="{ item }">
@@ -848,9 +897,9 @@
                         item.created_at,
                         item.issue_status_developer,
                         item.issue_status_implement,
-                         item.issue_round,
-                          item.user_assign_id,
-                          item.user_qc_id
+                        item.issue_round,
+                        item.user_assign_id,
+                        item.user_qc_id
                       );
                     "
                     size="20"
@@ -881,6 +930,14 @@
                         ปัญหาที่มีคนรับผิดชอบ
                       </h5>
                     </v-toolbar-title>
+                    <v-spacer></v-spacer>
+                    <v-text-field
+                      v-model="search"
+                      append-icon="mdi-magnify"
+                      label="Search"
+                      single-line
+                      hide-details
+                    ></v-text-field>
                   </v-toolbar>
                 </template>
                 <template v-slot:[`item.issue_name`]="{ item }">
@@ -978,9 +1035,9 @@
                         item.created_at,
                         item.issue_status_developer,
                         item.issue_status_implement,
-                         item.issue_round,
-                          item.user_assign_id,
-                          item.user_qc_id
+                        item.issue_round,
+                        item.user_assign_id,
+                        item.user_qc_id
                       );
                     "
                     size="20"
@@ -1008,6 +1065,14 @@
                         ปัญหาที่ไม่มีคนรับผิดชอบ
                       </h5>
                     </v-toolbar-title>
+                    <v-spacer></v-spacer>
+                    <v-text-field
+                      v-model="search"
+                      append-icon="mdi-magnify"
+                      label="Search"
+                      single-line
+                      hide-details
+                    ></v-text-field>
                   </v-toolbar>
                 </template>
                 <template v-slot:[`item.issue_name`]="{ item }">
@@ -1059,9 +1124,9 @@
                         item.created_at,
                         item.issue_status_developer,
                         item.issue_status_implement,
-                         item.issue_round,
-                          item.user_assign_id,
-                          item.user_qc_id
+                        item.issue_round,
+                        item.user_assign_id,
+                        item.user_qc_id
                       );
                     "
                     size="20"
@@ -1139,7 +1204,7 @@
                           item.created_at,
                           item.issue_status_developer,
                           item.issue_status_implement,
-                           item.issue_round,
+                          item.issue_round,
                           item.user_assign_id,
                           item.user_qc_id
                         )
@@ -1182,6 +1247,7 @@ export default {
   },
   data() {
     return {
+      search: "",
       id: this.$route.params.id,
       tab: null,
       dialog: false,
