@@ -31,7 +31,9 @@ router.get("/getAll", async (req, res) => {
   const projectFilter = req.query.project_id;
   const systemFilter = req.query.system_id;
   const assignFilter = req.query.issue_assign;
-  const qcFilter = req.query.issue_qc; // Define qcFilter to get the QC filter from the request query
+  const qcFilter = req.query.issue_qc;
+  const assignIdFilter = req.query.user_assign_id;
+  const qcIdFilter = req.query.user_qc_id;
   let query = "SELECT * FROM issues";
   const queryParams = [];
   if (projectFilter) {
@@ -43,11 +45,19 @@ router.get("/getAll", async (req, res) => {
     //check จากชื่อ
   } else if (assignFilter) {
     query += " WHERE issue_assign = ?";
-    queryParams.push(assignFilter); // modify the queryParams array to contain the assigned name
+    queryParams.push(assignFilter);
   } else if (qcFilter) {
     query += " WHERE issue_qc = ?";
     queryParams.push(qcFilter);
+    //check จาก id
+  } else if (assignIdFilter) {
+    query += " WHERE user_assign_id = ?";
+    queryParams.push(assignIdFilter);
+  } else if (qcIdFilter) {
+    query += " WHERE user_qc_id = ?";
+    queryParams.push(qcIdFilter);
   }
+
   try {
     connection.query(query, queryParams, (err, results, fields) => {
       if (err) {
@@ -110,6 +120,8 @@ router.post("/createIssue", upload.single("file"), (req, res) => {
     screen_id,
     system_id,
     project_id,
+    user_assign_id,
+    user_qc_id,
     issue_name,
     issue_id,
     issue_type,
@@ -140,11 +152,13 @@ router.post("/createIssue", upload.single("file"), (req, res) => {
 
   try {
     connection.query(
-      "INSERT INTO issues (screen_id, system_id, project_id, issue_name, issue_id, issue_type, issue_informer, issue_priority, issue_end, issue_assign, issue_qc, issue_des, issue_des_sa, issue_type_sa, issue_doc_id, issue_customer, issue_filename, issue_des_dev, issue_des_implementer, issue_start, issue_expected, issue_status, issue_accepting, issue_manday, issue_complete ,issue_status_developer,issue_status_implement,issue_round) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      "INSERT INTO issues (screen_id, system_id, project_id, user_assign_id , user_qc_id, issue_name, issue_id, issue_type, issue_informer, issue_priority, issue_end, issue_assign, issue_qc, issue_des, issue_des_sa, issue_type_sa, issue_doc_id, issue_customer, issue_filename, issue_des_dev, issue_des_implementer, issue_start, issue_expected, issue_status, issue_accepting, issue_manday, issue_complete ,issue_status_developer,issue_status_implement,issue_round) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
       [
         screen_id,
         system_id,
         project_id,
+        user_assign_id,
+        user_qc_id,
         issue_name,
         issue_id,
         issue_type,
@@ -249,6 +263,8 @@ router.put("/updateIssueAdmin/:id", upload.single("file"), (req, res) => {
   const id = req.params.id;
   const {
     screen_id,
+    user_assign_id,
+    user_qc_id,
     issue_name,
     issue_id,
     issue_type,
@@ -290,9 +306,11 @@ router.put("/updateIssueAdmin/:id", upload.single("file"), (req, res) => {
       // Update the text1 field in the database
       try {
         connection.query(
-          "UPDATE issues SET screen_id = ?, issue_name = ?, issue_id = ?, issue_type = ?, issue_informer = ?, issue_priority = ?, issue_end = ?, issue_assign = ?, issue_qc = ?, issue_des = ?, issue_des_sa = ?, issue_doc_id = ?, issue_customer = ?, issue_des_implementer = ?, issue_accepting = ?, issue_manday = ?, issue_start = ?, issue_expected = ?, issue_status = ?, issue_complete = ?, issue_des_dev = ?, issue_status_developer = ?, issue_status_implement = ?, issue_round = ? WHERE id = ?",
+          "UPDATE issues SET screen_id = ?, user_assign_id = ?,user_qc_id = ?,issue_name = ?, issue_id = ?, issue_type = ?, issue_informer = ?, issue_priority = ?, issue_end = ?, issue_assign = ?, issue_qc = ?, issue_des = ?, issue_des_sa = ?, issue_doc_id = ?, issue_customer = ?, issue_des_implementer = ?, issue_accepting = ?, issue_manday = ?, issue_start = ?, issue_expected = ?, issue_status = ?, issue_complete = ?, issue_des_dev = ?, issue_status_developer = ?, issue_status_implement = ?, issue_round = ? WHERE id = ?",
           [
             screen_id,
+            user_assign_id,
+            user_qc_id,
             issue_name,
             issue_id,
             issue_type,

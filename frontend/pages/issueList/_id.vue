@@ -28,7 +28,8 @@
               <v-col cols="12">
                 <v-row style="margin-top: 1px">
                   <h4>
-                    {{ system.system_shortname }} &nbsp; {{ system.system_nameTH }}
+                    {{ system.system_shortname }} &nbsp;
+                    {{ system.system_nameTH }}
                   </h4>
                   <!-- <p style="color: #b6b5b5; font-size: 16px; margin-left: 5%">
                     3 Issue
@@ -116,6 +117,8 @@
             :SystemName="system.system_nameTH"
             :SystemId="system.id"
             :id="selected.Id"
+            :IssueUserAssignId="selected.user_assign_id"
+            :IssueUserQCId="selected.user_qc_id"
             :IssueId="selected.issue_id"
             :IssueType="selected.issue_type"
             :IssueScreenId="selected.screen_id"
@@ -337,7 +340,9 @@
                           item.created_at,
                           item.issue_status_developer,
                           item.issue_status_implement,
-                          item.issue_round
+                          item.issue_round,
+                          item.user_assign_id,
+                          item.user_qc_id
                         )
                     "
                     size="20"
@@ -1204,6 +1209,8 @@ export default {
         formattedDateStart: "",
         issue_status_developer: "",
         issue_status_implement: "",
+        user_assign_id: "",
+        user_qc_id: "",
         issue_round: "",
         impleSection: false,
         userId: "",
@@ -1758,7 +1765,9 @@ export default {
       issueCreate,
       issueDeveloperStatus,
       issueImplementerStatus,
-      issueRound
+      issueRound,
+      issueUserAssignId,
+      issueUserQCId
     ) {
       this.selected.userId = this.userId;
       //formattedDateAccepting
@@ -1816,6 +1825,8 @@ export default {
       this.selected.issue_customer = issueCustomer;
       this.selected.issue_doc_id = issueDocId;
       this.selected.issue_type_sa = issueTypeSA;
+      this.selected.user_assign_id = issueUserAssignId;
+      this.selected.user_qc_id = issueUserQCId;
       //created at
       const dateCreate = moment(issueCreate).format("YYYY-MM-DD");
       this.selected.created_at = dateCreate;

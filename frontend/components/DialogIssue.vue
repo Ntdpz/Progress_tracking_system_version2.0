@@ -7,6 +7,7 @@
             <h5 style="color: white">
               สร้างปัญหาใหม่ | {{ projectName }}&nbsp;{{ systemName }}
             </h5>
+            <h5>{{ position_Developers }}{{ position_Implementer }}</h5>
             <v-spacer></v-spacer>
           </v-card-title>
           <v-card-text>
@@ -517,6 +518,8 @@ export default {
           screen_id: selectedScreenId,
           system_id: this.systemId,
           project_id: this.projectId,
+          user_assign_id: this.form.issue_assign.id,
+          user_qc_id: this.form.issue_qc.id,
           issue_name: this.form.issue_name,
           issue_id: this.form.issue_id,
           issue_type: this.form.issue_type,
