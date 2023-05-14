@@ -226,6 +226,9 @@ export default {
     this.getUser();
     this.checkRole();
   },
+  updated() {
+    this.checkRole();
+  },
   mounted() {
     this.$refs.calendar.checkChange();
   },
@@ -235,7 +238,7 @@ export default {
         return window.localStorage.getItem("userId");
       }
       return null; // or some default value if localStorage is not available
-    },
+    },    
   },
   methods: {
     async getUser() {
@@ -306,7 +309,7 @@ export default {
 
       nativeEvent.stopPropagation();
     },
-    async updateRange({ start, end }) {
+    async updateRange() {
       try {
         const { data } = await this.$axios.get("/issues/getAll", {});
 
@@ -324,16 +327,12 @@ export default {
         console.error(error);
       }
     },
-    async updateRangeOwner({ start, end }) {
+    async updateRangeOwner() {
       try {
-        await this.$axios.get("/users/getOne/" + this.userId).then((res) => {
-          this.user_firstname = res.data[0].user_firstname;
-        });
         const { data } = await this.$axios.get(
-          `/issues/getOneName/${this.user_firstname}`,
+          `/issues/getOneName/${this.userId}`,
           {}
         );
-
         const events = data.map((issue) => ({
           name: issue.issue_name,
           details: issue.issue_des,

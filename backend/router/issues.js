@@ -84,13 +84,13 @@ router.get("/getOne/:id", async (req, res) => {
   }
 });
 
-//* GET one by issue_assign
-router.get("/getOneName/:issue_assign", async (req, res) => {
-  const issue_assign = req.params.issue_assign;
+//* GET one by user_assign_id
+router.get("/getOneName/:user_assign_id", async (req, res) => {
+  const user_assign_id = req.params.user_assign_id;
   try {
     connection.query(
-      "SELECT * FROM issues WHERE issue_assign = ?",
-      [issue_assign],
+      "SELECT * FROM issues WHERE user_assign_id = ?",
+      [user_assign_id],
       (err, results, fields) => {
         if (err) {
           console.log(err);
