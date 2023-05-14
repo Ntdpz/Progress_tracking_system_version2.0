@@ -542,6 +542,8 @@ export default {
       type: Number,
       required: true,
     },
+    IssueUserAssignId: String,
+    IssueUserQCId: String,
     IssueId: String,
     IssueType: String,
     IssueScreenId: Number,
@@ -572,6 +574,7 @@ export default {
     IssueRound: Number,
     ImpleSection: Boolean,
     UserId: Number,
+    HistoryCheck: Boolean,
     dialog: {
       type: Boolean,
       default: false,
@@ -614,14 +617,15 @@ export default {
       rules: [(value) => !!value || "Required."],
     };
   },
+  updated() {
+    console.log(" this.IssueUserAssignId", this.IssueUserAssignId);
+  },
   async mounted() {
     await this.getDefault();
   },
   computed: {
     isIssueInProcess() {
-      return (
-        this.IssueStatus !== "รอแก้ไข" || this.user_position === "Developer"
-      );
+      return this.IssueStatus !== "รอแก้ไข";
     },
   },
   watch: {
@@ -684,11 +688,15 @@ export default {
     },
     checkAssign() {
       const dev = this.IssueAssign?.user_firstname ?? null;
+      const devId = this.IssueAssign?.id ?? null;
       this.IssueAssign = dev;
+      this.IssueUserAssignId = devId;
     },
     checkAssign2() {
       const qc = this.IssueQC?.user_firstname ?? null;
+      const qcId = this.IssueQC?.id ?? null;
       this.IssueQC = qc;
+      this.IssueUserQCId = qcId;
     },
     async saveIssue() {
       this.checkStatus();
@@ -719,6 +727,8 @@ export default {
           system_id: this.SystemId,
           project_id: this.ProjectId,
           issues_id: this.id,
+          user_assign_id: this.IssueAssign.id,
+          user_qc_id: this.IssueAssign.id,
           issue_name: this.IssueName,
           issue_id: this.IssueId,
           issue_type: this.IssueType,
@@ -780,6 +790,7 @@ export default {
         this.IssueImplementerStatus = null;
         this.IssueRound = 0;
         this.IssueAssign = this.IssueAssign.user_firstname;
+        this.IssueUserAssignId = this.userSendWork;
       }
       //ตรวจสอบไม่ผ่านเริ่มใหม่ + เก็บรอบ
       if (this.IssueImplementerStatus == "ตรวจสอบไม่ผ่าน") {
@@ -800,6 +811,8 @@ export default {
           system_id: this.SystemId,
           project_id: this.ProjectId,
           issues_id: this.id,
+          user_assign_id: this.IssueUserAssignId,
+          user_qc_id: this.IssueUserQCId,
           issue_name: this.IssueName,
           issue_id: this.IssueId,
           issue_type: this.IssueType,
@@ -868,6 +881,8 @@ export default {
           screen_id: this.IssueScreenId,
           system_id: this.SystemId,
           project_id: this.ProjectId,
+          user_assign_id: this.IssueUserAssignId,
+          user_qc_id: this.IssueUserQCId,
           issue_name: this.IssueName,
           issue_id: this.IssueId,
           issue_type: this.IssueType,
@@ -899,6 +914,8 @@ export default {
           system_id: this.SystemId,
           project_id: this.ProjectId,
           issues_id: this.id,
+          user_assign_id: this.IssueUserAssignId,
+          user_qc_id: this.IssueUserQCId,
           issue_name: this.IssueName,
           issue_id: this.IssueId,
           issue_type: this.IssueType,

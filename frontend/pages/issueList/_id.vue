@@ -159,6 +159,8 @@
             :SystemName="system.system_nameTH"
             :SystemId="system.id"
             :id="selected.Id"
+            :IssueUserAssignId="selected.user_assign_id"
+            :IssueUserQCId="selected.user_qc_id"
             :IssueId="selected.issue_id"
             :IssueType="selected.issue_type"
             :IssueScreenId="selected.screen_id"
@@ -199,6 +201,8 @@
             :SystemName="system.system_nameTH"
             :SystemId="system.id"
             :id="selected.Id"
+            :IssueUserAssignId="selected.user_assign_id"
+            :IssueUserQCId="selected.user_qc_id"
             :IssueId="selected.issue_id"
             :IssueType="selected.issue_type"
             :IssueScreenId="selected.screen_id"
@@ -422,7 +426,9 @@
                           item.created_at,
                           item.issue_status_developer,
                           item.issue_status_implement,
-                          item.issue_round
+                          item.issue_round,
+                          item.user_assign_id,
+                          item.user_qc_id
                         )
                     "
                     size="20"
@@ -550,7 +556,9 @@
                           item.created_at,
                           item.issue_status_developer,
                           item.issue_status_implement,
-                          item.issue_round
+                          item.issue_round,
+                          item.user_assign_id,
+                          item.user_qc_id
                         )
                     "
                     size="20"
@@ -629,7 +637,9 @@
                           item.created_at,
                           item.issue_status_developer,
                           item.issue_status_implement,
-                          item.issue_round
+                          item.issue_round,
+                          item.user_assign_id,
+                          item.user_qc_id
                         )
                     "
                     size="20"
@@ -757,7 +767,9 @@
                           item.created_at,
                           item.issue_status_developer,
                           item.issue_status_implement,
-                          item.issue_round
+                           item.issue_round,
+                          item.user_assign_id,
+                          item.user_qc_id
                         )
                     "
                     size="20"
@@ -836,7 +848,9 @@
                         item.created_at,
                         item.issue_status_developer,
                         item.issue_status_implement,
-                        item.issue_round
+                         item.issue_round,
+                          item.user_assign_id,
+                          item.user_qc_id
                       );
                     "
                     size="20"
@@ -964,7 +978,9 @@
                         item.created_at,
                         item.issue_status_developer,
                         item.issue_status_implement,
-                        item.issue_round
+                         item.issue_round,
+                          item.user_assign_id,
+                          item.user_qc_id
                       );
                     "
                     size="20"
@@ -1043,7 +1059,9 @@
                         item.created_at,
                         item.issue_status_developer,
                         item.issue_status_implement,
-                        item.issue_round
+                         item.issue_round,
+                          item.user_assign_id,
+                          item.user_qc_id
                       );
                     "
                     size="20"
@@ -1121,7 +1139,9 @@
                           item.created_at,
                           item.issue_status_developer,
                           item.issue_status_implement,
-                          item.issue_round
+                           item.issue_round,
+                          item.user_assign_id,
+                          item.user_qc_id
                         )
                     "
                     size="20"

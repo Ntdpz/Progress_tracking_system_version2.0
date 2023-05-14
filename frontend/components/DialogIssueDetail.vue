@@ -8,8 +8,7 @@
         <v-card-title class="pt-3" style="background-color: #883cfe">
           <h5 style="color: white">
             รายละเอียดปัญหาที่พบ | โครงการ : {{ ProjectName }} > ระบบ :
-            {{ SystemName }} {{ IssueUserAssignId }} {{ IssueUserQCId }}
-            {{ position_Developers }} {{ position_Implementer }}
+            {{ SystemName }}
           </h5>
           <v-spacer></v-spacer>
           <v-btn color="white" :to="`/history/${id}`" v-if="history"

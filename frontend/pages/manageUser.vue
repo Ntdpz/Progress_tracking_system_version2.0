@@ -440,7 +440,7 @@
                       {{ item.user_role }}
                     </template>
                     <template v-slot:[`item.photo`]="{ item }">
-                     <v-avatar>
+                      <v-avatar>
                         <img
                           :src="getImageUrl(item.user_pic)"
                           alt="User avatar"
@@ -1502,39 +1502,39 @@ export default {
         // this.imageFileUpload = "";
       }
     },
-    async updateUser() {
-      await this.$axios
-        .put("/users/update/" + this.editedItem.id, {
-          user_firstname: this.editedItem.user_firstname,
-          user_lastname: this.editedItem.user_lastname,
-          user_id: this.editedItem.user_id,
-          user_position: this.editedItem.user_position,
-          user_department: this.editedItem.user_department,
-          user_email: this.editedItem.user_email,
-          user_password: this.editedItem.user_password,
-          user_status: this.editedItem.user_status,
-          user_role: this.editedItem.user_role,
-          user_pic: "-",
-        })
-        .then((response) => {
-          console.log(response);
-          console.log("Update success");
-          this.getUser();
-          this.getAll();
-          this.getPosition_Developer();
-          this.getPosition_Implementer();
-          this.getPosition_ProgramManagement();
-          this.getPosition_SystemAnalyst();
-          this.getPosition_ReportDeveloper();
-          this.getAllDefault();
-          alert("Update success");
-          this.dialog_manage = false;
-        })
-        .catch((err) => {
-          console.log(err);
-          alert(err);
-        });
-    },
+    // async updateUser() {
+    //   await this.$axios
+    //     .put("/users/update/" + this.editedItem.id, {
+    //       user_firstname: this.editedItem.user_firstname,
+    //       user_lastname: this.editedItem.user_lastname,
+    //       user_id: this.editedItem.user_id,
+    //       user_position: this.editedItem.user_position,
+    //       user_department: this.editedItem.user_department,
+    //       user_email: this.editedItem.user_email,
+    //       user_password: this.editedItem.user_password,
+    //       user_status: this.editedItem.user_status,
+    //       user_role: this.editedItem.user_role,
+    //       user_pic: "-",
+    //     })
+    //     .then((response) => {
+    //       console.log(response);
+    //       console.log("Update success");
+    //       this.getUser();
+    //       this.getAll();
+    //       this.getPosition_Developer();
+    //       this.getPosition_Implementer();
+    //       this.getPosition_ProgramManagement();
+    //       this.getPosition_SystemAnalyst();
+    //       this.getPosition_ReportDeveloper();
+    //       this.getAllDefault();
+    //       alert("Update success");
+    //       this.dialog_manage = false;
+    //     })
+    //     .catch((err) => {
+    //       console.log(err);
+    //       alert(err);
+    //     });
+    // },
 
     async updateUser2() {
       if (
@@ -1584,8 +1584,7 @@ export default {
             this.getAllDefault();
             alert("Update success");
             this.dialog_manage = false;
-          })
-          .catch((err) => {
+          }).catch((err) => {
             console.log(err);
             alert(err);
           });
@@ -1595,7 +1594,7 @@ export default {
     },
 
     async deleteUser() {
-      //check จากชื่อ
+      //check จากid
       await this.$axios
         .get("/issues/getAll?user_qc_id=" + this.editedItem.id)
         .then((response) => {

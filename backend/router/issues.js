@@ -40,7 +40,7 @@ router.get("/getAll", async (req, res) => {
   } else if (systemFilter) {
     query += " WHERE system_id = ?";
     queryParams.push(systemFilter);
-   //check จาก id
+    //check จาก id
   } else if (assignIdFilter) {
     query += " WHERE user_assign_id = ?";
     queryParams.push(assignIdFilter);
@@ -414,6 +414,49 @@ router.put("/updateIssueImplementer/:id", async (req, res) => {
       }
     }
   );
+});
+
+router.put("/updateIssueAssignName/:id", async (req, res) => {
+  const id = req.params.id;
+  const { issue_assign } = req.body;
+
+  try {
+    connection.query(
+      "UPDATE issues SET issue_assign = ? WHERE id = ?",
+      [issue_assign, id],
+      (err, results, fields) => {
+        if (err) {
+          console.log(err);
+          return res.status(400).send();
+        }
+        res.status(200).json({ message: "User assign updated successfully!" });
+      }
+    );
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send();
+  }
+});
+router.put("/updateIssueQcName/:id", async (req, res) => {
+  const id = req.params.id;
+  const { issue_qc } = req.body;
+
+  try {
+    connection.query(
+      "UPDATE issues SET issue_qc = ? WHERE id = ?",
+      [issue_qc, id],
+      (err, results, fields) => {
+        if (err) {
+          console.log(err);
+          return res.status(400).send();
+        }
+        res.status(200).json({ message: "User assign updated successfully!" });
+      }
+    );
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send();
+  }
 });
 
 // //* DELETE issue by ID
