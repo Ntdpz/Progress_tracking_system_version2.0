@@ -12,7 +12,7 @@
       </v-col>
 
       <v-col cols="2">
-        <h4>รหัสพนักงาน</h4>
+        <h4>รหัสโครงการ</h4>
       </v-col>
       <v-col cols="2">
         <h4 style="margin-left: -7%">เริ่มโครงการ</h4>
@@ -462,11 +462,25 @@
                               item-text="user_firstname"
                               item-value="id"
                               outlined
+                              dense
                               chips
                               multiple
+                              :menu-props="{ closeOnClick: true }"
                             >
                               <template v-slot:item="{ item }">
                                 {{ item.user_firstname }}
+                                {{ item.user_lastname }}
+                              </template>
+                              <template #selection="{ item }">
+                                <v-chip
+                                  class="ma-1"
+                                  outlined
+                                  color="primary"
+                                  dark
+                                >
+                                  {{ item.user_firstname }}
+                                  {{ item.user_lastname }}
+                                </v-chip>
                               </template>
                             </v-select>
                           </v-col>
@@ -481,11 +495,24 @@
                               item-text="user_firstname"
                               item-value="id"
                               outlined
+                              dense
                               chips
                               multiple
                             >
                               <template v-slot:item="{ item }">
                                 {{ item.user_firstname }}
+                                {{ item.user_lastname }}
+                              </template>
+                              <template #selection="{ item }">
+                                <v-chip
+                                  class="ma-1"
+                                  outlined
+                                  color="primary"
+                                  dark
+                                >
+                                  {{ item.user_firstname }}
+                                  {{ item.user_lastname }}
+                                </v-chip>
                               </template>
                             </v-select>
                           </v-col>
@@ -500,11 +527,24 @@
                               item-text="user_firstname"
                               item-value="id"
                               outlined
+                              dense
                               chips
                               multiple
                             >
                               <template v-slot:item="{ item }">
                                 {{ item.user_firstname }}
+                                {{ item.user_lastname }}
+                              </template>
+                              <template #selection="{ item }">
+                                <v-chip
+                                  class="ma-1"
+                                  outlined
+                                  color="primary"
+                                  dark
+                                >
+                                  {{ item.user_firstname }}
+                                  {{ item.user_lastname }}
+                                </v-chip>
                               </template>
                             </v-select>
                           </v-col>

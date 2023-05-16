@@ -50,7 +50,7 @@ router.get("/getOneScreenID/:system_id", async (req, res) => {
     const system_id = req.params.system_id;
     try {
         connection.query(
-            "SELECT users.id, users.user_firstname,users.user_position FROM user_systems INNER JOIN users ON user_systems.user_id = users.id INNER JOIN systems ON user_systems.system_id = systems.id WHERE user_systems.system_id = ?",
+            "SELECT users.id, users.user_firstname, users.user_lastname, users.user_position FROM user_systems INNER JOIN users ON user_systems.user_id = users.id INNER JOIN systems ON user_systems.system_id = systems.id WHERE user_systems.system_id = ?",
             [system_id],
             (err, results, fields) => {
                 if (err) {

@@ -15,7 +15,7 @@
     <v-card class="card ml-5 mt-2" style="height: 40px; border-radius: 60px">
       <v-card-text class="pa-0">
         <v-text-field
-          v-model="search"
+          v-model="search2"
           prepend-inner-icon="mdi-magnify"
           rounded
           color="primary"
@@ -30,7 +30,20 @@
 export default {
   props: {
     title: String,
+    search: {
+      type: String,
+      required: true,
+    },
   },
+  data() {
+    return {
+      search2: this.search,
+    };
+  },
+  updated() {
+    // console.log(this.search);
+  },
+
 };
 </script>
 

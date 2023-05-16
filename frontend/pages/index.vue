@@ -20,9 +20,9 @@
           }}</v-text></v-col
         >
         <v-col class="pa-0 ma-0" style="width: 200px; margin: 0 !important">
-          <v-text style="font-size: 20px">{{
-            this.user_firstname
-          }}</v-text></v-col
+          <v-text style="font-size: 20px">
+          {{ this.user_firstname }} {{ this.user_lastname }}
+        </v-text></v-col
         >
         <v-col class="pa-0 ma-0" style="width: 200px; margin: 0 !important">
           <v-icon class="mb-1" color="success" style="font-size: small"

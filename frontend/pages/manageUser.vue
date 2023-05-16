@@ -2,7 +2,16 @@
   <div class="body">
     <v-row>
       <v-col>
-        <searchbar title="จัดการผู้ใช้งานระบบ" />
+        <searchbar :search="search" title="จัดการผู้ใช้งานระบบ" @input="performSearch" />
+        <!-- <v-spacer></v-spacer>
+        <v-text-field
+        v-model="search"
+        append-icon="mdi-magnify"
+        label="Search"
+        single-line
+        hide-details
+        @input="performSearch"
+      ></v-text-field> -->
       </v-col>
       <v-col>
         <v-btn
@@ -78,6 +87,7 @@
                     style="text-align: center"
                     :headers="headers"
                     :items="data"
+                    :search="search"
                     class="elevation-1"
                   >
                     <template v-slot:[`item.id`]="{ index }">
@@ -176,6 +186,7 @@
                     style="text-align: center"
                     :headers="headers"
                     :items="data_position_Developer"
+                    :search="search"
                     class="elevation-1"
                   >
                     <template v-slot:[`item.id`]="{ index }">
@@ -1172,6 +1183,7 @@ export default {
   layout: "admin",
   data() {
     return {
+      search: '',
       titleName: "",
       titleFirstname: "",
       imageManageUpload: null,
