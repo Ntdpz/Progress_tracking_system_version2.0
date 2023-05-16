@@ -5,7 +5,7 @@
         <v-card>
           <v-card-title class="pt-3 mb-2" style="background-color: #883cfe">
             <h5 style="color: white">
-              สร้างปัญหาใหม่ | {{ projectName }}&nbsp;{{ systemName }}
+              สร้างปัญหาใหม่ | {{ systemName }} ({{ systemShortname }})
             </h5>
             <v-spacer></v-spacer>
           </v-card-title>
@@ -47,7 +47,6 @@
                 <v-col cols="12" sm="6" md="8">
                   <v-select
                     @mousemove="getScreenDefault()"
-                    @change="getUserSystems(selectedScreen.id)"
                     :items="screen_selectDefault"
                     label="เลขที่หน้าจอ : ชื่อหน้าจอ"
                     dense
@@ -181,15 +180,8 @@
                   </v-menu>
                 </v-col>
                 <v-col cols="12" sm="4" md="6">
-                  <p
-                    v-show="selectedScreen == null"
-                    style="color: red"
-                    class="ma-0"
-                  >
-                    โปรดเลือกหน้าจอก่อน
-                  </p>
                   <v-select
-                    :items="position_Developers"
+                    :items="position_Developers_System"
                     label="ผู้พัฒนา"
                     dense
                     outlined
@@ -199,15 +191,8 @@
                   ></v-select>
                 </v-col>
                 <v-col cols="12" sm="4" md="6">
-                  <p
-                    v-show="selectedScreen == null"
-                    style="color: red"
-                    class="ma-0"
-                  >
-                    โปรดเลือกหน้าจอก่อน
-                  </p>
                   <v-select
-                    :items="position_Implementer"
+                    :items="position_Implementer_System"
                     label="ผู้ตรวจสอบ"
                     dense
                     outlined
@@ -337,6 +322,7 @@ export default {
   props: {
     projectName: String,
     systemName: String,
+    systemShortname: String,
     projectId: String,
     projectids: String,
     systemId: String,
@@ -403,6 +389,8 @@ export default {
       position_Developers: [],
       position_Implementer: [],
       issue_status_default: [],
+      position_Developers_System: [],
+      position_Implementer_System: [],
       rules: [(value) => !!value || "Required."],
       formattedDateEnd: new Date(
         Date.now() - new Date().getTimezoneOffset() * 60000
@@ -414,6 +402,13 @@ export default {
   created() {
     this.dateStart = moment().add(543, "years").format("DD-MM-YYYY");
     this.formattedDateEnd = moment().add(543, "years").format("DD-MM-YYYY");
+  },
+  watch: {
+    dialog(newVal) {
+      if (newVal) {
+        this.getUserSystems();
+      }
+    },
   },
   async mounted() {
     await this.getDefault();
@@ -489,18 +484,6 @@ export default {
       await this.resetForm();
       this.$emit("update:dialog", false);
     },
-    async getUserSystems(selectedScreenID) {
-      await this.$axios
-        .get("/user_screens/getOneScreenID/" + selectedScreenID)
-        .then((data) => {
-          this.position_Developers = data.data.filter(
-            (item) => item.user_position === "Developer"
-          );
-          this.position_Implementer = data.data.filter(
-            (item) => item.user_position === "Implementer"
-          );
-        });
-    },
     async saveIssue() {
       await this.$refs.form.validate();
       if (
@@ -513,7 +496,38 @@ export default {
         const selectedScreenId = this.selectedScreen
           ? this.selectedScreen.id
           : null;
+        //addUser_Screen
+        try {
+          const existingUserDevScreen = await this.$axios.get(
+            "/user_screens/getOneUserID/" + this.form.issue_assign.id
+          );
+          const existingUserImpleScreen = await this.$axios.get(
+            "/user_screens/getOneUserID/" + this.form.issue_qc.id
+          );
 
+          if (existingUserDevScreen.data.length === 0) {
+            await this.$axios.post("/user_screens/createUser_screen", {
+              user_id: this.form.issue_assign.id,
+              screen_id: selectedScreenId,
+              system_id: this.systemId,
+              project_id: this.projectId,
+            });
+            // alert("addUser_Screen Dev Success!!");
+          } else if (existingUserImpleScreen.data.length === 0) {
+            await this.$axios.post("/user_screens/createUser_screen", {
+              user_id: this.form.issue_qc.id,
+              screen_id: selectedScreenId,
+              system_id: this.systemId,
+              project_id: this.projectId,
+            });
+            // alert("addUser_Screen Imple Success!!");
+          } else {
+            // alert("User already exists in user_screens");
+          }
+        } catch (error) {
+          console.log("user_screen: " + error);
+          // alert("user_screen: " + error);
+        }
         const data = {
           screen_id: selectedScreenId,
           system_id: this.systemId,
@@ -607,6 +621,19 @@ export default {
       } catch (error) {
         console.error(error);
       }
+    },
+    async getUserSystems() {
+      await this.$axios
+        .get("/user_systems/getOneScreenID/" + this.systemId)
+        .then((res) => {
+          console.log(res.data);
+          this.position_Developers_System = res.data.filter(
+            (item) => item.user_position === "Developer"
+          );
+          this.position_Implementer_System = res.data.filter(
+            (item) => item.user_position === "Implementer"
+          );
+        });
     },
     async getScreenDefault() {
       try {

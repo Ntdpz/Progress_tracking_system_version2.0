@@ -56,7 +56,8 @@
                 showIssueCreateDialog(
                   system.system_nameTH,
                   system.id,
-                  system.system_id
+                  system.system_id,
+                  system.system_shortname
                 )
               "
             >
@@ -75,6 +76,7 @@
               :projectId="projectId"
               :projectids="project_id"
               :systemId="infoCreate.systemId"
+              :systemShortname="infoCreate.systemShortname"
               mode="create"
               :userFirstname="user_firstname"
               :userLastname="user_lastname"
@@ -1306,6 +1308,7 @@ export default {
         systemName: "",
         systemId: "",
         system_id: "",
+        systemShortname: "",
       },
       headers: [
         {
@@ -1817,10 +1820,11 @@ export default {
         console.error(err);
       }
     },
-    showIssueCreateDialog(systemName, systemId, systemids) {
+    showIssueCreateDialog(systemName, systemId, systemids, systemShortname) {
       this.infoCreate.systemName = systemName;
       this.infoCreate.systemId = systemId;
       this.infoCreate.system_id = systemids;
+      this.infoCreate.systemShortname = systemShortname;
       this.dialog = true;
     },
     showIssueDetailDialog(
