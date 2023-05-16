@@ -237,7 +237,12 @@
                           persistent-hint
                         >
                           <template v-slot:item="{ item }">
-                            {{ item.user_firstname }}
+                            {{ item.user_firstname }} : {{ item.user_lastname }}
+                          </template>
+                          <template #selection="{ item }">
+                            <v-chip class="ma-1" outlined color="primary" dark>
+                              {{ item.user_firstname }} {{ item.user_lastname }}
+                            </v-chip>
                           </template>
                         </v-select>
                       </v-col>
@@ -275,7 +280,12 @@
                           persistent-hint
                         >
                           <template v-slot:item="{ item }">
-                            {{ item.user_firstname }}
+                            {{ item.user_firstname }} : {{ item.user_lastname }}
+                          </template>
+                          <template #selection="{ item }">
+                            <v-chip class="ma-1" outlined color="primary" dark>
+                              {{ item.user_firstname }} {{ item.user_lastname }}
+                            </v-chip>
                           </template>
                         </v-select>
                       </v-col>
@@ -312,7 +322,12 @@
                           persistent-hint
                         >
                           <template v-slot:item="{ item }">
-                            {{ item.user_firstname }}
+                            {{ item.user_firstname }} : {{ item.user_lastname }}
+                          </template>
+                          <template #selection="{ item }">
+                            <v-chip class="ma-1" outlined color="primary" dark>
+                              {{ item.user_firstname }} {{ item.user_lastname }}
+                            </v-chip>
                           </template>
                         </v-select>
                       </v-col>
@@ -776,7 +791,18 @@
                             persistent-hint
                           >
                             <template v-slot:item="{ item }">
-                              {{ item.user_firstname }}
+                              {{ item.user_firstname }} {{ item.user_lastname }}
+                            </template>
+                            <template #selection="{ item }">
+                              <v-chip
+                                class="ma-1"
+                                outlined
+                                color="primary"
+                                dark
+                              >
+                                {{ item.user_firstname }}
+                                {{ item.user_lastname }}
+                              </v-chip>
                             </template>
                           </v-select>
                         </v-col>
@@ -823,7 +849,18 @@
                             persistent-hint
                           >
                             <template v-slot:item="{ item }">
-                              {{ item.user_firstname }}
+                              {{ item.user_firstname }} {{ item.user_lastname }}
+                            </template>
+                            <template #selection="{ item }">
+                              <v-chip
+                                class="ma-1"
+                                outlined
+                                color="primary"
+                                dark
+                              >
+                                {{ item.user_firstname }}
+                                {{ item.user_lastname }}
+                              </v-chip>
                             </template>
                           </v-select>
                         </v-col>
@@ -870,7 +907,18 @@
                             persistent-hint
                           >
                             <template v-slot:item="{ item }">
-                              {{ item.user_firstname }}
+                              {{ item.user_firstname }} {{ item.user_lastname }}
+                            </template>
+                            <template #selection="{ item }">
+                              <v-chip
+                                class="ma-1"
+                                outlined
+                                color="primary"
+                                dark
+                              >
+                                {{ item.user_firstname }}
+                                {{ item.user_lastname }}
+                              </v-chip>
                             </template>
                           </v-select>
                         </v-col>
@@ -1305,6 +1353,7 @@ export default {
           this.user_developer = this.data_position_Developer;
           this.user_implementer = this.data_position_Implementer;
           this.user_sa = this.data_position_Sa;
+          console.log(this.position_Developers);
         });
     },
     async addUser_Screen(screenID) {

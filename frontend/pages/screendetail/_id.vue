@@ -178,7 +178,12 @@
                     :disabled="disabled"
                   >
                     <template v-slot:item="{ item }">
-                      {{ item.user_firstname }}
+                      {{ item.user_firstname }} : {{ item.user_lastname }}
+                    </template>
+                    <template #selection="{ item }">
+                      <v-chip class="ma-1" outlined color="primary" dark>
+                        {{ item.user_firstname }} {{ item.user_lastname }}
+                      </v-chip>
                     </template>
                   </v-select>
                 </v-col>
@@ -216,7 +221,12 @@
                     :disabled="disabled"
                   >
                     <template v-slot:item="{ item }">
-                      {{ item.user_firstname }}
+                      {{ item.user_firstname }} : {{ item.user_lastname }}
+                    </template>
+                    <template #selection="{ item }">
+                      <v-chip class="ma-1" outlined color="primary" dark>
+                        {{ item.user_firstname }} {{ item.user_lastname }}
+                      </v-chip>
                     </template>
                   </v-select>
                 </v-col>
@@ -252,8 +262,14 @@
                     chips
                     multiple
                     :disabled="disabled"
-                    ><template v-slot:item="{ item }">
-                      {{ item.user_firstname }}
+                  >
+                    <template v-slot:item="{ item }">
+                      {{ item.user_firstname }} : {{ item.user_lastname }}
+                    </template>
+                    <template #selection="{ item }">
+                      <v-chip class="ma-1" outlined color="primary" dark>
+                        {{ item.user_firstname }} {{ item.user_lastname }}
+                      </v-chip>
                     </template>
                   </v-select>
                 </v-col>
@@ -376,7 +392,7 @@
                   >
                     <template v-slot:activator="{ on, attrs }">
                       <v-text-field
-                      :disabled="disabled"
+                        :disabled="disabled"
                         v-model="dateStart"
                         label="วันเริ่ม"
                         prepend-icon="mdi mdi-calendar-clock-outline"
@@ -419,7 +435,7 @@
                   >
                     <template v-slot:activator="{ on, attrs }">
                       <v-text-field
-                      :disabled="disabled"
+                        :disabled="disabled"
                         v-model="dateEnd"
                         label="วันจบ"
                         prepend-icon="mdi mdi-calendar-clock-outline"
