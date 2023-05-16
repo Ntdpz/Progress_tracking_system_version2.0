@@ -97,7 +97,7 @@
                 <v-select
                   :items="issue_status_default"
                   label="สถานะ"
-                  :disabled="isIssueInProcess"
+                  disabled
                   placeholder="สถานะ"
                   dense
                   outlined
@@ -611,9 +611,9 @@ export default {
       rules: [(value) => !!value || "Required."],
     };
   },
-  updated() {
-    console.log(" this.IssueUserAssignId", this.IssueUserAssignId);
-  },
+  // updated() {
+  //   console.log(" this.IssueUserAssignId", this.IssueUserAssignId);
+  // },
   async mounted() {
     await this.getDefault();
   },
@@ -859,12 +859,14 @@ export default {
       }
       //มาเช็๕ว่ากำลังแก้ไข แล้วค่าวันที่ว่างมั้ย???
       if (
-        this.IssueDeveloperStatus == "กำลังแก้ไข" &&
-        this.IssueAccepting === null &&
-        this.IssueStart === null &&
+        ((await this.IssueDeveloperStatus) === "กำลังแก้ไข" &&
+          this.IssueAccepting === null) ||
+        this.IssueStart === null ||
         this.IssueExpected === null
       ) {
-        alert("Accepting date is required");
+        this.$refs.form.validate();
+        this.IssueStatus = "รอแก้ไข";
+        alert("กรุณากรอกวันที่ให้ครบถ้วน");
       } else if (
         this.IssueDeveloperStatus == "แก้ไขเรียบร้อย" &&
         this.IssueComplete === null

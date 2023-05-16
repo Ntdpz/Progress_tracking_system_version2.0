@@ -97,7 +97,7 @@
                 <v-select
                   :items="issue_status_default"
                   label="สถานะ"
-                  :disabled="isIssueInProcess"
+                  disabled
                   placeholder="สถานะ"
                   dense
                   outlined
@@ -621,16 +621,16 @@ export default {
     };
   },
   updated() {
-    console.log(" this.IssueUserAssignId", this.IssueUserAssignId);
+    console.log("start", this.IssueStart);
   },
   async mounted() {
     await this.getDefault();
   },
-  computed: {
-    isIssueInProcess() {
-      return this.IssueStatus !== "รอแก้ไข";
-    },
-  },
+  // computed: {
+  //   isIssueInProcess() {
+  //     return this.IssueStatus !== "รอแก้ไข";
+  //   },
+  // },
   watch: {
     dialog(newVal) {
       if (newVal) {
@@ -868,11 +868,12 @@ export default {
       }
       //มาเช็๕ว่ากำลังแก้ไข แล้วค่าวันที่ว่างมั้ย???
       if (
-        this.IssueDeveloperStatus == "กำลังแก้ไข" &&
-        this.IssueAccepting === null &&
-        this.IssueStart === null &&
+        ((await this.IssueDeveloperStatus) === "กำลังแก้ไข" &&
+          this.IssueAccepting === null) ||
+        this.IssueStart === null ||
         this.IssueExpected === null
       ) {
+        this.IssueStatus = "รอแก้ไข";
         alert("Accepting date is required");
       } else if (
         this.IssueDeveloperStatus == "แก้ไขเรียบร้อย" &&
@@ -956,6 +957,7 @@ export default {
           );
           this.$emit("button-clicked");
           this.handleClose();
+          this.$refs.form.resetValidation();
           const promise = new Promise((resolve, reject) => {
             resolve();
             this.close();

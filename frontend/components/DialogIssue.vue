@@ -7,7 +7,6 @@
             <h5 style="color: white">
               สร้างปัญหาใหม่ | {{ projectName }}&nbsp;{{ systemName }}
             </h5>
-            <h5>{{ position_Developers }}{{ position_Implementer }}</h5>
             <v-spacer></v-spacer>
           </v-card-title>
           <v-card-text>
@@ -95,6 +94,7 @@
                     placeholder="สถานะ"
                     dense
                     outlined
+                    disabled
                     v-model="form.issue_status"
                     :rules="rules"
                   ></v-select>

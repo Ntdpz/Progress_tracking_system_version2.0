@@ -270,7 +270,7 @@
                 </template>
                 <template v-slot:[`item.issue_name`]="{ item }">
                   <v-icon>mdi-format-list-bulleted</v-icon>
-                  {{ item.issue_name }} /{{ item.issue_id }}
+                  {{ item.issue_name }}
                 </template>
                 <template v-slot:[`item.formattedDateEnd`]="{ item }">
                   {{ item.formattedDateEnd }}
