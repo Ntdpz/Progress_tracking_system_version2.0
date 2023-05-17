@@ -152,6 +152,7 @@
             :ImpleSection="selected.impleSection"
             :UserId="selected.userId"
             :HistoryCheck="selected.history"
+            :NoAssginCheck="selected.no_assign"
             @button-clicked="getIssue()"
           />
           <dialog-issue-imple
@@ -194,6 +195,7 @@
             :ImpleSection="selected.impleSection"
             :UserId="selected.userId"
             :HistoryCheck="selected.history"
+            :NoAssginCheck="selected.no_assign"
             @button-clicked="getIssue()"
           />
           <dialog-issue-dev
@@ -236,6 +238,7 @@
             :ImpleSection="selected.impleSection"
             :UserId="selected.userId"
             :HistoryCheck="selected.history"
+            :NoAssginCheck="selected.no_assign"
             @button-clicked="getIssue()"
           />
           <v-tabs-items v-model="tab">
@@ -327,6 +330,7 @@
                     v-else
                     @click="
                       (history = false),
+                        (no_assign = false),
                         showIssueDetailDialog(
                           item.id,
                           item.issue_id,
@@ -417,6 +421,7 @@
                     class="mr-2"
                     @click="
                       (history = false),
+                        (no_assign = true),
                         showIssueDetailDialog(
                           item.id,
                           item.issue_id,
@@ -555,6 +560,7 @@
                     v-else
                     @click="
                       (history = false),
+                        (no_assign = false),
                         showIssueDetailDialog(
                           item.id,
                           item.issue_id,
@@ -644,6 +650,7 @@
                     class="mr-2"
                     @click="
                       (history = false),
+                        (no_assign = true),
                         showIssueDetailDialog(
                           item.id,
                           item.issue_id,
@@ -781,39 +788,39 @@
                     class="mr-2"
                     v-else
                     @click="
-                      (history = false),
-                        showIssueDetailDialog(
-                          item.id,
-                          item.issue_id,
-                          item.issue_type,
-                          item.screen_id,
-                          item.issue_status,
-                          item.issue_priority,
-                          item.formattedDateEnd,
-                          item.issue_name,
-                          item.issue_des_sa,
-                          item.issue_informer,
-                          item.issue_assign,
-                          item.issue_qc,
-                          item.issue_filename,
-                          item.formattedDateAccepting,
-                          item.issue_manday,
-                          item.formattedDateStart,
-                          item.formattedDateExpected,
-                          item.formattedDateComplete,
-                          item.issue_des_implementer,
-                          item.issue_des_dev,
-                          item.issue_des,
-                          item.issue_customer,
-                          item.issue_doc_id,
-                          item.issue_type_sa,
-                          item.created_at,
-                          item.issue_status_developer,
-                          item.issue_status_implement,
-                          item.issue_round,
-                          item.user_assign_id,
-                          item.user_qc_id
-                        )
+                      (history = false), (no_assign = false);
+                      showIssueDetailDialog(
+                        item.id,
+                        item.issue_id,
+                        item.issue_type,
+                        item.screen_id,
+                        item.issue_status,
+                        item.issue_priority,
+                        item.formattedDateEnd,
+                        item.issue_name,
+                        item.issue_des_sa,
+                        item.issue_informer,
+                        item.issue_assign,
+                        item.issue_qc,
+                        item.issue_filename,
+                        item.formattedDateAccepting,
+                        item.issue_manday,
+                        item.formattedDateStart,
+                        item.formattedDateExpected,
+                        item.formattedDateComplete,
+                        item.issue_des_implementer,
+                        item.issue_des_dev,
+                        item.issue_des,
+                        item.issue_customer,
+                        item.issue_doc_id,
+                        item.issue_type_sa,
+                        item.created_at,
+                        item.issue_status_developer,
+                        item.issue_status_implement,
+                        item.issue_round,
+                        item.user_assign_id,
+                        item.user_qc_id
+                      );
                     "
                     size="20"
                     color="primary"
@@ -871,38 +878,39 @@
                     class="mr-2"
                     @click="
                       history = false;
-                      showIssueDetailDialog(
-                        item.id,
-                        item.issue_id,
-                        item.issue_type,
-                        item.screen_id,
-                        item.issue_status,
-                        item.issue_priority,
-                        item.formattedDateEnd,
-                        item.issue_name,
-                        item.issue_des_sa,
-                        item.issue_informer,
-                        item.issue_assign,
-                        item.issue_qc,
-                        item.issue_filename,
-                        item.formattedDateAccepting,
-                        item.issue_manday,
-                        item.formattedDateStart,
-                        item.formattedDateExpected,
-                        item.formattedDateComplete,
-                        item.issue_des_implementer,
-                        item.issue_des_dev,
-                        item.issue_des,
-                        item.issue_customer,
-                        item.issue_doc_id,
-                        item.issue_type_sa,
-                        item.created_at,
-                        item.issue_status_developer,
-                        item.issue_status_implement,
-                        item.issue_round,
-                        item.user_assign_id,
-                        item.user_qc_id
-                      );
+                      (no_assign = true),
+                        showIssueDetailDialog(
+                          item.id,
+                          item.issue_id,
+                          item.issue_type,
+                          item.screen_id,
+                          item.issue_status,
+                          item.issue_priority,
+                          item.formattedDateEnd,
+                          item.issue_name,
+                          item.issue_des_sa,
+                          item.issue_informer,
+                          item.issue_assign,
+                          item.issue_qc,
+                          item.issue_filename,
+                          item.formattedDateAccepting,
+                          item.issue_manday,
+                          item.formattedDateStart,
+                          item.formattedDateExpected,
+                          item.formattedDateComplete,
+                          item.issue_des_implementer,
+                          item.issue_des_dev,
+                          item.issue_des,
+                          item.issue_customer,
+                          item.issue_doc_id,
+                          item.issue_type_sa,
+                          item.created_at,
+                          item.issue_status_developer,
+                          item.issue_status_implement,
+                          item.issue_round,
+                          item.user_assign_id,
+                          item.user_qc_id
+                        );
                     "
                     size="20"
                     color="primary"
@@ -1009,6 +1017,7 @@
                     v-else
                     @click="
                       history = false;
+                      no_assign = false;
                       showIssueDetailDialog(
                         item.id,
                         item.issue_id,
@@ -1098,6 +1107,7 @@
                     class="mr-2"
                     @click="
                       history = false;
+                      no_assign = true;
                       showIssueDetailDialog(
                         item.id,
                         item.issue_id,
@@ -1178,6 +1188,7 @@
                     class="mr-2"
                     @click="
                       (history = true),
+                        (no_assign = false),
                         showIssueDetailDialog(
                           item.id,
                           item.issue_id,
@@ -1262,6 +1273,7 @@ export default {
       dialogIssueImple: false,
       dialogIssueDev: false,
       history: false,
+      no_assign: false,
       selected: {
         Id: "",
         screen_id: "",
@@ -1303,6 +1315,7 @@ export default {
         impleSection: false,
         userId: "",
         history: "",
+        no_assign: "",
       },
       infoCreate: {
         systemName: "",
@@ -1934,7 +1947,7 @@ export default {
       this.selected.issue_status_implement = issueImplementerStatus;
       this.selected.issue_round = issueRound;
       this.selected.history = this.history;
-
+      this.selected.no_assign = this.no_assign;
       //check role
       if (this.user_role == "Admin") {
         this.dialogIssueDetail = true;
