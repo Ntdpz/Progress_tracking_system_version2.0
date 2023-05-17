@@ -888,6 +888,82 @@ export default {
       // ) {
       //   alert("Complete date is required");
       // }
+
+      //ใส่วันเสร็จแต่ไม่ยอมปรับสถานะ จะปรับอัตโนมัติ
+      if (this.IssueComplete !== null) {
+        this.IssueDeveloperStatus = "แก้ไขเรียบร้อย";
+        this.IssueStatus = "แก้ไขเรียบร้อย";
+        alert("แก้ไขเรียบร้อย");
+        this.post(this.IssueStatus, this.IssueDeveloperStatus);
+      }
+      //ปรับสถานะเป็นแก้ไข้เรียบร้อย แต่ไม่ใส่วันที่ ให้กลับไปใส่
+      else if (this.IssueDeveloperStatus === "แก้ไขเรียบร้อย") {
+        if (this.IssueComplete === null) {
+          this.$refs.form.validate();
+          this.IssueStatus = "รอแก้ไข";
+          alert("กรุณากรอกวันที่เสร็จด้วย");
+        } else if (this.IssueComplete != null) {
+          this.IssueStatus = "แก้ไขเรียบร้อยแล้ว";
+          alert("แก้ไขเรียบร้อย");
+          this.post(this.IssueStatus, this.IssueDeveloperStatus);
+        }
+      }
+
+      // เช็คว่ากำลังแก้ไข แล้วค่าวันที่ว่างมั้ย
+      else if (this.IssueDeveloperStatus === "กำลังแก้ไข") {
+        if (
+          this.IssueAccepting === null ||
+          this.IssueStart === null ||
+          this.IssueExpected === null
+        ) {
+          this.$refs.form.validate();
+          this.IssueStatus = "รอแก้ไข";
+          alert("กรุณากรอกวันที่ให้ครบถ้วน");
+        } else {
+          this.IssueStatus = "กำลังแก้ไข";
+          alert(this.IssueDeveloperStatus);
+          this.post(this.IssueStatus, this.IssueDeveloperStatus);
+        }
+      }
+      // ถ้า dev กรอกวันที่ตัวใดตัวนึงและไม่ปรับสถานะต้องมากรอกสถานะก่อน
+      else if (this.IssueDeveloperStatus === null) {
+        if (
+          this.IssueAccepting === null ||
+          this.IssueStart === null ||
+          this.IssueExpected === null
+        ) {
+          this.$refs.form.validate();
+          this.IssueStatus = "รอแก้ไข";
+          alert("กรุณากรอกวันที่ให้ครบถ้วนและมากรอกสถานะด้วย");
+        }
+      }
+
+      // กรอกวันที่ครบ จะปรับสถานะเป็น กำลังแก้ไข อัติโนมัติ
+      else if (
+        this.IssueAccepting != null &&
+        this.IssueStart != null &&
+        this.IssueExpected != null
+      ) {
+        this.IssueDeveloperStatus = "กำลังแก้ไข";
+        this.IssueStatus = "กำลังแก้ไข";
+        alert("กำลังแก้ไข");
+        this.post(this.IssueStatus, this.IssueDeveloperStatus);
+      }
+
+      // ไม่กรอกวันที่ แต่มี สถานะ
+      else if (this.IssueDeveloperStatus === "รอแก้ไข") {
+        if (
+          this.IssueAccepting === null ||
+          this.IssueStart === null ||
+          this.IssueExpected === null
+        ) {
+          this.$refs.form.validate();
+          this.IssueStatus = "รอแก้ไข";
+          alert("กรุณากรอกวันที่ให้ครบถ้วนด้วยนะ");
+        }
+      }
+    },
+    async post(status, statusdev){
       const data = {
         screen_id: this.IssueScreenId,
         system_id: this.SystemId,
@@ -912,11 +988,11 @@ export default {
         issue_des_implementer: this.IssueDesImplementer,
         issue_start: this.IssueStart,
         issue_expected: this.IssueExpected,
-        issue_status: this.IssueStatus,
+        issue_status: status,
         issue_accepting: this.IssueAccepting,
         issue_manday: this.IssueManday,
         issue_complete: this.IssueComplete,
-        issue_status_developer: this.IssueDeveloperStatus,
+        issue_status_developer: statusdev,
         issue_status_implement: this.IssueImplementerStatus,
         issue_round: this.IssueRound,
       };
@@ -945,11 +1021,11 @@ export default {
         issue_des_implementer: this.IssueDesImplementer,
         issue_start: this.IssueStart,
         issue_expected: this.IssueExpected,
-        issue_status: this.IssueStatus,
+        issue_status: status,
         issue_accepting: this.IssueAccepting,
         issue_manday: this.IssueManday,
         issue_complete: this.IssueComplete,
-        issue_status_developer: this.IssueDeveloperStatus,
+        issue_status_developer: statusdev,
         issue_status_implement: this.IssueImplementerStatus,
         issue_round: this.IssueRound,
         user_updated: this.user_firstname,
@@ -963,15 +1039,16 @@ export default {
           dataHistoryUpdate
         );
         this.$emit("button-clicked");
-        this.handleClose();
         this.$refs.form.resetValidation();
+        this.$refs.formCom.resetValidation();
+        this.handleClose();
         const promise = new Promise((resolve, reject) => {
           resolve();
           this.close();
         });
         promise.then(() => {
           setTimeout(() => {
-            alert("update success");
+            alert("update success last version");
           }, 2000);
         });
       } catch (error) {
