@@ -571,7 +571,7 @@ export default {
             this.form.issue_name = "";
             this.form.issue_id = "";
             this.form.issue_type = "";
-            this.form.issue_informer = "";
+            this.form.issue_informer = this.userFirstname;
             this.form.issue_priority = "";
             this.form.issue_end = "";
             this.form.issue_assign = "";
