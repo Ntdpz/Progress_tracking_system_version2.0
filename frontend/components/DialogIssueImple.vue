@@ -536,6 +536,41 @@
           >
         </v-card-actions>
       </v-card>
+
+      <template>
+          <v-dialog
+            v-model="dialogSuccess"
+            persistent
+            max-width="400px"
+            max-height="100%"
+          >
+            <v-card width="100%" max-height="100%">
+              <v-row class="ma-0 pa-0" style="place-content: center">
+                <v-card-title>
+                  <v-icon size="50px" color="success"
+                    >mdi-check-circle-outline</v-icon
+                  >
+                </v-card-title>
+              </v-row>
+              <v-row class="ma-0 pa-0" style="place-content: center">
+                <v-card-title class="text-h5">
+                  อัปเดตเสร็จเรียบร้อย
+                </v-card-title>
+              </v-row>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn
+                  color="primary"
+                  dark
+                  @click="(dialogSuccess = false), handleClose()"
+                >
+                  Ok
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </template>
+
     </v-dialog>
   </row>
 </template>
@@ -625,6 +660,7 @@ export default {
       history: false,
       //validate
       rules: [(value) => !!value || "Required."],
+      dialogSuccess: false,
     };
   },
   updated() {
@@ -772,14 +808,15 @@ export default {
             dataHistory
           );
           this.$emit("button-clicked");
-          this.handleClose();
+          // this.handleClose();
+          this.dialogSuccess = true;
           const promise = new Promise((resolve, reject) => {
             resolve();
-            this.close();
+            // this.close();
           });
           promise.then(() => {
             setTimeout(() => {
-              alert("success");
+              // alert("success");
             }, 2000);
           });
         } catch (error) {
@@ -863,14 +900,15 @@ export default {
           dataHistoryUpdate
         );
         this.$emit("button-clicked");
-        this.handleClose();
+        // this.handleClose();
+        this.dialogSuccess = true;
         const promise = new Promise((resolve, reject) => {
           resolve();
-          this.close();
+          // this.close();
         });
         promise.then(() => {
           setTimeout(() => {
-            alert("update success");
+            // alert("update success");
           }, 2000);
         });
       } catch (error) {

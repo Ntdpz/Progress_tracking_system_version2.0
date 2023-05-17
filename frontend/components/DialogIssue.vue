@@ -311,6 +311,43 @@
             </v-btn>
           </v-card-actions>
         </v-card>
+        <template>
+          <v-dialog
+            v-model="dialogSuccess"
+            persistent
+            max-width="400px"
+            max-height="100%"
+          >
+            <v-card width="100%" max-height="100%">
+              <v-row class="ma-0 pa-0" style="place-content: center">
+                <v-card-title>
+                  <v-icon size="50px" color="success"
+                    >mdi-check-circle-outline</v-icon
+                  >
+                </v-card-title>
+              </v-row>
+              <v-row class="ma-0 pa-0" style="place-content: center">
+                <v-card-title class="text-h5">
+                  สร้างเสร็จเรียบร้อย
+                </v-card-title>
+              </v-row>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn
+                  color="primary"
+                  dark
+                  @click="(dialogSuccess = true), close()"
+                >
+                  Ok
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </template></v-dialog
+      ></v-form
+    ></v-layout
+  >
+</template>
       </v-dialog>
     </v-form>
   </v-layout>
@@ -318,7 +355,9 @@
 
 <script>
 import moment from "moment";
+import DialogSuccess from "./DialogSuccess.vue";
 export default {
+  components: { DialogSuccess },
   props: {
     projectName: String,
     systemName: String,
@@ -383,6 +422,7 @@ export default {
         issue_accepting: "",
         issue_manday: "",
         issue_complete: "",
+        dialogSuccess: false,
       },
       dataDefault: [],
       manday: null,
@@ -562,7 +602,7 @@ export default {
         };
         try {
           await this.$axios.post("/issues/createIssue", data);
-          this.close();
+
           const promise = new Promise((resolve, reject) => {
             resolve();
             this.form.screen_id = "";
@@ -591,10 +631,12 @@ export default {
             this.form.issue_accepting = "";
             this.form.issue_manday = "";
             this.form.issue_complete = "";
+            this.dialogSuccess = true;
           });
           promise.then(() => {
             setTimeout(() => {
-              alert("success");
+              // alert("success3");
+              // this.close();
             }, 2000);
           });
         } catch (error) {
