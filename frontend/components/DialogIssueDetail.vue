@@ -709,16 +709,20 @@ export default {
       //แอดคนเข้า screen
       if (this.userSendWork !== null) {
         try {
-          await this.$axios
-            .post("/user_screens/createUser_screen", {
+          const existingUserDevScreen = await this.$axios.get(
+            "/user_screens/getOneUserID/" + this.userSendWork
+          );
+          if (existingUserDevScreen.data.length === 0) {
+            await this.$axios.post("/user_screens/createUser_screen", {
               user_id: [this.userSendWork], //id new person
               screen_id: this.IssueScreenId,
               system_id: this.SystemId,
               project_id: this.ProjectId,
-            })
-            .then((res) => {
-              // alert("addUser_Screen Success!!");
             });
+            // alert("addUser_Screen Dev Success!!");
+          } else {
+            // alert("User already exists in user_screens");
+          }
         } catch (error) {
           console.log("user_screen: " + error);
         }
@@ -803,6 +807,9 @@ export default {
         this.IssueAccepting = null;
         this.IssueStart = null;
         this.IssueExpected = null;
+        this.IssueManday = 0;
+        this.IssueDesDev = null;
+        this.IssueComplete = null;
         this.IssueImplementerStatus = null;
         this.IssueStatus = "ตรวจสอบไม่ผ่าน";
       }
@@ -880,97 +887,97 @@ export default {
       //   this.IssueComplete === null
       // ) {
       //   alert("Complete date is required");
-      // } 
-        const data = {
-          screen_id: this.IssueScreenId,
-          system_id: this.SystemId,
-          project_id: this.ProjectId,
-          user_assign_id: this.IssueUserAssignId,
-          user_qc_id: this.IssueUserQCId,
-          issue_name: this.IssueName,
-          issue_id: this.IssueId,
-          issue_type: this.IssueType,
-          issue_informer: this.IssueInformer,
-          issue_priority: this.IssuePriority,
-          issue_end: this.IssueEndDate,
-          issue_assign: this.IssueAssign,
-          issue_qc: this.IssueQC,
-          issue_des: this.IssueDes,
-          issue_des_sa: this.IssueDesSA,
-          issue_type_sa: this.IssueTypeSA,
-          issue_doc_id: this.IssueDocId,
-          issue_customer: this.IssueCustomer,
-          issue_filename: this.IssueFilename,
-          issue_des_dev: this.IssueDesDev,
-          issue_des_implementer: this.IssueDesImplementer,
-          issue_start: this.IssueStart,
-          issue_expected: this.IssueExpected,
-          issue_status: this.IssueStatus,
-          issue_accepting: this.IssueAccepting,
-          issue_manday: this.IssueManday,
-          issue_complete: this.IssueComplete,
-          issue_status_developer: this.IssueDeveloperStatus,
-          issue_status_implement: this.IssueImplementerStatus,
-          issue_round: this.IssueRound,
-        };
-        const dataHistoryUpdate = {
-          screen_id: this.IssueScreenId,
-          system_id: this.SystemId,
-          project_id: this.ProjectId,
-          issues_id: this.id,
-          user_assign_id: this.IssueUserAssignId,
-          user_qc_id: this.IssueUserQCId,
-          issue_name: this.IssueName,
-          issue_id: this.IssueId,
-          issue_type: this.IssueType,
-          issue_informer: this.IssueInformer,
-          issue_priority: this.IssuePriority,
-          issue_end: this.IssueEndDate,
-          issue_assign: this.IssueAssign,
-          issue_qc: this.IssueQC,
-          issue_des: this.IssueDes,
-          issue_des_sa: this.IssueDesSA,
-          issue_type_sa: this.IssueTypeSA,
-          issue_doc_id: this.IssueDocId,
-          issue_customer: this.IssueCustomer,
-          issue_filename: this.IssueFilename,
-          issue_des_dev: this.IssueDesDev,
-          issue_des_implementer: this.IssueDesImplementer,
-          issue_start: this.IssueStart,
-          issue_expected: this.IssueExpected,
-          issue_status: this.IssueStatus,
-          issue_accepting: this.IssueAccepting,
-          issue_manday: this.IssueManday,
-          issue_complete: this.IssueComplete,
-          issue_status_developer: this.IssueDeveloperStatus,
-          issue_status_implement: this.IssueImplementerStatus,
-          issue_round: this.IssueRound,
-          user_updated: this.user_firstname,
-          user_position_updated: this.user_position,
-          user_id_updated: this.user_id,
-        };
-        try {
-          await this.$axios.put("/issues/updateIssueAdmin/" + this.id, data);
-          await this.$axios.post(
-            "/history_issues/createIssueHistory/",
-            dataHistoryUpdate
-          );
-          this.$emit("button-clicked");
-          this.handleClose();
-          this.$refs.form.resetValidation();
-          const promise = new Promise((resolve, reject) => {
-            resolve();
-            this.close();
-          });
-          promise.then(() => {
-            setTimeout(() => {
-              alert("update success");
-            }, 2000);
-          });
-        } catch (error) {
-          console.error(error);
-          alert("Error submitting form");
-        }
+      // }
+      const data = {
+        screen_id: this.IssueScreenId,
+        system_id: this.SystemId,
+        project_id: this.ProjectId,
+        user_assign_id: this.IssueUserAssignId,
+        user_qc_id: this.IssueUserQCId,
+        issue_name: this.IssueName,
+        issue_id: this.IssueId,
+        issue_type: this.IssueType,
+        issue_informer: this.IssueInformer,
+        issue_priority: this.IssuePriority,
+        issue_end: this.IssueEndDate,
+        issue_assign: this.IssueAssign,
+        issue_qc: this.IssueQC,
+        issue_des: this.IssueDes,
+        issue_des_sa: this.IssueDesSA,
+        issue_type_sa: this.IssueTypeSA,
+        issue_doc_id: this.IssueDocId,
+        issue_customer: this.IssueCustomer,
+        issue_filename: this.IssueFilename,
+        issue_des_dev: this.IssueDesDev,
+        issue_des_implementer: this.IssueDesImplementer,
+        issue_start: this.IssueStart,
+        issue_expected: this.IssueExpected,
+        issue_status: this.IssueStatus,
+        issue_accepting: this.IssueAccepting,
+        issue_manday: this.IssueManday,
+        issue_complete: this.IssueComplete,
+        issue_status_developer: this.IssueDeveloperStatus,
+        issue_status_implement: this.IssueImplementerStatus,
+        issue_round: this.IssueRound,
+      };
+      const dataHistoryUpdate = {
+        screen_id: this.IssueScreenId,
+        system_id: this.SystemId,
+        project_id: this.ProjectId,
+        issues_id: this.id,
+        user_assign_id: this.IssueUserAssignId,
+        user_qc_id: this.IssueUserQCId,
+        issue_name: this.IssueName,
+        issue_id: this.IssueId,
+        issue_type: this.IssueType,
+        issue_informer: this.IssueInformer,
+        issue_priority: this.IssuePriority,
+        issue_end: this.IssueEndDate,
+        issue_assign: this.IssueAssign,
+        issue_qc: this.IssueQC,
+        issue_des: this.IssueDes,
+        issue_des_sa: this.IssueDesSA,
+        issue_type_sa: this.IssueTypeSA,
+        issue_doc_id: this.IssueDocId,
+        issue_customer: this.IssueCustomer,
+        issue_filename: this.IssueFilename,
+        issue_des_dev: this.IssueDesDev,
+        issue_des_implementer: this.IssueDesImplementer,
+        issue_start: this.IssueStart,
+        issue_expected: this.IssueExpected,
+        issue_status: this.IssueStatus,
+        issue_accepting: this.IssueAccepting,
+        issue_manday: this.IssueManday,
+        issue_complete: this.IssueComplete,
+        issue_status_developer: this.IssueDeveloperStatus,
+        issue_status_implement: this.IssueImplementerStatus,
+        issue_round: this.IssueRound,
+        user_updated: this.user_firstname,
+        user_position_updated: this.user_position,
+        user_id_updated: this.user_id,
+      };
+      try {
+        await this.$axios.put("/issues/updateIssueAdmin/" + this.id, data);
+        await this.$axios.post(
+          "/history_issues/createIssueHistory/",
+          dataHistoryUpdate
+        );
+        this.$emit("button-clicked");
+        this.handleClose();
+        this.$refs.form.resetValidation();
+        const promise = new Promise((resolve, reject) => {
+          resolve();
+          this.close();
+        });
+        promise.then(() => {
+          setTimeout(() => {
+            alert("update success");
+          }, 2000);
+        });
+      } catch (error) {
+        console.error(error);
+        alert("Error submitting form");
+      }
     },
     handleClose() {
       this.$refs.form.resetValidation();

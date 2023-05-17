@@ -210,6 +210,7 @@ export default {
         { text: "ความสำคัญของปัญหา", value: "issue_priority" },
         { text: "ผู้พัฒนา", value: "issue_assign" },
         { text: "ผู้อัปเดต", value: "user_updated" },
+        { text: "อัปเดตเวลา", value: "formattedCreated_at" },
         { text: "", value: "data-table-expand" },
       ],
       items: [],
@@ -245,6 +246,7 @@ export default {
             "issue_start",
             "issue_expected",
             "issue_complete",
+            "created_at",
           ];
 
           dateFields.forEach((field) => {
@@ -263,6 +265,7 @@ export default {
             }
           });
         });
+        console.log("items", this.items);
         this.screen_id = this.items[0].screen_id;
         this.system_id = this.items[0].system_id;
         this.project_id = this.items[0].project_id;

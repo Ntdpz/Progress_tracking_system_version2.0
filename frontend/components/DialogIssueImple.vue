@@ -713,95 +713,6 @@ export default {
       if (this.IssueManday == "") {
         this.IssueManday = 0;
       }
-      //แอดคนเข้า screen
-      if (this.userSendWork !== null) {
-        try {
-          await this.$axios
-            .post("/user_screens/createUser_screen", {
-              user_id: [this.userSendWork], //id new person
-              screen_id: this.IssueScreenId,
-              system_id: this.SystemId,
-              project_id: this.ProjectId,
-            })
-            .then((res) => {
-              // alert("addUser_Screen Success!!");
-            });
-        } catch (error) {
-          console.log("user_screen: " + error);
-        }
-      }
-      //แก้ไขไม่ไ้ด ส่งต่อคนอื่น
-      if (this.IssueDeveloperStatus == "แก้ไขไม่ได้") {
-        const dataHistoryDev = {
-          screen_id: this.IssueScreenId,
-          system_id: this.SystemId,
-          project_id: this.ProjectId,
-          issues_id: this.id,
-          user_assign_id: this.IssueAssign.id,
-          user_qc_id: this.IssueAssign.id,
-          issue_name: this.IssueName,
-          issue_id: this.IssueId,
-          issue_type: this.IssueType,
-          issue_informer: this.IssueInformer,
-          issue_priority: this.IssuePriority,
-          issue_end: this.IssueEndDate,
-          issue_assign: this.IssueAssign.user_firstname,
-          issue_qc: this.IssueQC,
-          issue_des: this.IssueDes,
-          issue_des_sa: this.IssueDesSA,
-          issue_type_sa: this.IssueTypeSA,
-          issue_doc_id: this.IssueDocId,
-          issue_customer: this.IssueCustomer,
-          issue_filename: this.IssueFilename,
-          issue_des_dev: this.IssueDesDev,
-          issue_des_implementer: this.IssueDesImplementer,
-          issue_start: this.IssueStart,
-          issue_expected: this.IssueExpected,
-          issue_status: this.IssueStatus,
-          issue_accepting: this.IssueAccepting,
-          issue_manday: this.IssueManday,
-          issue_complete: this.IssueComplete,
-          issue_status_developer: this.IssueDeveloperStatus,
-          issue_status_implement: this.IssueImplementerStatus,
-          issue_round: this.IssueRound,
-          user_updated: this.user_firstname,
-          user_position_updated: this.user_position,
-          user_id_updated: this.user_id,
-        };
-        try {
-          await this.$axios.post(
-            "/history_issues/createIssueHistory/",
-            dataHistoryDev
-          );
-          this.$emit("button-clicked");
-          this.handleClose();
-          const promise = new Promise((resolve, reject) => {
-            resolve();
-            this.close();
-          });
-          promise.then(() => {
-            setTimeout(() => {
-              alert("success");
-            }, 2000);
-          });
-        } catch (error) {
-          console.error(error);
-          alert("Error submitting form");
-        }
-        this.IssueDesDev = null;
-        this.IssueDesImplementer = null;
-        this.IssueStart = null;
-        this.IssueExpected = null;
-        this.IssueStatus = "รอแก้ไข";
-        this.IssueAccepting = null;
-        this.IssueManday = 0;
-        this.IssueComplete = null;
-        this.IssueDeveloperStatus = "รอแก้ไข";
-        this.IssueImplementerStatus = null;
-        this.IssueRound = 0;
-        this.IssueAssign = this.IssueAssign.user_firstname;
-        this.IssueUserAssignId = this.userSendWork;
-      }
       //ตรวจสอบไม่ผ่านเริ่มใหม่ + เก็บรอบ
       if (this.IssueImplementerStatus == "ตรวจสอบไม่ผ่าน") {
         this.IssueRound += 1;
@@ -810,6 +721,9 @@ export default {
         this.IssueAccepting = null;
         this.IssueStart = null;
         this.IssueExpected = null;
+        this.IssueManday = 0;
+        this.IssueDesDev = null;
+        this.IssueComplete = null;
         this.IssueImplementerStatus = null;
         this.IssueStatus = "ตรวจสอบไม่ผ่าน";
       }
