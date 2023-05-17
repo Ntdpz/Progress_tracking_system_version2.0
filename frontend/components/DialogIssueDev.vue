@@ -800,7 +800,7 @@ export default {
         this.IssueAssign = this.IssueAssign.user_firstname;
         this.IssueUserAssignId = this.userSendWork;
       }
-      //มาเช็๕ว่ากำลังแก้ไข แล้วค่าวันที่ว่างมั้ย???
+      //มาเช็คว่ากำลังแก้ไข แล้วค่าวันที่ว่างมั้ย???
       // if (this.IssueDeveloperStatus === "กำลังแก้ไข") {
       //   if (
       //     this.IssueAccepting === null ||
@@ -825,6 +825,243 @@ export default {
       // ) {
       //   alert("Complete date is required");
       // }
+
+      // const data = {
+      //   screen_id: this.IssueScreenId,
+      //   system_id: this.SystemId,
+      //   project_id: this.ProjectId,
+      //   user_assign_id: this.IssueUserAssignId,
+      //   user_qc_id: this.IssueUserQCId,
+      //   issue_name: this.IssueName,
+      //   issue_id: this.IssueId,
+      //   issue_type: this.IssueType,
+      //   issue_informer: this.IssueInformer,
+      //   issue_priority: this.IssuePriority,
+      //   issue_end: this.IssueEndDate,
+      //   issue_assign: this.IssueAssign,
+      //   issue_qc: this.IssueQC,
+      //   issue_des: this.IssueDes,
+      //   issue_des_sa: this.IssueDesSA,
+      //   issue_type_sa: this.IssueTypeSA,
+      //   issue_doc_id: this.IssueDocId,
+      //   issue_customer: this.IssueCustomer,
+      //   issue_filename: this.IssueFilename,
+      //   issue_des_dev: this.IssueDesDev,
+      //   issue_des_implementer: this.IssueDesImplementer,
+      //   issue_start: this.IssueStart,
+      //   issue_expected: this.IssueExpected,
+      //   issue_status: this.IssueStatus,
+      //   issue_accepting: this.IssueAccepting,
+      //   issue_manday: this.IssueManday,
+      //   issue_complete: this.IssueComplete,
+      //   issue_status_developer: this.IssueDeveloperStatus,
+      //   issue_status_implement: this.IssueImplementerStatus,
+      //   issue_round: this.IssueRound,
+      // };
+      // const dataHistoryUpdate = {
+      //   screen_id: this.IssueScreenId,
+      //   system_id: this.SystemId,
+      //   project_id: this.ProjectId,
+      //   issues_id: this.id,
+      //   user_assign_id: this.IssueUserAssignId,
+      //   user_qc_id: this.IssueUserQCId,
+      //   issue_name: this.IssueName,
+      //   issue_id: this.IssueId,
+      //   issue_type: this.IssueType,
+      //   issue_informer: this.IssueInformer,
+      //   issue_priority: this.IssuePriority,
+      //   issue_end: this.IssueEndDate,
+      //   issue_assign: this.IssueAssign,
+      //   issue_qc: this.IssueQC,
+      //   issue_des: this.IssueDes,
+      //   issue_des_sa: this.IssueDesSA,
+      //   issue_type_sa: this.IssueTypeSA,
+      //   issue_doc_id: this.IssueDocId,
+      //   issue_customer: this.IssueCustomer,
+      //   issue_filename: this.IssueFilename,
+      //   issue_des_dev: this.IssueDesDev,
+      //   issue_des_implementer: this.IssueDesImplementer,
+      //   issue_start: this.IssueStart,
+      //   issue_expected: this.IssueExpected,
+      //   issue_status: this.IssueStatus,
+      //   issue_accepting: this.IssueAccepting,
+      //   issue_manday: this.IssueManday,
+      //   issue_complete: this.IssueComplete,
+      //   issue_status_developer: this.IssueDeveloperStatus,
+      //   issue_status_implement: this.IssueImplementerStatus,
+      //   issue_round: this.IssueRound,
+      //   user_updated: this.user_firstname,
+      //   user_position_updated: this.user_position,
+      //   user_id_updated: this.user_id,
+      // };
+
+
+      //ใส่วันเสร็จแต่ไม่ยอมปรับสถานะ จะปรับอัตโนมัติ
+      if (this.IssueComplete !== null) {
+        this.IssueDeveloperStatus = "แก้ไขเรียบร้อย";
+        this.IssueStatus = "แก้ไขเรียบร้อย";
+        alert("แก้ไขเรียบร้อย");
+        this.post(this.IssueStatus, this.IssueDeveloperStatus);
+      }
+      // เช็คว่ากำลังแก้ไข แล้วค่าวันที่ว่างมั้ย
+      else if (this.IssueDeveloperStatus === "กำลังแก้ไข") {
+        if (
+          this.IssueAccepting === null ||
+          this.IssueStart === null ||
+          this.IssueExpected === null
+        ) {
+          this.$refs.form.validate();
+          this.IssueStatus = "รอแก้ไข";
+          alert("กรุณากรอกวันที่ให้ครบถ้วน");
+        } else {
+          this.IssueStatus = "กำลังแก้ไข";
+          alert(this.IssueDeveloperStatus);
+          this.post(this.IssueStatus, this.IssueDeveloperStatus);
+        }
+      }
+      // ถ้า dev กรอกวันที่ตัวใดตัวนึงและไม่ปรับสถานะต้องมากรอกสถานะก่อน
+      else if (this.IssueDeveloperStatus === null) {
+        if (
+          this.IssueAccepting === null ||
+          this.IssueStart === null ||
+          this.IssueExpected === null
+        ) {
+          this.$refs.form.validate();
+          this.IssueStatus = "รอแก้ไข";
+          alert("กรุณากรอกวันที่ให้ครบถ้วนและมากรอกสถานะด้วย");
+        }
+      }
+
+      // กรอกวันที่ครบ จะปรับสถานะเป็น กำลังแก้ไข อัติโนมัติ
+      else if (
+        this.IssueAccepting != null &&
+        this.IssueStart != null &&
+        this.IssueExpected != null
+      ) {
+        this.IssueDeveloperStatus = "กำลังแก้ไข";
+        this.IssueStatus = "กำลังแก้ไข";
+        alert("กำลังแก้ไข");
+        this.post(this.IssueStatus, this.IssueDeveloperStatus);
+      }
+
+      // ไม่กรอกวันที่ แต่มี สถานะ
+      else if (this.IssueDeveloperStatus === "รอแก้ไข") {
+        if (
+          this.IssueAccepting === null ||
+          this.IssueStart === null ||
+          this.IssueExpected === null
+        ) {
+          this.$refs.form.validate();
+          this.IssueStatus = "รอแก้ไข";
+          alert("กรุณากรอกวันที่ให้ครบถ้วนด้วยนะ");
+        }
+      }
+      //ปรับสถานะเป็นแก้ไข้เรียบร้อย แต่ไม่ใส่วันที่ ให้กลับไปใส่
+      else if (this.IssueDeveloperStatus === "แก้ไขเรียบร้อย") {
+        if (this.IssueComplete === null) {
+          this.$refs.form.validate();
+          this.IssueStatus = "รอแก้ไข";
+          alert("กรุณากรอกวันที่เสร็จด้วย");
+        } else if (this.IssueComplete != null) {
+          this.IssueStatus = "แก้ไขเรียบร้อยแล้ว";
+          alert("แก้ไขเรียบร้อย");
+          this.post(this.IssueStatus, this.IssueDeveloperStatus);
+        }
+      }
+
+      // const data = {
+      //   screen_id: this.IssueScreenId,
+      //   system_id: this.SystemId,
+      //   project_id: this.ProjectId,
+      //   user_assign_id: this.IssueUserAssignId,
+      //   user_qc_id: this.IssueUserQCId,
+      //   issue_name: this.IssueName,
+      //   issue_id: this.IssueId,
+      //   issue_type: this.IssueType,
+      //   issue_informer: this.IssueInformer,
+      //   issue_priority: this.IssuePriority,
+      //   issue_end: this.IssueEndDate,
+      //   issue_assign: this.IssueAssign,
+      //   issue_qc: this.IssueQC,
+      //   issue_des: this.IssueDes,
+      //   issue_des_sa: this.IssueDesSA,
+      //   issue_type_sa: this.IssueTypeSA,
+      //   issue_doc_id: this.IssueDocId,
+      //   issue_customer: this.IssueCustomer,
+      //   issue_filename: this.IssueFilename,
+      //   issue_des_dev: this.IssueDesDev,
+      //   issue_des_implementer: this.IssueDesImplementer,
+      //   issue_start: this.IssueStart,
+      //   issue_expected: this.IssueExpected,
+      //   issue_status: this.IssueStatus,
+      //   issue_accepting: this.IssueAccepting,
+      //   issue_manday: this.IssueManday,
+      //   issue_complete: this.IssueComplete,
+      //   issue_status_developer: this.IssueDeveloperStatus,
+      //   issue_status_implement: this.IssueImplementerStatus,
+      //   issue_round: this.IssueRound,
+      // };
+      // const dataHistoryUpdate = {
+      //   screen_id: this.IssueScreenId,
+      //   system_id: this.SystemId,
+      //   project_id: this.ProjectId,
+      //   issues_id: this.id,
+      //   user_assign_id: this.IssueUserAssignId,
+      //   user_qc_id: this.IssueUserQCId,
+      //   issue_name: this.IssueName,
+      //   issue_id: this.IssueId,
+      //   issue_type: this.IssueType,
+      //   issue_informer: this.IssueInformer,
+      //   issue_priority: this.IssuePriority,
+      //   issue_end: this.IssueEndDate,
+      //   issue_assign: this.IssueAssign,
+      //   issue_qc: this.IssueQC,
+      //   issue_des: this.IssueDes,
+      //   issue_des_sa: this.IssueDesSA,
+      //   issue_type_sa: this.IssueTypeSA,
+      //   issue_doc_id: this.IssueDocId,
+      //   issue_customer: this.IssueCustomer,
+      //   issue_filename: this.IssueFilename,
+      //   issue_des_dev: this.IssueDesDev,
+      //   issue_des_implementer: this.IssueDesImplementer,
+      //   issue_start: this.IssueStart,
+      //   issue_expected: this.IssueExpected,
+      //   issue_status: this.IssueStatus,
+      //   issue_accepting: this.IssueAccepting,
+      //   issue_manday: this.IssueManday,
+      //   issue_complete: this.IssueComplete,
+      //   issue_status_developer: this.IssueDeveloperStatus,
+      //   issue_status_implement: this.IssueImplementerStatus,
+      //   issue_round: this.IssueRound,
+      //   user_updated: this.user_firstname,
+      //   user_position_updated: this.user_position,
+      //   user_id_updated: this.user_id,
+      // };
+      // try {
+      //   await this.$axios.put("/issues/updateIssueAdmin/" + this.id, data);
+      //   await this.$axios.post(
+      //     "/history_issues/createIssueHistory/",
+      //     dataHistoryUpdate
+      //   );
+      //   this.$emit("button-clicked");
+      //   this.$refs.form.resetValidation();
+      //   this.$refs.formCom.resetValidation();
+      //   this.handleClose();
+      //   const promise = new Promise((resolve, reject) => {
+      //     resolve();
+      //     this.close();
+      //   });
+      //   promise.then(() => {
+      //     setTimeout(() => {
+      //       alert("update success last version");
+      //     }, 2000);
+      //   });
+      // } catch (error) {
+      //   console.error(error);
+      //   alert("Error submitting form");
+      // }
+    },
+    async post(status, statusdev){
       const data = {
         screen_id: this.IssueScreenId,
         system_id: this.SystemId,
@@ -849,11 +1086,11 @@ export default {
         issue_des_implementer: this.IssueDesImplementer,
         issue_start: this.IssueStart,
         issue_expected: this.IssueExpected,
-        issue_status: this.IssueStatus,
+        issue_status: status,
         issue_accepting: this.IssueAccepting,
         issue_manday: this.IssueManday,
         issue_complete: this.IssueComplete,
-        issue_status_developer: this.IssueDeveloperStatus,
+        issue_status_developer: statusdev,
         issue_status_implement: this.IssueImplementerStatus,
         issue_round: this.IssueRound,
       };
@@ -882,11 +1119,11 @@ export default {
         issue_des_implementer: this.IssueDesImplementer,
         issue_start: this.IssueStart,
         issue_expected: this.IssueExpected,
-        issue_status: this.IssueStatus,
+        issue_status: status,
         issue_accepting: this.IssueAccepting,
         issue_manday: this.IssueManday,
         issue_complete: this.IssueComplete,
-        issue_status_developer: this.IssueDeveloperStatus,
+        issue_status_developer: statusdev,
         issue_status_implement: this.IssueImplementerStatus,
         issue_round: this.IssueRound,
         user_updated: this.user_firstname,
@@ -1032,4 +1269,5 @@ export default {
 .v-text-field >>> .v-input__slot {
   min-height: 20px !important;
 }
+</style>
 </style>
