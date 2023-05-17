@@ -520,10 +520,20 @@
           </v-col>
         </v-row>
         <v-card-actions>
-          <v-btn color="error" @click="issueReject()"><h4>ลบ</h4></v-btn>
+          <v-btn
+            v-show="this.HistoryCheck == false"
+            color="error"
+            @click="issueReject()"
+            ><h4>ลบ</h4></v-btn
+          >
           <v-spacer></v-spacer>
           <v-btn color="error" @click="handleClose()"><h4>ปิด</h4></v-btn>
-          <v-btn color="primary" @click="saveIssue()"><h4>อัปเดต</h4></v-btn>
+          <v-btn
+            v-show="this.HistoryCheck == false"
+            color="primary"
+            @click="saveIssue()"
+            ><h4>อัปเดต</h4></v-btn
+          >
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -864,95 +874,95 @@ export default {
         }
       }
       //มาเช็๕ว่ากำลังแก้ไข แล้วค่าวันที่ว่างมั้ย???
-        const data = {
-          screen_id: this.IssueScreenId,
-          system_id: this.SystemId,
-          project_id: this.ProjectId,
-          user_assign_id: this.IssueUserAssignId,
-          user_qc_id: this.IssueUserQCId,
-          issue_name: this.IssueName,
-          issue_id: this.IssueId,
-          issue_type: this.IssueType,
-          issue_informer: this.IssueInformer,
-          issue_priority: this.IssuePriority,
-          issue_end: this.IssueEndDate,
-          issue_assign: this.IssueAssign,
-          issue_qc: this.IssueQC,
-          issue_des: this.IssueDes,
-          issue_des_sa: this.IssueDesSA,
-          issue_type_sa: this.IssueTypeSA,
-          issue_doc_id: this.IssueDocId,
-          issue_customer: this.IssueCustomer,
-          issue_filename: this.IssueFilename,
-          issue_des_dev: this.IssueDesDev,
-          issue_des_implementer: this.IssueDesImplementer,
-          issue_start: this.IssueStart,
-          issue_expected: this.IssueExpected,
-          issue_status: this.IssueStatus,
-          issue_accepting: this.IssueAccepting,
-          issue_manday: this.IssueManday,
-          issue_complete: this.IssueComplete,
-          issue_status_developer: this.IssueDeveloperStatus,
-          issue_status_implement: this.IssueImplementerStatus,
-          issue_round: this.IssueRound,
-        };
-        const dataHistoryUpdate = {
-          screen_id: this.IssueScreenId,
-          system_id: this.SystemId,
-          project_id: this.ProjectId,
-          issues_id: this.id,
-          user_assign_id: this.IssueUserAssignId,
-          user_qc_id: this.IssueUserQCId,
-          issue_name: this.IssueName,
-          issue_id: this.IssueId,
-          issue_type: this.IssueType,
-          issue_informer: this.IssueInformer,
-          issue_priority: this.IssuePriority,
-          issue_end: this.IssueEndDate,
-          issue_assign: this.IssueAssign,
-          issue_qc: this.IssueQC,
-          issue_des: this.IssueDes,
-          issue_des_sa: this.IssueDesSA,
-          issue_type_sa: this.IssueTypeSA,
-          issue_doc_id: this.IssueDocId,
-          issue_customer: this.IssueCustomer,
-          issue_filename: this.IssueFilename,
-          issue_des_dev: this.IssueDesDev,
-          issue_des_implementer: this.IssueDesImplementer,
-          issue_start: this.IssueStart,
-          issue_expected: this.IssueExpected,
-          issue_status: this.IssueStatus,
-          issue_accepting: this.IssueAccepting,
-          issue_manday: this.IssueManday,
-          issue_complete: this.IssueComplete,
-          issue_status_developer: this.IssueDeveloperStatus,
-          issue_status_implement: this.IssueImplementerStatus,
-          issue_round: this.IssueRound,
-          user_updated: this.user_firstname,
-          user_position_updated: this.user_position,
-          user_id_updated: this.user_id,
-        };
-        try {
-          await this.$axios.put("/issues/updateIssueAdmin/" + this.id, data);
-          await this.$axios.post(
-            "/history_issues/createIssueHistory/",
-            dataHistoryUpdate
-          );
-          this.$emit("button-clicked");
-          this.handleClose();
-          const promise = new Promise((resolve, reject) => {
-            resolve();
-            this.close();
-          });
-          promise.then(() => {
-            setTimeout(() => {
-              alert("update success");
-            }, 2000);
-          });
-        } catch (error) {
-          console.error(error);
-          alert("Error submitting form");
-        }
+      const data = {
+        screen_id: this.IssueScreenId,
+        system_id: this.SystemId,
+        project_id: this.ProjectId,
+        user_assign_id: this.IssueUserAssignId,
+        user_qc_id: this.IssueUserQCId,
+        issue_name: this.IssueName,
+        issue_id: this.IssueId,
+        issue_type: this.IssueType,
+        issue_informer: this.IssueInformer,
+        issue_priority: this.IssuePriority,
+        issue_end: this.IssueEndDate,
+        issue_assign: this.IssueAssign,
+        issue_qc: this.IssueQC,
+        issue_des: this.IssueDes,
+        issue_des_sa: this.IssueDesSA,
+        issue_type_sa: this.IssueTypeSA,
+        issue_doc_id: this.IssueDocId,
+        issue_customer: this.IssueCustomer,
+        issue_filename: this.IssueFilename,
+        issue_des_dev: this.IssueDesDev,
+        issue_des_implementer: this.IssueDesImplementer,
+        issue_start: this.IssueStart,
+        issue_expected: this.IssueExpected,
+        issue_status: this.IssueStatus,
+        issue_accepting: this.IssueAccepting,
+        issue_manday: this.IssueManday,
+        issue_complete: this.IssueComplete,
+        issue_status_developer: this.IssueDeveloperStatus,
+        issue_status_implement: this.IssueImplementerStatus,
+        issue_round: this.IssueRound,
+      };
+      const dataHistoryUpdate = {
+        screen_id: this.IssueScreenId,
+        system_id: this.SystemId,
+        project_id: this.ProjectId,
+        issues_id: this.id,
+        user_assign_id: this.IssueUserAssignId,
+        user_qc_id: this.IssueUserQCId,
+        issue_name: this.IssueName,
+        issue_id: this.IssueId,
+        issue_type: this.IssueType,
+        issue_informer: this.IssueInformer,
+        issue_priority: this.IssuePriority,
+        issue_end: this.IssueEndDate,
+        issue_assign: this.IssueAssign,
+        issue_qc: this.IssueQC,
+        issue_des: this.IssueDes,
+        issue_des_sa: this.IssueDesSA,
+        issue_type_sa: this.IssueTypeSA,
+        issue_doc_id: this.IssueDocId,
+        issue_customer: this.IssueCustomer,
+        issue_filename: this.IssueFilename,
+        issue_des_dev: this.IssueDesDev,
+        issue_des_implementer: this.IssueDesImplementer,
+        issue_start: this.IssueStart,
+        issue_expected: this.IssueExpected,
+        issue_status: this.IssueStatus,
+        issue_accepting: this.IssueAccepting,
+        issue_manday: this.IssueManday,
+        issue_complete: this.IssueComplete,
+        issue_status_developer: this.IssueDeveloperStatus,
+        issue_status_implement: this.IssueImplementerStatus,
+        issue_round: this.IssueRound,
+        user_updated: this.user_firstname,
+        user_position_updated: this.user_position,
+        user_id_updated: this.user_id,
+      };
+      try {
+        await this.$axios.put("/issues/updateIssueAdmin/" + this.id, data);
+        await this.$axios.post(
+          "/history_issues/createIssueHistory/",
+          dataHistoryUpdate
+        );
+        this.$emit("button-clicked");
+        this.handleClose();
+        const promise = new Promise((resolve, reject) => {
+          resolve();
+          this.close();
+        });
+        promise.then(() => {
+          setTimeout(() => {
+            alert("update success");
+          }, 2000);
+        });
+      } catch (error) {
+        console.error(error);
+        alert("Error submitting form");
+      }
     },
     handleClose() {
       this.$refs.form.resetValidation();

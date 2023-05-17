@@ -867,20 +867,20 @@ export default {
         }
       }
       //มาเช็๕ว่ากำลังแก้ไข แล้วค่าวันที่ว่างมั้ย???
-      if (
-        ((await this.IssueDeveloperStatus) === "กำลังแก้ไข" &&
-          this.IssueAccepting === null) ||
-        this.IssueStart === null ||
-        this.IssueExpected === null
-      ) {
-        this.IssueStatus = "รอแก้ไข";
-        alert("Accepting date is required");
-      } else if (
-        this.IssueDeveloperStatus == "แก้ไขเรียบร้อย" &&
-        this.IssueComplete === null
-      ) {
-        alert("Complete date is required");
-      } else {
+      // if (
+      //   ((await this.IssueDeveloperStatus) === "กำลังแก้ไข" &&
+      //     this.IssueAccepting === null) ||
+      //   this.IssueStart === null ||
+      //   this.IssueExpected === null
+      // ) {
+      //   this.IssueStatus = "รอแก้ไข";
+      //   alert("Accepting date is required");
+      // } else if (
+      //   this.IssueDeveloperStatus == "แก้ไขเรียบร้อย" &&
+      //   this.IssueComplete === null
+      // ) {
+      //   alert("Complete date is required");
+      // } 
         const data = {
           screen_id: this.IssueScreenId,
           system_id: this.SystemId,
@@ -971,7 +971,6 @@ export default {
           console.error(error);
           alert("Error submitting form");
         }
-      }
     },
     handleClose() {
       this.$refs.form.resetValidation();
