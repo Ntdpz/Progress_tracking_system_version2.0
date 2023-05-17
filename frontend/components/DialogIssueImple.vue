@@ -263,9 +263,12 @@
                 </v-expansion-panel-header>
                 <v-expansion-panel-content>
                   <v-col class="pt-0">
-                    <v-form ref="form">
+                    <v-form ref="form" :disabled="NoAssginCheck">
                       <v-row class="mt-5">
                         <v-col cols="6" class="pb-0">
+                          <p v-show="NoAssginCheck" style="color: red">
+                            **โปรดเลือกผู้รับผิดชอบ
+                          </p>
                           <!-- <p>
                           วันที่รับ -
                           {{ IssueAccepting }}
@@ -585,6 +588,7 @@ export default {
     ImpleSection: Boolean,
     UserId: Number,
     HistoryCheck: Boolean,
+    NoAssginCheck: Boolean,
     dialog: {
       type: Boolean,
       default: false,

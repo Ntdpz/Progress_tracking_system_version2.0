@@ -263,9 +263,10 @@
                 </v-expansion-panel-header>
                 <v-expansion-panel-content>
                   <v-col class="pt-0">
-                    <v-form ref="form">
+                    <v-form ref="form" :disabled="NoAssginCheck">
                       <v-row class="mt-5">
                         <v-col cols="6" class="pb-0">
+                          <p v-show="NoAssginCheck" style="color: red">**โปรดเลือกผู้รับผิดชอบ</p>
                           <!-- <p>
                             วันที่รับ -
                             {{ IssueAccepting }}
@@ -364,6 +365,7 @@
                           outlined
                           dense
                           v-model="IssueManday"
+                          :disabled="NoAssginCheck"
                         ></v-text-field>
                       </v-row>
                     </v-col>
@@ -377,6 +379,7 @@
                           <v-col cols="4">
                             <!-- <p class="pa-2">สถานะ</p> -->
                             <v-select
+                              :disabled="NoAssginCheck"
                               :items="issue_status_developer_default"
                               label="สถานะ"
                               placeholder="สถานะ"
@@ -403,7 +406,7 @@
                         </v-row>
                       </v-col>
                     </v-row>
-                    <v-form ref="formCom">
+                    <v-form ref="formCom" :disabled="NoAssginCheck">
                       <v-row>
                         <v-col cols="6">
                           <v-row>
@@ -442,6 +445,7 @@
                         <p class="">คำอธิบาย</p>
                         <v-textarea
                           solo
+                          :disabled="NoAssginCheck"
                           name="input-7-4"
                           label="คำอธิบายของผู้พัฒนา"
                           v-model="IssueDesDev"
@@ -578,6 +582,7 @@ export default {
     ImpleSection: Boolean,
     UserId: Number,
     HistoryCheck: Boolean,
+    NoAssginCheck: Boolean,
     dialog: {
       type: Boolean,
       default: false,
@@ -963,7 +968,7 @@ export default {
         }
       }
     },
-    async post(status, statusdev){
+    async post(status, statusdev) {
       const data = {
         screen_id: this.IssueScreenId,
         system_id: this.SystemId,
