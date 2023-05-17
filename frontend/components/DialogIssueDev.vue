@@ -835,6 +835,19 @@ export default {
         alert("แก้ไขเรียบร้อย");
         this.post(this.IssueStatus, this.IssueDeveloperStatus);
       }
+      //ปรับสถานะเป็นแก้ไข้เรียบร้อย แต่ไม่ใส่วันที่ ให้กลับไปใส่
+      else if (this.IssueDeveloperStatus === "แก้ไขเรียบร้อย") {
+        if (this.IssueComplete === null) {
+          this.$refs.form.validate();
+          this.IssueStatus = "รอแก้ไข";
+          alert("กรุณากรอกวันที่เสร็จด้วย");
+        } else if (this.IssueComplete != null) {
+          this.IssueStatus = "แก้ไขเรียบร้อยแล้ว";
+          alert("แก้ไขเรียบร้อย");
+          this.post(this.IssueStatus, this.IssueDeveloperStatus);
+        }
+      }
+
       // เช็คว่ากำลังแก้ไข แล้วค่าวันที่ว่างมั้ย
       else if (this.IssueDeveloperStatus === "กำลังแก้ไข") {
         if (
@@ -888,18 +901,7 @@ export default {
           alert("กรุณากรอกวันที่ให้ครบถ้วนด้วยนะ");
         }
       }
-      //ปรับสถานะเป็นแก้ไข้เรียบร้อย แต่ไม่ใส่วันที่ ให้กลับไปใส่
-      else if (this.IssueDeveloperStatus === "แก้ไขเรียบร้อย") {
-        if (this.IssueComplete === null) {
-          this.$refs.form.validate();
-          this.IssueStatus = "รอแก้ไข";
-          alert("กรุณากรอกวันที่เสร็จด้วย");
-        } else if (this.IssueComplete != null) {
-          this.IssueStatus = "แก้ไขเรียบร้อยแล้ว";
-          alert("แก้ไขเรียบร้อย");
-          this.post(this.IssueStatus, this.IssueDeveloperStatus);
-        }
-      }
+
 
       // const data = {
       //   screen_id: this.IssueScreenId,
