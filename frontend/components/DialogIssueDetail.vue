@@ -1031,7 +1031,15 @@ export default {
 
       // ไม่กรอกวันที่ แต่มี สถานะ
       else if (this.IssueDeveloperStatus === "รอแก้ไข") {
-        this.post(this.IssueStatus, this.IssueDeveloperStatus);
+        if (this.IssueAccepting != null ||
+        this.IssueStart != null ||
+        this.IssueExpected != null) {
+          this.IssueStatus = "กำลังแก้ไข";
+          this.IssueDeveloperStatus = "กำลังแก้ไข";
+          this.post(this.IssueStatus, this.IssueDeveloperStatus);
+        } else {
+           this.post(this.IssueStatus, this.IssueDeveloperStatus);
+        }
       }
     },
     async post(status, statusdev) {
