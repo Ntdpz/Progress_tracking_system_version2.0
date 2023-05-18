@@ -633,6 +633,7 @@ export default {
           promise.then(() => {
             setTimeout(() => {
               // alert("success3");
+              this.dialogSuccess = true;
               // this.close();
             }, 2000);
           });
