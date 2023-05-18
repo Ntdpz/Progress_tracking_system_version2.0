@@ -343,11 +343,8 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
-        </template></v-dialog
-      ></v-form
-    ></v-layout
-  >
-</template>
+        </template>
+        
       </v-dialog>
     </v-form>
   </v-layout>
