@@ -12,7 +12,7 @@
       vertical
       style="background-color: black"
     ></v-divider>
-    <v-card class="card ml-5 mt-2" style="height: 40px; border-radius: 60px">
+    <!-- <v-card class="card ml-5 mt-2" style="height: 40px; border-radius: 60px">
       <v-card-text class="pa-0">
         <v-text-field
           v-model="search2"
@@ -22,7 +22,7 @@
           placeholder="search"
         ></v-text-field>
       </v-card-text>
-    </v-card>
+    </v-card> -->
   </v-row>
 </template>
 

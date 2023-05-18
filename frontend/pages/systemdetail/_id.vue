@@ -14,7 +14,7 @@
         vertical
         style="background-color: black"
       ></v-divider>
-      <template>
+      <!-- <template>
         <v-banner
           class="mt-0 ml-4"
           style="
@@ -38,7 +38,7 @@
             />
           </form>
         </v-banner>
-      </template>
+      </template> -->
     </v-row>
     <v-divider></v-divider>
     <!-- Sub System -->

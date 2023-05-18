@@ -160,7 +160,7 @@
                 <v-select
                   return-object="false"
                   :items="position_Implementer"
-                  label="ผู่ตรวจสอบ"
+                  label="ผู้ตรวจสอบ"
                   dense
                   outlined
                   menu-props="auto"

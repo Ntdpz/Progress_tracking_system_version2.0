@@ -4,7 +4,7 @@
       <v-col class="mt-0 pt-0">
         <v-sheet height="64">
           <v-toolbar flat>
-            <template>
+            <!-- <template>
               <v-banner
                 class="mt-0 ml-0"
                 style="
@@ -37,7 +37,7 @@
               inset
               vertical
               style="background-color: black"
-            ></v-divider>
+            ></v-divider> -->
             <v-toolbar-title v-if="$refs.calendar">
               {{ $refs.calendar.title }}
             </v-toolbar-title>
@@ -101,7 +101,7 @@
           </v-toolbar>
         </v-sheet>
         <v-sheet height="77vh">
-            <v-calendar
+          <v-calendar
             v-if="user_role == 'Admin'"
             :key="'admin-calendar'"
             ref="calendar"
@@ -259,7 +259,7 @@ export default {
         return window.localStorage.getItem("userId");
       }
       return null; // or some default value if localStorage is not available
-    },    
+    },
   },
   methods: {
     async getUser() {
@@ -351,8 +351,6 @@ export default {
     },
     async updateRangeOwner() {
       try {
-
-
         const { data } = await this.$axios.get(
           `/issues/getOneName/${this.userId}`,
           {}
@@ -398,10 +396,16 @@ export default {
       if (this.user_role == "Admin") {
         this.updateRange();
         return;
-      } else if (this.user_position == "Implementer" && this.user_role != "Admin") {
+      } else if (
+        this.user_position == "Implementer" &&
+        this.user_role != "Admin"
+      ) {
         this.updateRangeOwnerQc();
         return;
-       }else if (this.user_position == "Devloper" && this.user_role != "Admin") {
+      } else if (
+        this.user_position == "Devloper" &&
+        this.user_role != "Admin"
+      ) {
         this.updateRangeOwner();
         return;
       }
