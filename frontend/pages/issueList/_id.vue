@@ -22,7 +22,7 @@
         v-for="(system, index) in systemsList"
         :key="index"
       >
-        <v-expansion-panel-header>
+        <v-expansion-panel-header style="background-color: #aa7dec;">
           <template>
             <v-row no-gutters>
               <v-col cols="12">
@@ -47,7 +47,7 @@
               v-if="user_role == 'Admin' || user_position == 'Implementer'"
               class="new-btn ma-2 text-left"
               outlined
-              color="indigo"
+              color="primary"
               dark
               v-bind="attrs"
               v-on="on"
@@ -60,6 +60,7 @@
                   system.system_shortname
                 )
               "
+              style="background-color: #bb96f1a6"
             >
               <span
                 class="mdi mdi-plus-circle-outline"
@@ -95,20 +96,65 @@
             color="primary"
             class="mt-5"
           >
-            <v-tab>
-              <h3 style="color: black">ทั้งหมด</h3>
+            <v-tab
+              :style="tab1 ? 'background-color: #bb96f1a6;' : null"
+              @click="
+                (tab1 = true),
+                  (tab2 = false),
+                  (tab3 = false),
+                  (tab4 = false),
+                  (tab5 = false)
+              "
+            >
+              <h3 style="color: black">My issue</h3>
             </v-tab>
-            <v-tab>
+            <v-tab
+              :style="tab2 ? 'background-color: #bb96f1a6;' : null"
+              @click="
+                (tab1 = false),
+                  (tab2 = true),
+                  (tab3 = false),
+                  (tab4 = false),
+                  (tab5 = false)
+              "
+            >
               <h3 style="color: black">PNI</h3>
             </v-tab>
-            <v-tab>
+            <v-tab
+              :style="tab3 ? 'background-color: #bb96f1a6;' : null"
+              @click="
+                (tab1 = false),
+                  (tab2 = false),
+                  (tab3 = true),
+                  (tab4 = false),
+                  (tab5 = false)
+              "
+            >
               <h3 style="color: black">PNC</h3>
             </v-tab>
-            <v-tab>
+            <v-tab
+              :style="tab4 ? 'background-color: #bb96f1a6;' : null"
+              @click="
+                (tab1 = false),
+                  (tab2 = false),
+                  (tab3 = false),
+                  (tab4 = true),
+                  (tab5 = false)
+              "
+            >
               <h3 style="color: black">NewReq</h3>
             </v-tab>
-            <v-tab>
-              <h3 style="color: black">ประวัติ</h3>
+            <v-tab
+              :style="tab5 ? 'background-color: #bb96f1a6;' : null"
+              @click="
+                (tab1 = false),
+                  (tab2 = false),
+                  (tab3 = false),
+                  (tab4 = false),
+                  (tab5 = true)
+              "
+            >
+              <h3 style="color: black">แก้ไขเรียบร้อย</h3>
             </v-tab>
           </v-tabs>
           <!-- Dialog Admin Dev Implementer -->
@@ -252,6 +298,7 @@
                 class="v-data-table elevation-1 mb-2"
                 v-remove-row-borders
                 :search="search"
+                :style="{ 'background-color': tableColor }"
               >
                 <template v-slot:top>
                   <v-toolbar flat>
@@ -273,102 +320,107 @@
                     ></v-text-field>
                   </v-toolbar>
                 </template>
-                <template v-slot:[`item.issue_name`]="{ item }">
-                  <v-icon>mdi-format-list-bulleted</v-icon>
-                  {{ item.issue_name }}
-                </template>
-                <template v-slot:[`item.formattedDateEnd`]="{ item }">
-                  {{ item.formattedDateEnd }}
-                </template>
-                <template v-slot:[`item.issue_status`]="{ item }">
-                  {{ item.issue_status }}
-                </template>
-                <template v-slot:[`item.issue_priotity`]="{ item }">
-                  <v-icon style="color: #ff0000">mdi-flag-outline</v-icon>
-                </template>
-                <template v-slot:[`item.issue_assignees`]>
-                  <v-icon style="color: black">mdi-account-circle</v-icon>
-                  <!-- {{ item.issue_assignees }} -->
-                  <p v-show="item.issue_assign == ''">N/A</p>
-                </template>
-                <template v-slot:[`item.issue_qc`]="{ item }">
-                  {{ item.issue_qc }}
-                  <p v-show="item.issue_qc == null || item.issue_qc == ''">
-                    No assign
-                  </p>
-                </template>
-                <template v-slot:[`item.actions`]="{ item }">
-                  <v-icon
-                    class="mr-2"
-                    v-if="
-                      user_position === 'Implementer' &&
-                      user_role !== 'Admin' &&
-                      item.issue_qc !== user_firstname &&
-                      item.issue_informer !== user_firstname
-                    "
-                    :disabled="true"
-                    size="20"
-                    color="primary"
-                  >
-                    mdi-information-outline
-                  </v-icon>
-                  <v-icon
-                    class="mr-2"
-                    v-else-if="
-                      user_position === 'Developer' &&
-                      user_role !== 'Admin' &&
-                      item.issue_assign !== user_firstname
-                    "
-                    :disabled="true"
-                    size="20"
-                    color="primary"
-                  >
-                    mdi-information-outline
-                  </v-icon>
-                  <v-icon
-                    class="mr-2"
-                    v-else
-                    @click="
-                      (history = false),
-                        (no_assign = false),
-                        showIssueDetailDialog(
-                          item.id,
-                          item.issue_id,
-                          item.issue_type,
-                          item.screen_id,
-                          item.issue_status,
-                          item.issue_priority,
-                          item.formattedDateEnd,
-                          item.issue_name,
-                          item.issue_des_sa,
-                          item.issue_informer,
-                          item.issue_assign,
-                          item.issue_qc,
-                          item.issue_filename,
-                          item.formattedDateAccepting,
-                          item.issue_manday,
-                          item.formattedDateStart,
-                          item.formattedDateExpected,
-                          item.formattedDateComplete,
-                          item.issue_des_implementer,
-                          item.issue_des_dev,
-                          item.issue_des,
-                          item.issue_customer,
-                          item.issue_doc_id,
-                          item.issue_type_sa,
-                          item.created_at,
-                          item.issue_status_developer,
-                          item.issue_status_implement,
-                          item.issue_round,
-                          item.user_assign_id,
-                          item.user_qc_id
-                        )
-                    "
-                    size="20"
-                    color="primary"
-                  >
-                    mdi-information-outline
-                  </v-icon>
+                <template v-slot:item="{ item, index }">
+                  <tr :class="index % 2 === 0 ? 'row-even' : 'row-odd'">
+                    <td>
+                      {{ item.issue_id }}
+                    </td>
+                    <td>
+                      <v-icon>mdi-format-list-bulleted</v-icon>
+                      {{ item.issue_name }}
+                    </td>
+                    <td>
+                      {{ item.issue_type }}
+                    </td>
+                    <td>{{ item.formattedDateEnd }}</td>
+                    <td>{{ item.issue_status }}</td>
+                    <td>
+                      <v-icon style="color: #ff0000">mdi-flag-outline</v-icon>
+                      {{ item.issue_priority }}
+                    </td>
+                    <td>
+                      <v-icon style="color: black">mdi-account-circle</v-icon>
+                      <span v-if="item.issue_assign == null || item.issue_assign == ''">N/A</span>
+                      {{ item.issue_assign }}
+                    </td>
+                    <td>
+                      {{ item.issue_qc }}
+                      <span v-if="item.issue_qc == null || item.issue_qc == ''">
+                        No assign
+                      </span>
+                    </td>
+                    <td>
+                      <v-icon
+                        class="mr-2"
+                        v-if="
+                          user_position === 'Implementer' &&
+                          user_role !== 'Admin' &&
+                          item.issue_qc !== user_firstname &&
+                          item.issue_informer !== user_firstname
+                        "
+                        :disabled="true"
+                        size="20"
+                        color="primary"
+                      >
+                        mdi-information-outline
+                      </v-icon>
+                      <v-icon
+                        class="mr-2"
+                        v-else-if="
+                          user_position === 'Developer' &&
+                          user_role !== 'Admin' &&
+                          item.issue_assign !== user_firstname
+                        "
+                        :disabled="true"
+                        size="20"
+                        color="primary"
+                      >
+                        mdi-information-outline
+                      </v-icon>
+                      <v-icon
+                        class="mr-2"
+                        v-else
+                        @click="
+                          showIssueDetailDialog(
+                            item.id,
+                            item.issue_id,
+                            item.issue_type,
+                            item.screen_id,
+                            item.issue_status,
+                            item.issue_priority,
+                            item.formattedDateEnd,
+                            item.issue_name,
+                            item.issue_des_sa,
+                            item.issue_informer,
+                            item.issue_assign,
+                            item.issue_qc,
+                            item.issue_filename,
+                            item.formattedDateAccepting,
+                            item.issue_manday,
+                            item.formattedDateStart,
+                            item.formattedDateExpected,
+                            item.formattedDateComplete,
+                            item.issue_des_implementer,
+                            item.issue_des_dev,
+                            item.issue_des,
+                            item.issue_customer,
+                            item.issue_doc_id,
+                            item.issue_type_sa,
+                            item.created_at,
+                            item.issue_status_developer,
+                            item.issue_status_implement,
+                            item.issue_round,
+                            item.user_assign_id,
+                            item.user_qc_id
+                          )
+                        "
+                        size="20"
+                        color="primary"
+                      >
+                        mdi-information-outline
+                      </v-icon>
+                    </td>
+                  </tr>
                 </template>
               </v-data-table>
 
@@ -379,6 +431,7 @@
                 sort-by="calories"
                 class="v-data-table elevation-1"
                 v-remove-row-borders
+                :style="{ 'background-color': tableColor }"
               >
                 <template v-slot:top>
                   <v-toolbar flat>
@@ -400,66 +453,107 @@
                     ></v-text-field>
                   </v-toolbar>
                 </template>
-                <template v-slot:[`item.issue_name`]="{ item }">
-                  <v-icon>mdi-format-list-bulleted</v-icon>
-                  {{ item.issue_name }}
-                </template>
-                <template v-slot:[`item.issue_type`]="{ item }">
-                  {{ item.issue_type }}
-                </template>
-                <template v-slot:[`item.issue_status`]="{ item }">
-                  <!-- <v-icon style="color: #1cff17">mdi-circle</v-icon> -->
-                  {{ item.issue_status }}
-                </template>
-                <template v-slot:[`item.issue_Priotity`]="{ item }">
-                  <v-icon style="color: #ff0000">mdi-flag-outline</v-icon>
-                  {{ item.issue_Priotity }}
-                </template>
-                <template #item.issue_assign="{ value }"> No assign </template>
-                <template v-slot:item.actions="{ item }">
-                  <v-icon
-                    class="mr-2"
-                    @click="
-                      (history = false),
-                        (no_assign = true),
-                        showIssueDetailDialog(
-                          item.id,
-                          item.issue_id,
-                          item.issue_type,
-                          item.screen_id,
-                          item.issue_status,
-                          item.issue_priority,
-                          item.formattedDateEnd,
-                          item.issue_name,
-                          item.issue_des_sa,
-                          item.issue_informer,
-                          item.issue_assign,
-                          item.issue_qc,
-                          item.issue_filename,
-                          item.formattedDateAccepting,
-                          item.issue_manday,
-                          item.formattedDateStart,
-                          item.formattedDateExpected,
-                          item.formattedDateComplete,
-                          item.issue_des_implementer,
-                          item.issue_des_dev,
-                          item.issue_des,
-                          item.issue_customer,
-                          item.issue_doc_id,
-                          item.issue_type_sa,
-                          item.created_at,
-                          item.issue_status_developer,
-                          item.issue_status_implement,
-                          item.issue_round,
-                          item.user_assign_id,
-                          item.user_qc_id
-                        )
-                    "
-                    size="20"
-                    color="primary"
-                  >
-                    mdi-information-outline
-                  </v-icon>
+                <template v-slot:item="{ item, index }">
+                  <tr :class="index % 2 === 0 ? 'row-even' : 'row-odd'">
+                    <td>
+                      {{ item.issue_id }}
+                    </td>
+                    <td>
+                      <v-icon>mdi-format-list-bulleted</v-icon>
+                      {{ item.issue_name }}
+                    </td>
+                    <td>
+                      {{ item.issue_type }}
+                    </td>
+                    <td>{{ item.formattedDateEnd }}</td>
+                    <td>{{ item.issue_status }}</td>
+                    <td>
+                      <v-icon style="color: #ff0000">mdi-flag-outline</v-icon>
+                      {{ item.issue_priority }}
+                    </td>
+                    <td>
+                      <v-icon style="color: black">mdi-account-circle</v-icon>
+                      <span v-if="item.issue_assign == null || item.issue_assign == ''">N/A</span>
+                      {{ item.issue_assign }}
+                    </td>
+                    <td>
+                      {{ item.issue_qc }}
+                      <span v-if="item.issue_qc == null || item.issue_qc == ''">
+                        No assign
+                      </span>
+                    </td>
+                    <td>
+                      <v-icon
+                        class="mr-2"
+                        v-if="
+                          user_position === 'Implementer' &&
+                          user_role !== 'Admin' &&
+                          item.issue_qc !== user_firstname &&
+                          item.issue_informer !== user_firstname
+                        "
+                        :disabled="true"
+                        size="20"
+                        color="primary"
+                      >
+                        mdi-information-outline
+                      </v-icon>
+                      <v-icon
+                        class="mr-2"
+                        v-else-if="
+                          user_position === 'Developer' &&
+                          user_role !== 'Admin' &&
+                          item.issue_assign !== user_firstname
+                        "
+                        :disabled="true"
+                        size="20"
+                        color="primary"
+                      >
+                        mdi-information-outline
+                      </v-icon>
+                      <v-icon
+                        class="mr-2"
+                        v-else
+                        @click="
+                          showIssueDetailDialog(
+                            item.id,
+                            item.issue_id,
+                            item.issue_type,
+                            item.screen_id,
+                            item.issue_status,
+                            item.issue_priority,
+                            item.formattedDateEnd,
+                            item.issue_name,
+                            item.issue_des_sa,
+                            item.issue_informer,
+                            item.issue_assign,
+                            item.issue_qc,
+                            item.issue_filename,
+                            item.formattedDateAccepting,
+                            item.issue_manday,
+                            item.formattedDateStart,
+                            item.formattedDateExpected,
+                            item.formattedDateComplete,
+                            item.issue_des_implementer,
+                            item.issue_des_dev,
+                            item.issue_des,
+                            item.issue_customer,
+                            item.issue_doc_id,
+                            item.issue_type_sa,
+                            item.created_at,
+                            item.issue_status_developer,
+                            item.issue_status_implement,
+                            item.issue_round,
+                            item.user_assign_id,
+                            item.user_qc_id
+                          )
+                        "
+                        size="20"
+                        color="primary"
+                      >
+                        mdi-information-outline
+                      </v-icon>
+                    </td>
+                  </tr>
                 </template>
               </v-data-table>
             </v-tab-item>
@@ -472,6 +566,7 @@
                 sort-by="calories"
                 class="v-data-table elevation-1 mb-2"
                 v-remove-row-borders
+                :style="{ 'background-color': tableColor }"
               >
                 <template v-slot:top>
                   <v-toolbar flat>
@@ -493,112 +588,107 @@
                     ></v-text-field>
                   </v-toolbar>
                 </template>
-                <template v-slot:[`item.issue_name`]="{ item }">
-                  <v-icon>mdi-format-list-bulleted</v-icon>
-                  {{ item.issue_name }} /{{ item.issue_id }}
-                </template>
-                <template v-slot:[`item.formattedDateEnd`]="{ item }">
-                  {{ item.formattedDateEnd }}
-                </template>
-                <template v-slot:[`item.issue_status`]="{ item }">
-                  <!-- <v-icon
-                    v-if="item.issue_status == 'active'"
-                    style="color: #1cff17"
-                    >mdi-circle</v-icon
-                  > -->
-                  <!-- <v-icon
-                    v-if="item.issue_status == 'open'"
-                    style="color: gainsboro"
-                    >mdi-circle</v-icon
-                  > -->
-                  {{ item.issue_status }}
-                </template>
-                <template v-slot:[`item.issue_priotity`]="{ item }">
-                  <v-icon style="color: #ff0000">mdi-flag-outline</v-icon>
-                </template>
-                <template v-slot:[`item.issue_assignees`]>
-                  <v-icon style="color: black">mdi-account-circle</v-icon>
-                  <!-- {{ item.issue_assignees }} -->
-                  <p v-show="item.issue_assign == ''">N/A</p>
-                </template>
-                <template v-slot:[`item.issue_qc`]="{ item }">
-                  {{ item.issue_qc }}
-                  <p v-show="item.issue_qc == null || item.issue_qc == ''">
-                    No assign
-                  </p>
-                </template>
-                <template v-slot:[`item.actions`]="{ item }">
-                  <v-icon
-                    class="mr-2"
-                    v-if="
-                      user_position === 'Implementer' &&
-                      user_role !== 'Admin' &&
-                      item.issue_qc !== user_firstname &&
-                      item.issue_informer !== user_firstname
-                    "
-                    :disabled="true"
-                    size="20"
-                    color="primary"
-                  >
-                    mdi-information-outline
-                  </v-icon>
-                  <v-icon
-                    class="mr-2"
-                    v-else-if="
-                      user_position === 'Developer' &&
-                      user_role !== 'Admin' &&
-                      item.issue_assign !== user_firstname
-                    "
-                    :disabled="true"
-                    size="20"
-                    color="primary"
-                  >
-                    mdi-information-outline
-                  </v-icon>
-                  <v-icon
-                    class="mr-2"
-                    v-else
-                    @click="
-                      (history = false),
-                        (no_assign = false),
-                        showIssueDetailDialog(
-                          item.id,
-                          item.issue_id,
-                          item.issue_type,
-                          item.screen_id,
-                          item.issue_status,
-                          item.issue_priority,
-                          item.formattedDateEnd,
-                          item.issue_name,
-                          item.issue_des_sa,
-                          item.issue_informer,
-                          item.issue_assign,
-                          item.issue_qc,
-                          item.issue_filename,
-                          item.formattedDateAccepting,
-                          item.issue_manday,
-                          item.formattedDateStart,
-                          item.formattedDateExpected,
-                          item.formattedDateComplete,
-                          item.issue_des_implementer,
-                          item.issue_des_dev,
-                          item.issue_des,
-                          item.issue_customer,
-                          item.issue_doc_id,
-                          item.issue_type_sa,
-                          item.created_at,
-                          item.issue_status_developer,
-                          item.issue_status_implement,
-                          item.issue_round,
-                          item.user_assign_id,
-                          item.user_qc_id
-                        )
-                    "
-                    size="20"
-                    color="primary"
-                  >
-                    mdi-information-outline
-                  </v-icon>
+                <template v-slot:item="{ item, index }">
+                  <tr :class="index % 2 === 0 ? 'row-even' : 'row-odd'">
+                    <td>
+                      {{ item.issue_id }}
+                    </td>
+                    <td>
+                      <v-icon>mdi-format-list-bulleted</v-icon>
+                      {{ item.issue_name }}
+                    </td>
+                    <td>
+                      {{ item.issue_type }}
+                    </td>
+                    <td>{{ item.formattedDateEnd }}</td>
+                    <td>{{ item.issue_status }}</td>
+                    <td>
+                      <v-icon style="color: #ff0000">mdi-flag-outline</v-icon>
+                      {{ item.issue_priority }}
+                    </td>
+                    <td>
+                      <v-icon style="color: black">mdi-account-circle</v-icon>
+                      <span v-if="item.issue_assign == null || item.issue_assign == ''">N/A</span>
+                      {{ item.issue_assign }}
+                    </td>
+                    <td>
+                      {{ item.issue_qc }}
+                      <span v-if="item.issue_qc == null || item.issue_qc == ''">
+                        No assign
+                      </span>
+                    </td>
+                    <td>
+                      <v-icon
+                        class="mr-2"
+                        v-if="
+                          user_position === 'Implementer' &&
+                          user_role !== 'Admin' &&
+                          item.issue_qc !== user_firstname &&
+                          item.issue_informer !== user_firstname
+                        "
+                        :disabled="true"
+                        size="20"
+                        color="primary"
+                      >
+                        mdi-information-outline
+                      </v-icon>
+                      <v-icon
+                        class="mr-2"
+                        v-else-if="
+                          user_position === 'Developer' &&
+                          user_role !== 'Admin' &&
+                          item.issue_assign !== user_firstname
+                        "
+                        :disabled="true"
+                        size="20"
+                        color="primary"
+                      >
+                        mdi-information-outline
+                      </v-icon>
+                      <v-icon
+                        class="mr-2"
+                        v-else
+                        @click="
+                          showIssueDetailDialog(
+                            item.id,
+                            item.issue_id,
+                            item.issue_type,
+                            item.screen_id,
+                            item.issue_status,
+                            item.issue_priority,
+                            item.formattedDateEnd,
+                            item.issue_name,
+                            item.issue_des_sa,
+                            item.issue_informer,
+                            item.issue_assign,
+                            item.issue_qc,
+                            item.issue_filename,
+                            item.formattedDateAccepting,
+                            item.issue_manday,
+                            item.formattedDateStart,
+                            item.formattedDateExpected,
+                            item.formattedDateComplete,
+                            item.issue_des_implementer,
+                            item.issue_des_dev,
+                            item.issue_des,
+                            item.issue_customer,
+                            item.issue_doc_id,
+                            item.issue_type_sa,
+                            item.created_at,
+                            item.issue_status_developer,
+                            item.issue_status_implement,
+                            item.issue_round,
+                            item.user_assign_id,
+                            item.user_qc_id
+                          )
+                        "
+                        size="20"
+                        color="primary"
+                      >
+                        mdi-information-outline
+                      </v-icon>
+                    </td>
+                  </tr>
                 </template>
               </v-data-table>
               <!-- *Table 2 unassignedIssues-->
@@ -608,6 +698,7 @@
                 sort-by="calories"
                 class="v-data-table elevation-1"
                 v-remove-row-borders
+                :style="{ 'background-color': tableColor }"
               >
                 <template v-slot:top>
                   <v-toolbar flat>
@@ -629,66 +720,107 @@
                     ></v-text-field>
                   </v-toolbar>
                 </template>
-                <template v-slot:[`item.issue_name`]="{ item }">
-                  <v-icon>mdi-format-list-bulleted</v-icon>
-                  {{ item.issue_name }}
-                </template>
-                <template v-slot:[`item.issue_type`]="{ item }">
-                  {{ item.issue_type }}
-                </template>
-                <template v-slot:[`item.issue_status`]="{ item }">
-                  <!-- <v-icon style="color: #1cff17">mdi-circle</v-icon> -->
-                  {{ item.issue_status }}
-                </template>
-                <template v-slot:[`item.issue_Priotity`]="{ item }">
-                  <v-icon style="color: #ff0000">mdi-flag-outline</v-icon>
-                  {{ item.issue_Priotity }}
-                </template>
-                <template #item.issue_assign="{ value }"> No assign </template>
-                <template v-slot:item.actions="{ item }">
-                  <v-icon
-                    class="mr-2"
-                    @click="
-                      (history = false),
-                        (no_assign = true),
-                        showIssueDetailDialog(
-                          item.id,
-                          item.issue_id,
-                          item.issue_type,
-                          item.screen_id,
-                          item.issue_status,
-                          item.issue_priority,
-                          item.formattedDateEnd,
-                          item.issue_name,
-                          item.issue_des_sa,
-                          item.issue_informer,
-                          item.issue_assign,
-                          item.issue_qc,
-                          item.issue_filename,
-                          item.formattedDateAccepting,
-                          item.issue_manday,
-                          item.formattedDateStart,
-                          item.formattedDateExpected,
-                          item.formattedDateComplete,
-                          item.issue_des_implementer,
-                          item.issue_des_dev,
-                          item.issue_des,
-                          item.issue_customer,
-                          item.issue_doc_id,
-                          item.issue_type_sa,
-                          item.created_at,
-                          item.issue_status_developer,
-                          item.issue_status_implement,
-                          item.issue_round,
-                          item.user_assign_id,
-                          item.user_qc_id
-                        )
-                    "
-                    size="20"
-                    color="primary"
-                  >
-                    mdi-information-outline
-                  </v-icon>
+                <template v-slot:item="{ item, index }">
+                  <tr :class="index % 2 === 0 ? 'row-even' : 'row-odd'">
+                    <td>
+                      {{ item.issue_id }}
+                    </td>
+                    <td>
+                      <v-icon>mdi-format-list-bulleted</v-icon>
+                      {{ item.issue_name }}
+                    </td>
+                    <td>
+                      {{ item.issue_type }}
+                    </td>
+                    <td>{{ item.formattedDateEnd }}</td>
+                    <td>{{ item.issue_status }}</td>
+                    <td>
+                      <v-icon style="color: #ff0000">mdi-flag-outline</v-icon>
+                      {{ item.issue_priority }}
+                    </td>
+                    <td>
+                      <v-icon style="color: black">mdi-account-circle</v-icon>
+                      <span v-if="item.issue_assign == null || item.issue_assign == ''">N/A</span>
+                      {{ item.issue_assign }}
+                    </td>
+                    <td>
+                      {{ item.issue_qc }}
+                      <span v-if="item.issue_qc == null || item.issue_qc == ''">
+                        No assign
+                      </span>
+                    </td>
+                    <td>
+                      <v-icon
+                        class="mr-2"
+                        v-if="
+                          user_position === 'Implementer' &&
+                          user_role !== 'Admin' &&
+                          item.issue_qc !== user_firstname &&
+                          item.issue_informer !== user_firstname
+                        "
+                        :disabled="true"
+                        size="20"
+                        color="primary"
+                      >
+                        mdi-information-outline
+                      </v-icon>
+                      <v-icon
+                        class="mr-2"
+                        v-else-if="
+                          user_position === 'Developer' &&
+                          user_role !== 'Admin' &&
+                          item.issue_assign !== user_firstname
+                        "
+                        :disabled="true"
+                        size="20"
+                        color="primary"
+                      >
+                        mdi-information-outline
+                      </v-icon>
+                      <v-icon
+                        class="mr-2"
+                        v-else
+                        @click="
+                          showIssueDetailDialog(
+                            item.id,
+                            item.issue_id,
+                            item.issue_type,
+                            item.screen_id,
+                            item.issue_status,
+                            item.issue_priority,
+                            item.formattedDateEnd,
+                            item.issue_name,
+                            item.issue_des_sa,
+                            item.issue_informer,
+                            item.issue_assign,
+                            item.issue_qc,
+                            item.issue_filename,
+                            item.formattedDateAccepting,
+                            item.issue_manday,
+                            item.formattedDateStart,
+                            item.formattedDateExpected,
+                            item.formattedDateComplete,
+                            item.issue_des_implementer,
+                            item.issue_des_dev,
+                            item.issue_des,
+                            item.issue_customer,
+                            item.issue_doc_id,
+                            item.issue_type_sa,
+                            item.created_at,
+                            item.issue_status_developer,
+                            item.issue_status_implement,
+                            item.issue_round,
+                            item.user_assign_id,
+                            item.user_qc_id
+                          )
+                        "
+                        size="20"
+                        color="primary"
+                      >
+                        mdi-information-outline
+                      </v-icon>
+                    </td>
+                  </tr>
                 </template>
               </v-data-table>
             </v-tab-item>
@@ -701,6 +833,7 @@
                 sort-by="calories"
                 class="v-data-table elevation-1 mb-2"
                 v-remove-row-borders
+                :style="{ 'background-color': tableColor }"
               >
                 <template v-slot:top>
                   <v-toolbar flat>
@@ -722,111 +855,107 @@
                     ></v-text-field>
                   </v-toolbar>
                 </template>
-                <template v-slot:[`item.issue_name`]="{ item }">
-                  <v-icon>mdi-format-list-bulleted</v-icon>
-                  {{ item.issue_name }} /{{ item.issue_id }}
-                </template>
-                <template v-slot:[`item.formattedDateEnd`]="{ item }">
-                  {{ item.formattedDateEnd }}
-                </template>
-                <template v-slot:[`item.issue_status`]="{ item }">
-                  <!-- <v-icon
-                    v-if="item.issue_status == 'active'"
-                    style="color: #1cff17"
-                    >mdi-circle</v-icon
-                  > -->
-                  <!-- <v-icon
-                    v-if="item.issue_status == 'open'"
-                    style="color: gainsboro"
-                    >mdi-circle</v-icon
-                  > -->
-                  {{ item.issue_status }}
-                </template>
-                <template v-slot:[`item.issue_priotity`]="{ item }">
-                  <v-icon style="color: #ff0000">mdi-flag-outline</v-icon>
-                </template>
-                <template v-slot:[`item.issue_assignees`]>
-                  <v-icon style="color: black">mdi-account-circle</v-icon>
-                  <!-- {{ item.issue_assignees }} -->
-                  <p v-show="item.issue_assign == ''">N/A</p>
-                </template>
-                <template v-slot:[`item.issue_qc`]="{ item }">
-                  {{ item.issue_qc }}
-                  <p v-show="item.issue_qc == null || item.issue_qc == ''">
-                    No assign
-                  </p>
-                </template>
-                <template v-slot:[`item.actions`]="{ item }">
-                  <v-icon
-                    class="mr-2"
-                    v-if="
-                      user_position === 'Implementer' &&
-                      user_role !== 'Admin' &&
-                      item.issue_qc !== user_firstname &&
-                      item.issue_informer !== user_firstname
-                    "
-                    :disabled="true"
-                    size="20"
-                    color="primary"
-                  >
-                    mdi-information-outline
-                  </v-icon>
-                  <v-icon
-                    class="mr-2"
-                    v-else-if="
-                      user_position === 'Developer' &&
-                      user_role !== 'Admin' &&
-                      item.issue_assign !== user_firstname
-                    "
-                    :disabled="true"
-                    size="20"
-                    color="primary"
-                  >
-                    mdi-information-outline
-                  </v-icon>
-                  <v-icon
-                    class="mr-2"
-                    v-else
-                    @click="
-                      (history = false), (no_assign = false);
-                      showIssueDetailDialog(
-                        item.id,
-                        item.issue_id,
-                        item.issue_type,
-                        item.screen_id,
-                        item.issue_status,
-                        item.issue_priority,
-                        item.formattedDateEnd,
-                        item.issue_name,
-                        item.issue_des_sa,
-                        item.issue_informer,
-                        item.issue_assign,
-                        item.issue_qc,
-                        item.issue_filename,
-                        item.formattedDateAccepting,
-                        item.issue_manday,
-                        item.formattedDateStart,
-                        item.formattedDateExpected,
-                        item.formattedDateComplete,
-                        item.issue_des_implementer,
-                        item.issue_des_dev,
-                        item.issue_des,
-                        item.issue_customer,
-                        item.issue_doc_id,
-                        item.issue_type_sa,
-                        item.created_at,
-                        item.issue_status_developer,
-                        item.issue_status_implement,
-                        item.issue_round,
-                        item.user_assign_id,
-                        item.user_qc_id
-                      );
-                    "
-                    size="20"
-                    color="primary"
-                  >
-                    mdi-information-outline
-                  </v-icon>
+                <template v-slot:item="{ item, index }">
+                  <tr :class="index % 2 === 0 ? 'row-even' : 'row-odd'">
+                    <td>
+                      {{ item.issue_id }}
+                    </td>
+                    <td>
+                      <v-icon>mdi-format-list-bulleted</v-icon>
+                      {{ item.issue_name }}
+                    </td>
+                    <td>
+                      {{ item.issue_type }}
+                    </td>
+                    <td>{{ item.formattedDateEnd }}</td>
+                    <td>{{ item.issue_status }}</td>
+                    <td>
+                      <v-icon style="color: #ff0000">mdi-flag-outline</v-icon>
+                      {{ item.issue_priority }}
+                    </td>
+                    <td>
+                      <v-icon style="color: black">mdi-account-circle</v-icon>
+                      <span v-if="item.issue_assign == null || item.issue_assign == ''">N/A</span>
+                      {{ item.issue_assign }}
+                    </td>
+                    <td>
+                      {{ item.issue_qc }}
+                      <span v-if="item.issue_qc == null || item.issue_qc == ''">
+                        No assign
+                      </span>
+                    </td>
+                    <td>
+                      <v-icon
+                        class="mr-2"
+                        v-if="
+                          user_position === 'Implementer' &&
+                          user_role !== 'Admin' &&
+                          item.issue_qc !== user_firstname &&
+                          item.issue_informer !== user_firstname
+                        "
+                        :disabled="true"
+                        size="20"
+                        color="primary"
+                      >
+                        mdi-information-outline
+                      </v-icon>
+                      <v-icon
+                        class="mr-2"
+                        v-else-if="
+                          user_position === 'Developer' &&
+                          user_role !== 'Admin' &&
+                          item.issue_assign !== user_firstname
+                        "
+                        :disabled="true"
+                        size="20"
+                        color="primary"
+                      >
+                        mdi-information-outline
+                      </v-icon>
+                      <v-icon
+                        class="mr-2"
+                        v-else
+                        @click="
+                          showIssueDetailDialog(
+                            item.id,
+                            item.issue_id,
+                            item.issue_type,
+                            item.screen_id,
+                            item.issue_status,
+                            item.issue_priority,
+                            item.formattedDateEnd,
+                            item.issue_name,
+                            item.issue_des_sa,
+                            item.issue_informer,
+                            item.issue_assign,
+                            item.issue_qc,
+                            item.issue_filename,
+                            item.formattedDateAccepting,
+                            item.issue_manday,
+                            item.formattedDateStart,
+                            item.formattedDateExpected,
+                            item.formattedDateComplete,
+                            item.issue_des_implementer,
+                            item.issue_des_dev,
+                            item.issue_des,
+                            item.issue_customer,
+                            item.issue_doc_id,
+                            item.issue_type_sa,
+                            item.created_at,
+                            item.issue_status_developer,
+                            item.issue_status_implement,
+                            item.issue_round,
+                            item.user_assign_id,
+                            item.user_qc_id
+                          )
+                        "
+                        size="20"
+                        color="primary"
+                      >
+                        mdi-information-outline
+                      </v-icon>
+                    </td>
+                  </tr>
                 </template>
               </v-data-table>
               <!-- *Table 2 unassignedIssues-->
@@ -836,6 +965,7 @@
                 sort-by="calories"
                 class="v-data-table elevation-1"
                 v-remove-row-borders
+                :style="{ 'background-color': tableColor }"
               >
                 <template v-slot:top>
                   <v-toolbar flat>
@@ -857,66 +987,107 @@
                     ></v-text-field>
                   </v-toolbar>
                 </template>
-                <template v-slot:[`item.issue_name`]="{ item }">
-                  <v-icon>mdi-format-list-bulleted</v-icon>
-                  {{ item.issue_name }}
-                </template>
-                <template v-slot:[`item.issue_type`]="{ item }">
-                  {{ item.issue_type }}
-                </template>
-                <template v-slot:[`item.issue_status`]="{ item }">
-                  <!-- <v-icon style="color: #1cff17">mdi-circle</v-icon> -->
-                  {{ item.issue_status }}
-                </template>
-                <template v-slot:[`item.issue_Priotity`]="{ item }">
-                  <v-icon style="color: #ff0000">mdi-flag-outline</v-icon>
-                  {{ item.issue_Priotity }}
-                </template>
-                <template #item.issue_assign="{ value }"> No assign </template>
-                <template v-slot:item.actions="{ item }">
-                  <v-icon
-                    class="mr-2"
-                    @click="
-                      history = false;
-                      (no_assign = true),
-                        showIssueDetailDialog(
-                          item.id,
-                          item.issue_id,
-                          item.issue_type,
-                          item.screen_id,
-                          item.issue_status,
-                          item.issue_priority,
-                          item.formattedDateEnd,
-                          item.issue_name,
-                          item.issue_des_sa,
-                          item.issue_informer,
-                          item.issue_assign,
-                          item.issue_qc,
-                          item.issue_filename,
-                          item.formattedDateAccepting,
-                          item.issue_manday,
-                          item.formattedDateStart,
-                          item.formattedDateExpected,
-                          item.formattedDateComplete,
-                          item.issue_des_implementer,
-                          item.issue_des_dev,
-                          item.issue_des,
-                          item.issue_customer,
-                          item.issue_doc_id,
-                          item.issue_type_sa,
-                          item.created_at,
-                          item.issue_status_developer,
-                          item.issue_status_implement,
-                          item.issue_round,
-                          item.user_assign_id,
-                          item.user_qc_id
-                        );
-                    "
-                    size="20"
-                    color="primary"
-                  >
-                    mdi-information-outline
-                  </v-icon>
+                <template v-slot:item="{ item, index }">
+                  <tr :class="index % 2 === 0 ? 'row-even' : 'row-odd'">
+                    <td>
+                      {{ item.issue_id }}
+                    </td>
+                    <td>
+                      <v-icon>mdi-format-list-bulleted</v-icon>
+                      {{ item.issue_name }}
+                    </td>
+                    <td>
+                      {{ item.issue_type }}
+                    </td>
+                    <td>{{ item.formattedDateEnd }}</td>
+                    <td>{{ item.issue_status }}</td>
+                    <td>
+                      <v-icon style="color: #ff0000">mdi-flag-outline</v-icon>
+                      {{ item.issue_priority }}
+                    </td>
+                    <td>
+                      <v-icon style="color: black">mdi-account-circle</v-icon>
+                      <span v-if="item.issue_assign == null || item.issue_assign == ''">N/A</span>
+                      {{ item.issue_assign }}
+                    </td>
+                    <td>
+                      {{ item.issue_qc }}
+                      <span v-if="item.issue_qc == null || item.issue_qc == ''">
+                        No assign
+                      </span>
+                    </td>
+                    <td>
+                      <v-icon
+                        class="mr-2"
+                        v-if="
+                          user_position === 'Implementer' &&
+                          user_role !== 'Admin' &&
+                          item.issue_qc !== user_firstname &&
+                          item.issue_informer !== user_firstname
+                        "
+                        :disabled="true"
+                        size="20"
+                        color="primary"
+                      >
+                        mdi-information-outline
+                      </v-icon>
+                      <v-icon
+                        class="mr-2"
+                        v-else-if="
+                          user_position === 'Developer' &&
+                          user_role !== 'Admin' &&
+                          item.issue_assign !== user_firstname
+                        "
+                        :disabled="true"
+                        size="20"
+                        color="primary"
+                      >
+                        mdi-information-outline
+                      </v-icon>
+                      <v-icon
+                        class="mr-2"
+                        v-else
+                        @click="
+                          showIssueDetailDialog(
+                            item.id,
+                            item.issue_id,
+                            item.issue_type,
+                            item.screen_id,
+                            item.issue_status,
+                            item.issue_priority,
+                            item.formattedDateEnd,
+                            item.issue_name,
+                            item.issue_des_sa,
+                            item.issue_informer,
+                            item.issue_assign,
+                            item.issue_qc,
+                            item.issue_filename,
+                            item.formattedDateAccepting,
+                            item.issue_manday,
+                            item.formattedDateStart,
+                            item.formattedDateExpected,
+                            item.formattedDateComplete,
+                            item.issue_des_implementer,
+                            item.issue_des_dev,
+                            item.issue_des,
+                            item.issue_customer,
+                            item.issue_doc_id,
+                            item.issue_type_sa,
+                            item.created_at,
+                            item.issue_status_developer,
+                            item.issue_status_implement,
+                            item.issue_round,
+                            item.user_assign_id,
+                            item.user_qc_id
+                          )
+                        "
+                        size="20"
+                        color="primary"
+                      >
+                        mdi-information-outline
+                      </v-icon>
+                    </td>
+                  </tr>
                 </template>
               </v-data-table>
             </v-tab-item>
@@ -929,6 +1100,7 @@
                 sort-by="calories"
                 class="v-data-table elevation-1 mb-2"
                 v-remove-row-borders
+                :style="{ 'background-color': tableColor }"
               >
                 <template v-slot:top>
                   <v-toolbar flat>
@@ -950,112 +1122,107 @@
                     ></v-text-field>
                   </v-toolbar>
                 </template>
-                <template v-slot:[`item.issue_name`]="{ item }">
-                  <v-icon>mdi-format-list-bulleted</v-icon>
-                  {{ item.issue_name }} /{{ item.issue_id }}
-                </template>
-                <template v-slot:[`item.formattedDateEnd`]="{ item }">
-                  {{ item.formattedDateEnd }}
-                </template>
-                <template v-slot:[`item.issue_status`]="{ item }">
-                  <!-- <v-icon
-                    v-if="item.issue_status == 'active'"
-                    style="color: #1cff17"
-                    >mdi-circle</v-icon
-                  > -->
-                  <!-- <v-icon
-                    v-if="item.issue_status == 'open'"
-                    style="color: gainsboro"
-                    >mdi-circle</v-icon
-                  > -->
-                  {{ item.issue_status }}
-                </template>
-                <template v-slot:[`item.issue_priotity`]="{ item }">
-                  <v-icon style="color: #ff0000">mdi-flag-outline</v-icon>
-                </template>
-                <template v-slot:[`item.issue_assignees`]>
-                  <v-icon style="color: black">mdi-account-circle</v-icon>
-                  <!-- {{ item.issue_assignees }} -->
-                  <p v-show="item.issue_assign == ''">N/A</p>
-                </template>
-                <template v-slot:[`item.issue_qc`]="{ item }">
-                  {{ item.issue_qc }}
-                  <p v-show="item.issue_qc == null || item.issue_qc == ''">
-                    No assign
-                  </p>
-                </template>
-                <template v-slot:[`item.actions`]="{ item }">
-                  <v-icon
-                    class="mr-2"
-                    v-if="
-                      user_position === 'Implementer' &&
-                      user_role !== 'Admin' &&
-                      item.issue_qc !== user_firstname &&
-                      item.issue_informer !== user_firstname
-                    "
-                    :disabled="true"
-                    size="20"
-                    color="primary"
-                  >
-                    mdi-information-outline
-                  </v-icon>
-                  <v-icon
-                    class="mr-2"
-                    v-else-if="
-                      user_position === 'Developer' &&
-                      user_role !== 'Admin' &&
-                      item.issue_assign !== user_firstname
-                    "
-                    :disabled="true"
-                    size="20"
-                    color="primary"
-                  >
-                    mdi-information-outline
-                  </v-icon>
-                  <v-icon
-                    class="mr-2"
-                    v-else
-                    @click="
-                      history = false;
-                      no_assign = false;
-                      showIssueDetailDialog(
-                        item.id,
-                        item.issue_id,
-                        item.issue_type,
-                        item.screen_id,
-                        item.issue_status,
-                        item.issue_priority,
-                        item.formattedDateEnd,
-                        item.issue_name,
-                        item.issue_des_sa,
-                        item.issue_informer,
-                        item.issue_assign,
-                        item.issue_qc,
-                        item.issue_filename,
-                        item.formattedDateAccepting,
-                        item.issue_manday,
-                        item.formattedDateStart,
-                        item.formattedDateExpected,
-                        item.formattedDateComplete,
-                        item.issue_des_implementer,
-                        item.issue_des_dev,
-                        item.issue_des,
-                        item.issue_customer,
-                        item.issue_doc_id,
-                        item.issue_type_sa,
-                        item.created_at,
-                        item.issue_status_developer,
-                        item.issue_status_implement,
-                        item.issue_round,
-                        item.user_assign_id,
-                        item.user_qc_id
-                      );
-                    "
-                    size="20"
-                    color="primary"
-                  >
-                    mdi-information-outline
-                  </v-icon>
+                <template v-slot:item="{ item, index }">
+                  <tr :class="index % 2 === 0 ? 'row-even' : 'row-odd'">
+                    <td>
+                      {{ item.issue_id }}
+                    </td>
+                    <td>
+                      <v-icon>mdi-format-list-bulleted</v-icon>
+                      {{ item.issue_name }}
+                    </td>
+                    <td>
+                      {{ item.issue_type }}
+                    </td>
+                    <td>{{ item.formattedDateEnd }}</td>
+                    <td>{{ item.issue_status }}</td>
+                    <td>
+                      <v-icon style="color: #ff0000">mdi-flag-outline</v-icon>
+                      {{ item.issue_priority }}
+                    </td>
+                    <td>
+                      <v-icon style="color: black">mdi-account-circle</v-icon>
+                      <span v-if="item.issue_assign == null || item.issue_assign == ''">N/A</span>
+                      {{ item.issue_assign }}
+                    </td>
+                    <td>
+                      {{ item.issue_qc }}
+                      <span v-if="item.issue_qc == null || item.issue_qc == ''">
+                        No assign
+                      </span>
+                    </td>
+                    <td>
+                      <v-icon
+                        class="mr-2"
+                        v-if="
+                          user_position === 'Implementer' &&
+                          user_role !== 'Admin' &&
+                          item.issue_qc !== user_firstname &&
+                          item.issue_informer !== user_firstname
+                        "
+                        :disabled="true"
+                        size="20"
+                        color="primary"
+                      >
+                        mdi-information-outline
+                      </v-icon>
+                      <v-icon
+                        class="mr-2"
+                        v-else-if="
+                          user_position === 'Developer' &&
+                          user_role !== 'Admin' &&
+                          item.issue_assign !== user_firstname
+                        "
+                        :disabled="true"
+                        size="20"
+                        color="primary"
+                      >
+                        mdi-information-outline
+                      </v-icon>
+                      <v-icon
+                        class="mr-2"
+                        v-else
+                        @click="
+                          showIssueDetailDialog(
+                            item.id,
+                            item.issue_id,
+                            item.issue_type,
+                            item.screen_id,
+                            item.issue_status,
+                            item.issue_priority,
+                            item.formattedDateEnd,
+                            item.issue_name,
+                            item.issue_des_sa,
+                            item.issue_informer,
+                            item.issue_assign,
+                            item.issue_qc,
+                            item.issue_filename,
+                            item.formattedDateAccepting,
+                            item.issue_manday,
+                            item.formattedDateStart,
+                            item.formattedDateExpected,
+                            item.formattedDateComplete,
+                            item.issue_des_implementer,
+                            item.issue_des_dev,
+                            item.issue_des,
+                            item.issue_customer,
+                            item.issue_doc_id,
+                            item.issue_type_sa,
+                            item.created_at,
+                            item.issue_status_developer,
+                            item.issue_status_implement,
+                            item.issue_round,
+                            item.user_assign_id,
+                            item.user_qc_id
+                          )
+                        "
+                        size="20"
+                        color="primary"
+                      >
+                        mdi-information-outline
+                      </v-icon>
+                    </td>
+                  </tr>
                 </template>
               </v-data-table>
               <!-- *Table 2 unassignedIssues-->
@@ -1065,6 +1232,7 @@
                 sort-by="calories"
                 class="v-data-table elevation-1"
                 v-remove-row-borders
+                :style="{ 'background-color': tableColor }"
               >
                 <template v-slot:top>
                   <v-toolbar flat>
@@ -1086,66 +1254,107 @@
                     ></v-text-field>
                   </v-toolbar>
                 </template>
-                <template v-slot:[`item.issue_name`]="{ item }">
-                  <v-icon>mdi-format-list-bulleted</v-icon>
-                  {{ item.issue_name }}
-                </template>
-                <template v-slot:[`item.issue_type`]="{ item }">
-                  {{ item.issue_type }}
-                </template>
-                <template v-slot:[`item.issue_status`]="{ item }">
-                  <!-- <v-icon style="color: #1cff17">mdi-circle</v-icon> -->
-                  {{ item.issue_status }}
-                </template>
-                <template v-slot:[`item.issue_Priotity`]="{ item }">
-                  <v-icon style="color: #ff0000">mdi-flag-outline</v-icon>
-                  {{ item.issue_Priotity }}
-                </template>
-                <template #item.issue_assign="{ value }"> No assign </template>
-                <template v-slot:item.actions="{ item }">
-                  <v-icon
-                    class="mr-2"
-                    @click="
-                      history = false;
-                      no_assign = true;
-                      showIssueDetailDialog(
-                        item.id,
-                        item.issue_id,
-                        item.issue_type,
-                        item.screen_id,
-                        item.issue_status,
-                        item.issue_priority,
-                        item.formattedDateEnd,
-                        item.issue_name,
-                        item.issue_des_sa,
-                        item.issue_informer,
-                        item.issue_assign,
-                        item.issue_qc,
-                        item.issue_filename,
-                        item.formattedDateAccepting,
-                        item.issue_manday,
-                        item.formattedDateStart,
-                        item.formattedDateExpected,
-                        item.formattedDateComplete,
-                        item.issue_des_implementer,
-                        item.issue_des_dev,
-                        item.issue_des,
-                        item.issue_customer,
-                        item.issue_doc_id,
-                        item.issue_type_sa,
-                        item.created_at,
-                        item.issue_status_developer,
-                        item.issue_status_implement,
-                        item.issue_round,
-                        item.user_assign_id,
-                        item.user_qc_id
-                      );
-                    "
-                    size="20"
-                    color="primary"
-                  >
-                    mdi-information-outline
-                  </v-icon>
+                <template v-slot:item="{ item, index }">
+                  <tr :class="index % 2 === 0 ? 'row-even' : 'row-odd'">
+                    <td>
+                      {{ item.issue_id }}
+                    </td>
+                    <td>
+                      <v-icon>mdi-format-list-bulleted</v-icon>
+                      {{ item.issue_name }}
+                    </td>
+                    <td>
+                      {{ item.issue_type }}
+                    </td>
+                    <td>{{ item.formattedDateEnd }}</td>
+                    <td>{{ item.issue_status }}</td>
+                    <td>
+                      <v-icon style="color: #ff0000">mdi-flag-outline</v-icon>
+                      {{ item.issue_priority }}
+                    </td>
+                    <td>
+                      <v-icon style="color: black">mdi-account-circle</v-icon>
+                      <span v-if="item.issue_assign == null || item.issue_assign == ''">N/A</span>
+                      {{ item.issue_assign }}
+                    </td>
+                    <td>
+                      {{ item.issue_qc }}
+                      <span v-if="item.issue_qc == null || item.issue_qc == ''">
+                        No assign
+                      </span>
+                    </td>
+                    <td>
+                      <v-icon
+                        class="mr-2"
+                        v-if="
+                          user_position === 'Implementer' &&
+                          user_role !== 'Admin' &&
+                          item.issue_qc !== user_firstname &&
+                          item.issue_informer !== user_firstname
+                        "
+                        :disabled="true"
+                        size="20"
+                        color="primary"
+                      >
+                        mdi-information-outline
+                      </v-icon>
+                      <v-icon
+                        class="mr-2"
+                        v-else-if="
+                          user_position === 'Developer' &&
+                          user_role !== 'Admin' &&
+                          item.issue_assign !== user_firstname
+                        "
+                        :disabled="true"
+                        size="20"
+                        color="primary"
+                      >
+                        mdi-information-outline
+                      </v-icon>
+                      <v-icon
+                        class="mr-2"
+                        v-else
+                        @click="
+                          showIssueDetailDialog(
+                            item.id,
+                            item.issue_id,
+                            item.issue_type,
+                            item.screen_id,
+                            item.issue_status,
+                            item.issue_priority,
+                            item.formattedDateEnd,
+                            item.issue_name,
+                            item.issue_des_sa,
+                            item.issue_informer,
+                            item.issue_assign,
+                            item.issue_qc,
+                            item.issue_filename,
+                            item.formattedDateAccepting,
+                            item.issue_manday,
+                            item.formattedDateStart,
+                            item.formattedDateExpected,
+                            item.formattedDateComplete,
+                            item.issue_des_implementer,
+                            item.issue_des_dev,
+                            item.issue_des,
+                            item.issue_customer,
+                            item.issue_doc_id,
+                            item.issue_type_sa,
+                            item.created_at,
+                            item.issue_status_developer,
+                            item.issue_status_implement,
+                            item.issue_round,
+                            item.user_assign_id,
+                            item.user_qc_id
+                          )
+                        "
+                        size="20"
+                        color="primary"
+                      >
+                        mdi-information-outline
+                      </v-icon>
+                    </td>
+                  </tr>
                 </template>
               </v-data-table>
             </v-tab-item>
@@ -1158,8 +1367,9 @@
                 sort-by="calories"
                 class="v-data-table elevation-1 mb-2"
                 v-remove-row-borders
+                :style="{ 'background-color': tableColor }"
               >
-                <template v-slot:[`item.issue_name`]="{ item }">
+                <!-- <template v-slot:[`item.issue_name`]="{ item }">
                   <v-icon>mdi-format-list-bulleted</v-icon>
                   {{ item.issue_name }} /{{ item.issue_id }}
                 </template>
@@ -1174,7 +1384,7 @@
                 </template>
                 <template v-slot:[`item.issue_assignees`]>
                   <v-icon style="color: black">mdi-account-circle</v-icon>
-                  <!-- {{ item.issue_assignees }} -->
+                   {{ item.issue_assignees }}
                   <p v-show="item.issue_assign == ''">N/A</p>
                 </template>
                 <template v-slot:[`item.issue_qc`]="{ item }">
@@ -1227,7 +1437,113 @@
                   >
                     mdi-information-outline
                   </v-icon>
+                </template> -->
+                <!--  -->
+                <template v-slot:item="{ item, index }">
+                  <tr :class="index % 2 === 0 ? 'row-even' : 'row-odd'">
+                    <td>
+                      {{ item.issue_id }}
+                    </td>
+                    <td>
+                      <v-icon>mdi-format-list-bulleted</v-icon>
+                      {{ item.issue_name }}
+                    </td>
+                    <td>
+                      {{ item.issue_type }}
+                    </td>
+                    <td>{{ item.formattedDateEnd }}</td>
+                    <td>{{ item.issue_status }}</td>
+                    <td>
+                      <v-icon style="color: #ff0000">mdi-flag-outline</v-icon>
+                      {{ item.issue_priority }}
+                    </td>
+                    <td>
+                      <v-icon style="color: black">mdi-account-circle</v-icon>
+                      <span v-if="item.issue_assign == null || item.issue_assign == ''">N/A</span>
+                      {{ item.issue_assign }}
+                    </td>
+                    <td>
+                      {{ item.issue_qc }}
+                      <span v-if="item.issue_qc == null || item.issue_qc == ''">
+                        No assign
+                      </span>
+                    </td>
+                    <td>
+                      <v-icon
+                        class="mr-2"
+                        v-if="
+                          user_position === 'Implementer' &&
+                          user_role !== 'Admin' &&
+                          item.issue_qc !== user_firstname &&
+                          item.issue_informer !== user_firstname
+                        "
+                        :disabled="true"
+                        size="20"
+                        color="primary"
+                      >
+                        mdi-information-outline
+                      </v-icon>
+                      <v-icon
+                        class="mr-2"
+                        v-else-if="
+                          user_position === 'Developer' &&
+                          user_role !== 'Admin' &&
+                          item.issue_assign !== user_firstname
+                        "
+                        :disabled="true"
+                        size="20"
+                        color="primary"
+                      >
+                        mdi-information-outline
+                      </v-icon>
+                      <v-icon
+                        class="mr-2"
+                        v-else
+                        @click="
+                          (history = true),
+                            (no_assign = false),
+                            showIssueDetailDialog(
+                              item.id,
+                              item.issue_id,
+                              item.issue_type,
+                              item.screen_id,
+                              item.issue_status,
+                              item.issue_priority,
+                              item.formattedDateEnd,
+                              item.issue_name,
+                              item.issue_des_sa,
+                              item.issue_informer,
+                              item.issue_assign,
+                              item.issue_qc,
+                              item.issue_filename,
+                              item.formattedDateAccepting,
+                              item.issue_manday,
+                              item.formattedDateStart,
+                              item.formattedDateExpected,
+                              item.formattedDateComplete,
+                              item.issue_des_implementer,
+                              item.issue_des_dev,
+                              item.issue_des,
+                              item.issue_customer,
+                              item.issue_doc_id,
+                              item.issue_type_sa,
+                              item.created_at,
+                              item.issue_status_developer,
+                              item.issue_status_implement,
+                              item.issue_round,
+                              item.user_assign_id,
+                              item.user_qc_id
+                            )
+                        "
+                        size="20"
+                        color="primary"
+                      >
+                        mdi-information-outline
+                      </v-icon>
+                    </td>
+                  </tr>
                 </template>
+                <!--  -->
               </v-data-table>
             </v-tab-item>
           </v-tabs-items>
@@ -1260,6 +1576,11 @@ export default {
   },
   data() {
     return {
+      tab1: true,
+      tab2: false,
+      tab3: false,
+      tab4: false,
+      tab5: false,
       search: "",
       id: this.$route.params.id,
       tab: null,
@@ -1331,7 +1652,7 @@ export default {
           value: "issue_id",
         },
         { text: "ชื่อปัญหา", value: "issue_name" },
-        { text: "ประเทภปัญหา", value: "issue_type" },
+        { text: "ประเภทปัญหา", value: "issue_type" },
         { text: "วันกำหนดส่ง", value: "formattedDateEnd" },
         { text: "สถานะ", value: "issue_status" },
         { text: "ความสำคัญของปัญหา", value: "issue_priority" },
@@ -1360,6 +1681,7 @@ export default {
       user_position: "",
       user_role: "",
       runningNumber: "",
+      tableColor: "#caadf4",
     };
   },
   async created() {
@@ -1979,5 +2301,14 @@ export default {
   align-items: center;
   border: 2px dotted #333;
   padding: 8px 16px;
+}
+
+.row-even {
+  background-color: rgba(233, 203, 243, 0.788);
+  color: black;
+}
+.row-odd {
+  background-color: rgba(247, 229, 191, 0.788);
+  color: black;
 }
 </style>

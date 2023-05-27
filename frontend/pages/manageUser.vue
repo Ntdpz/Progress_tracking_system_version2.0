@@ -2,7 +2,11 @@
   <div class="body">
     <v-row>
       <v-col>
-        <searchbar :search="search" title="จัดการผู้ใช้งานระบบ" @input="performSearch" />
+        <searchbar
+          :search="search"
+          title="จัดการผู้ใช้งานระบบ"
+          @input="performSearch"
+        />
         <!-- <v-spacer></v-spacer>
         <v-text-field
         v-model="search"
@@ -71,7 +75,11 @@
                 <v-tab
                   v-for="item in items"
                   :key="item"
-                  style="font-weight: bold; color: black"
+                  style="
+                    font-weight: bold;
+                    color: black;
+                    background-color: #bb96f1a6;
+                  "
                 >
                   {{ item }}
                 </v-tab>
@@ -84,23 +92,70 @@
                 <v-card flat>
                   <!-- hide-default-footer ซ่อน footer-->
                   <v-data-table
-                    style="text-align: center"
                     :headers="headers"
                     :items="data"
                     :search="search"
                     class="elevation-1"
+                    style="text-align: center; background-color: #caadf4"
                   >
-                    <template v-slot:[`item.id`]="{ index }">
+                    <template v-slot:item="{ item, index }">
+                      <!-- :class="index % 2 === 0 ? 'row-even' : 'row-odd'" -->
+                      <tr >
+                        <td>
+                          {{ index + 1 }}
+                        </td>
+                        <td>
+                          <v-avatar>
+                            <img
+                              :src="getImageUrl(item.user_pic)"
+                              alt="User avatar"
+                              class="mx-auto"
+                              style="width: 35px; height: 35px"
+                            />
+                          </v-avatar>
+                        </td>
+                        <td>
+                          {{ item.user_firstname }}
+                        </td>
+                        <td>
+                          {{ item.user_lastname }}
+                        </td>
+                        <td>
+                          {{ item.user_id }}
+                        </td>
+                        <td>
+                          {{ item.user_position }}
+                        </td>
+                        <td>
+                          {{ item.user_department }}
+                        </td>
+                        <td>
+                          <v-icon
+                            v-if="item.user_status == 'Active'"
+                            color="success"
+                            >mdi-circle</v-icon
+                          >
+                          <v-icon v-else color="error">mdi-circle</v-icon>
+                          {{ item.user_status }}
+                        </td>
+                        <td>
+                          {{ item.user_role }}
+                        </td>
+                        <td>
+                          <v-btn
+                            @click="(dialog_manage = true), editItem(item)"
+                            color="primary"
+                            style="color: white; border-radius: 20px"
+                          >
+                            {{ manage }}
+                          </v-btn>
+                        </td>
+                      </tr>
+                    </template>
+
+                    <!-- <template v-slot:[`item.id`]="{ index }">
                       {{ index + 1 }}
                     </template>
-                    <!-- <template v-slot:[`item.user_pic`]="{ index }">
-                      <v-avatar>
-                        <img
-                          :src="`/uploads/${item.user_pic}`"
-                          alt="User avatar"
-                        />
-                      </v-avatar>
-                    </template> -->
                     <template v-slot:[`item.name`]="{ item }">
                       {{ item.user_firstname }}
                     </template>
@@ -120,15 +175,6 @@
                       {{ item.user_role }}
                     </template>
                     <template v-slot:[`item.photo`]="{ item }">
-                      <!-- <div v-for="(info, i) in data" :key="i">
-                        <v-avatar
-                          v-if="item.id == imageALL[i].id"
-                          class="mx-auto"
-                          style="width: 35px; height: 35px"
-                        >
-                          <img :src="getImageUrl(imageALL[i].fileName)" />
-                        </v-avatar>
-                      </div> -->
                       <v-avatar>
                         <img
                           :src="getImageUrl(item.user_pic)"
@@ -148,7 +194,7 @@
                       <v-icon v-else color="error">mdi-circle</v-icon>
                       {{ item.user_status }}
                     </template>
-                    <!-- ปุ่ม Manage -->
+                    -- ปุ่ม Manage --
                     <template
                       v-if="check_role == 'Admin'"
                       v-slot:[`item.actions`]="{ item }"
@@ -165,7 +211,7 @@
                       <v-btn style="color: white; border-radius: 20px" disabled>
                         Admin Only
                       </v-btn>
-                    </template>
+                    </template> -->
                     <!--  -->
                     <template v-slot:no-data>
                       <v-col>No Data</v-col>
@@ -183,71 +229,66 @@
                 <v-card flat>
                   <!-- hide-default-footer ซ่อน footer-->
                   <v-data-table
-                    style="text-align: center"
                     :headers="headers"
-                    :items="data_position_Developer"
+                    :items="data_position_Developer "
                     :search="search"
                     class="elevation-1"
+                    style="text-align: center; background-color: #caadf4"
                   >
-                    <template v-slot:[`item.id`]="{ index }">
-                      {{ index + 1 }}
+                    <template v-slot:item="{ item, index }">
+                      <!-- :class="index % 2 === 0 ? 'row-even' : 'row-odd'" -->
+                      <tr >
+                        <td>
+                          {{ index + 1 }}
+                        </td>
+                        <td>
+                          <v-avatar>
+                            <img
+                              :src="getImageUrl(item.user_pic)"
+                              alt="User avatar"
+                              class="mx-auto"
+                              style="width: 35px; height: 35px"
+                            />
+                          </v-avatar>
+                        </td>
+                        <td>
+                          {{ item.user_firstname }}
+                        </td>
+                        <td>
+                          {{ item.user_lastname }}
+                        </td>
+                        <td>
+                          {{ item.user_id }}
+                        </td>
+                        <td>
+                          {{ item.user_position }}
+                        </td>
+                        <td>
+                          {{ item.user_department }}
+                        </td>
+                        <td>
+                          <v-icon
+                            v-if="item.user_status == 'Active'"
+                            color="success"
+                            >mdi-circle</v-icon
+                          >
+                          <v-icon v-else color="error">mdi-circle</v-icon>
+                          {{ item.user_status }}
+                        </td>
+                        <td>
+                          {{ item.user_role }}
+                        </td>
+                        <td>
+                          <v-btn
+                            @click="(dialog_manage = true), editItem(item)"
+                            color="primary"
+                            style="color: white; border-radius: 20px"
+                          >
+                            {{ manage }}
+                          </v-btn>
+                        </td>
+                      </tr>
                     </template>
-                    <template v-slot:[`item.name`]="{ item }">
-                      {{ item.user_firstname }}
-                    </template>
-                    <template v-slot:[`item.lastname`]="{ item }">
-                      {{ item.user_lastname }}
-                    </template>
-                    <template v-slot:[`item.code`]="{ item }">
-                      {{ item.user_id }}
-                    </template>
-                    <template v-slot:[`item.position`]="{ item }">
-                      {{ item.user_position }}
-                    </template>
-                    <template v-slot:[`item.department`]="{ item }">
-                      {{ item.user_department }}
-                    </template>
-                    <template v-slot:[`item.role`]="{ item }">
-                      {{ item.user_role }}
-                    </template>
-                    <template v-slot:[`item.photo`]="{ item }">
-                      <v-avatar>
-                        <img
-                          :src="getImageUrl(item.user_pic)"
-                          alt="User avatar"
-                          class="mx-auto"
-                          style="width: 35px; height: 35px"
-                        />
-                      </v-avatar>
-                    </template>
-                    <template v-slot:[`item.status`]="{ item }">
-                      <v-icon
-                        v-if="item.user_status == 'Active'"
-                        color="success"
-                        >mdi-circle</v-icon
-                      >
-                      <v-icon v-else color="error">mdi-circle</v-icon>
-                      {{ item.user_status }}
-                    </template>
-                    <!-- ปุ่ม Manage -->
-                    <template
-                      v-if="check_role == 'Admin'"
-                      v-slot:[`item.actions`]="{ item }"
-                    >
-                      <v-btn
-                        @click="(dialog_manage = true), editItem(item)"
-                        color="primary"
-                        style="color: white; border-radius: 20px"
-                      >
-                        {{ manage }}
-                      </v-btn>
-                    </template>
-                    <template v-else v-slot:[`item.actions`]>
-                      <v-btn style="color: white; border-radius: 20px" disabled>
-                        Admin Only
-                      </v-btn>
-                    </template>
-                    <!--  -->
                     <template v-slot:no-data>
                       <v-col>No Data</v-col>
                       <v-btn class="mb-4" color="primary" @click="initialize">
@@ -264,70 +305,66 @@
                 <v-card flat>
                   <!-- hide-default-footer ซ่อน footer-->
                   <v-data-table
-                    style="text-align: center"
                     :headers="headers"
-                    :items="data_position_Implementer"
+                    :items="data_position_Implementer "
+                    :search="search"
                     class="elevation-1"
+                    style="text-align: center; background-color: #caadf4"
                   >
-                    <template v-slot:[`item.id`]="{ index }">
-                      {{ index + 1 }}
+                    <template v-slot:item="{ item, index }">
+                      <!-- :class="index % 2 === 0 ? 'row-even' : 'row-odd'" -->
+                      <tr >
+                        <td>
+                          {{ index + 1 }}
+                        </td>
+                        <td>
+                          <v-avatar>
+                            <img
+                              :src="getImageUrl(item.user_pic)"
+                              alt="User avatar"
+                              class="mx-auto"
+                              style="width: 35px; height: 35px"
+                            />
+                          </v-avatar>
+                        </td>
+                        <td>
+                          {{ item.user_firstname }}
+                        </td>
+                        <td>
+                          {{ item.user_lastname }}
+                        </td>
+                        <td>
+                          {{ item.user_id }}
+                        </td>
+                        <td>
+                          {{ item.user_position }}
+                        </td>
+                        <td>
+                          {{ item.user_department }}
+                        </td>
+                        <td>
+                          <v-icon
+                            v-if="item.user_status == 'Active'"
+                            color="success"
+                            >mdi-circle</v-icon
+                          >
+                          <v-icon v-else color="error">mdi-circle</v-icon>
+                          {{ item.user_status }}
+                        </td>
+                        <td>
+                          {{ item.user_role }}
+                        </td>
+                        <td>
+                          <v-btn
+                            @click="(dialog_manage = true), editItem(item)"
+                            color="primary"
+                            style="color: white; border-radius: 20px"
+                          >
+                            {{ manage }}
+                          </v-btn>
+                        </td>
+                      </tr>
                     </template>
-                    <template v-slot:[`item.name`]="{ item }">
-                      {{ item.user_firstname }}
-                    </template>
-                    <template v-slot:[`item.lastname`]="{ item }">
-                      {{ item.user_lastname }}
-                    </template>
-                    <template v-slot:[`item.code`]="{ item }">
-                      {{ item.user_id }}
-                    </template>
-                    <template v-slot:[`item.position`]="{ item }">
-                      {{ item.user_position }}
-                    </template>
-                    <template v-slot:[`item.department`]="{ item }">
-                      {{ item.user_department }}
-                    </template>
-                    <template v-slot:[`item.role`]="{ item }">
-                      {{ item.user_role }}
-                    </template>
-                    <template v-slot:[`item.photo`]="{ item }">
-                      <v-avatar>
-                        <img
-                          :src="getImageUrl(item.user_pic)"
-                          alt="User avatar"
-                          class="mx-auto"
-                          style="width: 35px; height: 35px"
-                        />
-                      </v-avatar>
-                    </template>
-                    <template v-slot:[`item.status`]="{ item }">
-                      <v-icon
-                        v-if="item.user_status == 'Active'"
-                        color="success"
-                        >mdi-circle</v-icon
-                      >
-                      <v-icon v-else color="error">mdi-circle</v-icon>
-                      {{ item.user_status }}
-                    </template>
-                    <!-- ปุ่ม Manage -->
-                    <template
-                      v-if="check_role == 'Admin'"
-                      v-slot:[`item.actions`]="{ item }"
-                    >
-                      <v-btn
-                        @click="(dialog_manage = true), editItem(item)"
-                        color="primary"
-                        style="color: white; border-radius: 20px"
-                      >
-                        {{ manage }}
-                      </v-btn>
-                    </template>
-                    <template v-else v-slot:[`item.actions`]>
-                      <v-btn style="color: white; border-radius: 20px" disabled>
-                        Admin Only
-                      </v-btn>
-                    </template>
-                    <!--  -->
                     <template v-slot:no-data>
                       <v-col>No Data</v-col>
                       <v-btn class="mb-4" color="primary" @click="initialize">
@@ -344,70 +381,66 @@
                 <v-card flat>
                   <!-- hide-default-footer ซ่อน footer-->
                   <v-data-table
-                    style="text-align: center"
                     :headers="headers"
-                    :items="data_position_ProgramManagement"
+                    :items="data_position_ProgramManagement "
+                    :search="search"
                     class="elevation-1"
+                    style="text-align: center; background-color: #caadf4"
                   >
-                    <template v-slot:[`item.id`]="{ index }">
-                      {{ index + 1 }}
+                    <template v-slot:item="{ item, index }">
+                      <!-- :class="index % 2 === 0 ? 'row-even' : 'row-odd'" -->
+                      <tr >
+                        <td>
+                          {{ index + 1 }}
+                        </td>
+                        <td>
+                          <v-avatar>
+                            <img
+                              :src="getImageUrl(item.user_pic)"
+                              alt="User avatar"
+                              class="mx-auto"
+                              style="width: 35px; height: 35px"
+                            />
+                          </v-avatar>
+                        </td>
+                        <td>
+                          {{ item.user_firstname }}
+                        </td>
+                        <td>
+                          {{ item.user_lastname }}
+                        </td>
+                        <td>
+                          {{ item.user_id }}
+                        </td>
+                        <td>
+                          {{ item.user_position }}
+                        </td>
+                        <td>
+                          {{ item.user_department }}
+                        </td>
+                        <td>
+                          <v-icon
+                            v-if="item.user_status == 'Active'"
+                            color="success"
+                            >mdi-circle</v-icon
+                          >
+                          <v-icon v-else color="error">mdi-circle</v-icon>
+                          {{ item.user_status }}
+                        </td>
+                        <td>
+                          {{ item.user_role }}
+                        </td>
+                        <td>
+                          <v-btn
+                            @click="(dialog_manage = true), editItem(item)"
+                            color="primary"
+                            style="color: white; border-radius: 20px"
+                          >
+                            {{ manage }}
+                          </v-btn>
+                        </td>
+                      </tr>
                     </template>
-                    <template v-slot:[`item.name`]="{ item }">
-                      {{ item.user_firstname }}
-                    </template>
-                    <template v-slot:[`item.lastname`]="{ item }">
-                      {{ item.user_lastname }}
-                    </template>
-                    <template v-slot:[`item.code`]="{ item }">
-                      {{ item.user_id }}
-                    </template>
-                    <template v-slot:[`item.position`]="{ item }">
-                      {{ item.user_position }}
-                    </template>
-                    <template v-slot:[`item.department`]="{ item }">
-                      {{ item.user_department }}
-                    </template>
-                    <template v-slot:[`item.role`]="{ item }">
-                      {{ item.user_role }}
-                    </template>
-                    <template v-slot:[`item.photo`]="{ item }">
-                      <v-avatar>
-                        <img
-                          :src="getImageUrl(item.user_pic)"
-                          alt="User avatar"
-                          class="mx-auto"
-                          style="width: 35px; height: 35px"
-                        />
-                      </v-avatar>
-                    </template>
-                    <template v-slot:[`item.status`]="{ item }">
-                      <v-icon
-                        v-if="item.user_status == 'Active'"
-                        color="success"
-                        >mdi-circle</v-icon
-                      >
-                      <v-icon v-else color="error">mdi-circle</v-icon>
-                      {{ item.user_status }}
-                    </template>
-                    <!-- ปุ่ม Manage -->
-                    <template
-                      v-if="check_role == 'Admin'"
-                      v-slot:[`item.actions`]="{ item }"
-                    >
-                      <v-btn
-                        @click="(dialog_manage = true), editItem(item)"
-                        color="primary"
-                        style="color: white; border-radius: 20px"
-                      >
-                        {{ manage }}
-                      </v-btn>
-                    </template>
-                    <template v-else v-slot:[`item.actions`]>
-                      <v-btn style="color: white; border-radius: 20px" disabled>
-                        Admin Only
-                      </v-btn>
-                    </template>
-                    <!--  -->
                     <template v-slot:no-data>
                       <v-col>No Data</v-col>
                       <v-btn class="mb-4" color="primary" @click="initialize">
@@ -424,70 +457,66 @@
                 <v-card flat>
                   <!-- hide-default-footer ซ่อน footer-->
                   <v-data-table
-                    style="text-align: center"
                     :headers="headers"
-                    :items="data_position_SystemAnalyst"
+                    :items="data_position_SystemAnalyst "
+                    :search="search"
                     class="elevation-1"
+                    style="text-align: center; background-color: #caadf4"
                   >
-                    <template v-slot:[`item.id`]="{ index }">
-                      {{ index + 1 }}
+                    <template v-slot:item="{ item, index }">
+                      <!-- :class="index % 2 === 0 ? 'row-even' : 'row-odd'" -->
+                      <tr >
+                        <td>
+                          {{ index + 1 }}
+                        </td>
+                        <td>
+                          <v-avatar>
+                            <img
+                              :src="getImageUrl(item.user_pic)"
+                              alt="User avatar"
+                              class="mx-auto"
+                              style="width: 35px; height: 35px"
+                            />
+                          </v-avatar>
+                        </td>
+                        <td>
+                          {{ item.user_firstname }}
+                        </td>
+                        <td>
+                          {{ item.user_lastname }}
+                        </td>
+                        <td>
+                          {{ item.user_id }}
+                        </td>
+                        <td>
+                          {{ item.user_position }}
+                        </td>
+                        <td>
+                          {{ item.user_department }}
+                        </td>
+                        <td>
+                          <v-icon
+                            v-if="item.user_status == 'Active'"
+                            color="success"
+                            >mdi-circle</v-icon
+                          >
+                          <v-icon v-else color="error">mdi-circle</v-icon>
+                          {{ item.user_status }}
+                        </td>
+                        <td>
+                          {{ item.user_role }}
+                        </td>
+                        <td>
+                          <v-btn
+                            @click="(dialog_manage = true), editItem(item)"
+                            color="primary"
+                            style="color: white; border-radius: 20px"
+                          >
+                            {{ manage }}
+                          </v-btn>
+                        </td>
+                      </tr>
                     </template>
-                    <template v-slot:[`item.name`]="{ item }">
-                      {{ item.user_firstname }}
-                    </template>
-                    <template v-slot:[`item.lastname`]="{ item }">
-                      {{ item.user_lastname }}
-                    </template>
-                    <template v-slot:[`item.code`]="{ item }">
-                      {{ item.user_id }}
-                    </template>
-                    <template v-slot:[`item.position`]="{ item }">
-                      {{ item.user_position }}
-                    </template>
-                    <template v-slot:[`item.department`]="{ item }">
-                      {{ item.user_department }}
-                    </template>
-                    <template v-slot:[`item.role`]="{ item }">
-                      {{ item.user_role }}
-                    </template>
-                    <template v-slot:[`item.photo`]="{ item }">
-                      <v-avatar>
-                        <img
-                          :src="getImageUrl(item.user_pic)"
-                          alt="User avatar"
-                          class="mx-auto"
-                          style="width: 35px; height: 35px"
-                        />
-                      </v-avatar>
-                    </template>
-                    <template v-slot:[`item.status`]="{ item }">
-                      <v-icon
-                        v-if="item.user_status == 'Active'"
-                        color="success"
-                        >mdi-circle</v-icon
-                      >
-                      <v-icon v-else color="error">mdi-circle</v-icon>
-                      {{ item.user_status }}
-                    </template>
-                    <!-- ปุ่ม Manage -->
-                    <template
-                      v-if="check_role == 'Admin'"
-                      v-slot:[`item.actions`]="{ item }"
-                    >
-                      <v-btn
-                        @click="(dialog_manage = true), editItem(item)"
-                        color="primary"
-                        style="color: white; border-radius: 20px"
-                      >
-                        {{ manage }}
-                      </v-btn>
-                    </template>
-                    <template v-else v-slot:[`item.actions`]>
-                      <v-btn style="color: white; border-radius: 20px" disabled>
-                        Admin Only
-                      </v-btn>
-                    </template>
-                    <!--  -->
                     <template v-slot:no-data>
                       <v-col>No Data</v-col>
                       <v-btn class="mb-4" color="primary" @click="initialize">
@@ -504,70 +533,66 @@
                 <v-card flat>
                   <!-- hide-default-footer ซ่อน footer-->
                   <v-data-table
-                    style="text-align: center"
                     :headers="headers"
-                    :items="data_position_ReportDeveloper"
+                    :items="data_position_ReportDeveloper "
+                    :search="search"
                     class="elevation-1"
+                    style="text-align: center; background-color: #caadf4"
                   >
-                    <template v-slot:[`item.id`]="{ index }">
-                      {{ index + 1 }}
+                    <template v-slot:item="{ item, index }">
+                      <!-- :class="index % 2 === 0 ? 'row-even' : 'row-odd'" -->
+                      <tr >
+                        <td>
+                          {{ index + 1 }}
+                        </td>
+                        <td>
+                          <v-avatar>
+                            <img
+                              :src="getImageUrl(item.user_pic)"
+                              alt="User avatar"
+                              class="mx-auto"
+                              style="width: 35px; height: 35px"
+                            />
+                          </v-avatar>
+                        </td>
+                        <td>
+                          {{ item.user_firstname }}
+                        </td>
+                        <td>
+                          {{ item.user_lastname }}
+                        </td>
+                        <td>
+                          {{ item.user_id }}
+                        </td>
+                        <td>
+                          {{ item.user_position }}
+                        </td>
+                        <td>
+                          {{ item.user_department }}
+                        </td>
+                        <td>
+                          <v-icon
+                            v-if="item.user_status == 'Active'"
+                            color="success"
+                            >mdi-circle</v-icon
+                          >
+                          <v-icon v-else color="error">mdi-circle</v-icon>
+                          {{ item.user_status }}
+                        </td>
+                        <td>
+                          {{ item.user_role }}
+                        </td>
+                        <td>
+                          <v-btn
+                            @click="(dialog_manage = true), editItem(item)"
+                            color="primary"
+                            style="color: white; border-radius: 20px"
+                          >
+                            {{ manage }}
+                          </v-btn>
+                        </td>
+                      </tr>
                     </template>
-                    <template v-slot:[`item.name`]="{ item }">
-                      {{ item.user_firstname }}
-                    </template>
-                    <template v-slot:[`item.lastname`]="{ item }">
-                      {{ item.user_lastname }}
-                    </template>
-                    <template v-slot:[`item.code`]="{ item }">
-                      {{ item.user_id }}
-                    </template>
-                    <template v-slot:[`item.position`]="{ item }">
-                      {{ item.user_position }}
-                    </template>
-                    <template v-slot:[`item.department`]="{ item }">
-                      {{ item.user_department }}
-                    </template>
-                    <template v-slot:[`item.role`]="{ item }">
-                      {{ item.user_role }}
-                    </template>
-                    <template v-slot:[`item.photo`]="{ item }">
-                      <v-avatar>
-                        <img
-                          :src="getImageUrl(item.user_pic)"
-                          alt="User avatar"
-                          class="mx-auto"
-                          style="width: 35px; height: 35px"
-                        />
-                      </v-avatar>
-                    </template>
-                    <template v-slot:[`item.status`]="{ item }">
-                      <v-icon
-                        v-if="item.user_status == 'Active'"
-                        color="success"
-                        >mdi-circle</v-icon
-                      >
-                      <v-icon v-else color="error">mdi-circle</v-icon>
-                      {{ item.user_status }}
-                    </template>
-                    <!-- ปุ่ม Manage -->
-                    <template
-                      v-if="check_role == 'Admin'"
-                      v-slot:[`item.actions`]="{ item }"
-                    >
-                      <v-btn
-                        @click="(dialog_manage = true), editItem(item)"
-                        color="primary"
-                        style="color: white; border-radius: 20px"
-                      >
-                        {{ manage }}
-                      </v-btn>
-                    </template>
-                    <template v-else v-slot:[`item.actions`]>
-                      <v-btn style="color: white; border-radius: 20px" disabled>
-                        Admin Only
-                      </v-btn>
-                    </template>
-                    <!--  -->
                     <template v-slot:no-data>
                       <v-col>No Data</v-col>
                       <v-btn class="mb-4" color="primary" @click="initialize">
@@ -1183,7 +1208,7 @@ export default {
   layout: "admin",
   data() {
     return {
-      search: '',
+      search: "",
       titleName: "",
       titleFirstname: "",
       imageManageUpload: null,
@@ -1254,13 +1279,13 @@ export default {
           sortable: false,
           value: "photo",
         },
-        { text: "ชื่อ", align: "left", value: "name" },
-        { text: "นามสกุล", align: "left", value: "lastname" },
-        { text: "รหัสพนักงาน", align: "left", value: "code" },
-        { text: "ตำแหน่ง", align: "left", value: "position" },
-        { text: "แผนก", align: "left", value: "department" },
-        { text: "สถานะ", align: "left", value: "status" },
-        { text: "บทบาท", align: "left", value: "role" },
+        { text: "ชื่อ", align: "center", value: "name" },
+        { text: "นามสกุล", align: "center", value: "lastname" },
+        { text: "รหัสพนักงาน", align: "center", value: "code" },
+        { text: "ตำแหน่ง", align: "center", value: "position" },
+        { text: "แผนก", align: "center", value: "department" },
+        { text: "สถานะ", align: "center", value: "status" },
+        { text: "บทบาท", align: "center", value: "role" },
         { text: "จัดการ", align: "center", value: "actions", sortable: false },
       ],
       manage: "จัดการ",
@@ -1295,6 +1320,8 @@ export default {
       //
       qcInissue: [],
       assignInissue: [],
+      backgroundColor: "#bb96f1a6",
+      tableColor: "#caadf4",
     };
   },
   created() {
@@ -1780,13 +1807,11 @@ input[type="text"] {
   padding-left: 10px;
   outline: black;
 }
-
 .center {
   display: flex;
   align-items: center;
   justify-content: center;
 }
-
 .avatar-upload {
   display: inline-block;
   width: 100px;
@@ -1797,21 +1822,26 @@ input[type="text"] {
   text-align: center;
   cursor: pointer;
 }
-
 .avatar-upload input[type="file"] {
   display: none;
 }
-
 .avatar-upload img {
   width: 100%;
   height: 100%;
   border-radius: 50px;
   object-fit: cover;
 }
-
 .avatar-upload i {
   font-size: 16px;
   line-height: 40px;
   color: #bbbbbb;
+}
+.row-even {
+  background-color: rgba(233, 203, 243, 0.788);
+  color: black;
+}
+.row-odd {
+  background-color: rgba(247, 229, 191, 0.788);
+  color: black;
 }
 </style>

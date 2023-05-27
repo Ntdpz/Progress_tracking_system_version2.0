@@ -35,6 +35,7 @@
       dark
       block
       @click="openDialog('create')"
+      :style="{ 'background-color': backgroundColor }"
     >
       <span
         class="mdi mdi-plus-circle-outline"
@@ -319,12 +320,12 @@
         :items="projectList"
       >
         <v-expansion-panel>
-          <v-expansion-panel-header disable-icon-rotate>
+          <v-expansion-panel-header disable-icon-rotate style="background-color: #aa7dec;">
             <v-row no-gutters>
               <v-col cols="3">
                 <h4>{{ project.project_name }}</h4>
-                <p class="mt-1" style="color: #b6b5b5; font-size: 16px">
-                  มี {{ getSystemCount(project) }} ระบบย่อย
+                <p class="mt-1" style="color: #000000; font-size: 15px">
+                  มี {{ getSystemCount(project) }} ระบบ
                 </p>
               </v-col>
               <v-col> </v-col>
@@ -346,7 +347,7 @@
                   icon
                   @click="openDialog('edit', projectList[index])"
                 >
-                  <v-icon class="pa-0" size="25" color="primary"
+                  <v-icon class="pa-0" size="25" color="black"
                     >mdi mdi-square-edit-outline</v-icon
                   >
                 </v-btn>
@@ -375,6 +376,7 @@
                     v-on="on"
                     block
                     @click="dialogSystem(projectList[index])"
+                    :style="{ 'background-color': backgroundColor }"
                   >
                     <span
                       class="mdi mdi-plus-circle-outline"
@@ -577,9 +579,38 @@
               sort-by="calories"
               class="v-data-table elevation-1 mb-2 mt-5"
               v-remove-row-borders
+              :style="{ 'background-color': tableColor }"
             >
-              <template v-slot:top> </template>
-              <template v-slot:[`item.name`]="{ item }">
+              <!-- <template v-slot:top> </template> -->
+              <template v-slot:item="{ item, index }">
+                <tr :class="index % 2 === 0 ? 'row-even' : 'row-odd'">
+                  <td>
+                    <v-icon color="primary">mdi-format-list-bulleted</v-icon>
+                    {{ item.system_nameTH }}
+                  </td>
+                  <td>
+                    <v-icon color="primary">mdi-format-list-bulleted</v-icon>
+                    {{ item.system_id }}
+                  </td>
+                  <td>
+                    <v-icon color="primary">mdi-format-list-bulleted</v-icon>
+                    {{ item.system_shortname }}
+                  </td>
+                  <td>
+                    <v-btn
+                      color="primary"
+                      icon
+                      :to="`/systemdetail/${item.id}`"
+                    >
+                      <v-icon class="mr-2 ml-2" size="20" color="primary">
+                        mdi mdi-chevron-right-circle-outline
+                      </v-icon>
+                    </v-btn>
+                  </td>
+                </tr>
+              </template>
+
+              <!-- <template v-slot:[`item.name`]="{ item }">
                 <v-icon color="primary">mdi-format-list-bulleted</v-icon>
                 {{ item.system_nameTH }}
               </template>
@@ -591,16 +622,13 @@
                 <v-icon color="primary">mdi-format-list-bulleted</v-icon>
                 {{ item.system_shortname }}
               </template>
-              <!-- <template v-slot:[`item.member`]="{ item }">
-                {{ item.system_member }}
-              </template> -->
               <template v-slot:[`item.actions`]="{ item }">
                 <v-btn color="primary" icon :to="`/systemdetail/${item.id}`">
                   <v-icon class="mr-2 ml-2" size="20" color="primary">
                     mdi mdi-chevron-right-circle-outline
                   </v-icon>
                 </v-btn>
-              </template>
+              </template> -->
             </v-data-table>
           </v-expansion-panel-content>
         </v-expansion-panel>
@@ -615,12 +643,12 @@
         :items="projectList"
       >
         <v-expansion-panel>
-          <v-expansion-panel-header disable-icon-rotate>
+          <v-expansion-panel-header disable-icon-rotate style="background-color: #aa7dec;">
             <v-row no-gutters>
               <v-col cols="3">
                 <h4>{{ project.project_name }}</h4>
-                <p class="mt-1" style="color: #b6b5b5; font-size: 16px">
-                  มี {{ getSystemCount(project) }} Sub System
+                <p class="mt-1" style="color: #000000; font-size: 15px">
+                  มี {{ getSystemCount(project) }} ระบบ
                 </p>
               </v-col>
               <v-col> </v-col>
@@ -647,16 +675,45 @@
 
           <!--  -->
           <v-expansion-panel-content>
-            <!-- Admin -->
+            <!-- developer -->
             <v-data-table
               :headers="headers"
               :items="project.systems"
               sort-by="calories"
               class="v-data-table elevation-1 mb-2 mt-5"
               v-remove-row-borders
+              :style="{ 'background-color': tableColor }"
             >
-              <template v-slot:top> </template>
-              <template v-slot:[`item.name`]="{ item }">
+              <!-- <template v-slot:top> </template> -->
+              <template v-slot:item="{ item, index }">
+                <tr :class="index % 2 === 0 ? 'row-even' : 'row-odd'">
+                  <td>
+                    <v-icon color="primary">mdi-format-list-bulleted</v-icon>
+                    {{ item.system_nameTH }}
+                  </td>
+                  <td>
+                    <v-icon color="primary">mdi-format-list-bulleted</v-icon>
+                    {{ item.system_id }}
+                  </td>
+                  <td>
+                    <v-icon color="primary">mdi-format-list-bulleted</v-icon>
+                    {{ item.system_shortname }}
+                  </td>
+                  <td>
+                    <v-btn
+                      color="primary"
+                      icon
+                      :to="`/systemdetail/${item.id}`"
+                    >
+                      <v-icon class="mr-2 ml-2" size="20" color="primary">
+                        mdi mdi-chevron-right-circle-outline
+                      </v-icon>
+                    </v-btn>
+                  </td>
+                </tr>
+              </template>
+
+              <!-- <template v-slot:[`item.name`]="{ item }">
                 <v-icon color="primary">mdi-format-list-bulleted</v-icon>
                 {{ item.system_nameTH }}
               </template>
@@ -668,16 +725,13 @@
                 <v-icon color="primary">mdi-format-list-bulleted</v-icon>
                 {{ item.system_shortname }}
               </template>
-              <!-- <template v-slot:[`item.member`]="{ item }">
-                {{ item.system_member }}
-              </template> -->
               <template v-slot:[`item.actions`]="{ item }">
                 <v-btn color="primary" icon :to="`/systemdetail/${item.id}`">
                   <v-icon class="mr-2 ml-2" size="20" color="primary">
                     mdi mdi-chevron-right-circle-outline
                   </v-icon>
                 </v-btn>
-              </template>
+              </template> -->
             </v-data-table>
           </v-expansion-panel-content>
         </v-expansion-panel>
@@ -768,6 +822,7 @@ export default {
           align: "start",
           sortable: false,
           value: "name",
+          style: "color: white;",
         },
         { text: "รหัสของระบบ", value: "id_system", sortable: false },
         { text: "ชื่อย่อระบบ", value: "short_name", sortable: false },
@@ -813,6 +868,9 @@ export default {
       projectListAdmin: [],
       loading: false,
       rules: [(value) => !!value || "*กรุณาใส่ข้อมูลให้ถูกต้อง*"],
+      backgroundColor: "#bb96f1a6",
+      tableColor: "#caadf4",
+      textColor: "#ffffff",
     };
   },
   async created() {
@@ -1351,5 +1409,16 @@ export default {
   align-items: center;
   border: 2px dotted #333;
   padding: 8px 16px;
+}
+.row-even {
+  background-color: rgba(233, 203, 243, 0.788);
+  color: black;
+}
+.row-odd {
+  background-color: rgba(247, 229, 191, 0.788);
+  color: black;
+}
+.header-bg-color {
+  background-color: #bb96f1a6;
 }
 </style>

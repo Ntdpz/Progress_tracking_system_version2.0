@@ -182,9 +182,9 @@
             </v-card-actions>
           </v-card>
         </v-dialog>
-        <v-btn color="error" class="mt-5" dark @click="logout">
+        <!-- <v-btn color="error" class="mt-5" dark @click="logout">
           <h4>ออกจากระบบ</h4>
-        </v-btn>
+        </v-btn> -->
       </v-card>
     </v-container>
   </div>
@@ -288,16 +288,16 @@ export default {
     getdefaultImageUrl(fileName) {
       return require(`@/static/defaultimage/${fileName}`);
     },
-    async logout() {
-      const response = await this.$axios.post("/auth/api/logout");
+    // async logout() {
+    //   const response = await this.$axios.post("/auth/api/logout");
 
-      if (response.status === 200) {
-        // Clear the user data from Vuex store and localStorage
-        this.$store.commit("clearUser");
-        localStorage.removeItem("userId");
-        this.$router.push("/login");
-      }
-    },
+    //   if (response.status === 200) {
+    //     // Clear the user data from Vuex store and localStorage
+    //     this.$store.commit("clearUser");
+    //     localStorage.removeItem("userId");
+    //     this.$router.push("/login");
+    //   }
+    // },
   },
 };
 </script>
