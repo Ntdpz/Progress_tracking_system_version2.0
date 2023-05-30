@@ -634,7 +634,7 @@ export default {
             setTimeout(() => {
               // alert("success3");
               this.dialogSuccess = true;
-              // this.close();
+              this.close();
             }, 2000);
           });
         } catch (error) {
