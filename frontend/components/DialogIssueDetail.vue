@@ -47,7 +47,6 @@
                   outlined
                   :disabled="isIssueInProcess"
                   v-model="IssueType"
-                  @change="selectedType()"
                 ></v-select>
               </v-col>
               <v-col cols="12" sm="6" md="8" class="pb-0">
@@ -111,7 +110,7 @@
                   outlined
                   disabled
                   dense
-                  v-model="IssueCreate"
+                  v-model="createThai"
                 ></v-text-field>
               </v-col>
 
@@ -267,7 +266,9 @@
                     <v-form ref="form" :disabled="NoAssginCheck">
                       <v-row class="mt-5">
                         <v-col cols="6" class="pb-0">
-                          <p v-show="NoAssginCheck" style="color: red">**โปรดเลือกผู้รับผิดชอบ</p>
+                          <p v-show="NoAssginCheck" style="color: red">
+                            **โปรดเลือกผู้รับผิดชอบ
+                          </p>
                           <!-- <p>
                             วันที่รับ -
                             {{ IssueAccepting }}
@@ -535,40 +536,39 @@
         </v-card-actions>
       </v-card>
 
-        <template>
-          <v-dialog
-            v-model="dialogSuccess"
-            persistent
-            max-width="400px"
-            max-height="100%"
-          >
-            <v-card width="100%" max-height="100%">
-              <v-row class="ma-0 pa-0" style="place-content: center">
-                <v-card-title>
-                  <v-icon size="50px" color="success"
-                    >mdi-check-circle-outline</v-icon
-                  >
-                </v-card-title>
-              </v-row>
-              <v-row class="ma-0 pa-0" style="place-content: center">
-                <v-card-title class="text-h5">
-                  อัปเดตเสร็จเรียบร้อย
-                </v-card-title>
-              </v-row>
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn
-                  color="primary"
-                  dark
-                  @click="(dialogSuccess = false), handleClose()"
+      <template>
+        <v-dialog
+          v-model="dialogSuccess"
+          persistent
+          max-width="400px"
+          max-height="100%"
+        >
+          <v-card width="100%" max-height="100%">
+            <v-row class="ma-0 pa-0" style="place-content: center">
+              <v-card-title>
+                <v-icon size="50px" color="success"
+                  >mdi-check-circle-outline</v-icon
                 >
-                  Ok
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-        </template>
-
+              </v-card-title>
+            </v-row>
+            <v-row class="ma-0 pa-0" style="place-content: center">
+              <v-card-title class="text-h5">
+                อัปเดตเสร็จเรียบร้อย
+              </v-card-title>
+            </v-row>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn
+                color="primary"
+                dark
+                @click="(dialogSuccess = false), handleClose()"
+              >
+                Ok
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </template>
     </v-dialog>
   </row>
 </template>
@@ -660,10 +660,9 @@ export default {
       //validate
       rules: [(value) => !!value || "Required."],
       dialogSuccess: false,
+      //datethai
+      createThai: "",
     };
-  },
-  updated() {
-    console.log("start", this.IssueStart);
   },
   async mounted() {
     await this.getDefault();
@@ -679,6 +678,7 @@ export default {
         this.getUserSystemsOncreated();
         this.getUser();
         this.checkHistory();
+        this.changeDate();
       }
     },
   },
@@ -808,37 +808,37 @@ export default {
           user_id_updated: this.user_id,
         };
         const data = {
-        screen_id: this.IssueScreenId,
-        system_id: this.SystemId,
-        project_id: this.ProjectId,
-        user_assign_id: this.IssueUserAssignId,
-        user_qc_id: this.IssueUserQCId,
-        issue_name: this.IssueName,
-        issue_id: this.IssueId,
-        issue_type: this.IssueType,
-        issue_informer: this.IssueInformer,
-        issue_priority: this.IssuePriority,
-        issue_end: this.IssueEndDate,
-        issue_assign: this.IssueAssign.user_firstname,
-        issue_qc: this.IssueQC,
-        issue_des: this.IssueDes,
-        issue_des_sa: this.IssueDesSA,
-        issue_type_sa: this.IssueTypeSA,
-        issue_doc_id: this.IssueDocId,
-        issue_customer: this.IssueCustomer,
-        issue_filename: this.IssueFilename,
-        issue_des_dev: this.IssueDesDev,
-        issue_des_implementer: this.IssueDesImplementer,
-        issue_start: this.IssueStart,
-        issue_expected: this.IssueExpected,
-        issue_status: this.IssueStatus,
-        issue_accepting: this.IssueAccepting,
-        issue_manday: this.IssueManday,
-        issue_complete: this.IssueComplete,
-        issue_status_developer: this.IssueDeveloperStatus,
-        issue_status_implement: this.IssueImplementerStatus,
-        issue_round: this.IssueRound,
-      };
+          screen_id: this.IssueScreenId,
+          system_id: this.SystemId,
+          project_id: this.ProjectId,
+          user_assign_id: this.IssueUserAssignId,
+          user_qc_id: this.IssueUserQCId,
+          issue_name: this.IssueName,
+          issue_id: this.IssueId,
+          issue_type: this.IssueType,
+          issue_informer: this.IssueInformer,
+          issue_priority: this.IssuePriority,
+          issue_end: this.IssueEndDate,
+          issue_assign: this.IssueAssign.user_firstname,
+          issue_qc: this.IssueQC,
+          issue_des: this.IssueDes,
+          issue_des_sa: this.IssueDesSA,
+          issue_type_sa: this.IssueTypeSA,
+          issue_doc_id: this.IssueDocId,
+          issue_customer: this.IssueCustomer,
+          issue_filename: this.IssueFilename,
+          issue_des_dev: this.IssueDesDev,
+          issue_des_implementer: this.IssueDesImplementer,
+          issue_start: this.IssueStart,
+          issue_expected: this.IssueExpected,
+          issue_status: this.IssueStatus,
+          issue_accepting: this.IssueAccepting,
+          issue_manday: this.IssueManday,
+          issue_complete: this.IssueComplete,
+          issue_status_developer: this.IssueDeveloperStatus,
+          issue_status_implement: this.IssueImplementerStatus,
+          issue_round: this.IssueRound,
+        };
         try {
           await this.$axios.post(
             "/history_issues/createIssueHistory/",
@@ -862,21 +862,19 @@ export default {
           alert("Error submitting form");
         }
 
-
-
-          this.IssueDesDev = null;
-          this.IssueDesImplementer = null;
-          this.IssueStart = null;
-          this.IssueExpected = null;
-          this.IssueStatus = "รอแก้ไข";
-          this.IssueAccepting = null;
-          this.IssueManday = 0;
-          this.IssueComplete = null;
-          this.IssueDeveloperStatus = "รอแก้ไข";
-          this.IssueImplementerStatus = null;
-          this.IssueRound = 0;
-          this.IssueAssign = this.IssueAssign.user_firstname;
-          this.IssueUserAssignId = this.userSendWork;
+        this.IssueDesDev = null;
+        this.IssueDesImplementer = null;
+        this.IssueStart = null;
+        this.IssueExpected = null;
+        this.IssueStatus = "รอแก้ไข";
+        this.IssueAccepting = null;
+        this.IssueManday = 0;
+        this.IssueComplete = null;
+        this.IssueDeveloperStatus = "รอแก้ไข";
+        this.IssueImplementerStatus = null;
+        this.IssueRound = 0;
+        this.IssueAssign = this.IssueAssign.user_firstname;
+        this.IssueUserAssignId = this.userSendWork;
       }
       //ตรวจสอบไม่ผ่านเริ่มใหม่ + เก็บรอบ
       if (this.IssueImplementerStatus == "ตรวจสอบไม่ผ่าน") {
@@ -893,7 +891,7 @@ export default {
         this.IssueStatus = "ตรวจสอบไม่ผ่าน";
       }
       //ตรวจสอบผ่านเก็บประวัติ ปิดจบ
-        if (this.IssueImplementerStatus == "ตรวจสอบผ่าน") {
+      if (this.IssueImplementerStatus == "ตรวจสอบผ่าน") {
         this.IssueStatus = "ตรวจสอบผ่าน";
         const dataHistory = {
           screen_id: this.IssueScreenId,
@@ -954,96 +952,96 @@ export default {
         }
 
         const data = {
-        screen_id: this.IssueScreenId,
-        system_id: this.SystemId,
-        project_id: this.ProjectId,
-        user_assign_id: this.IssueUserAssignId,
-        user_qc_id: this.IssueUserQCId,
-        issue_name: this.IssueName,
-        issue_id: this.IssueId,
-        issue_type: this.IssueType,
-        issue_informer: this.IssueInformer,
-        issue_priority: this.IssuePriority,
-        issue_end: this.IssueEndDate,
-        issue_assign: this.IssueAssign,
-        issue_qc: this.IssueQC,
-        issue_des: this.IssueDes,
-        issue_des_sa: this.IssueDesSA,
-        issue_type_sa: this.IssueTypeSA,
-        issue_doc_id: this.IssueDocId,
-        issue_customer: this.IssueCustomer,
-        issue_filename: this.IssueFilename,
-        issue_des_dev: this.IssueDesDev,
-        issue_des_implementer: this.IssueDesImplementer,
-        issue_start: this.IssueStart,
-        issue_expected: this.IssueExpected,
-        issue_status: this.IssueStatus,
-        issue_accepting: this.IssueAccepting,
-        issue_manday: this.IssueManday,
-        issue_complete: this.IssueComplete,
-        issue_status_developer: this.IssueDeveloperStatus,
-        issue_status_implement: this.IssueImplementerStatus,
-        issue_round: this.IssueRound,
-      };
-      const dataHistoryUpdate = {
-        screen_id: this.IssueScreenId,
-        system_id: this.SystemId,
-        project_id: this.ProjectId,
-        issues_id: this.id,
-        user_assign_id: this.IssueUserAssignId,
-        user_qc_id: this.IssueUserQCId,
-        issue_name: this.IssueName,
-        issue_id: this.IssueId,
-        issue_type: this.IssueType,
-        issue_informer: this.IssueInformer,
-        issue_priority: this.IssuePriority,
-        issue_end: this.IssueEndDate,
-        issue_assign: this.IssueAssign,
-        issue_qc: this.IssueQC,
-        issue_des: this.IssueDes,
-        issue_des_sa: this.IssueDesSA,
-        issue_type_sa: this.IssueTypeSA,
-        issue_doc_id: this.IssueDocId,
-        issue_customer: this.IssueCustomer,
-        issue_filename: this.IssueFilename,
-        issue_des_dev: this.IssueDesDev,
-        issue_des_implementer: this.IssueDesImplementer,
-        issue_start: this.IssueStart,
-        issue_expected: this.IssueExpected,
-        issue_status: this.IssueStatus,
-        issue_accepting: this.IssueAccepting,
-        issue_manday: this.IssueManday,
-        issue_complete: this.IssueComplete,
-        issue_status_developer: this.IssueDeveloperStatus,
-        issue_status_implement: this.IssueImplementerStatus,
-        issue_round: this.IssueRound,
-        user_updated: this.user_firstname,
-        user_position_updated: this.user_position,
-        user_id_updated: this.user_id,
-      };
-      try {
-        await this.$axios.put("/issues/updateIssueAdmin/" + this.id, data);
-        await this.$axios.post(
-          "/history_issues/createIssueHistory/",
-          dataHistoryUpdate
-        );
-        this.$emit("button-clicked");
-        // this.handleClose();
-        this.dialogSuccess = true;
-        const promise = new Promise((resolve, reject) => {
-          resolve();
-          // this.close();
-        });
-        promise.then(() => {
-          setTimeout(() => {
-            // alert("update success");
-          }, 2000);
-        });
-      } catch (error) {
-        console.error(error);
-        alert("Error submitting form");
+          screen_id: this.IssueScreenId,
+          system_id: this.SystemId,
+          project_id: this.ProjectId,
+          user_assign_id: this.IssueUserAssignId,
+          user_qc_id: this.IssueUserQCId,
+          issue_name: this.IssueName,
+          issue_id: this.IssueId,
+          issue_type: this.IssueType,
+          issue_informer: this.IssueInformer,
+          issue_priority: this.IssuePriority,
+          issue_end: this.IssueEndDate,
+          issue_assign: this.IssueAssign,
+          issue_qc: this.IssueQC,
+          issue_des: this.IssueDes,
+          issue_des_sa: this.IssueDesSA,
+          issue_type_sa: this.IssueTypeSA,
+          issue_doc_id: this.IssueDocId,
+          issue_customer: this.IssueCustomer,
+          issue_filename: this.IssueFilename,
+          issue_des_dev: this.IssueDesDev,
+          issue_des_implementer: this.IssueDesImplementer,
+          issue_start: this.IssueStart,
+          issue_expected: this.IssueExpected,
+          issue_status: this.IssueStatus,
+          issue_accepting: this.IssueAccepting,
+          issue_manday: this.IssueManday,
+          issue_complete: this.IssueComplete,
+          issue_status_developer: this.IssueDeveloperStatus,
+          issue_status_implement: this.IssueImplementerStatus,
+          issue_round: this.IssueRound,
+        };
+        const dataHistoryUpdate = {
+          screen_id: this.IssueScreenId,
+          system_id: this.SystemId,
+          project_id: this.ProjectId,
+          issues_id: this.id,
+          user_assign_id: this.IssueUserAssignId,
+          user_qc_id: this.IssueUserQCId,
+          issue_name: this.IssueName,
+          issue_id: this.IssueId,
+          issue_type: this.IssueType,
+          issue_informer: this.IssueInformer,
+          issue_priority: this.IssuePriority,
+          issue_end: this.IssueEndDate,
+          issue_assign: this.IssueAssign,
+          issue_qc: this.IssueQC,
+          issue_des: this.IssueDes,
+          issue_des_sa: this.IssueDesSA,
+          issue_type_sa: this.IssueTypeSA,
+          issue_doc_id: this.IssueDocId,
+          issue_customer: this.IssueCustomer,
+          issue_filename: this.IssueFilename,
+          issue_des_dev: this.IssueDesDev,
+          issue_des_implementer: this.IssueDesImplementer,
+          issue_start: this.IssueStart,
+          issue_expected: this.IssueExpected,
+          issue_status: this.IssueStatus,
+          issue_accepting: this.IssueAccepting,
+          issue_manday: this.IssueManday,
+          issue_complete: this.IssueComplete,
+          issue_status_developer: this.IssueDeveloperStatus,
+          issue_status_implement: this.IssueImplementerStatus,
+          issue_round: this.IssueRound,
+          user_updated: this.user_firstname,
+          user_position_updated: this.user_position,
+          user_id_updated: this.user_id,
+        };
+        try {
+          await this.$axios.put("/issues/updateIssueAdmin/" + this.id, data);
+          await this.$axios.post(
+            "/history_issues/createIssueHistory/",
+            dataHistoryUpdate
+          );
+          this.$emit("button-clicked");
+          // this.handleClose();
+          this.dialogSuccess = true;
+          const promise = new Promise((resolve, reject) => {
+            resolve();
+            // this.close();
+          });
+          promise.then(() => {
+            setTimeout(() => {
+              // alert("update success");
+            }, 2000);
+          });
+        } catch (error) {
+          console.error(error);
+          alert("Error submitting form");
+        }
       }
-    }
       //มาเช็คว่ากำลังแก้ไข แล้วค่าวันที่ว่างมั้ย???
       // if (
       //   ((await this.IssueDeveloperStatus) === "กำลังแก้ไข" &&
@@ -1123,14 +1121,16 @@ export default {
 
       // ไม่กรอกวันที่ แต่มี สถานะ
       else if (this.IssueDeveloperStatus === "รอแก้ไข") {
-        if (this.IssueAccepting != null ||
-        this.IssueStart != null ||
-        this.IssueExpected != null) {
+        if (
+          this.IssueAccepting != null ||
+          this.IssueStart != null ||
+          this.IssueExpected != null
+        ) {
           this.IssueStatus = "กำลังแก้ไข";
           this.IssueDeveloperStatus = "กำลังแก้ไข";
           this.post(this.IssueStatus, this.IssueDeveloperStatus);
         } else {
-           this.post(this.IssueStatus, this.IssueDeveloperStatus);
+          this.post(this.IssueStatus, this.IssueDeveloperStatus);
         }
       }
     },
@@ -1329,7 +1329,13 @@ export default {
         console.log(error);
       }
     },
-    selectedType() {},
+    changeDate() {
+      this.createThai = moment(this.IssueCreate, "YYYY-MM-DD")
+        .add(543, "years")
+        .format("DD-MM-YYYY");
+      console.log("this.IssueCreate", this.IssueCreate);
+      console.log("create", this.createThai);
+    },
   },
 };
 </script>
