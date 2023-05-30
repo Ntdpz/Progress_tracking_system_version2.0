@@ -15,14 +15,7 @@
       <v-divider></v-divider>
 
       <v-list>
-        <v-list-item
-          v-for="(item, i) in items"
-          :key="i"
-          :to="item.to"
-          router
-          exact
-          color="primary"
-        >
+        <v-list-item v-for="(item, i) in items" :key="i" :to="item.to" router exact color="primary">
           <v-list-item-action>
             <v-icon>{{ item.icon }}</v-icon>
           </v-list-item-action>
@@ -33,74 +26,43 @@
       </v-list>
       <v-divider></v-divider>
       <v-list v-show="user_role == 'Admin'">
-        <v-list-group
-          v-for="(project, index) in items3"
-          :key="index"
-          v-model="project.active"
-          :prepend-icon="project.action"
-          no-action
-        >
+        <v-list-group v-for="(project, index) in items3" :key="index" v-model="project.active"
+          :prepend-icon="project.action" no-action>
           <template v-slot:activator>
             <v-list-item-content>
               <v-list-item-title>โครงการ</v-list-item-title>
             </v-list-item-content>
           </template>
 
-          <v-list-item
-            v-for="child in project.projectList"
-            :key="child.title"
-            :to="`/issueList/${child.id}`"
-          >
+          <v-list-item v-for="child in project.projectList" :key="child.title" :to="`/issueList/${child.id}`">
             <v-list-item-content>
-              <v-list-item-title
-                ><v-icon color="primary" class="mr-2"
-                  >mdi mdi-format-list-bulleted</v-icon
-                >{{ child.project_name }}</v-list-item-title
-              >
+              <v-list-item-title><v-icon color="primary" class="mr-2">mdi mdi-format-list-bulleted</v-icon>{{
+                child.project_name }}</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
         </v-list-group>
       </v-list>
       <!-- {{ this.projectDetails.projectList }} -->
       <v-list v-show="user_role == 'User'">
-        <v-list-group
-          v-for="(project, index) in projectDetails"
-          :key="index"
-          v-model="project.active"
-          :prepend-icon="project.action"
-          no-action
-        >
+        <v-list-group v-for="(project, index) in projectDetails" :key="index" v-model="project.active"
+          :prepend-icon="project.action" no-action>
           <template v-slot:activator>
             <v-list-item-content>
               <v-list-item-title>{{ project.title }}</v-list-item-title>
             </v-list-item-content>
           </template>
 
-          <v-list-item
-            v-for="child in projectDetails.projectList"
-            :key="child.title"
-            :to="`/issueList/${child[0].id}`"
-          >
+          <v-list-item v-for="child in projectDetails.projectList" :key="child.title" :to="`/issueList/${child[0].id}`">
             <v-list-item-content>
-              <v-list-item-title
-                ><v-icon color="primary" class="mr-2"
-                  >mdi mdi-format-list-bulleted</v-icon
-                >{{ child[0].project_name }}</v-list-item-title
-              >
+              <v-list-item-title><v-icon color="primary" class="mr-2">mdi mdi-format-list-bulleted</v-icon>{{
+                child[0].project_name }}</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
         </v-list-group>
       </v-list>
       <v-divider></v-divider>
       <v-list>
-        <v-list-item
-          v-for="(item, i) in filteredItems"
-          :key="i"
-          :to="item.to"
-          router
-          color="primary"
-          exact
-        >
+        <v-list-item v-for="(item, i) in filteredItems" :key="i" :to="item.to" router color="primary" exact>
           <v-list-item-action>
             <v-icon>{{ item.icon }}</v-icon>
           </v-list-item-action>
@@ -111,17 +73,13 @@
         <v-divider></v-divider>
       </v-list>
     </v-navigation-drawer>
-    <v-app-bar
-      :clipped-left="clipped"
-      app
-      style="height: 49px"
-      class="app-bar"
-      color="white"
-      elevation="1"
-      outlined
-    >
+    <v-app-bar :clipped-left="clipped" app style="height: 49px" class="app-bar" color="white" elevation="1" outlined>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" class="mb-3" />
       <v-toolbar-title v-text="title" class="mb-3" />
+      <v-spacer></v-spacer>
+      <v-btn icon color="error" class="mb-3" @click="logout">
+        <v-icon>mdi-logout</v-icon>
+      </v-btn>
     </v-app-bar>
 
     <v-main>
@@ -282,11 +240,21 @@ export default {
         // console.log(this.user_role, "user position");
       });
     },
+    async logout() {
+      const response = await this.$axios.post("/auth/api/logout");
+
+      if (response.status === 200) {
+        // Clear the user data from Vuex store and localStorage
+        this.$store.commit("clearUser");
+        localStorage.removeItem("userId");
+        this.$router.push("/login");
+      }
+    },
   },
 };
 </script>
   
-  <style scoped>
+<style scoped>
 * {
   font-family: "Lato", sans-serif;
 }

@@ -274,7 +274,7 @@
                   </v-select>
                 </v-col>
               </v-row>
-              <v-row>
+              <!-- <v-row>
                 <v-col
                   class="mb-0 pb-0 hidden-sm-and-up"
                   style="place-self: center"
@@ -301,7 +301,7 @@
                     </span>
                   </template>
                 </v-col>
-              </v-row>
+              </v-row> -->
               <v-row>
                 <v-col
                   class="mb-0 pb-0 hidden-sm-and-up"
@@ -381,40 +381,40 @@
                 </v-col>
                 <!-- ปุ่มเลือกวันที่-->
                 <v-col cols="12" sm="4" md="4">
-                  <v-menu
-                    ref="menuDateStart"
-                    v-model="menuDateStart"
-                    :close-on-content-click="false"
-                    transition="scale-transition"
-                    offset-y
-                    min-width="290px"
-                    :disabled="disabled"
-                  >
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-text-field
-                        :disabled="disabled"
-                        v-model="dateStart"
-                        label="วันเริ่ม"
-                        prepend-icon="mdi mdi-calendar-clock-outline"
-                        readonly
-                        v-bind="attrs"
-                        v-on="on"
-                      ></v-text-field>
-                    </template>
-                    <v-date-picker
-                      v-model="screensID.screen_start"
-                      no-title
-                      scrollable
-                      format="yyyy-MM-dd"
-                      locale="th"
+                    <v-menu
+                      ref="menuDateStart"
+                      v-model="menuDateStart"
+                      :close-on-content-click="false"
+                      transition="scale-transition"
+                      offset-y
+                      min-width="290px"
+                      :disabled="disabled"
                     >
-                      <v-spacer></v-spacer>
-                      <v-btn text color="primary" @click="menuDateStart = false"
-                        >ยกเลิก</v-btn
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-text-field
+                          :disabled="disabled"
+                          v-model="dateStart"
+                          label="วันเริ่ม"
+                          prepend-icon="mdi mdi-calendar-clock-outline"
+                          readonly
+                          v-bind="attrs"
+                          v-on="on"
+                        ></v-text-field>
+                      </template>
+                      <v-date-picker
+                        v-model="screensID.screen_start"
+                        no-title
+                        scrollable
+                        format="yyyy-MM-dd"
+                        locale="th"
                       >
-                      <v-btn
-                        text
-                        color="primary"
+                        <v-spacer></v-spacer>
+                        <v-btn text color="primary" @click="menuDateStart = false"
+                          >ยกเลิก</v-btn
+                        >
+                        <v-btn
+                          text
+                          color="primary"
                         @click="
                           $refs.menuDateStart.save(screensID.screen_start)
                         "
@@ -604,12 +604,11 @@ export default {
   layout: "admin",
   data() {
     return {
-      dateStart: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-        .toISOString()
-        .substr(0, 10),
-      dateEnd: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-        .toISOString()
-        .substr(0, 10),
+      // new Date(Date.now() - new Date().getTimezoneOffset() /* 60000)
+      //   .toISOString()
+      //   .substr(0, 10)
+      dateStart: null,
+      dateEnd: null,
       query: "",
       showIcon: true,
       screencode: "A001",
@@ -700,6 +699,10 @@ export default {
         this.userposition = res.data[0].user_position;
         this.userrole = res.data[0].user_role;
       });
+    },
+    isValidDate(date) {
+      const isValid = !isNaN(new Date(date));
+      return isValid;
     },
     async getScreenID() {
       await this.$axios.get("/screens/getOne/" + this.id).then((data) => {

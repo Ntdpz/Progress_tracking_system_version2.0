@@ -71,7 +71,7 @@
               <v-avatar class="ml-4" color="error" size="20"> </v-avatar> -->
               <v-btn
                 v-if="userposition != 'Developer' || userrole == 'Admin'"
-                class="ml-3"
+                class="ml-1"
                 icon
                 color="primary"
                 size="35px"
@@ -390,7 +390,7 @@
                         ></v-select>
                       </v-col>
                     </v-row>
-                    <v-row>
+                    <!-- <v-row>
                       <v-col
                         class="mb-0 pb-0 hidden-sm-and-up"
                         style="place-self: center"
@@ -413,7 +413,7 @@
                           {{ status }}
                         </h4>
                       </v-col>
-                    </v-row>
+                    </v-row> -->
                     <v-row>
                       <v-col
                         class="mb-0 pb-0 hidden-sm-and-up"
@@ -986,7 +986,7 @@
         <div class="text-left mt-4">
           <v-menu offset-y>
             <template v-slot:activator="{ on, attrs }">
-              <!-- style="border: none; font-weight: bold; font-size: 22px" -->
+              <!-- -- style="border: none; font-weight: bold; font-size: 22px" -- -->
               <v-btn outlined color="black" dark v-bind="attrs" v-on="on">
                 {{ type_show }}
                 <v-icon size="22px" right>mdi-menu-down</v-icon>
@@ -1055,23 +1055,74 @@
       </v-container>
       <!-- Table Screen -->
 
-      <template v-if="type_show == 'ตาราง'">
+      <v-container v-if="type_show == 'ตาราง'">
         <v-data-table
-          class="elevation-1 ma-7"
-          style="text-align: center"
           :headers="headers"
           :items="AllScreens"
+          sort-by="calories"
+          class="v-data-table elevation-1 ma-4"
+          v-remove-row-borders
+          style="text-align: center; background-color: #caadf4; "
+          >
+            <template v-slot:item="{item, index}">
+              <tr :class="index % 2 === 0 ? 'row-even' : 'row-odd'">
+                <td>{{ index + 1 }}</td>
+                <td>{{ item.screen_id }}</td>
+                <td>{{ item.screen_name }}</td>
+                <td>{{ item.screen_level }}</td>
+                <td>{{ item.screen_type }}</td>
+                <td>
+                <v-btn
+                  icon
+                  :to="`/screendetail/${item.id}`"
+                  color="primary"
+                  style="color: white; border-radius: 20px"
+                >
+                  <v-icon>mdi-arrow-right-circle-outline</v-icon>
+                </v-btn>
+              </td>
+              </tr>
+            </template>
+        </v-data-table>
+
+        <!-- <v-data-table
+        :headers="headers"
+        :items="AllScreens"
+          class="elevation-1 ma-7"
+          v-remove-row-borders
+          :style="{ 'background-color': tableColor, 'text-align': center}"
         >
-          <template v-slot:[`item.screen_status`]="{ item }">
-            <span>
-              <v-icon
-                :color="item.screen_status === 'Complete' ? 'green' : 'red'"
-                >mdi-circle</v-icon
-              >
-              {{ item.screen_status }}
-            </span>
+          <template v-slot:item="{ item, index }">
+            <tr :class="index % 2 === 0 ? 'row-even' : 'row-odd'">
+              <td>
+                {{ index + 1 }}
+              </td>
+              <td>
+                {{ item.screen_id }}
+              </td>
+              <td>
+                {{ item.screen_name }}
+              </td>
+              <td>
+                {{ item.screen_level }}
+              </td>
+              <td>
+                {{ item.screen_type }}
+              </td>
+              <td>
+                <v-btn
+                  icon
+                  :to="`/screendetail/${item.id}`"
+                  color="primary"
+                  style="color: white; border-radius: 20px"
+                >
+                  <v-icon>mdi-arrow-right-circle-outline</v-icon>
+                </v-btn>
+              </td>
+            </tr>
           </template>
-          <template v-slot:[`item.id`]="{ index }">
+
+           <template v-slot:[`item.id`]="{ index }">
             {{ index + 1 }}
           </template>
           <template v-slot:[`item.action`]="{ item }">
@@ -1084,8 +1135,8 @@
               <v-icon>mdi-arrow-right-circle-outline</v-icon>
             </v-btn>
           </template>
-        </v-data-table>
-      </template>
+        </v-data-table> -->
+      </v-container>
 
       <!--  -->
     </v-container>
@@ -1109,26 +1160,15 @@ export default {
   layout: "admin",
   data() {
     return {
-      newscreen_dateStart: new Date(
-        Date.now() - new Date().getTimezoneOffset() * 60000
-      )
-        .toISOString()
-        .substr(0, 10),
-      newscreen_dateEnd: new Date(
-        Date.now() - new Date().getTimezoneOffset() * 60000
-      )
-        .toISOString()
-        .substr(0, 10),
-      datestartformat: new Date(
-        Date.now() - new Date().getTimezoneOffset() * 60000
-      )
-        .toISOString()
-        .substr(0, 10),
-      dateendformat: new Date(
-        Date.now() - new Date().getTimezoneOffset() * 60000
-      )
-        .toISOString()
-        .substr(0, 10),
+      newscreen_dateStart: null,
+      newscreen_dateEnd: null,
+      datestartformat: "",
+      // new Date(
+      //   Date.now() - new Date().getTimezoneOffset() * 60000
+      // )
+      //   .toISOString()
+      //   .substr(0, 10)
+      dateendformat: null,
       id: this.$route.params.id,
       dataSystem: [],
       projectID: null,
@@ -1210,11 +1250,11 @@ export default {
           align: "center",
           value: "screen_name",
         },
-        {
-          text: "สถานะ",
-          align: "center",
-          value: "screen_status",
-        },
+        // {
+        //   text: "สถานะ",
+        //   align: "center",
+        //   value: "screen_status",
+        // },
         {
           text: "ระดับ",
           align: "center",
@@ -1232,6 +1272,7 @@ export default {
           value: "action",
         },
       ],
+      tableColor: "#caadf4",
     };
   },
   created() {
@@ -1718,5 +1759,13 @@ input[type="text"] {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+.row-even {
+  background-color: rgba(233, 203, 243, 0.788) !important;
+  color: black;
+}
+.row-odd {
+  background-color: rgba(247, 229, 191, 0.788) !important;
+  color: black;
 }
 </style>

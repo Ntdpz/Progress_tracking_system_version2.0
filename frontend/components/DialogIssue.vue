@@ -99,7 +99,7 @@
                   ></v-select>
                 </v-col>
                 <!-- date start -->
-                <v-col cols="12" sm="6" md="6">
+                <v-col cols="12" sm="12" md="6">
                   <v-menu
                     ref="menuDateStart"
                     v-model="menuStart"
@@ -138,7 +138,7 @@
                 </v-col>
 
                 <!-- date end -->
-                <v-col cols="12" sm="6" md="6">
+                <v-col cols="12" sm="12" md="6">
                   <v-menu
                     ref="menu"
                     v-model="menu"
@@ -179,7 +179,7 @@
                     </v-date-picker>
                   </v-menu>
                 </v-col>
-                <v-col cols="12" sm="4" md="6">
+                <v-col cols="12" sm="6" md="6">
                   <v-select
                     :items="position_Developers_System"
                     label="ผู้พัฒนา"
@@ -190,7 +190,7 @@
                     return-object="false"
                   ></v-select>
                 </v-col>
-                <v-col cols="12" sm="4" md="6">
+                <v-col cols="12" sm="6" md="6">
                   <v-select
                     :items="position_Implementer_System"
                     label="ผู้ตรวจสอบ"
@@ -201,6 +201,30 @@
                     return-object="false"
                   ></v-select>
                 </v-col>
+                <!-- จำนวนวันและชั่วโมงของ Qc -->
+                <v-col cols="12" class="hidden-sm-and-down" md="6">
+                  <!-- <v-text-field
+                    label="จำนวนวันที่ใช้ตรวจสอบ"
+                    placeholder="จำนวนวันที่ใช้ตรวจสอบ"
+                    type="number"
+                    dense
+                    outlined
+                    v-model="form.dayQc"
+                    :rules="rulesQc"
+                  ></v-text-field> -->
+                </v-col>
+                <v-col cols="12" sm="12" md="6">
+                  <v-text-field
+                    label="จำนวนชั่วโมงที่ใช้ตรวจสอบ"
+                    placeholder="จำนวนชั่วโมงที่ใช้ตรวจสอบ"
+                    type="number"
+                    dense
+                    outlined
+                    v-model="form.hourQc"
+                    :rules="rulesQc"
+                  ></v-text-field>
+                </v-col>
+                <!--  -->
                 <v-col cols="12" sm="6" md="4" v-show="PNC">
                   <v-text-field
                     label="เลขที่เอกสาร"
@@ -222,7 +246,7 @@
                 <v-col cols="12" sm="6" md="6" v-show="Newreq">
                   <v-container fluid class="ma-0 pa-0">
                     <!-- <p>Type Issue {{ selected }}</p> -->
-                    <p>ประเทภของปัญหา</p>
+                    <p>ประเภทของปัญหา</p>
                     <v-row>
                       <v-col>
                         <v-row>
@@ -336,7 +360,7 @@
                 <v-btn
                   color="primary"
                   dark
-                  @click="(dialogSuccess = true), close()"
+                  @click="(dialogSuccess = false), close()"
                 >
                   Ok
                 </v-btn>
@@ -344,7 +368,40 @@
             </v-card>
           </v-dialog>
         </template>
-        
+        <!--  -->
+        <template>
+          <v-dialog
+            v-model="dialogFail"
+            persistent
+            max-width="400px"
+            max-height="100%"
+          >
+            <v-card width="100%" max-height="100%">
+              <v-row class="ma-0 pa-0" style="place-content: center">
+                <v-card-title>
+                  <v-icon size="50px" color="error"
+                    >mdi-alert-circle-outline</v-icon
+                  >
+                </v-card-title>
+              </v-row>
+              <v-row class="ma-0 pa-0" style="place-content: center">
+                <v-card-title class="text-h5">
+                  กรุณาใส่ข้อมูลให้ครบถ้วน
+                </v-card-title>
+              </v-row>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn
+                  color="primary"
+                  dark
+                  @click="(dialogFail = false)"
+                >
+                  Ok
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </template>
       </v-dialog>
     </v-form>
   </v-layout>
@@ -420,8 +477,12 @@ export default {
         issue_manday: "",
         issue_complete: "",
         dialogSuccess: false,
+        
+        dayQc: "",
+        hourQc: "",
       },
       dataDefault: [],
+      dialogFail: false,
       manday: null,
       position_Developers: [],
       position_Implementer: [],
@@ -429,6 +490,11 @@ export default {
       position_Developers_System: [],
       position_Implementer_System: [],
       rules: [(value) => !!value || "Required."],
+      rulesQc: [
+        (value) => !!value || "Required.",
+        (value) => /^\d+$/.test(value) || "Only numerical values are allowed.",
+        (value) => value >= 0 || "Please enter a non-negative number.",
+      ],
       formattedDateEnd: new Date(
         Date.now() - new Date().getTimezoneOffset() * 60000
       )
@@ -518,129 +584,139 @@ export default {
     async close() {
       this.$refs.form.resetValidation();
       this.$emit("button-clicked");
-      await this.resetForm();
+      this.resetForm();
       this.$emit("update:dialog", false);
     },
     async saveIssue() {
-      await this.$refs.form.validate();
-      if (
-        this.mode == "create" &&
-        this.form.issue_name !== "" &&
-        this.form.issue_type !== "" &&
-        this.form.issue_priority !== ""
-      ) {
-        this.form.issue_end = this.date;
-        const selectedScreenId = this.selectedScreen
-          ? this.selectedScreen.id
-          : null;
-        //addUser_Screen
-        try {
-          const existingUserDevScreen = await this.$axios.get(
-            "/user_screens/getOneUserID/" + this.form.issue_assign.id
-          );
-          const existingUserImpleScreen = await this.$axios.get(
-            "/user_screens/getOneUserID/" + this.form.issue_qc.id
-          );
+      const check = await this.$refs.form.validate();
+      if (check) {
+        console.log("check ok");
+        if (
+          this.mode == "create" &&
+          this.form.issue_name !== "" &&
+          this.form.issue_type !== "" &&
+          this.form.issue_priority !== "" &&
+          this.selectedScreen !== "" &&
+          this.dayQc !== "" &&
+          this.hourQc !== ""
+        ) {
+          this.form.issue_end = this.date;
+          const selectedScreenId = this.selectedScreen
+            ? this.selectedScreen.id
+            : null;
+          //addUser_Screen
+          try {
+            const existingUserDevScreen = await this.$axios.get(
+              "/user_screens/getOneUserID/" + this.form.issue_assign.id
+            );
+            const existingUserImpleScreen = await this.$axios.get(
+              "/user_screens/getOneUserID/" + this.form.issue_qc.id
+            );
 
-          if (existingUserDevScreen.data.length === 0) {
-            await this.$axios.post("/user_screens/createUser_screen", {
-              user_id: this.form.issue_assign.id,
-              screen_id: selectedScreenId,
-              system_id: this.systemId,
-              project_id: this.projectId,
-            });
-            // alert("addUser_Screen Dev Success!!");
-          } else if (existingUserImpleScreen.data.length === 0) {
-            await this.$axios.post("/user_screens/createUser_screen", {
-              user_id: this.form.issue_qc.id,
-              screen_id: selectedScreenId,
-              system_id: this.systemId,
-              project_id: this.projectId,
-            });
-            // alert("addUser_Screen Imple Success!!");
-          } else {
-            // alert("User already exists in user_screens");
+            if (existingUserDevScreen.data.length === 0) {
+              await this.$axios.post("/user_screens/createUser_screen", {
+                user_id: this.form.issue_assign.id,
+                screen_id: selectedScreenId,
+                system_id: this.systemId,
+                project_id: this.projectId,
+              });
+              // alert("addUser_Screen Dev Success!!");
+            } else if (existingUserImpleScreen.data.length === 0) {
+              await this.$axios.post("/user_screens/createUser_screen", {
+                user_id: this.form.issue_qc.id,
+                screen_id: selectedScreenId,
+                system_id: this.systemId,
+                project_id: this.projectId,
+              });
+              // alert("addUser_Screen Imple Success!!");
+            } else {
+              // alert("User already exists in user_screens");
+            }
+          } catch (error) {
+            console.log("user_screen: " + error);
+            // alert("user_screen: " + error);
           }
-        } catch (error) {
-          console.log("user_screen: " + error);
-          // alert("user_screen: " + error);
-        }
-        const data = {
-          screen_id: selectedScreenId,
-          system_id: this.systemId,
-          project_id: this.projectId,
-          user_assign_id: this.form.issue_assign.id,
-          user_qc_id: this.form.issue_qc.id,
-          issue_name: this.form.issue_name,
-          issue_id: this.form.issue_id,
-          issue_type: this.form.issue_type,
-          issue_informer: this.form.issue_informer,
-          issue_priority: this.form.issue_priority,
-          issue_end: this.form.issue_end,
-          issue_assign: this.form.issue_assign.user_firstname,
-          issue_qc: this.form.issue_qc.user_firstname,
-          issue_des: this.form.issue_des,
-          issue_des_sa: this.form.issue_des_sa,
-          issue_type_sa: this.form.issue_type_sa,
-          issue_doc_id: this.form.issue_doc_id,
-          issue_customer: this.form.issue_customer,
-          issue_filename: this.form.issue_filename,
-          issue_des_dev: this.form.issue_des_dev,
-          issue_des_implementer: this.form.issue_des_implementer,
-          issue_start: null,
-          issue_expected: null,
-          issue_status: "รอแก้ไข",
-          issue_accepting: null,
-          issue_manday: null,
-          issue_complete: null,
-          issue_status_developer: "รอแก้ไข",
-          issue_status_implement: null,
-          issue_round: 0,
-        };
-        try {
-          await this.$axios.post("/issues/createIssue", data);
+          const data = {
+            screen_id: selectedScreenId,
+            system_id: this.systemId,
+            project_id: this.projectId,
+            user_assign_id: this.form.issue_assign.id,
+            user_qc_id: this.form.issue_qc.id,
+            issue_name: this.form.issue_name,
+            issue_id: this.form.issue_id,
+            issue_type: this.form.issue_type,
+            issue_informer: this.form.issue_informer,
+            issue_priority: this.form.issue_priority,
+            issue_end: this.form.issue_end,
+            issue_assign: this.form.issue_assign.user_firstname,
+            issue_qc: this.form.issue_qc.user_firstname,
+            issue_des: this.form.issue_des,
+            issue_des_sa: this.form.issue_des_sa,
+            issue_type_sa: this.form.issue_type_sa,
+            issue_doc_id: this.form.issue_doc_id,
+            issue_customer: this.form.issue_customer,
+            issue_filename: this.form.issue_filename,
+            issue_des_dev: this.form.issue_des_dev,
+            issue_des_implementer: this.form.issue_des_implementer,
+            issue_start: null,
+            issue_expected: null,
+            issue_status: "รอแก้ไข",
+            issue_accepting: null,
+            issue_manday: null,
+            issue_complete: null,
+            issue_status_developer: "รอแก้ไข",
+            issue_status_implement: null,
+            issue_round: 0,
+          };
+          try {
+            await this.$axios.post("/issues/createIssue", data);
 
-          const promise = new Promise((resolve, reject) => {
-            resolve();
-            this.form.screen_id = "";
-            this.form.system_id = "";
-            this.form.project_id = "";
-            this.form.issue_name = "";
-            this.form.issue_id = "";
-            this.form.issue_type = "";
-            this.form.issue_informer = this.userFirstname;
-            this.form.issue_priority = "";
-            this.form.issue_end = "";
-            this.form.issue_assign = "";
-            this.form.issue_qc = "";
-            this.form.issue_des = "";
-            this.selectedScreen = null;
-            this.form.issue_des_sa = "";
-            this.form.issue_type_sa = "";
-            this.form.issue_doc_id = "";
-            this.form.issue_customer = "";
-            this.form.issue_filename = "";
-            this.form.issue_des_dev = "";
-            this.form.issue_des_implementer = "";
-            this.form.issue_start = "";
-            this.form.issue_expected = "";
-            this.form.issue_status = "รอแก้ไข";
-            this.form.issue_accepting = "";
-            this.form.issue_manday = "";
-            this.form.issue_complete = "";
-            this.dialogSuccess = true;
-          });
-          promise.then(() => {
-            setTimeout(() => {
-              // alert("success3");
+            const promise = new Promise((resolve, reject) => {
+              resolve();
+              this.form.screen_id = "";
+              this.form.system_id = "";
+              this.form.project_id = "";
+              this.form.issue_name = "";
+              this.form.issue_id = "";
+              this.form.issue_type = "";
+              this.form.issue_informer = this.userFirstname;
+              this.form.issue_priority = "";
+              this.form.issue_end = "";
+              this.form.issue_assign = "";
+              this.form.issue_qc = "";
+              this.form.issue_des = "";
+              this.selectedScreen = null;
+              this.form.issue_des_sa = "";
+              this.form.issue_type_sa = "";
+              this.form.issue_doc_id = "";
+              this.form.issue_customer = "";
+              this.form.issue_filename = "";
+              this.form.issue_des_dev = "";
+              this.form.issue_des_implementer = "";
+              this.form.issue_start = "";
+              this.form.issue_expected = "";
+              this.form.issue_status = "รอแก้ไข";
+              this.form.issue_accepting = "";
+              this.form.issue_manday = "";
+              this.form.issue_complete = "";
               this.dialogSuccess = true;
-              this.close();
-            }, 2000);
-          });
-        } catch (error) {
-          console.error(error);
-          alert("Error submitting form");
+            });
+            promise.then(() => {
+              setTimeout(() => {
+                // alert("success3");
+                this.dialogSuccess = true;
+                // this.close();
+              }, 2000);
+            });
+          } catch (error) {
+            console.error(error);
+            alert("Error submitting form");
+          }
         }
+      } else {
+        // Display an error message or handle the invalid form case
+        console.log("error check");
+        this.dialogFail = true;
       }
     },
     async getDefault() {
