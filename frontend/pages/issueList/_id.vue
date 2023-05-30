@@ -329,7 +329,7 @@
                 </template>
                 <template v-slot:item="{ item, index }">
                   <tr
-                    :class="index % 2 === 0 ? 'white' : 'deep-purple lighten-5'"
+                    :class="index % 2 === 0 ? 'white' : 'deep-purple lighten-4'"
                   >
                     <td>
                       {{ item.issue_id }}
@@ -490,7 +490,7 @@
                 </template>
                 <template v-slot:item="{ item, index }">
                   <tr
-                    :class="index % 2 === 0 ? 'white' : 'deep-purple lighten-5'"
+                    :class="index % 2 === 0 ? 'white' : 'deep-purple lighten-4'"
                   >
                     <td>
                       {{ item.issue_id }}
@@ -653,7 +653,7 @@
                 </template>
                 <template v-slot:item="{ item, index }">
                   <tr
-                    :class="index % 2 === 0 ? 'white' : 'deep-purple lighten-5'"
+                    :class="index % 2 === 0 ? 'white' : 'deep-purple lighten-4'"
                   >
                     <td>
                       {{ item.issue_id }}
@@ -813,7 +813,7 @@
                 </template>
                 <template v-slot:item="{ item, index }">
                   <tr
-                    :class="index % 2 === 0 ? 'white' : 'deep-purple lighten-5'"
+                    :class="index % 2 === 0 ? 'white' : 'deep-purple lighten-4'"
                   >
                     <td>
                       {{ item.issue_id }}
@@ -976,7 +976,7 @@
                 </template>
                 <template v-slot:item="{ item, index }">
                   <tr
-                    :class="index % 2 === 0 ? 'white' : 'deep-purple lighten-5'"
+                    :class="index % 2 === 0 ? 'white' : 'deep-purple lighten-4'"
                   >
                     <td>
                       {{ item.issue_id }}
@@ -1136,7 +1136,7 @@
                 </template>
                 <template v-slot:item="{ item, index }">
                   <tr
-                    :class="index % 2 === 0 ? 'white' : 'deep-purple lighten-5'"
+                    :class="index % 2 === 0 ? 'white' : 'deep-purple lighten-4'"
                   >
                     <td>
                       {{ item.issue_id }}
@@ -1299,7 +1299,7 @@
                 </template>
                 <template v-slot:item="{ item, index }">
                   <tr
-                    :class="index % 2 === 0 ? 'white' : 'deep-purple lighten-5'"
+                    :class="index % 2 === 0 ? 'white' : 'deep-purple lighten-4'"
                   >
                     <td>
                       {{ item.issue_id }}
@@ -1459,7 +1459,7 @@
                 </template>
                 <template v-slot:item="{ item, index }">
                   <tr
-                    :class="index % 2 === 0 ? 'white' : 'deep-purple lighten-5'"
+                    :class="index % 2 === 0 ? 'white' : 'deep-purple lighten-4'"
                   >
                     <td>
                       {{ item.issue_id }}
@@ -1598,7 +1598,7 @@
               >
                 <template v-slot:item="{ item, index }">
                   <tr
-                    :class="index % 2 === 0 ? 'white' : 'deep-purple lighten-5'"
+                    :class="index % 2 === 0 ? 'white' : 'deep-purple lighten-4'"
                   >
                     <td>
                       {{ item.issue_id }}
