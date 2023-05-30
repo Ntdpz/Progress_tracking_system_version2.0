@@ -443,7 +443,8 @@
                         >
                           <template v-slot:activator="{ on, attrs }">
                             <v-text-field
-                              v-model="datestartformat"
+                              :v-model="newscreen_dateStart != null ? datestartformat : ''"
+                              :value="newscreen_dateStart != null ? datestartformat : ''"
                               label="วันเริ่ม"
                               prepend-icon="mdi mdi-calendar-clock-outline"
                               readonly
@@ -487,7 +488,8 @@
                         >
                           <template v-slot:activator="{ on, attrs }">
                             <v-text-field
-                              v-model="dateendformat"
+                              :v-model="newscreen_dateEnd != null ? dateendformat : ''"
+                              :value="newscreen_dateEnd != null ? dateendformat : ''"
                               label="วันจบ"
                               prepend-icon="mdi mdi-calendar-clock-outline"
                               readonly
@@ -1061,7 +1063,7 @@
           :items="AllScreens"
           sort-by="calories"
           class="v-data-table elevation-1 ma-4"
-          v-remove-row-borders
+          remove-row-borders
           style="text-align: center; background-color: #caadf4; "
           >
             <template v-slot:item="{item, index}">
@@ -1211,6 +1213,7 @@ export default {
       data_position_Developer: [],
       data_position_Implementer: [],
       data_position_Sa: [],
+      position_Sa: [],
       develop_system: [],
       implementer_system: [],
       sa_system: [],
@@ -1287,6 +1290,7 @@ export default {
     this.getUserSystems();
     this.datestartformat = moment().add(543, "years").format("DD-MM-YYYY");
     this.dateendformat = moment().add(543, "years").format("DD-MM-YYYY");
+    console.log(this.newscreen_dateStart);
   },
   computed: {
     userId() {
@@ -1654,7 +1658,7 @@ export default {
     async getAllDefault() {
       await this.$axios.get("/default_settings/getAll").then((data) => {
         this.dataDefault = data.data;
-        console.clear();
+        // console.clear();
         // console.log(this.dataDefault);
         this.dataDefault.forEach((item) => {
           if (item.level) {
@@ -1678,9 +1682,12 @@ export default {
     },
     async createScreen() {
       try {
-        const datestart = this.newscreen_dateStart;
-        const dateEnd = this.newscreen_dateEnd;
+        const datestart = this.newscreen_dateStart !== null ? this.newscreen_dateStart : "NULL";
+        const dateEnd = this.newscreen_dateEnd !== null ? this.newscreen_dateEnd : "NULL";
+        // const datestart = this.newscreen_dateStart;
+        // const dateEnd = this.newscreen_dateEnd;
         const id_screen = this.screenID;
+        console.log(datestart, dateEnd);
         const formData = new FormData();
         formData.append("image", this.imageFileUpload);
         formData.append("system_id", this.id);
@@ -1701,6 +1708,30 @@ export default {
             "Content-Type": "multipart/form-data",
           },
         });
+        
+        
+        // const dateEnd = this.newscreen_dateEnd;
+        // const id_screen = this.screenID;
+        // const formData = new FormData();
+        // formData.append("image", this.imageFileUpload);
+        // formData.append("system_id", this.id);
+        // formData.append("project_id", this.projectID);
+        // formData.append("screen_id", this.screenID);
+        // formData.append("screen_name", this.screenname);
+        // formData.append("screen_developer", "");
+        // formData.append("screen_implementer", "");
+        // formData.append("screen_status", this.status);
+        // formData.append("screen_level", this.level);
+        // formData.append("screen_start", datestart);
+        // formData.append("screen_end", dateEnd);
+        // formData.append("screen_manday", this.manday);
+        // formData.append("screen_type", this.screentype);
+
+        // await this.$axios.post("/screens/createScreen", formData, {
+        //   headers: {
+        //     "Content-Type": "multipart/form-data",
+        //   },
+        // });
         // console.log("create screen success");
       } catch (error) {
         console.error(error);
