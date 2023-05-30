@@ -3,14 +3,13 @@
     <!-- *Search bar* -->
     <Searchbar title="รายการปัญหา " />
     <v-divider></v-divider>
-
     <!-- *Header* -->
     <v-row class="mt-4 ml-2 mb-2">
-      <h4>
+      <h3>
         {{ this.project_id }} : {{ this.projectName }} ({{
           this.project_shortname
         }})
-      </h4>
+      </h3>
       <p style="color: #b6b5b5; font-size: 16px" class="ml-2">
         {{ this.systemslength }} ระบบ
       </p>
@@ -22,15 +21,18 @@
         v-for="(system, index) in systemsList"
         :key="index"
       >
-        <v-expansion-panel-header style="background-color: #aa7dec;">
+        <v-expansion-panel-header style="background-color: #5c3efe">
+          <template v-slot:actions>
+            <v-icon color="white"> $expand </v-icon>
+          </template>
           <template>
             <v-row no-gutters>
               <v-col cols="12">
                 <v-row style="margin-top: 1px">
-                  <h4>
+                  <h3 style="color: white; margin-bottom: 10px">
                     {{ system.system_shortname }} &nbsp;
                     {{ system.system_nameTH }}
-                  </h4>
+                  </h3>
                   <!-- <p style="color: #b6b5b5; font-size: 16px; margin-left: 5%">
                     3 Issue
                   </p> -->
@@ -45,7 +47,7 @@
           <v-row justify="center">
             <v-btn
               v-if="user_role == 'Admin' || user_position == 'Implementer'"
-              class="new-btn ma-2 text-left"
+              class="new-btn ma-5 text-left"
               outlined
               color="primary"
               dark
@@ -60,13 +62,12 @@
                   system.system_shortname
                 )
               "
-              style="background-color: #bb96f1a6"
             >
               <span
                 class="mdi mdi-plus-circle-outline"
-                style="font-size: 20px; color: black"
+                style="font-size: 25px; color: black"
               ></span>
-              <h4 style="color: black">สร้างปัญหาใหม่</h4>
+              <h3 style="color: black; font-weight: bolder">สร้างปัญหาใหม่</h3>
             </v-btn>
             <!-- *dialog -->
             <dialog-issue
@@ -94,10 +95,10 @@
             prev-icon="mdi-menu-left-outline"
             show-arrows
             color="primary"
-            class="mt-5"
+            class="mt-5 mb-3"
           >
             <v-tab
-              :style="tab1 ? 'background-color: #bb96f1a6;' : null"
+              :style="tab1 ? 'background-color:#9D68FF;' : null"
               @click="
                 (tab1 = true),
                   (tab2 = false),
@@ -106,10 +107,10 @@
                   (tab5 = false)
               "
             >
-              <h3 style="color: black">My issue</h3>
+              <h3 :style="tab1 ? 'color:#ffff;' : 'color:#000;'">My issue</h3>
             </v-tab>
             <v-tab
-              :style="tab2 ? 'background-color: #bb96f1a6;' : null"
+              :style="tab2 ? 'background-color: #9D68FF;' : null"
               @click="
                 (tab1 = false),
                   (tab2 = true),
@@ -118,10 +119,10 @@
                   (tab5 = false)
               "
             >
-              <h3 style="color: black">PNI</h3>
+              <h3 :style="tab2 ? 'color:#ffff;' : 'color:#000;'">PNI</h3>
             </v-tab>
             <v-tab
-              :style="tab3 ? 'background-color: #bb96f1a6;' : null"
+              :style="tab3 ? 'background-color:#9D68FF;' : null"
               @click="
                 (tab1 = false),
                   (tab2 = false),
@@ -130,10 +131,10 @@
                   (tab5 = false)
               "
             >
-              <h3 style="color: black">PNC</h3>
+              <h3 :style="tab3 ? 'color:#ffff;' : 'color:#000;'">PNC</h3>
             </v-tab>
             <v-tab
-              :style="tab4 ? 'background-color: #bb96f1a6;' : null"
+              :style="tab4 ? 'background-color:#9D68FF;' : null"
               @click="
                 (tab1 = false),
                   (tab2 = false),
@@ -142,10 +143,10 @@
                   (tab5 = false)
               "
             >
-              <h3 style="color: black">NewReq</h3>
+              <h3 :style="tab4 ? 'color:#ffff;' : 'color:#000;'">NewReq</h3>
             </v-tab>
             <v-tab
-              :style="tab5 ? 'background-color: #bb96f1a6;' : null"
+              :style="tab5 ? 'background-color:#9D68FF;' : null"
               @click="
                 (tab1 = false),
                   (tab2 = false),
@@ -154,7 +155,9 @@
                   (tab5 = true)
               "
             >
-              <h3 style="color: black">แก้ไขเรียบร้อย</h3>
+              <h3 :style="tab5 ? 'color:#ffff;' : 'color:#000;'">
+                แก้ไขเรียบร้อย
+              </h3>
             </v-tab>
           </v-tabs>
           <!-- Dialog Admin Dev Implementer -->
@@ -301,32 +304,37 @@
                 :style="{ 'background-color': tableColor }"
               >
                 <template v-slot:top>
-                  <v-toolbar flat>
+                  <v-toolbar
+                    flat
+                    class="mb-5"
+                    style="background-color: #90f28e"
+                  >
                     <v-toolbar-title>
-                      <h5
-                        class="pa-1"
-                        style="background-color: #1cff17; text-align: left"
-                      >
+                      <h5 class="pa-1" style="text-align: left">
                         ปัญหาที่มีคนรับผิดชอบ
                       </h5>
                     </v-toolbar-title>
                     <v-spacer></v-spacer>
                     <v-text-field
+                      class="pa-2"
+                      style="background-color: white"
                       v-model="search"
                       append-icon="mdi-magnify"
                       label="Search"
                       single-line
                       hide-details
+                      rounded
                     ></v-text-field>
                   </v-toolbar>
                 </template>
                 <template v-slot:item="{ item, index }">
-                  <tr :class="index % 2 === 0 ? 'row-even' : 'row-odd'">
+                  <tr
+                    :class="index % 2 === 0 ? 'white' : 'deep-purple lighten-5'"
+                  >
                     <td>
                       {{ item.issue_id }}
                     </td>
                     <td>
-                      <v-icon>mdi-format-list-bulleted</v-icon>
                       {{ item.issue_name }}
                     </td>
                     <td>
@@ -335,12 +343,35 @@
                     <td>{{ item.formattedDateEnd }}</td>
                     <td>{{ item.issue_status }}</td>
                     <td>
-                      <v-icon style="color: #ff0000">mdi-flag-outline</v-icon>
+                      <v-icon
+                        v-show="item.issue_priority == 'Critical'"
+                        style="color: #ff0000"
+                        >mdi-flag</v-icon
+                      >
+                      <v-icon
+                        v-show="item.issue_priority == 'Hight'"
+                        style="color: #ffa500"
+                        >mdi-flag</v-icon
+                      >
+                      <v-icon
+                        v-show="item.issue_priority == 'Medium'"
+                        style="color: #ffff00"
+                        >mdi-flag</v-icon
+                      >
+                      <v-icon
+                        v-show="item.issue_priority == 'Low'"
+                        style="color: #00ff00"
+                        >mdi-flag</v-icon
+                      >
                       {{ item.issue_priority }}
                     </td>
                     <td>
-                      <v-icon style="color: black">mdi-account-circle</v-icon>
-                      <span v-if="item.issue_assign == null || item.issue_assign == ''">N/A</span>
+                      <span
+                        v-if="
+                          item.issue_assign == null || item.issue_assign == ''
+                        "
+                        >N/A</span
+                      >
                       {{ item.issue_assign }}
                     </td>
                     <td>
@@ -362,7 +393,7 @@
                         size="20"
                         color="primary"
                       >
-                        mdi-information-outline
+                        mdi-information
                       </v-icon>
                       <v-icon
                         class="mr-2"
@@ -375,7 +406,7 @@
                         size="20"
                         color="primary"
                       >
-                        mdi-information-outline
+                        mdi-information
                       </v-icon>
                       <v-icon
                         class="mr-2"
@@ -417,7 +448,7 @@
                         size="20"
                         color="primary"
                       >
-                        mdi-information-outline
+                        mdi-information
                       </v-icon>
                     </td>
                   </tr>
@@ -434,32 +465,37 @@
                 :style="{ 'background-color': tableColor }"
               >
                 <template v-slot:top>
-                  <v-toolbar flat>
+                  <v-toolbar
+                    flat
+                    class="mb-5"
+                    style="background-color: #aaaaaa"
+                  >
                     <v-toolbar-title>
-                      <h5
-                        class="pa-1"
-                        style="background-color: #aaaaaa; text-align: left"
-                      >
+                      <h5 class="pa-1" style="text-align: left">
                         ปัญหาที่ไม่มีคนรับผิดชอบ
                       </h5>
                     </v-toolbar-title>
                     <v-spacer></v-spacer>
                     <v-text-field
+                      class="pa-2"
+                      style="background-color: white"
                       v-model="search"
                       append-icon="mdi-magnify"
                       label="Search"
                       single-line
                       hide-details
+                      rounded
                     ></v-text-field>
                   </v-toolbar>
                 </template>
                 <template v-slot:item="{ item, index }">
-                  <tr :class="index % 2 === 0 ? 'row-even' : 'row-odd'">
+                  <tr
+                    :class="index % 2 === 0 ? 'white' : 'deep-purple lighten-5'"
+                  >
                     <td>
                       {{ item.issue_id }}
                     </td>
                     <td>
-                      <v-icon>mdi-format-list-bulleted</v-icon>
                       {{ item.issue_name }}
                     </td>
                     <td>
@@ -468,12 +504,35 @@
                     <td>{{ item.formattedDateEnd }}</td>
                     <td>{{ item.issue_status }}</td>
                     <td>
-                      <v-icon style="color: #ff0000">mdi-flag-outline</v-icon>
+                      <v-icon
+                        v-show="item.issue_priority == 'Critical'"
+                        style="color: #ff0000"
+                        >mdi-flag</v-icon
+                      >
+                      <v-icon
+                        v-show="item.issue_priority == 'Hight'"
+                        style="color: #ffa500"
+                        >mdi-flag</v-icon
+                      >
+                      <v-icon
+                        v-show="item.issue_priority == 'Medium'"
+                        style="color: #ffff00"
+                        >mdi-flag</v-icon
+                      >
+                      <v-icon
+                        v-show="item.issue_priority == 'Low'"
+                        style="color: #00ff00"
+                        >mdi-flag</v-icon
+                      >
                       {{ item.issue_priority }}
                     </td>
                     <td>
-                      <v-icon style="color: black">mdi-account-circle</v-icon>
-                      <span v-if="item.issue_assign == null || item.issue_assign == ''">N/A</span>
+                      <span
+                        v-if="
+                          item.issue_assign == null || item.issue_assign == ''
+                        "
+                        >N/A</span
+                      >
                       {{ item.issue_assign }}
                     </td>
                     <td>
@@ -495,7 +554,7 @@
                         size="20"
                         color="primary"
                       >
-                        mdi-information-outline
+                        mdi-information
                       </v-icon>
                       <v-icon
                         class="mr-2"
@@ -508,7 +567,7 @@
                         size="20"
                         color="primary"
                       >
-                        mdi-information-outline
+                        mdi-information
                       </v-icon>
                       <v-icon
                         class="mr-2"
@@ -550,7 +609,7 @@
                         size="20"
                         color="primary"
                       >
-                        mdi-information-outline
+                        mdi-information
                       </v-icon>
                     </td>
                   </tr>
@@ -569,32 +628,37 @@
                 :style="{ 'background-color': tableColor }"
               >
                 <template v-slot:top>
-                  <v-toolbar flat>
+                  <v-toolbar
+                    flat
+                    class="mb-5"
+                    style="background-color: #90f28e"
+                  >
                     <v-toolbar-title>
-                      <h5
-                        class="pa-1"
-                        style="background-color: #1cff17; text-align: left"
-                      >
+                      <h5 class="pa-1" style="text-align: left">
                         ปัญหาที่มีคนรับผิดชอบ
                       </h5>
                     </v-toolbar-title>
                     <v-spacer></v-spacer>
                     <v-text-field
+                      class="pa-2"
+                      style="background-color: white"
                       v-model="search"
                       append-icon="mdi-magnify"
                       label="Search"
                       single-line
                       hide-details
+                      rounded
                     ></v-text-field>
                   </v-toolbar>
                 </template>
                 <template v-slot:item="{ item, index }">
-                  <tr :class="index % 2 === 0 ? 'row-even' : 'row-odd'">
+                  <tr
+                    :class="index % 2 === 0 ? 'white' : 'deep-purple lighten-5'"
+                  >
                     <td>
                       {{ item.issue_id }}
                     </td>
                     <td>
-                      <v-icon>mdi-format-list-bulleted</v-icon>
                       {{ item.issue_name }}
                     </td>
                     <td>
@@ -603,12 +667,35 @@
                     <td>{{ item.formattedDateEnd }}</td>
                     <td>{{ item.issue_status }}</td>
                     <td>
-                      <v-icon style="color: #ff0000">mdi-flag-outline</v-icon>
+                      <v-icon
+                        v-show="item.issue_priority == 'Critical'"
+                        style="color: #ff0000"
+                        >mdi-flag</v-icon
+                      >
+                      <v-icon
+                        v-show="item.issue_priority == 'Hight'"
+                        style="color: #ffa500"
+                        >mdi-flag</v-icon
+                      >
+                      <v-icon
+                        v-show="item.issue_priority == 'Medium'"
+                        style="color: #ffff00"
+                        >mdi-flag</v-icon
+                      >
+                      <v-icon
+                        v-show="item.issue_priority == 'Low'"
+                        style="color: #00ff00"
+                        >mdi-flag</v-icon
+                      >
                       {{ item.issue_priority }}
                     </td>
                     <td>
-                      <v-icon style="color: black">mdi-account-circle</v-icon>
-                      <span v-if="item.issue_assign == null || item.issue_assign == ''">N/A</span>
+                      <span
+                        v-if="
+                          item.issue_assign == null || item.issue_assign == ''
+                        "
+                        >N/A</span
+                      >
                       {{ item.issue_assign }}
                     </td>
                     <td>
@@ -630,7 +717,7 @@
                         size="20"
                         color="primary"
                       >
-                        mdi-information-outline
+                        mdi-information
                       </v-icon>
                       <v-icon
                         class="mr-2"
@@ -643,7 +730,7 @@
                         size="20"
                         color="primary"
                       >
-                        mdi-information-outline
+                        mdi-information
                       </v-icon>
                       <v-icon
                         class="mr-2"
@@ -685,7 +772,7 @@
                         size="20"
                         color="primary"
                       >
-                        mdi-information-outline
+                        mdi-information
                       </v-icon>
                     </td>
                   </tr>
@@ -701,32 +788,37 @@
                 :style="{ 'background-color': tableColor }"
               >
                 <template v-slot:top>
-                  <v-toolbar flat>
+                  <v-toolbar
+                    flat
+                    class="mb-5"
+                    style="background-color: #aaaaaa"
+                  >
                     <v-toolbar-title>
-                      <h5
-                        class="pa-1"
-                        style="background-color: #aaaaaa; text-align: left"
-                      >
+                      <h5 class="pa-1" style="text-align: left">
                         ปัญหาที่ไม่มีคนรับผิดชอบ
                       </h5>
                     </v-toolbar-title>
                     <v-spacer></v-spacer>
                     <v-text-field
+                      class="pa-2"
+                      style="background-color: white"
                       v-model="search"
                       append-icon="mdi-magnify"
                       label="Search"
                       single-line
                       hide-details
+                      rounded
                     ></v-text-field>
                   </v-toolbar>
                 </template>
                 <template v-slot:item="{ item, index }">
-                  <tr :class="index % 2 === 0 ? 'row-even' : 'row-odd'">
+                  <tr
+                    :class="index % 2 === 0 ? 'white' : 'deep-purple lighten-5'"
+                  >
                     <td>
                       {{ item.issue_id }}
                     </td>
                     <td>
-                      <v-icon>mdi-format-list-bulleted</v-icon>
                       {{ item.issue_name }}
                     </td>
                     <td>
@@ -735,12 +827,35 @@
                     <td>{{ item.formattedDateEnd }}</td>
                     <td>{{ item.issue_status }}</td>
                     <td>
-                      <v-icon style="color: #ff0000">mdi-flag-outline</v-icon>
+                      <v-icon
+                        v-show="item.issue_priority == 'Critical'"
+                        style="color: #ff0000"
+                        >mdi-flag</v-icon
+                      >
+                      <v-icon
+                        v-show="item.issue_priority == 'Hight'"
+                        style="color: #ffa500"
+                        >mdi-flag</v-icon
+                      >
+                      <v-icon
+                        v-show="item.issue_priority == 'Medium'"
+                        style="color: #ffff00"
+                        >mdi-flag</v-icon
+                      >
+                      <v-icon
+                        v-show="item.issue_priority == 'Low'"
+                        style="color: #00ff00"
+                        >mdi-flag</v-icon
+                      >
                       {{ item.issue_priority }}
                     </td>
                     <td>
-                      <v-icon style="color: black">mdi-account-circle</v-icon>
-                      <span v-if="item.issue_assign == null || item.issue_assign == ''">N/A</span>
+                      <span
+                        v-if="
+                          item.issue_assign == null || item.issue_assign == ''
+                        "
+                        >N/A</span
+                      >
                       {{ item.issue_assign }}
                     </td>
                     <td>
@@ -762,7 +877,7 @@
                         size="20"
                         color="primary"
                       >
-                        mdi-information-outline
+                        mdi-information
                       </v-icon>
                       <v-icon
                         class="mr-2"
@@ -775,7 +890,7 @@
                         size="20"
                         color="primary"
                       >
-                        mdi-information-outline
+                        mdi-information
                       </v-icon>
                       <v-icon
                         class="mr-2"
@@ -817,7 +932,7 @@
                         size="20"
                         color="primary"
                       >
-                        mdi-information-outline
+                        mdi-information
                       </v-icon>
                     </td>
                   </tr>
@@ -836,32 +951,37 @@
                 :style="{ 'background-color': tableColor }"
               >
                 <template v-slot:top>
-                  <v-toolbar flat>
+                  <v-toolbar
+                    flat
+                    class="mb-5"
+                    style="background-color: #90f28e"
+                  >
                     <v-toolbar-title>
-                      <h5
-                        class="pa-1"
-                        style="background-color: #1cff17; text-align: left"
-                      >
+                      <h5 class="pa-1" style="text-align: left">
                         ปัญหาที่มีคนรับผิดชอบ
                       </h5>
                     </v-toolbar-title>
                     <v-spacer></v-spacer>
                     <v-text-field
+                      class="pa-2"
+                      style="background-color: white"
                       v-model="search"
                       append-icon="mdi-magnify"
                       label="Search"
                       single-line
                       hide-details
+                      rounded
                     ></v-text-field>
                   </v-toolbar>
                 </template>
                 <template v-slot:item="{ item, index }">
-                  <tr :class="index % 2 === 0 ? 'row-even' : 'row-odd'">
+                  <tr
+                    :class="index % 2 === 0 ? 'white' : 'deep-purple lighten-5'"
+                  >
                     <td>
                       {{ item.issue_id }}
                     </td>
                     <td>
-                      <v-icon>mdi-format-list-bulleted</v-icon>
                       {{ item.issue_name }}
                     </td>
                     <td>
@@ -870,12 +990,35 @@
                     <td>{{ item.formattedDateEnd }}</td>
                     <td>{{ item.issue_status }}</td>
                     <td>
-                      <v-icon style="color: #ff0000">mdi-flag-outline</v-icon>
+                      <v-icon
+                        v-show="item.issue_priority == 'Critical'"
+                        style="color: #ff0000"
+                        >mdi-flag</v-icon
+                      >
+                      <v-icon
+                        v-show="item.issue_priority == 'Hight'"
+                        style="color: #ffa500"
+                        >mdi-flag</v-icon
+                      >
+                      <v-icon
+                        v-show="item.issue_priority == 'Medium'"
+                        style="color: #ffff00"
+                        >mdi-flag</v-icon
+                      >
+                      <v-icon
+                        v-show="item.issue_priority == 'Low'"
+                        style="color: #00ff00"
+                        >mdi-flag</v-icon
+                      >
                       {{ item.issue_priority }}
                     </td>
                     <td>
-                      <v-icon style="color: black">mdi-account-circle</v-icon>
-                      <span v-if="item.issue_assign == null || item.issue_assign == ''">N/A</span>
+                      <span
+                        v-if="
+                          item.issue_assign == null || item.issue_assign == ''
+                        "
+                        >N/A</span
+                      >
                       {{ item.issue_assign }}
                     </td>
                     <td>
@@ -897,7 +1040,7 @@
                         size="20"
                         color="primary"
                       >
-                        mdi-information-outline
+                        mdi-information
                       </v-icon>
                       <v-icon
                         class="mr-2"
@@ -910,7 +1053,7 @@
                         size="20"
                         color="primary"
                       >
-                        mdi-information-outline
+                        mdi-information
                       </v-icon>
                       <v-icon
                         class="mr-2"
@@ -952,7 +1095,7 @@
                         size="20"
                         color="primary"
                       >
-                        mdi-information-outline
+                        mdi-information
                       </v-icon>
                     </td>
                   </tr>
@@ -968,32 +1111,37 @@
                 :style="{ 'background-color': tableColor }"
               >
                 <template v-slot:top>
-                  <v-toolbar flat>
+                  <v-toolbar
+                    flat
+                    class="mb-5"
+                    style="background-color: #aaaaaa"
+                  >
                     <v-toolbar-title>
-                      <h5
-                        class="pa-1"
-                        style="background-color: #aaaaaa; text-align: left"
-                      >
+                      <h5 class="pa-1" style="text-align: left">
                         ปัญหาที่ไม่มีคนรับผิดชอบ
                       </h5>
                     </v-toolbar-title>
                     <v-spacer></v-spacer>
                     <v-text-field
+                      class="pa-2"
+                      style="background-color: white"
                       v-model="search"
                       append-icon="mdi-magnify"
                       label="Search"
                       single-line
                       hide-details
+                      rounded
                     ></v-text-field>
                   </v-toolbar>
                 </template>
                 <template v-slot:item="{ item, index }">
-                  <tr :class="index % 2 === 0 ? 'row-even' : 'row-odd'">
+                  <tr
+                    :class="index % 2 === 0 ? 'white' : 'deep-purple lighten-5'"
+                  >
                     <td>
                       {{ item.issue_id }}
                     </td>
                     <td>
-                      <v-icon>mdi-format-list-bulleted</v-icon>
                       {{ item.issue_name }}
                     </td>
                     <td>
@@ -1002,12 +1150,35 @@
                     <td>{{ item.formattedDateEnd }}</td>
                     <td>{{ item.issue_status }}</td>
                     <td>
-                      <v-icon style="color: #ff0000">mdi-flag-outline</v-icon>
+                      <v-icon
+                        v-show="item.issue_priority == 'Critical'"
+                        style="color: #ff0000"
+                        >mdi-flag</v-icon
+                      >
+                      <v-icon
+                        v-show="item.issue_priority == 'Hight'"
+                        style="color: #ffa500"
+                        >mdi-flag</v-icon
+                      >
+                      <v-icon
+                        v-show="item.issue_priority == 'Medium'"
+                        style="color: #ffff00"
+                        >mdi-flag</v-icon
+                      >
+                      <v-icon
+                        v-show="item.issue_priority == 'Low'"
+                        style="color: #00ff00"
+                        >mdi-flag</v-icon
+                      >
                       {{ item.issue_priority }}
                     </td>
                     <td>
-                      <v-icon style="color: black">mdi-account-circle</v-icon>
-                      <span v-if="item.issue_assign == null || item.issue_assign == ''">N/A</span>
+                      <span
+                        v-if="
+                          item.issue_assign == null || item.issue_assign == ''
+                        "
+                        >N/A</span
+                      >
                       {{ item.issue_assign }}
                     </td>
                     <td>
@@ -1029,7 +1200,7 @@
                         size="20"
                         color="primary"
                       >
-                        mdi-information-outline
+                        mdi-information
                       </v-icon>
                       <v-icon
                         class="mr-2"
@@ -1042,7 +1213,7 @@
                         size="20"
                         color="primary"
                       >
-                        mdi-information-outline
+                        mdi-information
                       </v-icon>
                       <v-icon
                         class="mr-2"
@@ -1084,7 +1255,7 @@
                         size="20"
                         color="primary"
                       >
-                        mdi-information-outline
+                        mdi-information
                       </v-icon>
                     </td>
                   </tr>
@@ -1103,32 +1274,37 @@
                 :style="{ 'background-color': tableColor }"
               >
                 <template v-slot:top>
-                  <v-toolbar flat>
+                  <v-toolbar
+                    flat
+                    class="mb-5"
+                    style="background-color: #90f28e"
+                  >
                     <v-toolbar-title>
-                      <h5
-                        class="pa-1"
-                        style="background-color: #1cff17; text-align: left"
-                      >
+                      <h5 class="pa-1" style="text-align: left">
                         ปัญหาที่มีคนรับผิดชอบ
                       </h5>
                     </v-toolbar-title>
                     <v-spacer></v-spacer>
                     <v-text-field
+                      class="pa-2"
+                      style="background-color: white"
                       v-model="search"
                       append-icon="mdi-magnify"
                       label="Search"
                       single-line
                       hide-details
+                      rounded
                     ></v-text-field>
                   </v-toolbar>
                 </template>
                 <template v-slot:item="{ item, index }">
-                  <tr :class="index % 2 === 0 ? 'row-even' : 'row-odd'">
+                  <tr
+                    :class="index % 2 === 0 ? 'white' : 'deep-purple lighten-5'"
+                  >
                     <td>
                       {{ item.issue_id }}
                     </td>
                     <td>
-                      <v-icon>mdi-format-list-bulleted</v-icon>
                       {{ item.issue_name }}
                     </td>
                     <td>
@@ -1137,12 +1313,35 @@
                     <td>{{ item.formattedDateEnd }}</td>
                     <td>{{ item.issue_status }}</td>
                     <td>
-                      <v-icon style="color: #ff0000">mdi-flag-outline</v-icon>
+                      <v-icon
+                        v-show="item.issue_priority == 'Critical'"
+                        style="color: #ff0000"
+                        >mdi-flag</v-icon
+                      >
+                      <v-icon
+                        v-show="item.issue_priority == 'Hight'"
+                        style="color: #ffa500"
+                        >mdi-flag</v-icon
+                      >
+                      <v-icon
+                        v-show="item.issue_priority == 'Medium'"
+                        style="color: #ffff00"
+                        >mdi-flag</v-icon
+                      >
+                      <v-icon
+                        v-show="item.issue_priority == 'Low'"
+                        style="color: #00ff00"
+                        >mdi-flag</v-icon
+                      >
                       {{ item.issue_priority }}
                     </td>
                     <td>
-                      <v-icon style="color: black">mdi-account-circle</v-icon>
-                      <span v-if="item.issue_assign == null || item.issue_assign == ''">N/A</span>
+                      <span
+                        v-if="
+                          item.issue_assign == null || item.issue_assign == ''
+                        "
+                        >N/A</span
+                      >
                       {{ item.issue_assign }}
                     </td>
                     <td>
@@ -1164,7 +1363,7 @@
                         size="20"
                         color="primary"
                       >
-                        mdi-information-outline
+                        mdi-information
                       </v-icon>
                       <v-icon
                         class="mr-2"
@@ -1177,7 +1376,7 @@
                         size="20"
                         color="primary"
                       >
-                        mdi-information-outline
+                        mdi-information
                       </v-icon>
                       <v-icon
                         class="mr-2"
@@ -1219,7 +1418,7 @@
                         size="20"
                         color="primary"
                       >
-                        mdi-information-outline
+                        mdi-information
                       </v-icon>
                     </td>
                   </tr>
@@ -1235,32 +1434,37 @@
                 :style="{ 'background-color': tableColor }"
               >
                 <template v-slot:top>
-                  <v-toolbar flat>
+                  <v-toolbar
+                    flat
+                    class="mb-5"
+                    style="background-color: #aaaaaa"
+                  >
                     <v-toolbar-title>
-                      <h5
-                        class="pa-1"
-                        style="background-color: #aaaaaa; text-align: left"
-                      >
+                      <h5 class="pa-1" style="text-align: left">
                         ปัญหาที่ไม่มีคนรับผิดชอบ
                       </h5>
                     </v-toolbar-title>
                     <v-spacer></v-spacer>
                     <v-text-field
+                      class="pa-2"
+                      style="background-color: white"
                       v-model="search"
                       append-icon="mdi-magnify"
                       label="Search"
                       single-line
                       hide-details
+                      rounded
                     ></v-text-field>
                   </v-toolbar>
                 </template>
                 <template v-slot:item="{ item, index }">
-                  <tr :class="index % 2 === 0 ? 'row-even' : 'row-odd'">
+                  <tr
+                    :class="index % 2 === 0 ? 'white' : 'deep-purple lighten-5'"
+                  >
                     <td>
                       {{ item.issue_id }}
                     </td>
                     <td>
-                      <v-icon>mdi-format-list-bulleted</v-icon>
                       {{ item.issue_name }}
                     </td>
                     <td>
@@ -1269,12 +1473,35 @@
                     <td>{{ item.formattedDateEnd }}</td>
                     <td>{{ item.issue_status }}</td>
                     <td>
-                      <v-icon style="color: #ff0000">mdi-flag-outline</v-icon>
+                      <v-icon
+                        v-show="item.issue_priority == 'Critical'"
+                        style="color: #ff0000"
+                        >mdi-flag</v-icon
+                      >
+                      <v-icon
+                        v-show="item.issue_priority == 'Hight'"
+                        style="color: #ffa500"
+                        >mdi-flag</v-icon
+                      >
+                      <v-icon
+                        v-show="item.issue_priority == 'Medium'"
+                        style="color: #ffff00"
+                        >mdi-flag</v-icon
+                      >
+                      <v-icon
+                        v-show="item.issue_priority == 'Low'"
+                        style="color: #00ff00"
+                        >mdi-flag</v-icon
+                      >
                       {{ item.issue_priority }}
                     </td>
                     <td>
-                      <v-icon style="color: black">mdi-account-circle</v-icon>
-                      <span v-if="item.issue_assign == null || item.issue_assign == ''">N/A</span>
+                      <span
+                        v-if="
+                          item.issue_assign == null || item.issue_assign == ''
+                        "
+                        >N/A</span
+                      >
                       {{ item.issue_assign }}
                     </td>
                     <td>
@@ -1296,7 +1523,7 @@
                         size="20"
                         color="primary"
                       >
-                        mdi-information-outline
+                        mdi-information
                       </v-icon>
                       <v-icon
                         class="mr-2"
@@ -1309,7 +1536,7 @@
                         size="20"
                         color="primary"
                       >
-                        mdi-information-outline
+                        mdi-information
                       </v-icon>
                       <v-icon
                         class="mr-2"
@@ -1351,7 +1578,7 @@
                         size="20"
                         color="primary"
                       >
-                        mdi-information-outline
+                        mdi-information
                       </v-icon>
                     </td>
                   </tr>
@@ -1369,83 +1596,14 @@
                 v-remove-row-borders
                 :style="{ 'background-color': tableColor }"
               >
-                <!-- <template v-slot:[`item.issue_name`]="{ item }">
-                  <v-icon>mdi-format-list-bulleted</v-icon>
-                  {{ item.issue_name }} /{{ item.issue_id }}
-                </template>
-                <template v-slot:[`item.formattedDateEnd`]="{ item }">
-                  {{ item.formattedDateEnd }}
-                </template>
-                <template v-slot:[`item.issue_status`]="{ item }">
-                  {{ item.issue_status }}
-                </template>
-                <template v-slot:[`item.issue_priotity`]="{ item }">
-                  <v-icon style="color: #ff0000">mdi-flag-outline</v-icon>
-                </template>
-                <template v-slot:[`item.issue_assignees`]>
-                  <v-icon style="color: black">mdi-account-circle</v-icon>
-                   {{ item.issue_assignees }}
-                  <p v-show="item.issue_assign == ''">N/A</p>
-                </template>
-                <template v-slot:[`item.issue_qc`]="{ item }">
-                  {{ item.issue_qc }}
-                  <p v-show="item.issue_qc == null || item.issue_qc == ''">
-                    No assign
-                  </p>
-                </template>
-                <template v-slot:[`item.actions`]="{ item }">
-                  <v-icon
-                    class="mr-2"
-                    @click="
-                      (history = true),
-                        (no_assign = false),
-                        showIssueDetailDialog(
-                          item.id,
-                          item.issue_id,
-                          item.issue_type,
-                          item.screen_id,
-                          item.issue_status,
-                          item.issue_priority,
-                          item.formattedDateEnd,
-                          item.issue_name,
-                          item.issue_des_sa,
-                          item.issue_informer,
-                          item.issue_assign,
-                          item.issue_qc,
-                          item.issue_filename,
-                          item.formattedDateAccepting,
-                          item.issue_manday,
-                          item.formattedDateStart,
-                          item.formattedDateExpected,
-                          item.formattedDateComplete,
-                          item.issue_des_implementer,
-                          item.issue_des_dev,
-                          item.issue_des,
-                          item.issue_customer,
-                          item.issue_doc_id,
-                          item.issue_type_sa,
-                          item.created_at,
-                          item.issue_status_developer,
-                          item.issue_status_implement,
-                          item.issue_round,
-                          item.user_assign_id,
-                          item.user_qc_id
-                        )
-                    "
-                    size="20"
-                    color="primary"
-                  >
-                    mdi-information-outline
-                  </v-icon>
-                </template> -->
-                <!--  -->
                 <template v-slot:item="{ item, index }">
-                  <tr :class="index % 2 === 0 ? 'row-even' : 'row-odd'">
+                  <tr
+                    :class="index % 2 === 0 ? 'white' : 'deep-purple lighten-5'"
+                  >
                     <td>
                       {{ item.issue_id }}
                     </td>
                     <td>
-                      <v-icon>mdi-format-list-bulleted</v-icon>
                       {{ item.issue_name }}
                     </td>
                     <td>
@@ -1454,12 +1612,35 @@
                     <td>{{ item.formattedDateEnd }}</td>
                     <td>{{ item.issue_status }}</td>
                     <td>
-                      <v-icon style="color: #ff0000">mdi-flag-outline</v-icon>
+                      <v-icon
+                        v-show="item.issue_priority == 'Critical'"
+                        style="color: #ff0000"
+                        >mdi-flag</v-icon
+                      >
+                      <v-icon
+                        v-show="item.issue_priority == 'Hight'"
+                        style="color: #ffa500"
+                        >mdi-flag</v-icon
+                      >
+                      <v-icon
+                        v-show="item.issue_priority == 'Medium'"
+                        style="color: #ffff00"
+                        >mdi-flag</v-icon
+                      >
+                      <v-icon
+                        v-show="item.issue_priority == 'Low'"
+                        style="color: #00ff00"
+                        >mdi-flag</v-icon
+                      >
                       {{ item.issue_priority }}
                     </td>
                     <td>
-                      <v-icon style="color: black">mdi-account-circle</v-icon>
-                      <span v-if="item.issue_assign == null || item.issue_assign == ''">N/A</span>
+                      <span
+                        v-if="
+                          item.issue_assign == null || item.issue_assign == ''
+                        "
+                        >N/A</span
+                      >
                       {{ item.issue_assign }}
                     </td>
                     <td>
@@ -1481,7 +1662,7 @@
                         size="20"
                         color="primary"
                       >
-                        mdi-information-outline
+                        mdi-information
                       </v-icon>
                       <v-icon
                         class="mr-2"
@@ -1494,7 +1675,7 @@
                         size="20"
                         color="primary"
                       >
-                        mdi-information-outline
+                        mdi-information
                       </v-icon>
                       <v-icon
                         class="mr-2"
@@ -1538,7 +1719,7 @@
                         size="20"
                         color="primary"
                       >
-                        mdi-information-outline
+                        mdi-information
                       </v-icon>
                     </td>
                   </tr>
@@ -1681,7 +1862,7 @@ export default {
       user_position: "",
       user_role: "",
       runningNumber: "",
-      tableColor: "#caadf4",
+      tableColor: "#ffff",
     };
   },
   async created() {
