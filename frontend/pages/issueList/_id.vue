@@ -156,7 +156,7 @@
               "
             >
               <h3 :style="tab5 ? 'color:#ffff;' : 'color:#000;'">
-                แก้ไขเรียบร้อย
+                เเก้ไขเสร็จเเล้ว
               </h3>
             </v-tab>
           </v-tabs>
@@ -340,7 +340,7 @@
                     <td>
                       {{ item.issue_type }}
                     </td>
-                    <td>{{ item.formattedDateEnd }}</td>
+                    <td>{{ item.formattedDateEndTH }}</td>
                     <td>{{ item.issue_status }}</td>
                     <td>
                       <v-icon
@@ -501,7 +501,7 @@
                     <td>
                       {{ item.issue_type }}
                     </td>
-                    <td>{{ item.formattedDateEnd }}</td>
+                    <td>{{ item.formattedDateEndTH }}</td>
                     <td>{{ item.issue_status }}</td>
                     <td>
                       <v-icon
@@ -664,7 +664,7 @@
                     <td>
                       {{ item.issue_type }}
                     </td>
-                    <td>{{ item.formattedDateEnd }}</td>
+                    <td>{{ item.formattedDateEndTH }}</td>
                     <td>{{ item.issue_status }}</td>
                     <td>
                       <v-icon
@@ -824,7 +824,7 @@
                     <td>
                       {{ item.issue_type }}
                     </td>
-                    <td>{{ item.formattedDateEnd }}</td>
+                    <td>{{ item.formattedDateEndTH }}</td>
                     <td>{{ item.issue_status }}</td>
                     <td>
                       <v-icon
@@ -987,7 +987,7 @@
                     <td>
                       {{ item.issue_type }}
                     </td>
-                    <td>{{ item.formattedDateEnd }}</td>
+                    <td>{{ item.formattedDateEndTH }}</td>
                     <td>{{ item.issue_status }}</td>
                     <td>
                       <v-icon
@@ -1147,7 +1147,7 @@
                     <td>
                       {{ item.issue_type }}
                     </td>
-                    <td>{{ item.formattedDateEnd }}</td>
+                    <td>{{ item.formattedDateEndTH }}</td>
                     <td>{{ item.issue_status }}</td>
                     <td>
                       <v-icon
@@ -1310,7 +1310,7 @@
                     <td>
                       {{ item.issue_type }}
                     </td>
-                    <td>{{ item.formattedDateEnd }}</td>
+                    <td>{{ item.formattedDateEndTH }}</td>
                     <td>{{ item.issue_status }}</td>
                     <td>
                       <v-icon
@@ -1470,7 +1470,7 @@
                     <td>
                       {{ item.issue_type }}
                     </td>
-                    <td>{{ item.formattedDateEnd }}</td>
+                    <td>{{ item.formattedDateEndTH }}</td>
                     <td>{{ item.issue_status }}</td>
                     <td>
                       <v-icon
@@ -1609,7 +1609,7 @@
                     <td>
                       {{ item.issue_type }}
                     </td>
-                    <td>{{ item.formattedDateEnd }}</td>
+                    <td>{{ item.formattedDateEndTH }}</td>
                     <td>{{ item.issue_status }}</td>
                     <td>
                       <v-icon
@@ -1834,7 +1834,7 @@ export default {
         },
         { text: "ชื่อปัญหา", value: "issue_name" },
         { text: "ประเภทปัญหา", value: "issue_type" },
-        { text: "วันกำหนดส่ง", value: "formattedDateEnd" },
+        { text: "วันกำหนดส่ง", value: "formattedDateEndTH" },
         { text: "สถานะ", value: "issue_status" },
         { text: "ความสำคัญของปัญหา", value: "issue_priority" },
         { text: "ผู้รับผิดชอบ", value: "issue_assign" },
@@ -1989,6 +1989,9 @@ export default {
         this.issue.forEach((issue) => {
           const dateEnd = moment(issue.issue_end, "YYYY-MM-DDTHH:mm:ss.SSSZ");
           issue.formattedDateEnd = dateEnd.format("YYYY-MM-DD");
+          issue.formattedDateEndTH = moment(dateEnd)
+            .add(543, "years")
+            .format("DD-MM-YYYY");
 
           const dateAccepting = moment(
             issue.issue_accepting,

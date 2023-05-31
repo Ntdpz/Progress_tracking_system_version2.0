@@ -125,7 +125,7 @@
                   >
                     <template v-slot:activator="{ on, attrs }">
                       <v-text-field
-                        v-model="IssueEndDate"
+                        v-model="formattedDateEnd"
                         label="วันกำหนดส่ง"
                         prepend-icon="mdi-calendar"
                         readonly
@@ -137,7 +137,12 @@
                     <v-date-picker
                       v-model="IssueEndDate"
                       :min="IssueCreate"
+                      no-title
+                      scrollable
+                      format="yyyy-MM-dd"
+                      locale="th"
                       @input="endIssueMenu = false"
+                      @change="changeDate()"
                     ></v-date-picker>
                   </v-menu>
                 </v-row>
@@ -283,7 +288,7 @@
                             >
                               <template v-slot:activator="{ on, attrs }">
                                 <v-text-field
-                                  v-model="IssueAccepting"
+                                  v-model="formattedDateAccept"
                                   label="วันที่รับ"
                                   prepend-icon="mdi-calendar"
                                   readonly
@@ -293,8 +298,13 @@
                                 ></v-text-field>
                               </template>
                               <v-date-picker
+                                no-title
+                                scrollable
+                                format="yyyy-MM-dd"
+                                locale="th"
                                 v-model="IssueAccepting"
                                 @input="acceptMenu = false"
+                                @change="changeDate()"
                               ></v-date-picker>
                             </v-menu>
                           </v-row>
@@ -313,7 +323,7 @@
                             >
                               <template v-slot:activator="{ on, attrs }">
                                 <v-text-field
-                                  v-model="IssueStart"
+                                  v-model="formattedDateStart"
                                   label="วันที่เริ่ม"
                                   prepend-icon="mdi-calendar"
                                   readonly
@@ -324,7 +334,12 @@
                               </template>
                               <v-date-picker
                                 v-model="IssueStart"
+                                no-title
+                                scrollable
+                                format="yyyy-MM-dd"
+                                locale="th"
                                 @input="startMenu = false"
+                                @change="changeDate()"
                               ></v-date-picker>
                             </v-menu>
                             <!-- Expected completion Date -->
@@ -340,7 +355,7 @@
                             >
                               <template v-slot:activator="{ on, attrs }">
                                 <v-text-field
-                                  v-model="IssueExpected"
+                                  v-model="formattedDateExpected"
                                   label="วันที่คาดว่าแก้ไขเสร็จ"
                                   prepend-icon="mdi-calendar"
                                   readonly
@@ -351,7 +366,12 @@
                               </template>
                               <v-date-picker
                                 v-model="IssueExpected"
+                                no-title
+                                scrollable
+                                format="yyyy-MM-dd"
+                                locale="th"
                                 @input="expectedMenu = false"
+                                @change="changeDate()"
                               ></v-date-picker>
                             </v-menu>
                           </v-row>
@@ -424,7 +444,7 @@
                             >
                               <template v-slot:activator="{ on, attrs }">
                                 <v-text-field
-                                  v-model="IssueComplete"
+                                  v-model="formattedDateComplete"
                                   label="วันที่เสร็จ"
                                   prepend-icon="mdi-calendar"
                                   readonly
@@ -435,7 +455,12 @@
                               </template>
                               <v-date-picker
                                 v-model="IssueComplete"
+                                no-title
+                                scrollable
+                                format="yyyy-MM-dd"
+                                locale="th"
                                 @input="completionMenu = false"
+                                @change="changeDate()"
                               ></v-date-picker>
                             </v-menu>
                           </v-row>
@@ -662,6 +687,31 @@ export default {
       dialogSuccess: false,
       //datethai
       createThai: "",
+      formattedDateEnd: new Date(
+        Date.now() - new Date().getTimezoneOffset() * 60000
+      )
+        .toISOString()
+        .substr(0, 10),
+      formattedDateAccept: new Date(
+        Date.now() - new Date().getTimezoneOffset() * 60000
+      )
+        .toISOString()
+        .substr(0, 10),
+      formattedDateStart: new Date(
+        Date.now() - new Date().getTimezoneOffset() * 60000
+      )
+        .toISOString()
+        .substr(0, 10),
+      formattedDateExpected: new Date(
+        Date.now() - new Date().getTimezoneOffset() * 60000
+      )
+        .toISOString()
+        .substr(0, 10),
+      formattedDateComplete: new Date(
+        Date.now() - new Date().getTimezoneOffset() * 60000
+      )
+        .toISOString()
+        .substr(0, 10),
     };
   },
   async mounted() {
@@ -678,7 +728,7 @@ export default {
         this.getUserSystemsOncreated();
         this.getUser();
         this.checkHistory();
-        this.changeDate();
+        this.showDate();
       }
     },
   },
@@ -1042,22 +1092,6 @@ export default {
           alert("Error submitting form");
         }
       }
-      //มาเช็คว่ากำลังแก้ไข แล้วค่าวันที่ว่างมั้ย???
-      // if (
-      //   ((await this.IssueDeveloperStatus) === "กำลังแก้ไข" &&
-      //     this.IssueAccepting === null) ||
-      //   this.IssueStart === null ||
-      //   this.IssueExpected === null
-      // ) {
-      //   this.IssueStatus = "รอแก้ไข";
-      //   alert("Accepting date is required");
-      // } else if (
-      //   this.IssueDeveloperStatus == "แก้ไขเรียบร้อย" &&
-      //   this.IssueComplete === null
-      // ) {
-      //   alert("Complete date is required");
-      // }
-
       //ใส่วันเสร็จแต่ไม่ยอมปรับสถานะ จะปรับอัตโนมัติ
       else if (this.IssueComplete !== null) {
         this.IssueDeveloperStatus = "แก้ไขเรียบร้อย";
@@ -1329,12 +1363,57 @@ export default {
         console.log(error);
       }
     },
-    changeDate() {
+    showDate() {
+      //end date
+      this.formattedDateEnd = moment(this.IssueEndDate)
+        .add(543, "years")
+        .format("DD-MM-YYYY");
+      //Accepting date
+      this.formattedDateAccept = moment(this.IssueAccepting)
+        .add(543, "years")
+        .format("DD-MM-YYYY");
+      //Start date
+      this.formattedDateStart = moment(this.IssueStart)
+        .add(543, "years")
+        .format("DD-MM-YYYY");
+      //Expected date
+      this.formattedDateExpected = moment(this.IssueExpected)
+        .add(543, "years")
+        .format("DD-MM-YYYY");
+      //complete date
+      this.formattedDateComplete = moment(this.IssueComplete)
+        .add(543, "years")
+        .format("DD-MM-YYYY");
+      //create date
       this.createThai = moment(this.IssueCreate, "YYYY-MM-DD")
         .add(543, "years")
         .format("DD-MM-YYYY");
-      console.log("this.IssueCreate", this.IssueCreate);
-      console.log("create", this.createThai);
+    },
+    changeDate() {
+      const formattedDateEnd = moment(this.IssueEndDate)
+        .add(543, "years")
+        .format("DD-MM-YYYY");
+      this.formattedDateEnd = formattedDateEnd;
+      //Accepting date
+      const formattedDateAccept = moment(this.IssueAccepting)
+        .add(543, "years")
+        .format("DD-MM-YYYY");
+      this.formattedDateAccept = formattedDateAccept;
+      //Start date
+      const formattedDateStart = moment(this.IssueStart)
+        .add(543, "years")
+        .format("DD-MM-YYYY");
+      this.formattedDateStart = formattedDateStart;
+      //Expected date
+      const formattedDateExpected = moment(this.IssueExpected)
+        .add(543, "years")
+        .format("DD-MM-YYYY");
+      this.formattedDateExpected = formattedDateExpected;
+      //complete date
+      const formattedDateComplete = moment(this.IssueComplete)
+        .add(543, "years")
+        .format("DD-MM-YYYY");
+      this.formattedDateComplete = formattedDateComplete;
     },
   },
 };
