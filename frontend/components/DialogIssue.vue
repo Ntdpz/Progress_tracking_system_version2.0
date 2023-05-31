@@ -345,22 +345,22 @@
             <v-card width="100%" max-height="100%">
               <v-row class="ma-0 pa-0" style="place-content: center">
                 <v-card-title>
-                  <v-icon size="50px" color="success"
+                  <v-icon size="100px" color="success"
                     >mdi-check-circle-outline</v-icon
                   >
                 </v-card-title>
               </v-row>
               <v-row class="ma-0 pa-0" style="place-content: center">
-                <v-card-title class="text-h5">
+                <v-card-title class="text-h4">
                   สร้างเสร็จเรียบร้อย
                 </v-card-title>
               </v-row>
-              <v-card-actions>
-                <v-spacer></v-spacer>
+              <v-card-actions style="place-content: center;">
+                <!-- <v-spacer></v-spacer> -->
                 <v-btn
-                  color="primary"
+                  color="success"
                   dark
-                  @click="(dialogSuccess = false), close()"
+                  @click="(dialogSuccess = false), close()" rounded
                 >
                   Ok
                 </v-btn>
@@ -379,22 +379,22 @@
             <v-card width="100%" max-height="100%">
               <v-row class="ma-0 pa-0" style="place-content: center">
                 <v-card-title>
-                  <v-icon size="50px" color="error"
+                  <v-icon size="100px" color="error"
                     >mdi-alert-circle-outline</v-icon
                   >
                 </v-card-title>
               </v-row>
               <v-row class="ma-0 pa-0" style="place-content: center">
-                <v-card-title class="text-h5">
+                <v-card-title class="text-h4">
                   กรุณาใส่ข้อมูลให้ครบถ้วน
                 </v-card-title>
               </v-row>
-              <v-card-actions>
-                <v-spacer></v-spacer>
+              <v-card-actions style="place-content: center;">
+                <!-- <v-spacer></v-spacer> -->
                 <v-btn
-                  color="primary"
+                  color="error"
                   dark
-                  @click="(dialogFail = false)"
+                  @click="(dialogFail = false)" rounded
                 >
                   Ok
                 </v-btn>
@@ -774,5 +774,11 @@ export default {
 <style scoped>
 * {
   font-family: "Lato", sans-serif;
+}
+
+.v-btn:not(.v-btn--round).v-size--default {
+    height: 36px;
+    min-width: 147px;
+    /* padding: 0 16px; */
 }
 </style>

@@ -355,6 +355,7 @@
               </v-container>
             </v-card>
           </v-dialog>
+          <dialog-success :dialog.sync="dialogSuccess" title="อัปเดตเสร็จเรียบร้อยแล้ว" />
         </v-card>
       </v-col>
     </v-row>
@@ -398,6 +399,7 @@ export default {
       dataDefault_status_user: [],
       dataDefault_issue_type: [],
       dataDefault_issue_priotity: [],
+      dialogSuccess: false,
     };
   },
   mounted() {
@@ -523,7 +525,8 @@ export default {
           .put("/users/updateUsers/" + this.id + "/image", formData)
           .then((response) => {
             // console.log(response);
-            alert("Update success");
+            // alert("Update success");
+            this.dialogSuccess = true;
             // ดัก error รูปภาพโหลดไม่ทัน
             const promise = new Promise((resolve, reject) => {
               this.getUser();

@@ -3,17 +3,17 @@
         <v-card width="100%" max-height="100%">
             <v-row class="ma-0 pa-0" style="place-content: center;">
                 <v-card-title>
-                    <v-icon size="50px" color="error">mdi-alert-circle-outline</v-icon>
+                    <v-icon size="100px" color="error">mdi-alert-circle-outline</v-icon>
                 </v-card-title>
             </v-row>
             <v-row class="ma-0 pa-0" style="place-content: center;">
-                <v-card-title class="text-h5" style="place-content: center;">
+                <v-card-title class="text-h4" style="place-content: center;">
                     {{ title }}
                 </v-card-title>
             </v-row>
-            <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="primary" dark @click="closeDialog">
+            <v-card-actions style="place-content: center;">
+                <!-- <v-spacer></v-spacer> -->
+                <v-btn color="error" dark @click="closeDialog" rounded>
                     Ok
                 </v-btn>
             </v-card-actions>
