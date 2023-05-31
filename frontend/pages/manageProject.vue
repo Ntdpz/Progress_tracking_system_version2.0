@@ -31,11 +31,10 @@
       v-if="userposition != 'Developer' || userrole == 'Admin'"
       class="new-btn ma-2 text-left"
       outlined
-      color="indigo"
+      color="primary"
       dark
       block
       @click="openDialog('create')"
-      :style="{ 'background-color': backgroundColor }"
     >
       <span
         class="mdi mdi-plus-circle-outline"
@@ -320,26 +319,28 @@
         :items="projectList"
       >
         <v-expansion-panel>
-          <v-expansion-panel-header disable-icon-rotate style="background-color: #aa7dec;">
+          <v-expansion-panel-header
+            disable-icon-rotate
+            style="background-color: #5c3efe"
+          >
             <v-row no-gutters>
               <v-col cols="3">
-                <h4>{{ project.project_name }}</h4>
-                <p class="mt-1" style="color: #000000; font-size: 15px">
+                <h3 style="color: white">{{ project.project_name }}</h3>
+                <p class="mt-1" style="color: white; font-size: 15px">
                   มี {{ getSystemCount(project) }} ระบบ
                 </p>
               </v-col>
-              <v-col> </v-col>
               <v-col cols="2">
-                <h4>{{ project.project_id }}</h4>
+                <h4 style="color: white">{{ project.project_id }}</h4>
               </v-col>
               <v-col cols="2">
-                <h4>{{ project.showdatestart }}</h4>
+                <h4 style="color: white">{{ project.showdatestart }}</h4>
               </v-col>
               <v-col cols="2">
-                <h4>{{ project.showdateend }}</h4>
+                <h4 style="color: white">{{ project.showdateend }}</h4>
               </v-col>
               <v-col cols="2">
-                <h4>{{ project.project_agency }}</h4>
+                <h4 style="color: white">{{ project.project_agency }}</h4>
               </v-col>
               <v-col cols="1">
                 <v-btn
@@ -347,7 +348,7 @@
                   icon
                   @click="openDialog('edit', projectList[index])"
                 >
-                  <v-icon class="pa-0" size="25" color="black"
+                  <v-icon class="pa-0" size="25" color="white"
                     >mdi mdi-square-edit-outline</v-icon
                   >
                 </v-btn>
@@ -368,15 +369,14 @@
               >
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
-                    class="new-btn ma-2 text-left"
+                    class="new-btn ma-4 text-left"
                     outlined
-                    color="indigo"
+                    color="primary"
                     dark
                     v-bind="attrs"
                     v-on="on"
                     block
                     @click="dialogSystem(projectList[index])"
-                    :style="{ 'background-color': backgroundColor }"
                   >
                     <span
                       class="mdi mdi-plus-circle-outline"
@@ -583,17 +583,16 @@
             >
               <!-- <template v-slot:top> </template> -->
               <template v-slot:item="{ item, index }">
-                <tr :class="index % 2 === 0 ? 'row-even' : 'row-odd'">
+                <tr
+                  :class="index % 2 === 0 ? 'white' : 'deep-purple lighten-4'"
+                >
                   <td>
-                    <v-icon color="primary">mdi-format-list-bulleted</v-icon>
                     {{ item.system_nameTH }}
                   </td>
                   <td>
-                    <v-icon color="primary">mdi-format-list-bulleted</v-icon>
                     {{ item.system_id }}
                   </td>
                   <td>
-                    <v-icon color="primary">mdi-format-list-bulleted</v-icon>
                     {{ item.system_shortname }}
                   </td>
                   <td>
@@ -609,26 +608,6 @@
                   </td>
                 </tr>
               </template>
-
-              <!-- <template v-slot:[`item.name`]="{ item }">
-                <v-icon color="primary">mdi-format-list-bulleted</v-icon>
-                {{ item.system_nameTH }}
-              </template>
-              <template v-slot:[`item.id_system`]="{ item }">
-                <v-icon color="primary">mdi-format-list-bulleted</v-icon>
-                {{ item.system_id }}
-              </template>
-              <template v-slot:[`item.short_name`]="{ item }">
-                <v-icon color="primary">mdi-format-list-bulleted</v-icon>
-                {{ item.system_shortname }}
-              </template>
-              <template v-slot:[`item.actions`]="{ item }">
-                <v-btn color="primary" icon :to="`/systemdetail/${item.id}`">
-                  <v-icon class="mr-2 ml-2" size="20" color="primary">
-                    mdi mdi-chevron-right-circle-outline
-                  </v-icon>
-                </v-btn>
-              </template> -->
             </v-data-table>
           </v-expansion-panel-content>
         </v-expansion-panel>
@@ -643,7 +622,10 @@
         :items="projectList"
       >
         <v-expansion-panel>
-          <v-expansion-panel-header disable-icon-rotate style="background-color: #aa7dec;">
+          <v-expansion-panel-header
+            disable-icon-rotate
+            style="background-color: #5c3efe"
+          >
             <v-row no-gutters>
               <v-col cols="3">
                 <h4>{{ project.project_name }}</h4>
@@ -651,29 +633,31 @@
                   มี {{ getSystemCount(project) }} ระบบ
                 </p>
               </v-col>
-              <v-col> </v-col>
               <v-col cols="2">
-                <h4>{{ project.project_id }}</h4>
+                <h4 style="color: white">{{ project.project_id }}</h4>
               </v-col>
               <v-col cols="2">
-                <h4>{{ project.showdatestart }}</h4>
+                <h4 style="color: white">{{ project.showdatestart }}</h4>
               </v-col>
               <v-col cols="2">
-                <h4>{{ project.showdateend }}</h4>
+                <h4 style="color: white">{{ project.showdateend }}</h4>
               </v-col>
               <v-col cols="2">
-                <h4>{{ project.project_agency }}</h4>
+                <h4 style="color: white">{{ project.project_agency }}</h4>
               </v-col>
               <v-col cols="1">
-                <!-- <v-btn color="primary" icon @click="openDialog('edit', projectList[index])">
-                  <v-icon class="pa-0" size="25" color="primary">mdi mdi-square-edit-outline</v-icon>
+                <!-- <v-btn
+                  color="primary"
+                  icon
+                  @click="openDialog('edit', projectList[index])"
+                >
+                  <v-icon class="pa-0" size="25" color="white"
+                    >mdi mdi-square-edit-outline</v-icon
+                  >
                 </v-btn> -->
               </v-col>
             </v-row>
           </v-expansion-panel-header>
-          <!--  -->
-
-          <!--  -->
           <v-expansion-panel-content>
             <!-- developer -->
             <v-data-table
@@ -686,17 +670,16 @@
             >
               <!-- <template v-slot:top> </template> -->
               <template v-slot:item="{ item, index }">
-                <tr :class="index % 2 === 0 ? 'row-even' : 'row-odd'">
+                <tr
+                  :class="index % 2 === 0 ? 'white' : 'deep-purple lighten-4'"
+                >
                   <td>
-                    <v-icon color="primary">mdi-format-list-bulleted</v-icon>
                     {{ item.system_nameTH }}
                   </td>
                   <td>
-                    <v-icon color="primary">mdi-format-list-bulleted</v-icon>
                     {{ item.system_id }}
                   </td>
                   <td>
-                    <v-icon color="primary">mdi-format-list-bulleted</v-icon>
                     {{ item.system_shortname }}
                   </td>
                   <td>
@@ -712,26 +695,6 @@
                   </td>
                 </tr>
               </template>
-
-              <!-- <template v-slot:[`item.name`]="{ item }">
-                <v-icon color="primary">mdi-format-list-bulleted</v-icon>
-                {{ item.system_nameTH }}
-              </template>
-              <template v-slot:[`item.id_system`]="{ item }">
-                <v-icon color="primary">mdi-format-list-bulleted</v-icon>
-                {{ item.system_id }}
-              </template>
-              <template v-slot:[`item.short_name`]="{ item }">
-                <v-icon color="primary">mdi-format-list-bulleted</v-icon>
-                {{ item.system_shortname }}
-              </template>
-              <template v-slot:[`item.actions`]="{ item }">
-                <v-btn color="primary" icon :to="`/systemdetail/${item.id}`">
-                  <v-icon class="mr-2 ml-2" size="20" color="primary">
-                    mdi mdi-chevron-right-circle-outline
-                  </v-icon>
-                </v-btn>
-              </template> -->
             </v-data-table>
           </v-expansion-panel-content>
         </v-expansion-panel>
@@ -868,9 +831,7 @@ export default {
       projectListAdmin: [],
       loading: false,
       rules: [(value) => !!value || "*กรุณาใส่ข้อมูลให้ถูกต้อง*"],
-      backgroundColor: "#bb96f1a6",
-      tableColor: "#caadf4",
-      textColor: "#ffffff",
+      tableColor: "#ffff",
     };
   },
   async created() {
