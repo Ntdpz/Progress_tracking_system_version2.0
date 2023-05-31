@@ -78,7 +78,7 @@
                   style="
                     font-weight: bold;
                     color: black;
-                    background-color: #bb96f1a6;
+                    background-color: white;
                   "
                 >
                   {{ item }}
@@ -96,11 +96,15 @@
                     :items="data"
                     :search="search"
                     class="elevation-1"
-                    style="text-align: center; background-color: #caadf4"
+                    style="text-align: center; background-color: "
                   >
                     <template v-slot:item="{ item, index }">
                       <!-- :class="index % 2 === 0 ? 'row-even' : 'row-odd'" -->
-                      <tr >
+                      <tr
+                        :class="
+                          index % 2 === 0 ? 'white' : 'deep-purple lighten-4'
+                        "
+                      >
                         <td>
                           {{ index + 1 }}
                         </td>
@@ -152,67 +156,6 @@
                         </td>
                       </tr>
                     </template>
-
-                    <!-- <template v-slot:[`item.id`]="{ index }">
-                      {{ index + 1 }}
-                    </template>
-                    <template v-slot:[`item.name`]="{ item }">
-                      {{ item.user_firstname }}
-                    </template>
-                    <template v-slot:[`item.lastname`]="{ item }">
-                      {{ item.user_lastname }}
-                    </template>
-                    <template v-slot:[`item.code`]="{ item }">
-                      {{ item.user_id }}
-                    </template>
-                    <template v-slot:[`item.position`]="{ item }">
-                      {{ item.user_position }}
-                    </template>
-                    <template v-slot:[`item.department`]="{ item }">
-                      {{ item.user_department }}
-                    </template>
-                    <template v-slot:[`item.role`]="{ item }">
-                      {{ item.user_role }}
-                    </template>
-                    <template v-slot:[`item.photo`]="{ item }">
-                      <v-avatar>
-                        <img
-                          :src="getImageUrl(item.user_pic)"
-                          alt="User avatar"
-                          class="mx-auto"
-                          style="width: 35px; height: 35px"
-                        />
-                      </v-avatar>
-                    </template>
-
-                    <template v-slot:[`item.status`]="{ item }">
-                      <v-icon
-                        v-if="item.user_status == 'Active'"
-                        color="success"
-                        >mdi-circle</v-icon
-                      >
-                      <v-icon v-else color="error">mdi-circle</v-icon>
-                      {{ item.user_status }}
-                    </template>
-                    -- ปุ่ม Manage --
-                    <template
-                      v-if="check_role == 'Admin'"
-                      v-slot:[`item.actions`]="{ item }"
-                    >
-                      <v-btn
-                        @click="(dialog_manage = true), editItem(item)"
-                        color="primary"
-                        style="color: white; border-radius: 20px"
-                      >
-                        {{ manage }}
-                      </v-btn>
-                    </template>
-                    <template v-else v-slot:[`item.actions`]>
-                      <v-btn style="color: white; border-radius: 20px" disabled>
-                        Admin Only
-                      </v-btn>
-                    </template> -->
-                    <!--  -->
                     <template v-slot:no-data>
                       <v-col>No Data</v-col>
                       <v-btn class="mb-4" color="primary" @click="initialize">
@@ -230,14 +173,18 @@
                   <!-- hide-default-footer ซ่อน footer-->
                   <v-data-table
                     :headers="headers"
-                    :items="data_position_Developer "
+                    :items="data_position_Developer"
                     :search="search"
                     class="elevation-1"
-                    style="text-align: center; background-color: #caadf4"
+                    style="text-align: center; background-color: #ffff"
                   >
                     <template v-slot:item="{ item, index }">
                       <!-- :class="index % 2 === 0 ? 'row-even' : 'row-odd'" -->
-                      <tr >
+                      <tr
+                        :class="
+                          index % 2 === 0 ? 'white' : 'deep-purple lighten-4'
+                        "
+                      >
                         <td>
                           {{ index + 1 }}
                         </td>
@@ -306,14 +253,18 @@
                   <!-- hide-default-footer ซ่อน footer-->
                   <v-data-table
                     :headers="headers"
-                    :items="data_position_Implementer "
+                    :items="data_position_Implementer"
                     :search="search"
                     class="elevation-1"
-                    style="text-align: center; background-color: #caadf4"
+                    style="text-align: center; background-color: #ffff"
                   >
                     <template v-slot:item="{ item, index }">
                       <!-- :class="index % 2 === 0 ? 'row-even' : 'row-odd'" -->
-                      <tr >
+                      <tr
+                        :class="
+                          index % 2 === 0 ? 'white' : 'deep-purple lighten-4'
+                        "
+                      >
                         <td>
                           {{ index + 1 }}
                         </td>
@@ -382,14 +333,18 @@
                   <!-- hide-default-footer ซ่อน footer-->
                   <v-data-table
                     :headers="headers"
-                    :items="data_position_ProgramManagement "
+                    :items="data_position_ProgramManagement"
                     :search="search"
                     class="elevation-1"
-                    style="text-align: center; background-color: #caadf4"
+                    style="text-align: center; background-color: white"
                   >
                     <template v-slot:item="{ item, index }">
                       <!-- :class="index % 2 === 0 ? 'row-even' : 'row-odd'" -->
-                      <tr >
+                      <tr
+                        :class="
+                          index % 2 === 0 ? 'white' : 'deep-purple lighten-4'
+                        "
+                      >
                         <td>
                           {{ index + 1 }}
                         </td>
@@ -458,14 +413,18 @@
                   <!-- hide-default-footer ซ่อน footer-->
                   <v-data-table
                     :headers="headers"
-                    :items="data_position_SystemAnalyst "
+                    :items="data_position_SystemAnalyst"
                     :search="search"
                     class="elevation-1"
-                    style="text-align: center; background-color: #caadf4"
+                    style="text-align: center; background-color: white"
                   >
                     <template v-slot:item="{ item, index }">
                       <!-- :class="index % 2 === 0 ? 'row-even' : 'row-odd'" -->
-                      <tr >
+                      <tr
+                        :class="
+                          index % 2 === 0 ? 'white' : 'deep-purple lighten-4'
+                        "
+                      >
                         <td>
                           {{ index + 1 }}
                         </td>
@@ -534,14 +493,18 @@
                   <!-- hide-default-footer ซ่อน footer-->
                   <v-data-table
                     :headers="headers"
-                    :items="data_position_ReportDeveloper "
+                    :items="data_position_ReportDeveloper"
                     :search="search"
                     class="elevation-1"
-                    style="text-align: center; background-color: #caadf4"
+                    style="text-align: center; background-color: white"
                   >
                     <template v-slot:item="{ item, index }">
                       <!-- :class="index % 2 === 0 ? 'row-even' : 'row-odd'" -->
-                      <tr >
+                      <tr
+                        :class="
+                          index % 2 === 0 ? 'white' : 'deep-purple lighten-4'
+                        "
+                      >
                         <td>
                           {{ index + 1 }}
                         </td>
