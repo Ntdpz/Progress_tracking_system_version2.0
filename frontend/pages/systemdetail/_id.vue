@@ -390,30 +390,6 @@
                         ></v-select>
                       </v-col>
                     </v-row>
-                    <!-- <v-row>
-                      <v-col
-                        class="mb-0 pb-0 hidden-sm-and-up"
-                        style="place-self: center"
-                      >
-                        <h4 class="">สถานะ</h4>
-                      </v-col>
-                    </v-row>
-                    <v-row>
-                      <v-col
-                        class="hidden-xs-only"
-                        sm="4"
-                        md="4"
-                        style="place-self: center"
-                      >
-                        <h4 class="">สถานะ</h4>
-                      </v-col>
-                      <v-col class="col-10" sm="6" md="6">
-                        <h4 class="">
-                          <v-icon color="error">mdi-circle</v-icon>
-                          {{ status }}
-                        </h4>
-                      </v-col>
-                    </v-row> -->
                     <v-row>
                       <v-col
                         class="mb-0 pb-0 hidden-sm-and-up"
@@ -443,8 +419,16 @@
                         >
                           <template v-slot:activator="{ on, attrs }">
                             <v-text-field
-                              :v-model="newscreen_dateStart != null ? datestartformat : ''"
-                              :value="newscreen_dateStart != null ? datestartformat : ''"
+                              :v-model="
+                                newscreen_dateStart != null
+                                  ? datestartformat
+                                  : ''
+                              "
+                              :value="
+                                newscreen_dateStart != null
+                                  ? datestartformat
+                                  : ''
+                              "
                               label="วันเริ่ม"
                               prepend-icon="mdi mdi-calendar-clock-outline"
                               readonly
@@ -488,8 +472,12 @@
                         >
                           <template v-slot:activator="{ on, attrs }">
                             <v-text-field
-                              :v-model="newscreen_dateEnd != null ? dateendformat : ''"
-                              :value="newscreen_dateEnd != null ? dateendformat : ''"
+                              :v-model="
+                                newscreen_dateEnd != null ? dateendformat : ''
+                              "
+                              :value="
+                                newscreen_dateEnd != null ? dateendformat : ''
+                              "
                               label="วันจบ"
                               prepend-icon="mdi mdi-calendar-clock-outline"
                               readonly
@@ -1064,16 +1052,16 @@
           sort-by="calories"
           class="v-data-table elevation-1 ma-4"
           remove-row-borders
-          style="text-align: center; background-color: #caadf4; "
-          >
-            <template v-slot:item="{item, index}">
-              <tr :class="index % 2 === 0 ? 'row-even' : 'row-odd'">
-                <td>{{ index + 1 }}</td>
-                <td>{{ item.screen_id }}</td>
-                <td>{{ item.screen_name }}</td>
-                <td>{{ item.screen_level }}</td>
-                <td>{{ item.screen_type }}</td>
-                <td>
+          style="text-align: center; background-color: #ffff"
+        >
+          <template v-slot:item="{ item, index }">
+            <tr :class="index % 2 === 0 ? 'white' : 'deep-purple lighten-4'">
+              <td>{{ index + 1 }}</td>
+              <td>{{ item.screen_id }}</td>
+              <td>{{ item.screen_name }}</td>
+              <td>{{ item.screen_level }}</td>
+              <td>{{ item.screen_type }}</td>
+              <td>
                 <v-btn
                   icon
                   :to="`/screendetail/${item.id}`"
@@ -1083,8 +1071,8 @@
                   <v-icon>mdi-arrow-right-circle-outline</v-icon>
                 </v-btn>
               </td>
-              </tr>
-            </template>
+            </tr>
+          </template>
         </v-data-table>
 
         <!-- <v-data-table
@@ -1165,11 +1153,6 @@ export default {
       newscreen_dateStart: null,
       newscreen_dateEnd: null,
       datestartformat: "",
-      // new Date(
-      //   Date.now() - new Date().getTimezoneOffset() * 60000
-      // )
-      //   .toISOString()
-      //   .substr(0, 10)
       dateendformat: null,
       id: this.$route.params.id,
       dataSystem: [],
@@ -1253,11 +1236,6 @@ export default {
           align: "center",
           value: "screen_name",
         },
-        // {
-        //   text: "สถานะ",
-        //   align: "center",
-        //   value: "screen_status",
-        // },
         {
           text: "ระดับ",
           align: "center",
@@ -1275,7 +1253,7 @@ export default {
           value: "action",
         },
       ],
-      tableColor: "#caadf4",
+      tableColor: "#ffff",
     };
   },
   created() {
@@ -1682,8 +1660,10 @@ export default {
     },
     async createScreen() {
       try {
-        const datestart = this.newscreen_dateStart !== null ? this.newscreen_dateStart : "NULL";
-        const dateEnd = this.newscreen_dateEnd !== null ? this.newscreen_dateEnd : "NULL";
+        const datestart =
+          this.newscreen_dateStart !== null ? this.newscreen_dateStart : "NULL";
+        const dateEnd =
+          this.newscreen_dateEnd !== null ? this.newscreen_dateEnd : "NULL";
         // const datestart = this.newscreen_dateStart;
         // const dateEnd = this.newscreen_dateEnd;
         const id_screen = this.screenID;
@@ -1708,8 +1688,7 @@ export default {
             "Content-Type": "multipart/form-data",
           },
         });
-        
-        
+
         // const dateEnd = this.newscreen_dateEnd;
         // const id_screen = this.screenID;
         // const formData = new FormData();
