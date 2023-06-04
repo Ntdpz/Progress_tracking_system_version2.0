@@ -297,7 +297,8 @@
               <v-data-table
                 :headers="headers"
                 :items="system.assignedIssues"
-                sort-by="calories"
+                :sort-by="['created_at']"
+                :sort-desc="[true]"
                 class="v-data-table elevation-1 mb-2"
                 v-remove-row-borders
                 :search="search"
@@ -459,7 +460,8 @@
               <v-data-table
                 :headers="headers"
                 :items="system.unassignedIssues"
-                sort-by="calories"
+                :sort-by="['created_at']"
+                :sort-desc="[true]"
                 class="v-data-table elevation-1"
                 v-remove-row-borders
                 :style="{ 'background-color': tableColor }"
@@ -622,7 +624,8 @@
               <v-data-table
                 :headers="headers"
                 :items="system.assignedIssuesPNI"
-                sort-by="calories"
+                :sort-by="['created_at']"
+                :sort-desc="[true]"
                 class="v-data-table elevation-1 mb-2"
                 v-remove-row-borders
                 :style="{ 'background-color': tableColor }"
@@ -782,7 +785,8 @@
               <v-data-table
                 :headers="headers"
                 :items="system.unassignedIssuesPNI"
-                sort-by="calories"
+                :sort-by="['created_at']"
+                :sort-desc="[true]"
                 class="v-data-table elevation-1"
                 v-remove-row-borders
                 :style="{ 'background-color': tableColor }"
@@ -945,7 +949,8 @@
               <v-data-table
                 :headers="headers"
                 :items="system.assignedIssuesPNC"
-                sort-by="calories"
+                :sort-by="['created_at']"
+                :sort-desc="[true]"
                 class="v-data-table elevation-1 mb-2"
                 v-remove-row-borders
                 :style="{ 'background-color': tableColor }"
@@ -1105,7 +1110,8 @@
               <v-data-table
                 :headers="headers"
                 :items="system.unassignedIssuesPNC"
-                sort-by="calories"
+                :sort-by="['created_at']"
+                :sort-desc="[true]"
                 class="v-data-table elevation-1"
                 v-remove-row-borders
                 :style="{ 'background-color': tableColor }"
@@ -1268,7 +1274,8 @@
               <v-data-table
                 :headers="headers"
                 :items="system.assignedIssuesNewReq"
-                sort-by="calories"
+                :sort-by="['created_at']"
+                :sort-desc="[true]"
                 class="v-data-table elevation-1 mb-2"
                 v-remove-row-borders
                 :style="{ 'background-color': tableColor }"
@@ -1428,7 +1435,8 @@
               <v-data-table
                 :headers="headers"
                 :items="system.unassignedIssuesNewReq"
-                sort-by="calories"
+                :sort-by="['created_at']"
+                :sort-desc="[true]"
                 class="v-data-table elevation-1"
                 v-remove-row-borders
                 :style="{ 'background-color': tableColor }"
@@ -1591,7 +1599,8 @@
               <v-data-table
                 :headers="headers"
                 :items="system.assignedIssuesHistory"
-                sort-by="calories"
+                :sort-by="['created_at']"
+                :sort-desc="[true]"
                 class="v-data-table elevation-1 mb-2"
                 v-remove-row-borders
                 :style="{ 'background-color': tableColor }"
@@ -1829,7 +1838,6 @@ export default {
         {
           text: "เลขที่ปัญหา",
           align: "start",
-          sortable: false,
           value: "issue_id",
         },
         { text: "ชื่อปัญหา", value: "issue_name" },
