@@ -10,6 +10,7 @@
             รายละเอียดปัญหาที่พบ | โครงการ : {{ ProjectName }} > ระบบ :
             {{ SystemName }}
           </h5>
+          <h5>{{ this.IssueEndDate }} . {{ this.IssueAccepting }}</h5>
           <v-spacer></v-spacer>
           <v-btn color="white" :to="`/history/${id}`" v-if="history"
             >ประวัติ</v-btn
@@ -581,12 +582,13 @@
                 อัปเดตเสร็จเรียบร้อย
               </v-card-title>
             </v-row>
-            <v-card-actions style="place-content: center;">
+            <v-card-actions style="place-content: center">
               <!-- <v-spacer></v-spacer> -->
               <v-btn
                 color="success"
                 dark
-                @click="(dialogSuccess = false), handleClose()" rounded
+                @click="(dialogSuccess = false), handleClose()"
+                rounded
               >
                 Ok
               </v-btn>
@@ -610,16 +612,15 @@
               </v-card-title>
             </v-row>
             <v-row class="ma-0 pa-0" style="place-content: center">
-              <v-card-title class="text-h4">
-                ลบเสร็จเรียบร้อย
-              </v-card-title>
+              <v-card-title class="text-h4"> ลบเสร็จเรียบร้อย </v-card-title>
             </v-row>
             <v-card-actions style="place-content: center">
               <!-- <v-spacer></v-spacer> -->
               <v-btn
                 color="success"
                 dark
-                @click="(rejectSuccess = false), handleClose()" rounded
+                @click="(rejectSuccess = false), handleClose()"
+                rounded
               >
                 Ok
               </v-btn>
@@ -684,7 +685,7 @@ export default {
   },
   data() {
     return {
-      rejectSuccess:false,
+      rejectSuccess: false,
       panel: [0],
       disabledDev: false,
       loading: false,
@@ -1399,30 +1400,55 @@ export default {
       }
     },
     showDate() {
+      console.log("show data");
       //end date
-      this.formattedDateEnd = moment(this.IssueEndDate)
-        .add(543, "years")
-        .format("DD-MM-YYYY");
+      if (this.IssueEndDate != null) {
+        this.formattedDateEnd = moment(this.IssueEndDate)
+          .add(543, "years")
+          .format("DD-MM-YYYY");
+      } else {
+        this.formattedDateEnd = "No day";
+      }
       //Accepting date
-      this.formattedDateAccept = moment(this.IssueAccepting)
-        .add(543, "years")
-        .format("DD-MM-YYYY");
+      if (this.IssueAccepting != null) {
+        this.formattedDateAccept = moment(this.IssueAccepting)
+          .add(543, "years")
+          .format("DD-MM-YYYY");
+      } else {
+        this.formattedDateAccept = "No day";
+      }
       //Start date
-      this.formattedDateStart = moment(this.IssueStart)
-        .add(543, "years")
-        .format("DD-MM-YYYY");
+      if (this.IssueStart != null) {
+        this.formattedDateStart = moment(this.IssueStart)
+          .add(543, "years")
+          .format("DD-MM-YYYY");
+      } else {
+        this.formattedDateStart = "No day";
+      }
       //Expected date
-      this.formattedDateExpected = moment(this.IssueExpected)
-        .add(543, "years")
-        .format("DD-MM-YYYY");
+      if (this.IssueExpected != null) {
+        this.formattedDateExpected = moment(this.IssueExpected)
+          .add(543, "years")
+          .format("DD-MM-YYYY");
+      } else {
+        this.formattedDateExpected = "No day";
+      }
       //complete date
-      this.formattedDateComplete = moment(this.IssueComplete)
-        .add(543, "years")
-        .format("DD-MM-YYYY");
+      if (this.IssueComplete != null) {
+        this.formattedDateComplete = moment(this.IssueComplete)
+          .add(543, "years")
+          .format("DD-MM-YYYY");
+      } else {
+        this.formattedDateComplete = "No day";
+      }
       //create date
-      this.createThai = moment(this.IssueCreate, "YYYY-MM-DD")
-        .add(543, "years")
-        .format("DD-MM-YYYY");
+      if (this.IssueCreate != null) {
+        this.createThai = moment(this.IssueCreate, "YYYY-MM-DD")
+          .add(543, "years")
+          .format("DD-MM-YYYY");
+      } else {
+        this.createThai = "No day";
+      }
     },
     changeDate() {
       const formattedDateEnd = moment(this.IssueEndDate)
@@ -1463,8 +1489,8 @@ export default {
   min-height: 20px !important;
 }
 .v-btn:not(.v-btn--round).v-size--default {
-    height: 36px;
-    min-width: 147px;
-    /* padding: 0 16px; */
+  height: 36px;
+  min-width: 147px;
+  /* padding: 0 16px; */
 }
 </style>

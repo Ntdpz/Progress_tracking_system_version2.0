@@ -1123,30 +1123,55 @@ export default {
       }
     },
     showDate() {
+      console.log("show data");
       //end date
-      this.formattedDateEnd = moment(this.IssueEndDate)
-        .add(543, "years")
-        .format("DD-MM-YYYY");
+      if (this.IssueEndDate != null) {
+        this.formattedDateEnd = moment(this.IssueEndDate)
+          .add(543, "years")
+          .format("DD-MM-YYYY");
+      } else {
+        this.formattedDateEnd = "No day";
+      }
       //Accepting date
-      this.formattedDateAccept = moment(this.IssueAccepting)
-        .add(543, "years")
-        .format("DD-MM-YYYY");
+      if (this.IssueAccepting != null) {
+        this.formattedDateAccept = moment(this.IssueAccepting)
+          .add(543, "years")
+          .format("DD-MM-YYYY");
+      } else {
+        this.formattedDateAccept = "No day";
+      }
       //Start date
-      this.formattedDateStart = moment(this.IssueStart)
-        .add(543, "years")
-        .format("DD-MM-YYYY");
+      if (this.IssueStart != null) {
+        this.formattedDateStart = moment(this.IssueStart)
+          .add(543, "years")
+          .format("DD-MM-YYYY");
+      } else {
+        this.formattedDateStart = "No day";
+      }
       //Expected date
-      this.formattedDateExpected = moment(this.IssueExpected)
-        .add(543, "years")
-        .format("DD-MM-YYYY");
+      if (this.IssueExpected != null) {
+        this.formattedDateExpected = moment(this.IssueExpected)
+          .add(543, "years")
+          .format("DD-MM-YYYY");
+      } else {
+        this.formattedDateExpected = "No day";
+      }
       //complete date
-      this.formattedDateComplete = moment(this.IssueComplete)
-        .add(543, "years")
-        .format("DD-MM-YYYY");
+      if (this.IssueComplete != null) {
+        this.formattedDateComplete = moment(this.IssueComplete)
+          .add(543, "years")
+          .format("DD-MM-YYYY");
+      } else {
+        this.formattedDateComplete = "No day";
+      }
       //create date
-      this.createThai = moment(this.IssueCreate, "YYYY-MM-DD")
-        .add(543, "years")
-        .format("DD-MM-YYYY");
+      if (this.IssueCreate != null) {
+        this.createThai = moment(this.IssueCreate, "YYYY-MM-DD")
+          .add(543, "years")
+          .format("DD-MM-YYYY");
+      } else {
+        this.createThai = "No day";
+      }
     },
     changeDate() {
       const formattedDateEnd = moment(this.IssueEndDate)
