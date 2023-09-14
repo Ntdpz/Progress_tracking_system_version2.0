@@ -7,7 +7,7 @@
                 </v-card-title>
             </v-row>
             <v-row class="ma-0 pa-0" style="place-content: center;">
-                <v-card-title class="text-h4" style="place-content: center;">
+                <v-card-title class="text-h6" style="place-content: center;">
                     {{ title }}
                 </v-card-title>
             </v-row>

@@ -42,10 +42,11 @@
               <v-tabs fixed-tabs v-model="tab" next-icon="mdi-menu-right-outline" prev-icon="mdi-menu-left-outline"
                 show-arrows>
                 <v-tabs-slider color="primary"></v-tabs-slider>
+                <!-- background-color: #bb96f1a6; -->
                 <v-tab v-for="item in items" :key="item" style="
                     font-weight: bold;
                     color: black;
-                    background-color: #bb96f1a6;
+                    
                   ">
                   {{ item }}
                 </v-tab>
@@ -58,7 +59,8 @@
                 <v-card flat>
                   <!-- hide-default-footer ซ่อน footer-->
                   <v-data-table :headers="headers" :items="data" :search="search" class="elevation-1"
-                    style="text-align: center; background-color: #caadf4">
+                    style="text-align: center; "> 
+                    <!-- background-color: #caadf4 -->
                     <template v-slot:item="{ item, index }">
                       <!-- :class="index % 2 === 0 ? 'row-even' : 'row-odd'" -->
                       <tr>
@@ -179,7 +181,7 @@
                 <v-card flat>
                   <!-- hide-default-footer ซ่อน footer-->
                   <v-data-table :headers="headers" :items="data_position_Developer" :search="search" class="elevation-1"
-                    style="text-align: center; background-color: #caadf4">
+                    style="text-align: center; ">
                     <template v-slot:item="{ item, index }">
                       <!-- :class="index % 2 === 0 ? 'row-even' : 'row-odd'" -->
                       <tr>
@@ -239,7 +241,7 @@
                 <v-card flat>
                   <!-- hide-default-footer ซ่อน footer-->
                   <v-data-table :headers="headers" :items="data_position_Implementer" :search="search" class="elevation-1"
-                    style="text-align: center; background-color: #caadf4">
+                    style="text-align: center; ">
                     <template v-slot:item="{ item, index }">
                       <!-- :class="index % 2 === 0 ? 'row-even' : 'row-odd'" -->
                       <tr>
@@ -299,7 +301,7 @@
                 <v-card flat>
                   <!-- hide-default-footer ซ่อน footer-->
                   <v-data-table :headers="headers" :items="data_position_ProgramManagement" :search="search"
-                    class="elevation-1" style="text-align: center; background-color: #caadf4">
+                    class="elevation-1" style="text-align: center; ">
                     <template v-slot:item="{ item, index }">
                       <!-- :class="index % 2 === 0 ? 'row-even' : 'row-odd'" -->
                       <tr>
@@ -359,7 +361,7 @@
                 <v-card flat>
                   <!-- hide-default-footer ซ่อน footer-->
                   <v-data-table :headers="headers" :items="data_position_SystemAnalyst" :search="search"
-                    class="elevation-1" style="text-align: center; background-color: #caadf4">
+                    class="elevation-1" style="text-align: center; ">
                     <template v-slot:item="{ item, index }">
                       <!-- :class="index % 2 === 0 ? 'row-even' : 'row-odd'" -->
                       <tr>
@@ -419,7 +421,7 @@
                 <v-card flat>
                   <!-- hide-default-footer ซ่อน footer-->
                   <v-data-table :headers="headers" :items="data_position_ReportDeveloper" :search="search"
-                    class="elevation-1" style="text-align: center; background-color: #caadf4">
+                    class="elevation-1" style="text-align: center; ">
                     <template v-slot:item="{ item, index }">
                       <!-- :class="index % 2 === 0 ? 'row-even' : 'row-odd'" -->
                       <tr>
@@ -794,7 +796,7 @@
                           </div>
                           <dialog-success :dialog.sync="dialogDeleteSuccess" title="ลบเสร็จเรียบร้อยแล้ว" />
                           <dialog-success :dialog.sync="dialogUpdateSuccess" title="อัปเดตเสร็จเรียบร้อยแล้ว" />
-                          <dialog-fail :dialog.sync="dialogfail" :title="ผู้ใช้รายนี้มีรายการปัญหาที่ต้องจัดการก่อน" />
+                          <dialog-fail :dialog.sync="dialogfail" title="ผู้ใช้รายนี้มีรายการปัญหาที่ต้องจัดการก่อน" />
                         </v-card>
                       </v-form>
                     </v-col>
