@@ -291,6 +291,36 @@
             @button-clicked="getIssue()"
           />
           <v-tabs-items v-model="tab">
+            <v-tabs
+              fixed-tabs
+              v-model="tab_issue"
+              next-icon="mdi-menu-right-outline"
+              prev-icon="mdi-menu-left-outline"
+              show-arrows
+              color="primary"
+              class="mt-5 mb-3"
+            >
+              <v-tab
+                :style="tab_assign ? 'background-color:#9D68FF;' : null"
+                @click="(tab_assign = true), (tab_unassign = false)"
+              >
+                <h3 :style="tab_assign ? 'color:#ffff;' : 'color:#000;'">
+                  ปัญหาที่มีคนรับผิดชอบ
+                </h3>
+
+                <!-- ถึงตรงนี้ -->
+              </v-tab>
+              <v-tab
+                :style="tab_unassign ? 'background-color:#9D68FF;' : null"
+                @click="(tab_assign = false), (tab_unassign = true)"
+              >
+                <h3 :style="tab_unassign ? 'color:#ffff;' : 'color:#000;'">
+                  ปัญหาที่ไม่มีคนรับผิดชอบ
+                </h3>
+              </v-tab>
+            </v-tabs>
+          </v-tabs-items>
+          <v-tabs-items v-model="tab">
             <v-tab-item>
               <!-- *cardAll -->
               <!-- *Table assignedIssues -->
@@ -341,6 +371,7 @@
                       {{ item.issue_type }}
                     </td>
                     <td>{{ item.formattedDateEnd }}</td>
+                    <td style="text-align: right">{{ item.issue_round }}</td>
                     <td>{{ item.issue_status }}</td>
                     <td>
                       <v-icon
@@ -502,6 +533,7 @@
                       {{ item.issue_type }}
                     </td>
                     <td>{{ item.formattedDateEnd }}</td>
+                    <td style="text-align: right">{{ item.issue_round }}</td>
                     <td>{{ item.issue_status }}</td>
                     <td>
                       <v-icon
@@ -665,6 +697,7 @@
                       {{ item.issue_type }}
                     </td>
                     <td>{{ item.formattedDateEnd }}</td>
+                    <td style="text-align: right">{{ item.issue_round }}</td>
                     <td>{{ item.issue_status }}</td>
                     <td>
                       <v-icon
@@ -825,6 +858,7 @@
                       {{ item.issue_type }}
                     </td>
                     <td>{{ item.formattedDateEnd }}</td>
+                    <td style="text-align: right">{{ item.issue_round }}</td>
                     <td>{{ item.issue_status }}</td>
                     <td>
                       <v-icon
@@ -988,6 +1022,7 @@
                       {{ item.issue_type }}
                     </td>
                     <td>{{ item.formattedDateEnd }}</td>
+                    <td style="text-align: right">{{ item.issue_round }}</td>
                     <td>{{ item.issue_status }}</td>
                     <td>
                       <v-icon
@@ -1148,6 +1183,7 @@
                       {{ item.issue_type }}
                     </td>
                     <td>{{ item.formattedDateEnd }}</td>
+                    <td style="text-align: right">{{ item.issue_round }}</td>
                     <td>{{ item.issue_status }}</td>
                     <td>
                       <v-icon
@@ -1311,6 +1347,7 @@
                       {{ item.issue_type }}
                     </td>
                     <td>{{ item.formattedDateEnd }}</td>
+                    <td style="text-align: right">{{ item.issue_round }}</td>
                     <td>{{ item.issue_status }}</td>
                     <td>
                       <v-icon
@@ -1471,6 +1508,7 @@
                       {{ item.issue_type }}
                     </td>
                     <td>{{ item.formattedDateEnd }}</td>
+                    <td style="text-align: right">{{ item.issue_round }}</td>
                     <td>{{ item.issue_status }}</td>
                     <td>
                       <v-icon
@@ -1610,6 +1648,7 @@
                       {{ item.issue_type }}
                     </td>
                     <td>{{ item.formattedDateEnd }}</td>
+                    <td style="text-align: right">{{ item.issue_round }}</td>
                     <td>{{ item.issue_status }}</td>
                     <td>
                       <v-icon
@@ -1762,9 +1801,12 @@ export default {
       tab3: false,
       tab4: false,
       tab5: false,
+      tab_assign: true,
+      tab_unassign: false,
       search: "",
       id: this.$route.params.id,
       tab: null,
+      tab_issue: null,
       dialog: false,
       date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
         .toISOString()
@@ -1835,6 +1877,7 @@ export default {
         { text: "ชื่อปัญหา", value: "issue_name" },
         { text: "ประเภทปัญหา", value: "issue_type" },
         { text: "วันกำหนดส่ง", value: "formattedDateEnd" },
+        { text: "รอบที่แก้ไข", value: "issue_round" },
         { text: "สถานะ", value: "issue_status" },
         { text: "ความสำคัญของปัญหา", value: "issue_priority" },
         { text: "ผู้รับผิดชอบ", value: "issue_assign" },
