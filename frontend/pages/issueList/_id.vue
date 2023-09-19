@@ -54,6 +54,26 @@
               v-bind="attrs"
               v-on="on"
               block
+              :to="`/createissue/${system.id}`"
+            >
+              <span
+                class="mdi mdi-plus-circle-outline"
+                style="font-size: 25px; color: black"
+              ></span>
+              <h3 style="color: black; font-weight: bolder">
+                New สร้างปัญหาใหม่
+              </h3>
+            </v-btn>
+
+            <v-btn
+              v-if="user_role == 'Admin' || user_position == 'Implementer'"
+              class="new-btn ma-5 text-left"
+              outlined
+              color="primary"
+              dark
+              v-bind="attrs"
+              v-on="on"
+              block
               @click="
                 showIssueCreateDialog(
                   system.system_nameTH,
@@ -69,6 +89,7 @@
               ></span>
               <h3 style="color: black; font-weight: bolder">สร้างปัญหาใหม่</h3>
             </v-btn>
+
             <!-- *dialog -->
             <dialog-issue
               :dialog.sync="dialog"
@@ -300,7 +321,6 @@
                 :sort-by="['created_at']"
                 :sort-desc="[true]"
                 class="v-data-table elevation-1 mb-2"
-                v-remove-row-borders
                 :search="search"
                 :style="{ 'background-color': tableColor }"
               >
@@ -329,9 +349,7 @@
                   </v-toolbar>
                 </template>
                 <template v-slot:item="{ item, index }">
-                  <tr
-                    :class="index % 2 === 0 ? 'white' : 'deep-purple lighten-4'"
-                  >
+                  <tr>
                     <td>
                       {{ item.issue_id }}
                     </td>
@@ -463,7 +481,6 @@
                 :sort-by="['created_at']"
                 :sort-desc="[true]"
                 class="v-data-table elevation-1"
-                v-remove-row-borders
                 :style="{ 'background-color': tableColor }"
               >
                 <template v-slot:top>
@@ -491,9 +508,7 @@
                   </v-toolbar>
                 </template>
                 <template v-slot:item="{ item, index }">
-                  <tr
-                    :class="index % 2 === 0 ? 'white' : 'deep-purple lighten-4'"
-                  >
+                  <tr>
                     <td>
                       {{ item.issue_id }}
                     </td>
@@ -627,7 +642,6 @@
                 :sort-by="['created_at']"
                 :sort-desc="[true]"
                 class="v-data-table elevation-1 mb-2"
-                v-remove-row-borders
                 :style="{ 'background-color': tableColor }"
               >
                 <template v-slot:top>
@@ -655,9 +669,7 @@
                   </v-toolbar>
                 </template>
                 <template v-slot:item="{ item, index }">
-                  <tr
-                    :class="index % 2 === 0 ? 'white' : 'deep-purple lighten-4'"
-                  >
+                  <tr>
                     <td>
                       {{ item.issue_id }}
                     </td>
@@ -788,7 +800,6 @@
                 :sort-by="['created_at']"
                 :sort-desc="[true]"
                 class="v-data-table elevation-1"
-                v-remove-row-borders
                 :style="{ 'background-color': tableColor }"
               >
                 <template v-slot:top>
@@ -816,9 +827,7 @@
                   </v-toolbar>
                 </template>
                 <template v-slot:item="{ item, index }">
-                  <tr
-                    :class="index % 2 === 0 ? 'white' : 'deep-purple lighten-4'"
-                  >
+                  <tr>
                     <td>
                       {{ item.issue_id }}
                     </td>
@@ -952,7 +961,6 @@
                 :sort-by="['created_at']"
                 :sort-desc="[true]"
                 class="v-data-table elevation-1 mb-2"
-                v-remove-row-borders
                 :style="{ 'background-color': tableColor }"
               >
                 <template v-slot:top>
@@ -980,9 +988,7 @@
                   </v-toolbar>
                 </template>
                 <template v-slot:item="{ item, index }">
-                  <tr
-                    :class="index % 2 === 0 ? 'white' : 'deep-purple lighten-4'"
-                  >
+                  <tr>
                     <td>
                       {{ item.issue_id }}
                     </td>
@@ -1113,7 +1119,6 @@
                 :sort-by="['created_at']"
                 :sort-desc="[true]"
                 class="v-data-table elevation-1"
-                v-remove-row-borders
                 :style="{ 'background-color': tableColor }"
               >
                 <template v-slot:top>
@@ -1141,9 +1146,7 @@
                   </v-toolbar>
                 </template>
                 <template v-slot:item="{ item, index }">
-                  <tr
-                    :class="index % 2 === 0 ? 'white' : 'deep-purple lighten-4'"
-                  >
+                  <tr>
                     <td>
                       {{ item.issue_id }}
                     </td>
@@ -1277,7 +1280,6 @@
                 :sort-by="['created_at']"
                 :sort-desc="[true]"
                 class="v-data-table elevation-1 mb-2"
-                v-remove-row-borders
                 :style="{ 'background-color': tableColor }"
               >
                 <template v-slot:top>
@@ -1305,9 +1307,7 @@
                   </v-toolbar>
                 </template>
                 <template v-slot:item="{ item, index }">
-                  <tr
-                    :class="index % 2 === 0 ? 'white' : 'deep-purple lighten-4'"
-                  >
+                  <tr>
                     <td>
                       {{ item.issue_id }}
                     </td>
@@ -1438,7 +1438,6 @@
                 :sort-by="['created_at']"
                 :sort-desc="[true]"
                 class="v-data-table elevation-1"
-                v-remove-row-borders
                 :style="{ 'background-color': tableColor }"
               >
                 <template v-slot:top>
@@ -1466,9 +1465,7 @@
                   </v-toolbar>
                 </template>
                 <template v-slot:item="{ item, index }">
-                  <tr
-                    :class="index % 2 === 0 ? 'white' : 'deep-purple lighten-4'"
-                  >
+                  <tr>
                     <td>
                       {{ item.issue_id }}
                     </td>
@@ -1602,13 +1599,10 @@
                 :sort-by="['created_at']"
                 :sort-desc="[true]"
                 class="v-data-table elevation-1 mb-2"
-                v-remove-row-borders
                 :style="{ 'background-color': tableColor }"
               >
                 <template v-slot:item="{ item, index }">
-                  <tr
-                    :class="index % 2 === 0 ? 'white' : 'deep-purple lighten-4'"
-                  >
+                  <tr>
                     <td>
                       {{ item.issue_id }}
                     </td>

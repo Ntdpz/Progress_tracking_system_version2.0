@@ -1,80 +1,133 @@
 <template>
   <v-app dark>
-    <v-navigation-drawer v-model="drawer" :clipped="clipped" fixed app>
+    <v-navigation-drawer
+      v-model="drawer"
+      :clipped="clipped"
+      fixed
+      app
+      style="background-color: #ede2ff77"
+    >
       <v-list-item>
         <v-list-item-content>
           <v-list-item-title class="text-h6">
             <v-layout align-center justify-center>
-              <v-icon color="black" class="mr-2"> mdi-domain </v-icon>
+              <v-icon class="mr-2" color="primary"> mdi-domain </v-icon>
               <h5 class="">Note Management</h5>
             </v-layout>
           </v-list-item-title>
         </v-list-item-content>
       </v-list-item>
 
-      <v-divider></v-divider>
-
-      <v-list>
-        <v-list-item v-for="(item, i) in items" :key="i" :to="item.to" router exact color="primary">
+      <v-list class="pb-0">
+        <v-list-item
+          v-for="(item, i) in items"
+          :key="i"
+          :to="item.to"
+          router
+          exact
+          color="primary"
+        >
           <v-list-item-action>
-            <v-icon>{{ item.icon }}</v-icon>
+            <v-icon color="black">{{ item.icon }}</v-icon>
           </v-list-item-action>
           <v-list-item-content>
             <v-list-item-title v-text="item.title" />
           </v-list-item-content>
         </v-list-item>
       </v-list>
-      <v-divider></v-divider>
-      <v-list v-show="user_role == 'Admin'">
-        <v-list-group v-for="(project, index) in items3" :key="index" v-model="project.active"
-          :prepend-icon="project.action" no-action>
+
+      <v-list class="pa-0" v-show="user_role == 'Admin'">
+        <v-list-group
+          v-for="(project, index) in items3"
+          :key="index"
+          v-model="project.active"
+          :prepend-icon="project.action"
+          no-action
+        >
           <template v-slot:activator>
             <v-list-item-content>
               <v-list-item-title>โครงการ</v-list-item-title>
             </v-list-item-content>
           </template>
 
-          <v-list-item v-for="child in project.projectList" :key="child.title" :to="`/issueList/${child.id}`">
+          <v-list-item
+            v-for="child in project.projectList"
+            :key="child.title"
+            :to="`/issueList/${child.id}`"
+          >
             <v-list-item-content>
-              <v-list-item-title><v-icon color="primary" class="mr-2">mdi mdi-format-list-bulleted</v-icon>{{
-                child.project_name }}</v-list-item-title>
+              <v-list-item-title
+                ><v-icon color="primary" class="mr-2"
+                  >mdi mdi-format-list-bulleted</v-icon
+                >{{ child.project_name }}</v-list-item-title
+              >
             </v-list-item-content>
           </v-list-item>
         </v-list-group>
       </v-list>
       <!-- {{ this.projectDetails.projectList }} -->
       <v-list v-show="user_role == 'User'">
-        <v-list-group v-for="(project, index) in projectDetails" :key="index" v-model="project.active"
-          :prepend-icon="project.action" no-action>
+        <v-list-group
+          v-for="(project, index) in projectDetails"
+          :key="index"
+          v-model="project.active"
+          :prepend-icon="project.action"
+          no-action
+        >
           <template v-slot:activator>
             <v-list-item-content>
               <v-list-item-title>{{ project.title }}</v-list-item-title>
             </v-list-item-content>
           </template>
 
-          <v-list-item v-for="child in projectDetails.projectList" :key="child.title" :to="`/issueList/${child[0].id}`">
+          <v-list-item
+            v-for="child in projectDetails.projectList"
+            :key="child.title"
+            :to="`/issueList/${child[0].id}`"
+          >
             <v-list-item-content>
-              <v-list-item-title><v-icon color="primary" class="mr-2">mdi mdi-format-list-bulleted</v-icon>{{
-                child[0].project_name }}</v-list-item-title>
+              <v-list-item-title
+                ><v-icon color="primary" class="mr-2"
+                  >mdi mdi-format-list-bulleted</v-icon
+                >{{ child[0].project_name }}</v-list-item-title
+              >
             </v-list-item-content>
           </v-list-item>
         </v-list-group>
       </v-list>
-      <v-divider></v-divider>
-      <v-list>
-        <v-list-item v-for="(item, i) in filteredItems" :key="i" :to="item.to" router color="primary" exact>
+
+      <v-list class="pt-0">
+        <v-list-item
+          v-for="(item, i) in filteredItems"
+          :key="i"
+          :to="item.to"
+          router
+          color="primary"
+          exact
+        >
           <v-list-item-action>
-            <v-icon>{{ item.icon }}</v-icon>
+            <v-icon color="black">{{ item.icon }}</v-icon>
           </v-list-item-action>
           <v-list-item-content>
             <v-list-item-title v-text="item.title" />
           </v-list-item-content>
         </v-list-item>
-        <v-divider></v-divider>
       </v-list>
     </v-navigation-drawer>
-    <v-app-bar :clipped-left="clipped" app style="height: 49px" class="app-bar" color="white" elevation="1" outlined>
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer" class="mb-3" />
+    <v-app-bar
+      :clipped-left="clipped"
+      app
+      style="height: 49px"
+      class="app-bar"
+      color="white"
+      elevation="1"
+      outlined
+    >
+      <v-app-bar-nav-icon
+        color="primary"
+        @click.stop="drawer = !drawer"
+        class="mb-3"
+      />
       <v-toolbar-title v-text="title" class="mb-3" />
       <v-spacer></v-spacer>
       <v-btn icon color="error" class="mb-3" @click="logout">
@@ -113,11 +166,11 @@ export default {
           title: "หน้าหลัก",
           to: "/",
         },
-        {
-          icon: "mdi-bell-badge",
-          title: "แจ้งเตือน",
-          to: "/notification",
-        },
+        // {
+        //   icon: "mdi-bell-badge",
+        //   title: "แจ้งเตือน",
+        //   to: "/notification",
+        // },
       ],
       items3: [
         {
@@ -174,7 +227,7 @@ export default {
           to: "/manageUser",
         });
         items.splice(0, 0, {
-          icon: "mdi-view-list",
+          icon: "mdi-border-all",
           title: "จัดการโครงการ",
           to: "/manageProject",
         });
@@ -197,7 +250,7 @@ export default {
           to: "/schedule",
         });
         items.splice(0, 0, {
-          icon: "mdi-view-list",
+          icon: "mdi-border-all",
           title: "จัดการโครงการ",
           to: "/manageProject",
         });
@@ -257,6 +310,9 @@ export default {
 <style scoped>
 * {
   font-family: "Lato", sans-serif;
+}
+.v-list-group >>> i {
+  color: black;
 }
 </style>
     

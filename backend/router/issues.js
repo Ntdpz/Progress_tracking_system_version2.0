@@ -621,4 +621,25 @@ router.get("/downloadfile/:issue_filename", (req, res) => {
   );
 });
 
+//length issue
+router.get("/getLength/:system_id", async (req, res) => {
+  const system_id = req.params.system_id;
+  try {
+    connection.query(
+      "SELECT COUNT(*) AS length FROM issues WHERE system_id = ?",
+      [system_id],
+      (err, results, fields) => {
+        if (err) {
+          console.log(err);
+          return res.status(400).send();
+        }
+        res.status(200).json(results);
+      }
+    );
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send();
+  }
+});
+
 module.exports = router;
