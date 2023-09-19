@@ -1,30 +1,26 @@
 <template>
   <div class="content mx-auto">
-    <!-- *Search bar -->
-    <searchbar title="หน้าหลัก" />
-    <v-divider></v-divider>
     <!-- *Profile bar -->
-    <v-row class="mb-6" no-gutters justify-start>
-      <!-- <p>User ID: {{ userId }}</p> -->
+
+    <v-row class="pl-16 mb-6" no-gutters justify-start>
       <v-col class="mr-10" style="flex-grow: 0 !important">
         <v-avatar class="ml-6 mt-4" style="width: 100px; height: 100px">
-          <!-- <img src="https://cdn.vuetifyjs.com/images/john.jpg" alt="John" /> -->
           <img v-if="user_pic" :src="getImageUrl(user_pic)" />
           <img v-else :src="getdefaultImageUrl(defaultImage)" />
         </v-avatar>
       </v-col>
       <v-col class="mt-4 align-self-center" style="flex-grow: 0 !important">
-        <v-col class="pa-0 ma-0" style="width: 200px; margin: 0 !important"
+        <v-col class="pa-0 ma-0" style="width: 400; margin: 0 !important"
           ><v-text style="font-size: 20px; color: grey">{{
             this.user_id
           }}</v-text></v-col
         >
-        <v-col class="pa-0 ma-0" style="width: 200px; margin: 0 !important">
+        <v-col class="pa-0 ma-0" style="width: 400px; margin: 0 !important">
           <v-text style="font-size: 20px">
-          {{ this.user_firstname }} {{ this.user_lastname }}
-        </v-text></v-col
+            {{ this.user_firstname }} {{ this.user_lastname }}
+          </v-text></v-col
         >
-        <v-col class="pa-0 ma-0" style="width: 200px; margin: 0 !important">
+        <v-col class="pa-0 ma-0" style="width: 400px; margin: 0 !important">
           <v-icon class="mb-1" color="success" style="font-size: small"
             >mdi-circle</v-icon
           >
@@ -37,55 +33,49 @@
       </v-col>
       <v-col class="mt-6 align-self-center" col="5" sm="5" md="5" xs="5">
         <v-btn icon to="/profile">
-          <v-icon class="mb-1" color="black" size="25px">mdi-pencil</v-icon>
+          <v-icon class="mb-1" color="primary" size="40px"
+            >mdi-pencil-circle</v-icon
+          >
         </v-btn>
       </v-col>
     </v-row>
-    <v-divider></v-divider>
 
-    <v-container fluid class="mt-1" height="100%">
+    <v-divider color="#883CFE"></v-divider>
+
+    <v-container fluid class="mt-1 pl-16" height="100%">
       <v-card class="pa-2" tile outlined style="border: none; height: 100%">
         <v-row class="mb-0">
-          <v-col col="6" sm="6" md="6" lg="6">
+          <v-col col="6" sm="6" md="6" lg="6" class="pb-0">
             <v-text class="font-weight-bold" style="font-size: 24px"
               >โครงการของคุณ</v-text
             >
           </v-col>
-          <v-col col="6" sm="6" md="6" lg="6" style="text-align: right">
-            <!-- <v-btn color="primary" @click="dialog = true">Open Dialog</v-btn>
-            <dialog-create-project :dialog.sync="dialog" /> -->
-            <!-- <v-btn
-              @click="dialog_newproject = true"
-              class="mr-2"
-              elevation="2"
-              color="primary"
-              right
-              style="color: white; border-radius: 10px"
-            >
-              <v-icon left> mdi-plus-circle-outline </v-icon>New Project
-            </v-btn> -->
+          <v-col col="6" sm="6" md="6" lg="6" class="pb-0">
+            <v-text-field
+              v-model="searchText"
+              placeholder="Search"
+              filled
+              rounded
+              outlinde
+              prepend-inner-icon="mdi-magnify"
+              dense
+              style="width: 60%"
+            ></v-text-field>
           </v-col>
         </v-row>
         <v-row v-show="user_role == 'Admin'">
-          <v-col
-            v-for="(project, index) in projects"
-            :key="index"
-            col="3"
-            sm="3"
-            md="3"
-            lg="2"
-          >
+          <v-col v-for="(project, index) in projects" :key="index" cols="12">
             <template>
               <v-card
                 :to="`issueList/${project.id}`"
                 width="280px"
-                height="145px"
+                height="80px"
                 outlined
                 absolute
                 color="primary"
               >
                 <v-card-subtitle
-                  class="mb-1"
+                  class="mb-1 mt-3"
                   style="font-size: 18px; color: white"
                 >
                   {{ project.project_name }}
@@ -124,87 +114,10 @@
           </v-col>
         </v-row>
         <!-- persistent คือ การที่คลิกนอก dialog แล้ว dialog จะไม่ปิด -->
-        <v-dialog v-model="dialog_newproject" max-width="700px">
-          <v-card>
-            <v-card-title>
-              <v-col cols="12">
-                <v-row>
-                  <h5>Create Project</h5>
-                </v-row>
-              </v-col>
-            </v-card-title>
-            <v-card-text>
-              <v-container>
-                <v-row>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field
-                      label="ตัวย่อ"
-                      placeholder="ตัวย่อ"
-                      outlined
-                      dense
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="8" md="8">
-                    <v-text-field
-                      label="Project Name"
-                      placeholder="Project Name"
-                      outlined
-                      dense
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="12">
-                    <v-text-field
-                      label="Agency"
-                      placeholder="Agency"
-                      outlined
-                      dense
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="12">
-                    <v-text-field
-                      label="Period"
-                      placeholder="Period"
-                      outlined
-                      dense
-                    ></v-text-field>
-                  </v-col>
-                </v-row>
-              </v-container>
-            </v-card-text>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="primary" text @click="dialog_newproject = false">
-                <h5>Close</h5>
-              </v-btn>
-              <v-btn color="primary" dark @click="dialog_newproject = false">
-                <h5>Create</h5>
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-        <!-- <v-btn color="error" class="mt-5" dark @click="logout">
-          <h4>ออกจากระบบ</h4>
-        </v-btn> -->
       </v-card>
     </v-container>
   </div>
 </template>
-<!-- 
-<script>
-export default{
-  data(){
-    return{
-      defaultImage: "Logo.png",
-    }
-  },
-  methods:{
-    getImageUrl(fileName) {
-      return require(`@/uploads/${fileName}`);
-    },
-  },
-}
-</script>
- -->
 <script>
 import Searchbar from "../components/Searchbar.vue";
 export default {
@@ -225,7 +138,7 @@ export default {
       ownProject: [],
       projectIds: [],
       projectDetails: [],
-
+      searchText: "",
       //test
       projects: [],
     };

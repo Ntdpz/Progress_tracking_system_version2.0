@@ -628,8 +628,8 @@
           >
             <v-row no-gutters>
               <v-col cols="3">
-                <h4>{{ project.project_name }}</h4>
-                <p class="mt-1" style="color: #000000; font-size: 15px">
+                <h3 style="color: white">{{ project.project_name }}</h3>
+                <p class="mt-1" style="color: white; font-size: 15px">
                   มี {{ getSystemCount(project) }} ระบบ
                 </p>
               </v-col>

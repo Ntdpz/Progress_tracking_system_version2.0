@@ -1,334 +1,273 @@
 <template>
-  <div class="mx-auto">
-    <v-row class="mb-6" no-gutters>
-      <v-col class="col-12" col="12" xs="12" sm="12" md="3">
-        <!-- เอาเส้นออกใส่ border: none; -->
-        <v-card
-          class="pa-2 mx-auto"
-          tile
-          outlined
-          style="
-            border: none;
-            height: 200px;
-            display: flex;
-            justify-content: center;
-          "
-        >
-          <div>
-            <v-avatar class="mt-6 mx-auto" style="width: 150px; height: 150px">
-              <!-- <img src="https://cdn.vuetifyjs.com/images/john.jpg" alt="John" /> -->
-              <img v-if="avatar != null" :src="avatar" />
-              <img v-else-if="user_pic" :src="getImageUrl(user_pic)" />
-              <img v-else :src="getdefaultImageUrl(defaultImage)" />
-            </v-avatar>
-            <v-btn
-              color="white"
-              icon
-              style="
-                background-color: #883cfe;
-                float: right;
-                margin-left: -42px;
-                margin-top: 131px;
-                position: absolute;
-              "
-            >
-              <v-icon @click="$refs.fileInput.click()">mdi-pencil</v-icon>
-              <input
-                ref="fileInput"
-                type="file"
-                style="display: none"
-                @change="uploadFile"
-              />
-            </v-btn>
-          </div>
-        </v-card>
-      </v-col>
-      <v-col col="12" xs="12" sm="12" md="9">
-        <!-- เอาเส้นออกใส่ border: none; -->
-        <v-card class="pa-2" tile outlined style="border: none; height: 600px">
-          <div class="mt-6 ml-2">
-            <!-- form -->
-            <v-form @submit.prevent="updateUser" ref="form">
-              <v-row
-                class="mr-2"
-                style="margin-bottom: -2%; font-weight: bold; color: black"
-              >
-                <v-col class="hidden-xs-only" cols="2" xs="2" sm="2" md="2">
-                  คำนำหน้าชื่อ
-                </v-col>
-                <v-col class="hidden-xs-only" cols="5" xs="5" sm="5" md="5">
-                  ชื่อจริง
-                </v-col>
-                <v-col
-                  class="hidden-xs-only"
-                  cols="5"
-                  xs="5"
-                  sm="5"
-                  md="5"
-                  style="margin-right: -1%; padding-right: 0%"
-                >
-                  นามสกุล
-                </v-col>
-              </v-row>
+  <div class="mx-auto pt-10">
+    <v-card max-width="1200" outlined class="mx-auto">
+      <v-toolbar color="primary" dark>
+        <v-app-bar-nav-icon><v-icon>mdi-account</v-icon></v-app-bar-nav-icon>
 
-              <v-row
-                class="mr-2"
-                style="margin-bottom: -4%; font-weight: bold; color: black"
+        <v-toolbar-title>My profile</v-toolbar-title>
+      </v-toolbar>
+      <v-row class="mb-6" no-gutters>
+        <v-col class="col-12" col="12" xs="12" sm="12" md="3">
+          <!-- เอาเส้นออกใส่ border: none; -->
+          <v-card
+            class="pa-2 mx-auto"
+            tile
+            outlined
+            style="
+              border: none;
+              height: 200px;
+              display: flex;
+              justify-content: center;
+            "
+          >
+            <div>
+              <v-avatar
+                class="mt-6 mx-auto"
+                style="width: 150px; height: 150px"
               >
-                <!-- <v-col class="" cols="2" sm="2" style="margin-right:-1%; padding-right:0%;">
-                                        <v-select class="" v-model="name" :items="items" label="Mr/Miss" solo></v-select>
-                                    </v-col> -->
-                <v-col
-                  class=""
-                  cols="2"
-                  sm="2"
-                  style="margin-right: -1%; padding-right: 1%"
-                >
-                  <v-select
-                    v-model="name"
-                    :items="dataDefault_nametitle"
-                    :rules="rules"
-                    outlined
-                    dense
-                    item-text="text"
-                    item-value="value"
-                  >
-                    <template #item="{ item, on }">
-                      <v-list-item :value="item.value" v-on="on">
-                        <v-list-item-content>
-                          <v-list-item-title class="my-bold-item">{{
-                            item
-                          }}</v-list-item-title>
-                        </v-list-item-content>
-                      </v-list-item>
-                    </template>
-                  </v-select>
-                </v-col>
-                <v-col class="" cols="5" sm="5">
-                  <v-text-field
-                    v-model="firstname"
-                    :rules="rules"
-                    outlined
-                    dense
-                  ></v-text-field>
-                </v-col>
-                <v-col class="" cols="5" sm="5">
-                  <v-text-field
-                    v-model="user_lastname"
-                    :rules="rules"
-                    outlined
-                    dense
-                  ></v-text-field>
-                </v-col>
-              </v-row>
-              <!-- คั่น -->
-              <div class="pa-2"></div>
-              <v-row
-                class="mr-2 mt-0"
-                style="margin-bottom: -2%; font-weight: bold; color: black"
+                <!-- <img src="https://cdn.vuetifyjs.com/images/john.jpg" alt="John" /> -->
+                <img v-if="avatar != null" :src="avatar" />
+                <img v-else-if="user_pic" :src="getImageUrl(user_pic)" />
+                <img v-else :src="getdefaultImageUrl(defaultImage)" />
+              </v-avatar>
+              <v-btn
+                color="white"
+                icon
+                style="
+                  background-color: #883cfe;
+                  float: right;
+                  margin-left: -42px;
+                  margin-top: 131px;
+                  position: absolute;
+                "
               >
-                <v-col class="hidden-xs-only" cols="4" sm="4">
-                  รหัสพนักงาน
-                </v-col>
-                <v-col class="hidden-xs-only" cols="4" sm="4"> ตำแหน่ง </v-col>
-                <v-col class="hidden-xs-only" cols="4" sm="4"> แผนก </v-col>
-              </v-row>
-              <v-row
-                class="mr-2 mt-0"
-                style="margin-bottom: -4%; font-weight: bold; color: black"
-              >
-                <v-col cols="4" sm="4">
-                  <v-text-field
-                    v-model="user_id"
-                    :rules="rules"
-                    outlined
-                    dense
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="4" sm="4">
-                  <v-text-field
-                    v-model="user_position"
-                    :rules="rules"
-                    outlined
-                    dense
-                    readonly
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="4" sm="4">
-                  <v-text-field
-                    v-model="user_department"
-                    :rules="rules"
-                    outlined
-                    dense
-                    readonly
-                  ></v-text-field>
-                </v-col>
-              </v-row>
-              <!-- คั่น -->
-              <div class="pa-2"></div>
-              <v-row
-                class="mr-2 mt-0"
-                style="margin-bottom: -2%; font-weight: bold; color: black"
-              >
-                <v-col class="hidden-xs-only" cols="6" sm="6"> อีเมลล์ </v-col>
-                <v-col class="hidden-xs-only" cols="6" sm="6"> รหัสผ่าน </v-col>
-              </v-row>
-              <v-row
-                class="mr-2 mt-0"
-                style="margin-bottom: -4%; font-weight: bold; color: black"
-              >
-                <v-col cols="6" sm="6">
-                  <v-text-field
-                    v-model="user_email"
-                    :rules="rules"
-                    outlined
-                    dense
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="6" sm="6">
-                  <v-text-field
-                    :append-icon="show3 ? 'mdi-pencil' : 'mdi-pencil'"
-                    :type="show3 ? 'Password' : 'Password'"
-                    @click:append="show3 = !show3"
-                    v-model="user_password"
-                    :rules="rules"
-                    outlined
-                    dense
-                    readonly
-                  ></v-text-field>
-                </v-col>
-              </v-row>
-              <!-- คั่น -->
-              <div class="pa-2"></div>
-              <v-row
-                class="mr-2 mt-0"
-                style="margin-bottom: -2%; font-weight: bold; color: black"
-              >
-                <v-col class="hidden-xs-only" cols="6" sm="6"> สถานะ </v-col>
-                <v-col class="hidden-xs-only" cols="6" sm="6"> บทบาท </v-col>
-              </v-row>
-              <v-row
-                class="mr-2 mt-0"
-                style="margin-bottom: -4%; font-weight: bold; color: black"
-              >
-                <v-col class="" cols="6" sm="6">
-                  <v-text-field
-                    v-model="user_status"
-                    :rules="rules"
-                    outlined
-                    dense
-                    readonly
-                  >
-                    <template v-slot:prepend-inner>
-                      <v-icon v-if="online === true" color="green"
-                        >mdi-circle</v-icon
-                      >
-                      <v-icon v-else color="red">mdi-circle</v-icon>
-                    </template>
-                  </v-text-field>
-                </v-col>
-                <v-col class="" cols="6" sm="6">
-                  <v-text-field
-                    v-model="user_role"
-                    :rules="rules"
-                    outlined
-                    dense
-                    readonly
-                  ></v-text-field>
-                </v-col>
-              </v-row>
-              <!-- คั่น -->
-              <div class="pa-2"></div>
-              <v-row
-                class="mr-2 mt-0 mt-lg-6"
-                style="justify-content: right; font-weight: bold; color: black"
-              >
-                <v-btn
-                  class="mr-2"
-                  elevation="2"
-                  color="error"
-                  :to="`/`"
-                  style="color: white; border-radius: 10px"
-                  >ย้อนกลับ
-                </v-btn>
-                <v-btn
-                  class="mr-2"
-                  elevation="2"
-                  color="primary"
-                  type="submit"
-                  style="color: white; border-radius: 10px"
-                  >อัปเดต
-                </v-btn>
-              </v-row>
-            </v-form>
-          </div>
-          <!-- dialog password persistent -->
-          <v-dialog v-model="show3" max-width="500px" persistent>
-            <v-card width="100%" height="100%">
-              <v-card-title style="background-color: #883cfe">
-                <span class="text-h5" style="font-weight: bold; color: white"
-                  >เปลี่ยนรหัสผ่าน</span
-                >
-              </v-card-title>
-              <v-container>
-                <v-col
-                  class="mr-2 mt-0 hidden-xs-only"
-                  cols="12"
-                  sm="12"
-                  style="margin-bottom: -2%; font-weight: bold; font-size: 16px"
-                >
-                  รหัสผ่านปัจจุบัน
-                </v-col>
-                <v-col class="mt-0 mb-0 pb-0" cols="12">
-                  <v-text-field
-                    v-model="o_password"
-                    outlined
-                    dense
-                    label="รหัสผ่านปัจจุบัน"
-                    type="password"
-                  ></v-text-field>
-                </v-col>
-                <v-col
-                  class="mr-2 mt-0 pt-0 hidden-xs-only"
-                  cols="12"
-                  sm="12"
-                  style="margin-bottom: -2%; font-weight: bold"
-                >
-                  รหัสผ่านใหม่
-                </v-col>
-                <v-col class="mt-0 mb-0 pb-0" cols="12">
-                  <v-text-field
-                    v-model="n_password"
-                    :append-icon="show2 ? 'mdi-eye' : 'mdi-eye-off'"
-                    :type="show2 ? 'text' : 'password'"
-                    @click:append="show2 = !show2"
-                    outlined
-                    dense
-                    label="รหัสผ่านใหม่"
-                  ></v-text-field>
-                </v-col>
-                <v-col
-                  class="mr-2 mt-0 pt-0 hidden-xs-only"
-                  cols="12"
-                  sm="12"
-                  style="margin-bottom: -2%; font-weight: bold"
-                >
-                  ยืนยันรหัสผ่านใหม่
-                </v-col>
-                <v-col class="mt-0 mb-0 pb-0" cols="12">
-                  <v-text-field
-                    v-model="cf_password"
-                    :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
-                    :type="show1 ? 'text' : 'password'"
-                    @click:append="show1 = !show1"
-                    outlined
-                    dense
-                    label="ยืนยันรหัสผ่านใหม่"
-                  ></v-text-field>
-                </v-col>
-                <!--  -->
+                <v-icon @click="$refs.fileInput.click()">mdi-pencil</v-icon>
+                <input
+                  ref="fileInput"
+                  type="file"
+                  style="display: none"
+                  @change="uploadFile"
+                />
+              </v-btn>
+            </div>
+          </v-card>
+        </v-col>
+        <v-col col="12" xs="12" sm="12" md="9">
+          <!-- เอาเส้นออกใส่ border: none; -->
+          <v-card
+            class="pa-2"
+            tile
+            outlined
+            style="border: none; height: 600px"
+          >
+            <div class="mt-6 ml-2">
+              <!-- form -->
+              <v-form @submit.prevent="updateUser" ref="form">
                 <v-row
-                  class="mr-2 mt-0 mb-4 pt-0"
+                  class="mr-2"
+                  style="margin-bottom: -2%; font-weight: bold; color: black"
+                >
+                  <v-col class="hidden-xs-only" cols="2" xs="2" sm="2" md="2">
+                    คำนำหน้าชื่อ
+                  </v-col>
+                  <v-col class="hidden-xs-only" cols="5" xs="5" sm="5" md="5">
+                    ชื่อจริง
+                  </v-col>
+                  <v-col
+                    class="hidden-xs-only"
+                    cols="5"
+                    xs="5"
+                    sm="5"
+                    md="5"
+                    style="margin-right: -1%; padding-right: 0%"
+                  >
+                    นามสกุล
+                  </v-col>
+                </v-row>
+
+                <v-row
+                  class="mr-2"
+                  style="margin-bottom: -4%; font-weight: bold; color: black"
+                >
+                  <v-col
+                    class=""
+                    cols="4"
+                    sm="2"
+                    style="margin-right: -1%; padding-right: 1%"
+                  >
+                    <v-select
+                      v-model="name"
+                      :items="dataDefault_nametitle"
+                      :rules="rules"
+                      outlined
+                      dense
+                      rounded
+                      item-text="text"
+                      item-value="value"
+                    >
+                      <template #item="{ item, on }">
+                        <v-list-item :value="item.value" v-on="on">
+                          <v-list-item-content>
+                            <v-list-item-title class="my-bold-item">{{
+                              item
+                            }}</v-list-item-title>
+                          </v-list-item-content>
+                        </v-list-item>
+                      </template>
+                    </v-select>
+                  </v-col>
+                  <v-col class="" cols="4" sm="5">
+                    <v-text-field
+                      v-model="firstname"
+                      :rules="rules"
+                      dense
+                      rounded
+                      outlined
+                    ></v-text-field>
+                  </v-col>
+                  <v-col class="" cols="4" sm="5">
+                    <v-text-field
+                      v-model="user_lastname"
+                      :rules="rules"
+                      outlined
+                      dense
+                      rounded
+                    ></v-text-field>
+                  </v-col>
+                </v-row>
+                <!-- คั่น -->
+                <div class="pa-2"></div>
+                <v-row
+                  class="mr-2 mt-0"
+                  style="margin-bottom: -2%; font-weight: bold; color: black"
+                >
+                  <v-col class="hidden-xs-only" cols="4" sm="4">
+                    รหัสพนักงาน
+                  </v-col>
+                  <v-col class="hidden-xs-only" cols="4" sm="4">
+                    ตำแหน่ง
+                  </v-col>
+                  <v-col class="hidden-xs-only" cols="4" sm="4"> แผนก </v-col>
+                </v-row>
+                <v-row
+                  class="mr-2 mt-0"
+                  style="margin-bottom: -4%; font-weight: bold; color: black"
+                >
+                  <v-col cols="4" sm="4">
+                    <v-text-field
+                      v-model="user_id"
+                      :rules="rules"
+                      outlined
+                      dense
+                      rounded
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="4" sm="4">
+                    <v-text-field
+                      v-model="user_position"
+                      :rules="rules"
+                      outlined
+                      dense
+                      readonly
+                      rounded
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="4" sm="4">
+                    <v-text-field
+                      v-model="user_department"
+                      :rules="rules"
+                      outlined
+                      dense
+                      readonly
+                      rounded
+                    ></v-text-field>
+                  </v-col>
+                </v-row>
+                <!-- คั่น -->
+                <div class="pa-2"></div>
+                <v-row
+                  class="mr-2 mt-0"
+                  style="margin-bottom: -2%; font-weight: bold; color: black"
+                >
+                  <v-col class="hidden-xs-only" cols="6" sm="6">
+                    อีเมลล์
+                  </v-col>
+                  <v-col class="hidden-xs-only" cols="6" sm="6">
+                    รหัสผ่าน
+                  </v-col>
+                </v-row>
+                <v-row
+                  class="mr-2 mt-0"
+                  style="margin-bottom: -4%; font-weight: bold; color: black"
+                >
+                  <v-col cols="6" sm="6">
+                    <v-text-field
+                      v-model="user_email"
+                      :rules="rules"
+                      outlined
+                      dense
+                      rounded
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="6" sm="6">
+                    <v-text-field
+                      :append-icon="show3 ? 'mdi-pencil' : 'mdi-pencil'"
+                      :type="show3 ? 'Password' : 'Password'"
+                      @click:append="show3 = !show3"
+                      v-model="user_password"
+                      :rules="rules"
+                      outlined
+                      dense
+                      readonly
+                      rounded
+                    ></v-text-field>
+                  </v-col>
+                </v-row>
+                <!-- คั่น -->
+                <div class="pa-2"></div>
+                <v-row
+                  class="mr-2 mt-0"
+                  style="margin-bottom: -2%; font-weight: bold; color: black"
+                >
+                  <v-col class="hidden-xs-only" cols="6" sm="6"> สถานะ </v-col>
+                  <v-col class="hidden-xs-only" cols="6" sm="6"> บทบาท </v-col>
+                </v-row>
+                <v-row
+                  class="mr-2 mt-0"
+                  style="margin-bottom: -4%; font-weight: bold; color: black"
+                >
+                  <v-col class="" cols="6" sm="6">
+                    <v-text-field
+                      v-model="user_status"
+                      :rules="rules"
+                      outlined
+                      dense
+                      readonly
+                      rounded
+                    >
+                      <template v-slot:prepend-inner>
+                        <v-icon v-if="online === true" color="green"
+                          >mdi-circle</v-icon
+                        >
+                        <v-icon v-else color="red">mdi-circle</v-icon>
+                      </template>
+                    </v-text-field>
+                  </v-col>
+                  <v-col class="" cols="6" sm="6">
+                    <v-text-field
+                      v-model="user_role"
+                      :rules="rules"
+                      outlined
+                      dense
+                      readonly
+                      rounded
+                    ></v-text-field>
+                  </v-col>
+                </v-row>
+                <!-- คั่น -->
+                <div class="pa-2"></div>
+                <v-row
+                  class="mr-2 mt-0 mt-lg-6"
                   style="
                     justify-content: right;
                     font-weight: bold;
@@ -339,26 +278,126 @@
                     class="mr-2"
                     elevation="2"
                     color="error"
-                    @click="(show3 = false), clearChangePassword()"
+                    :to="`/`"
                     style="color: white; border-radius: 10px"
-                    >ยกเลิก
+                    >ย้อนกลับ
                   </v-btn>
                   <v-btn
                     class="mr-2"
                     elevation="2"
                     color="primary"
-                    @click="checkPassword()"
+                    type="submit"
                     style="color: white; border-radius: 10px"
-                    >ยืนยัน
+                    >อัปเดต
                   </v-btn>
                 </v-row>
-              </v-container>
-            </v-card>
-          </v-dialog>
-          <dialog-success :dialog.sync="dialogSuccess" title="อัปเดตเสร็จเรียบร้อยแล้ว" />
-        </v-card>
-      </v-col>
-    </v-row>
+              </v-form>
+            </div>
+            <!-- dialog password persistent -->
+            <v-dialog v-model="show3" max-width="500px" persistent>
+              <v-card width="100%" height="100%">
+                <v-card-title style="background-color: #883cfe">
+                  <span class="text-h5" style="font-weight: bold; color: white"
+                    >เปลี่ยนรหัสผ่าน</span
+                  >
+                </v-card-title>
+                <v-container>
+                  <v-col
+                    class="mr-2 mt-0 hidden-xs-only"
+                    cols="12"
+                    sm="12"
+                    style="
+                      margin-bottom: -2%;
+                      font-weight: bold;
+                      font-size: 16px;
+                    "
+                  >
+                    รหัสผ่านปัจจุบัน
+                  </v-col>
+                  <v-col class="mt-0 mb-0 pb-0" cols="12">
+                    <v-text-field
+                      v-model="o_password"
+                      outlined
+                      dense
+                      label="รหัสผ่านปัจจุบัน"
+                      type="password"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col
+                    class="mr-2 mt-0 pt-0 hidden-xs-only"
+                    cols="12"
+                    sm="12"
+                    style="margin-bottom: -2%; font-weight: bold"
+                  >
+                    รหัสผ่านใหม่
+                  </v-col>
+                  <v-col class="mt-0 mb-0 pb-0" cols="12">
+                    <v-text-field
+                      v-model="n_password"
+                      :append-icon="show2 ? 'mdi-eye' : 'mdi-eye-off'"
+                      :type="show2 ? 'text' : 'password'"
+                      @click:append="show2 = !show2"
+                      outlined
+                      dense
+                      label="รหัสผ่านใหม่"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col
+                    class="mr-2 mt-0 pt-0 hidden-xs-only"
+                    cols="12"
+                    sm="12"
+                    style="margin-bottom: -2%; font-weight: bold"
+                  >
+                    ยืนยันรหัสผ่านใหม่
+                  </v-col>
+                  <v-col class="mt-0 mb-0 pb-0" cols="12">
+                    <v-text-field
+                      v-model="cf_password"
+                      :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+                      :type="show1 ? 'text' : 'password'"
+                      @click:append="show1 = !show1"
+                      outlined
+                      dense
+                      label="ยืนยันรหัสผ่านใหม่"
+                    ></v-text-field>
+                  </v-col>
+                  <!--  -->
+                  <v-row
+                    class="mr-2 mt-0 mb-4 pt-0"
+                    style="
+                      justify-content: right;
+                      font-weight: bold;
+                      color: black;
+                    "
+                  >
+                    <v-btn
+                      class="mr-2"
+                      elevation="2"
+                      color="error"
+                      @click="(show3 = false), clearChangePassword()"
+                      style="color: white; border-radius: 10px"
+                      >ยกเลิก
+                    </v-btn>
+                    <v-btn
+                      class="mr-2"
+                      elevation="2"
+                      color="primary"
+                      @click="checkPassword()"
+                      style="color: white; border-radius: 10px"
+                      >ยืนยัน
+                    </v-btn>
+                  </v-row>
+                </v-container>
+              </v-card>
+            </v-dialog>
+            <dialog-success
+              :dialog.sync="dialogSuccess"
+              title="อัปเดตเสร็จเรียบร้อยแล้ว"
+            />
+          </v-card>
+        </v-col>
+      </v-row>
+    </v-card>
   </div>
 </template>
 
@@ -579,5 +618,8 @@ export default {
 
 .my-bold-item {
   font-weight: bold;
+}
+
+.card {
 }
 </style>

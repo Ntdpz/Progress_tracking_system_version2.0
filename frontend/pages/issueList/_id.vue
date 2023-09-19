@@ -54,6 +54,26 @@
               v-bind="attrs"
               v-on="on"
               block
+              :to="`/createissue/${system.id}`"
+            >
+              <span
+                class="mdi mdi-plus-circle-outline"
+                style="font-size: 25px; color: black"
+              ></span>
+              <h3 style="color: black; font-weight: bolder">
+                New สร้างปัญหาใหม่
+              </h3>
+            </v-btn>
+
+            <v-btn
+              v-if="user_role == 'Admin' || user_position == 'Implementer'"
+              class="new-btn ma-5 text-left"
+              outlined
+              color="primary"
+              dark
+              v-bind="attrs"
+              v-on="on"
+              block
               @click="
                 showIssueCreateDialog(
                   system.system_nameTH,
@@ -69,6 +89,7 @@
               ></span>
               <h3 style="color: black; font-weight: bolder">สร้างปัญหาใหม่</h3>
             </v-btn>
+
             <!-- *dialog -->
             <dialog-issue
               :dialog.sync="dialog"
@@ -156,7 +177,7 @@
               "
             >
               <h3 :style="tab5 ? 'color:#ffff;' : 'color:#000;'">
-                แก้ไขเรียบร้อย
+                เเก้ไขเสร็จเเล้ว
               </h3>
             </v-tab>
           </v-tabs>
@@ -327,9 +348,9 @@
               <v-data-table
                 :headers="headers"
                 :items="system.assignedIssues"
-                sort-by="calories"
+                :sort-by="['created_at']"
+                :sort-desc="[true]"
                 class="v-data-table elevation-1 mb-2"
-                v-remove-row-borders
                 :search="search"
                 :style="{ 'background-color': tableColor }"
               >
@@ -358,9 +379,7 @@
                   </v-toolbar>
                 </template>
                 <template v-slot:item="{ item, index }">
-                  <tr
-                    :class="index % 2 === 0 ? 'white' : 'deep-purple lighten-4'"
-                  >
+                  <tr>
                     <td>
                       {{ item.issue_id }}
                     </td>
@@ -371,7 +390,6 @@
                       {{ item.issue_type }}
                     </td>
                     <td>{{ item.formattedDateEnd }}</td>
-                    <td style="text-align: right">{{ item.issue_round }}</td>
                     <td>{{ item.issue_status }}</td>
                     <td>
                       <v-icon
@@ -490,9 +508,9 @@
               <v-data-table
                 :headers="headers"
                 :items="system.unassignedIssues"
-                sort-by="calories"
+                :sort-by="['created_at']"
+                :sort-desc="[true]"
                 class="v-data-table elevation-1"
-                v-remove-row-borders
                 :style="{ 'background-color': tableColor }"
               >
                 <template v-slot:top>
@@ -520,9 +538,7 @@
                   </v-toolbar>
                 </template>
                 <template v-slot:item="{ item, index }">
-                  <tr
-                    :class="index % 2 === 0 ? 'white' : 'deep-purple lighten-4'"
-                  >
+                  <tr>
                     <td>
                       {{ item.issue_id }}
                     </td>
@@ -533,7 +549,6 @@
                       {{ item.issue_type }}
                     </td>
                     <td>{{ item.formattedDateEnd }}</td>
-                    <td style="text-align: right">{{ item.issue_round }}</td>
                     <td>{{ item.issue_status }}</td>
                     <td>
                       <v-icon
@@ -654,9 +669,9 @@
               <v-data-table
                 :headers="headers"
                 :items="system.assignedIssuesPNI"
-                sort-by="calories"
+                :sort-by="['created_at']"
+                :sort-desc="[true]"
                 class="v-data-table elevation-1 mb-2"
-                v-remove-row-borders
                 :style="{ 'background-color': tableColor }"
               >
                 <template v-slot:top>
@@ -684,9 +699,7 @@
                   </v-toolbar>
                 </template>
                 <template v-slot:item="{ item, index }">
-                  <tr
-                    :class="index % 2 === 0 ? 'white' : 'deep-purple lighten-4'"
-                  >
+                  <tr>
                     <td>
                       {{ item.issue_id }}
                     </td>
@@ -697,7 +710,6 @@
                       {{ item.issue_type }}
                     </td>
                     <td>{{ item.formattedDateEnd }}</td>
-                    <td style="text-align: right">{{ item.issue_round }}</td>
                     <td>{{ item.issue_status }}</td>
                     <td>
                       <v-icon
@@ -815,9 +827,9 @@
               <v-data-table
                 :headers="headers"
                 :items="system.unassignedIssuesPNI"
-                sort-by="calories"
+                :sort-by="['created_at']"
+                :sort-desc="[true]"
                 class="v-data-table elevation-1"
-                v-remove-row-borders
                 :style="{ 'background-color': tableColor }"
               >
                 <template v-slot:top>
@@ -845,9 +857,7 @@
                   </v-toolbar>
                 </template>
                 <template v-slot:item="{ item, index }">
-                  <tr
-                    :class="index % 2 === 0 ? 'white' : 'deep-purple lighten-4'"
-                  >
+                  <tr>
                     <td>
                       {{ item.issue_id }}
                     </td>
@@ -858,7 +868,6 @@
                       {{ item.issue_type }}
                     </td>
                     <td>{{ item.formattedDateEnd }}</td>
-                    <td style="text-align: right">{{ item.issue_round }}</td>
                     <td>{{ item.issue_status }}</td>
                     <td>
                       <v-icon
@@ -979,9 +988,9 @@
               <v-data-table
                 :headers="headers"
                 :items="system.assignedIssuesPNC"
-                sort-by="calories"
+                :sort-by="['created_at']"
+                :sort-desc="[true]"
                 class="v-data-table elevation-1 mb-2"
-                v-remove-row-borders
                 :style="{ 'background-color': tableColor }"
               >
                 <template v-slot:top>
@@ -1009,9 +1018,7 @@
                   </v-toolbar>
                 </template>
                 <template v-slot:item="{ item, index }">
-                  <tr
-                    :class="index % 2 === 0 ? 'white' : 'deep-purple lighten-4'"
-                  >
+                  <tr>
                     <td>
                       {{ item.issue_id }}
                     </td>
@@ -1022,7 +1029,6 @@
                       {{ item.issue_type }}
                     </td>
                     <td>{{ item.formattedDateEnd }}</td>
-                    <td style="text-align: right">{{ item.issue_round }}</td>
                     <td>{{ item.issue_status }}</td>
                     <td>
                       <v-icon
@@ -1140,9 +1146,9 @@
               <v-data-table
                 :headers="headers"
                 :items="system.unassignedIssuesPNC"
-                sort-by="calories"
+                :sort-by="['created_at']"
+                :sort-desc="[true]"
                 class="v-data-table elevation-1"
-                v-remove-row-borders
                 :style="{ 'background-color': tableColor }"
               >
                 <template v-slot:top>
@@ -1170,9 +1176,7 @@
                   </v-toolbar>
                 </template>
                 <template v-slot:item="{ item, index }">
-                  <tr
-                    :class="index % 2 === 0 ? 'white' : 'deep-purple lighten-4'"
-                  >
+                  <tr>
                     <td>
                       {{ item.issue_id }}
                     </td>
@@ -1183,7 +1187,6 @@
                       {{ item.issue_type }}
                     </td>
                     <td>{{ item.formattedDateEnd }}</td>
-                    <td style="text-align: right">{{ item.issue_round }}</td>
                     <td>{{ item.issue_status }}</td>
                     <td>
                       <v-icon
@@ -1304,9 +1307,9 @@
               <v-data-table
                 :headers="headers"
                 :items="system.assignedIssuesNewReq"
-                sort-by="calories"
+                :sort-by="['created_at']"
+                :sort-desc="[true]"
                 class="v-data-table elevation-1 mb-2"
-                v-remove-row-borders
                 :style="{ 'background-color': tableColor }"
               >
                 <template v-slot:top>
@@ -1334,9 +1337,7 @@
                   </v-toolbar>
                 </template>
                 <template v-slot:item="{ item, index }">
-                  <tr
-                    :class="index % 2 === 0 ? 'white' : 'deep-purple lighten-4'"
-                  >
+                  <tr>
                     <td>
                       {{ item.issue_id }}
                     </td>
@@ -1347,7 +1348,6 @@
                       {{ item.issue_type }}
                     </td>
                     <td>{{ item.formattedDateEnd }}</td>
-                    <td style="text-align: right">{{ item.issue_round }}</td>
                     <td>{{ item.issue_status }}</td>
                     <td>
                       <v-icon
@@ -1465,9 +1465,9 @@
               <v-data-table
                 :headers="headers"
                 :items="system.unassignedIssuesNewReq"
-                sort-by="calories"
+                :sort-by="['created_at']"
+                :sort-desc="[true]"
                 class="v-data-table elevation-1"
-                v-remove-row-borders
                 :style="{ 'background-color': tableColor }"
               >
                 <template v-slot:top>
@@ -1495,9 +1495,7 @@
                   </v-toolbar>
                 </template>
                 <template v-slot:item="{ item, index }">
-                  <tr
-                    :class="index % 2 === 0 ? 'white' : 'deep-purple lighten-4'"
-                  >
+                  <tr>
                     <td>
                       {{ item.issue_id }}
                     </td>
@@ -1508,7 +1506,6 @@
                       {{ item.issue_type }}
                     </td>
                     <td>{{ item.formattedDateEnd }}</td>
-                    <td style="text-align: right">{{ item.issue_round }}</td>
                     <td>{{ item.issue_status }}</td>
                     <td>
                       <v-icon
@@ -1629,15 +1626,13 @@
               <v-data-table
                 :headers="headers"
                 :items="system.assignedIssuesHistory"
-                sort-by="calories"
+                :sort-by="['created_at']"
+                :sort-desc="[true]"
                 class="v-data-table elevation-1 mb-2"
-                v-remove-row-borders
                 :style="{ 'background-color': tableColor }"
               >
                 <template v-slot:item="{ item, index }">
-                  <tr
-                    :class="index % 2 === 0 ? 'white' : 'deep-purple lighten-4'"
-                  >
+                  <tr>
                     <td>
                       {{ item.issue_id }}
                     </td>
@@ -1648,7 +1643,6 @@
                       {{ item.issue_type }}
                     </td>
                     <td>{{ item.formattedDateEnd }}</td>
-                    <td style="text-align: right">{{ item.issue_round }}</td>
                     <td>{{ item.issue_status }}</td>
                     <td>
                       <v-icon
@@ -1871,13 +1865,12 @@ export default {
         {
           text: "เลขที่ปัญหา",
           align: "start",
-          sortable: false,
           value: "issue_id",
+          class: "blue-grey darken-4 white--text",
         },
         { text: "ชื่อปัญหา", value: "issue_name" },
         { text: "ประเภทปัญหา", value: "issue_type" },
         { text: "วันกำหนดส่ง", value: "formattedDateEnd" },
-        { text: "รอบที่แก้ไข", value: "issue_round" },
         { text: "สถานะ", value: "issue_status" },
         { text: "ความสำคัญของปัญหา", value: "issue_priority" },
         { text: "ผู้รับผิดชอบ", value: "issue_assign" },
@@ -2032,6 +2025,9 @@ export default {
         this.issue.forEach((issue) => {
           const dateEnd = moment(issue.issue_end, "YYYY-MM-DDTHH:mm:ss.SSSZ");
           issue.formattedDateEnd = dateEnd.format("YYYY-MM-DD");
+          issue.formattedDateEndTH = moment(dateEnd)
+            .add(543, "years")
+            .format("DD-MM-YYYY");
 
           const dateAccepting = moment(
             issue.issue_accepting,

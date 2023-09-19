@@ -14,31 +14,6 @@
         vertical
         style="background-color: black"
       ></v-divider>
-      <!-- <template>
-        <v-banner
-          class="mt-0 ml-4"
-          style="
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 30px;
-            border-radius: 30px;
-            padding: 0 0px;
-          "
-          outlined
-          elevation="2"
-        >
-          <form class="center" @submit.prevent="search">
-            <v-icon color="purple">mdi-magnify</v-icon>
-            <input
-              class="mr-3"
-              type="text"
-              v-model="query"
-              placeholder="Search some system"
-            />
-          </form>
-        </v-banner>
-      </template> -->
     </v-row>
     <v-divider></v-divider>
     <!-- Sub System -->

@@ -2,7 +2,11 @@
   <div class="body">
     <v-row>
       <v-col>
-        <searchbar :search="search" title="จัดการผู้ใช้งานระบบ" @input="performSearch" />
+        <searchbar
+          :search="search"
+          title="จัดการผู้ใช้งานระบบ"
+          @input="performSearch"
+        />
         <!-- <v-spacer></v-spacer>
         <v-text-field
         v-model="search"
@@ -14,12 +18,28 @@
       ></v-text-field> -->
       </v-col>
       <v-col>
-        <v-btn v-if="check_role == 'Admin'" @click="dialog = true" class="mr-10" elevation="2" color="primary" right
-          absolute style="color: white; border-radius: 10px">
+        <v-btn
+          v-if="check_role == 'Admin'"
+          @click="dialog = true"
+          class="mr-10"
+          elevation="2"
+          color="primary"
+          right
+          absolute
+          style="color: white; border-radius: 10px"
+        >
           <v-icon left> mdi-plus-circle-outline </v-icon>
           <h4>สร้างผู้ใช้ใหม่</h4>
         </v-btn>
-        <v-btn v-else class="mr-10" elevation="2" right absolute style="color: white; border-radius: 10px" disabled>
+        <v-btn
+          v-else
+          class="mr-10"
+          elevation="2"
+          right
+          absolute
+          style="color: white; border-radius: 10px"
+          disabled
+        >
           Addmin Only
         </v-btn>
       </v-col>
@@ -29,25 +49,44 @@
     <v-container>
       <v-row no-gutters>
         <!-- -เอาเส้นออกใส่ border: none; -->
-        <v-card class="pa-2" tile outlined style="
+        <v-card
+          class="pa-2"
+          tile
+          outlined
+          style="
             border: none;
             width: 100%;
             height: 100%;
             display: flex;
             justify-content: center;
-          ">
+          "
+        >
           <v-col class="mb-6" col="12" sm="12" md="12">
             <!-- หมวดหมู่ หัวข้อใหญ่ -->
-            <v-toolbar class="mb-2">
-              <v-tabs fixed-tabs v-model="tab" next-icon="mdi-menu-right-outline" prev-icon="mdi-menu-left-outline"
-                show-arrows>
+            <v-toolbar class="mb-4 pt-0" style="height: 50px">
+              <v-tabs
+                fixed-tabs
+                v-model="tab"
+                next-icon="mdi-menu-right-outline"
+                prev-icon="mdi-menu-left-outline"
+                show-arrows
+                style="height: 40px"
+              >
                 <v-tabs-slider color="primary"></v-tabs-slider>
+<<<<<<< HEAD
                 <!-- background-color: #bb96f1a6; -->
                 <v-tab v-for="item in items" :key="item" style="
                     font-weight: bold;
                     color: black;
                     
                   ">
+=======
+                <v-tab
+                  v-for="item in items"
+                  :key="item"
+                  style="font-weight: bold; color: black"
+                >
+>>>>>>> fdad955d6dc424bb0ecd7e3caac604f86139934c
                   {{ item }}
                 </v-tab>
               </v-tabs>
@@ -58,19 +97,33 @@
               <v-tab-item>
                 <v-card flat>
                   <!-- hide-default-footer ซ่อน footer-->
+<<<<<<< HEAD
                   <v-data-table :headers="headers" :items="data" :search="search" class="elevation-1"
                     style="text-align: center; "> 
                     <!-- background-color: #caadf4 -->
+=======
+                  <v-data-table
+                    :headers="headers"
+                    :items="data"
+                    :search="search"
+                    class="elevation-1"
+                    style="text-align: center"
+                  >
+>>>>>>> fdad955d6dc424bb0ecd7e3caac604f86139934c
                     <template v-slot:item="{ item, index }">
                       <!-- :class="index % 2 === 0 ? 'row-even' : 'row-odd'" -->
                       <tr>
-                        <td>
+                        <td style="">
                           {{ index + 1 }}
                         </td>
                         <td>
                           <v-avatar>
-                            <img :src="getImageUrl(item.user_pic)" alt="User avatar" class="mx-auto"
-                              style="width: 35px; height: 35px" />
+                            <img
+                              :src="getImageUrl(item.user_pic)"
+                              alt="User avatar"
+                              class="mx-auto"
+                              style="width: 35px; height: 35px"
+                            />
                           </v-avatar>
                         </td>
                         <td>
@@ -89,7 +142,11 @@
                           {{ item.user_department }}
                         </td>
                         <td>
-                          <v-icon v-if="item.user_status == 'Active'" color="success">mdi-circle</v-icon>
+                          <v-icon
+                            v-if="item.user_status == 'Active'"
+                            color="success"
+                            >mdi-circle</v-icon
+                          >
                           <v-icon v-else color="error">mdi-circle</v-icon>
                           {{ item.user_status }}
                         </td>
@@ -97,74 +154,16 @@
                           {{ item.user_role }}
                         </td>
                         <td>
-                          <v-btn @click="(dialog_manage = true), editItem(item)" color="primary"
-                            style="color: white; border-radius: 20px">
+                          <v-btn
+                            @click="(dialog_manage = true), editItem(item)"
+                            color="primary"
+                            style="color: white; border-radius: 20px"
+                          >
                             {{ manage }}
                           </v-btn>
                         </td>
                       </tr>
                     </template>
-
-                    <!-- <template v-slot:[`item.id`]="{ index }">
-                      {{ index + 1 }}
-                    </template>
-                    <template v-slot:[`item.name`]="{ item }">
-                      {{ item.user_firstname }}
-                    </template>
-                    <template v-slot:[`item.lastname`]="{ item }">
-                      {{ item.user_lastname }}
-                    </template>
-                    <template v-slot:[`item.code`]="{ item }">
-                      {{ item.user_id }}
-                    </template>
-                    <template v-slot:[`item.position`]="{ item }">
-                      {{ item.user_position }}
-                    </template>
-                    <template v-slot:[`item.department`]="{ item }">
-                      {{ item.user_department }}
-                    </template>
-                    <template v-slot:[`item.role`]="{ item }">
-                      {{ item.user_role }}
-                    </template>
-                    <template v-slot:[`item.photo`]="{ item }">
-                      <v-avatar>
-                        <img
-                          :src="getImageUrl(item.user_pic)"
-                          alt="User avatar"
-                          class="mx-auto"
-                          style="width: 35px; height: 35px"
-                        />
-                      </v-avatar>
-                    </template>
-
-                    <template v-slot:[`item.status`]="{ item }">
-                      <v-icon
-                        v-if="item.user_status == 'Active'"
-                        color="success"
-                        >mdi-circle</v-icon
-                      >
-                      <v-icon v-else color="error">mdi-circle</v-icon>
-                      {{ item.user_status }}
-                    </template>
-                    -- ปุ่ม Manage --
-                    <template
-                      v-if="check_role == 'Admin'"
-                      v-slot:[`item.actions`]="{ item }"
-                    >
-                      <v-btn
-                        @click="(dialog_manage = true), editItem(item)"
-                        color="primary"
-                        style="color: white; border-radius: 20px"
-                      >
-                        {{ manage }}
-                      </v-btn>
-                    </template>
-                    <template v-else v-slot:[`item.actions`]>
-                      <v-btn style="color: white; border-radius: 20px" disabled>
-                        Admin Only
-                      </v-btn>
-                    </template> -->
-                    <!--  -->
                     <template v-slot:no-data>
                       <v-col>No Data</v-col>
                       <v-btn class="mb-4" color="primary" @click="initialize">
@@ -180,18 +179,31 @@
               <v-tab-item>
                 <v-card flat>
                   <!-- hide-default-footer ซ่อน footer-->
+<<<<<<< HEAD
                   <v-data-table :headers="headers" :items="data_position_Developer" :search="search" class="elevation-1"
                     style="text-align: center; ">
+=======
+                  <v-data-table
+                    :headers="headers"
+                    :items="data_position_Developer"
+                    :search="search"
+                    class="elevation-1"
+                    style="text-align: center"
+                  >
+>>>>>>> fdad955d6dc424bb0ecd7e3caac604f86139934c
                     <template v-slot:item="{ item, index }">
-                      <!-- :class="index % 2 === 0 ? 'row-even' : 'row-odd'" -->
                       <tr>
                         <td>
                           {{ index + 1 }}
                         </td>
                         <td>
                           <v-avatar>
-                            <img :src="getImageUrl(item.user_pic)" alt="User avatar" class="mx-auto"
-                              style="width: 35px; height: 35px" />
+                            <img
+                              :src="getImageUrl(item.user_pic)"
+                              alt="User avatar"
+                              class="mx-auto"
+                              style="width: 35px; height: 35px"
+                            />
                           </v-avatar>
                         </td>
                         <td>
@@ -210,7 +222,11 @@
                           {{ item.user_department }}
                         </td>
                         <td>
-                          <v-icon v-if="item.user_status == 'Active'" color="success">mdi-circle</v-icon>
+                          <v-icon
+                            v-if="item.user_status == 'Active'"
+                            color="success"
+                            >mdi-circle</v-icon
+                          >
                           <v-icon v-else color="error">mdi-circle</v-icon>
                           {{ item.user_status }}
                         </td>
@@ -218,8 +234,11 @@
                           {{ item.user_role }}
                         </td>
                         <td>
-                          <v-btn @click="(dialog_manage = true), editItem(item)" color="primary"
-                            style="color: white; border-radius: 20px">
+                          <v-btn
+                            @click="(dialog_manage = true), editItem(item)"
+                            color="primary"
+                            style="color: white; border-radius: 20px"
+                          >
                             {{ manage }}
                           </v-btn>
                         </td>
@@ -240,8 +259,18 @@
               <v-tab-item>
                 <v-card flat>
                   <!-- hide-default-footer ซ่อน footer-->
+<<<<<<< HEAD
                   <v-data-table :headers="headers" :items="data_position_Implementer" :search="search" class="elevation-1"
                     style="text-align: center; ">
+=======
+                  <v-data-table
+                    :headers="headers"
+                    :items="data_position_Implementer"
+                    :search="search"
+                    class="elevation-1"
+                    style="text-align: center"
+                  >
+>>>>>>> fdad955d6dc424bb0ecd7e3caac604f86139934c
                     <template v-slot:item="{ item, index }">
                       <!-- :class="index % 2 === 0 ? 'row-even' : 'row-odd'" -->
                       <tr>
@@ -250,8 +279,12 @@
                         </td>
                         <td>
                           <v-avatar>
-                            <img :src="getImageUrl(item.user_pic)" alt="User avatar" class="mx-auto"
-                              style="width: 35px; height: 35px" />
+                            <img
+                              :src="getImageUrl(item.user_pic)"
+                              alt="User avatar"
+                              class="mx-auto"
+                              style="width: 35px; height: 35px"
+                            />
                           </v-avatar>
                         </td>
                         <td>
@@ -270,7 +303,11 @@
                           {{ item.user_department }}
                         </td>
                         <td>
-                          <v-icon v-if="item.user_status == 'Active'" color="success">mdi-circle</v-icon>
+                          <v-icon
+                            v-if="item.user_status == 'Active'"
+                            color="success"
+                            >mdi-circle</v-icon
+                          >
                           <v-icon v-else color="error">mdi-circle</v-icon>
                           {{ item.user_status }}
                         </td>
@@ -278,8 +315,11 @@
                           {{ item.user_role }}
                         </td>
                         <td>
-                          <v-btn @click="(dialog_manage = true), editItem(item)" color="primary"
-                            style="color: white; border-radius: 20px">
+                          <v-btn
+                            @click="(dialog_manage = true), editItem(item)"
+                            color="primary"
+                            style="color: white; border-radius: 20px"
+                          >
                             {{ manage }}
                           </v-btn>
                         </td>
@@ -300,8 +340,18 @@
               <v-tab-item>
                 <v-card flat>
                   <!-- hide-default-footer ซ่อน footer-->
+<<<<<<< HEAD
                   <v-data-table :headers="headers" :items="data_position_ProgramManagement" :search="search"
                     class="elevation-1" style="text-align: center; ">
+=======
+                  <v-data-table
+                    :headers="headers"
+                    :items="data_position_ProgramManagement"
+                    :search="search"
+                    class="elevation-1"
+                    style="text-align: center"
+                  >
+>>>>>>> fdad955d6dc424bb0ecd7e3caac604f86139934c
                     <template v-slot:item="{ item, index }">
                       <!-- :class="index % 2 === 0 ? 'row-even' : 'row-odd'" -->
                       <tr>
@@ -310,8 +360,12 @@
                         </td>
                         <td>
                           <v-avatar>
-                            <img :src="getImageUrl(item.user_pic)" alt="User avatar" class="mx-auto"
-                              style="width: 35px; height: 35px" />
+                            <img
+                              :src="getImageUrl(item.user_pic)"
+                              alt="User avatar"
+                              class="mx-auto"
+                              style="width: 35px; height: 35px"
+                            />
                           </v-avatar>
                         </td>
                         <td>
@@ -330,7 +384,11 @@
                           {{ item.user_department }}
                         </td>
                         <td>
-                          <v-icon v-if="item.user_status == 'Active'" color="success">mdi-circle</v-icon>
+                          <v-icon
+                            v-if="item.user_status == 'Active'"
+                            color="success"
+                            >mdi-circle</v-icon
+                          >
                           <v-icon v-else color="error">mdi-circle</v-icon>
                           {{ item.user_status }}
                         </td>
@@ -338,8 +396,11 @@
                           {{ item.user_role }}
                         </td>
                         <td>
-                          <v-btn @click="(dialog_manage = true), editItem(item)" color="primary"
-                            style="color: white; border-radius: 20px">
+                          <v-btn
+                            @click="(dialog_manage = true), editItem(item)"
+                            color="primary"
+                            style="color: white; border-radius: 20px"
+                          >
                             {{ manage }}
                           </v-btn>
                         </td>
@@ -360,8 +421,18 @@
               <v-tab-item>
                 <v-card flat>
                   <!-- hide-default-footer ซ่อน footer-->
+<<<<<<< HEAD
                   <v-data-table :headers="headers" :items="data_position_SystemAnalyst" :search="search"
                     class="elevation-1" style="text-align: center; ">
+=======
+                  <v-data-table
+                    :headers="headers"
+                    :items="data_position_SystemAnalyst"
+                    :search="search"
+                    class="elevation-1"
+                    style="text-align: center"
+                  >
+>>>>>>> fdad955d6dc424bb0ecd7e3caac604f86139934c
                     <template v-slot:item="{ item, index }">
                       <!-- :class="index % 2 === 0 ? 'row-even' : 'row-odd'" -->
                       <tr>
@@ -370,8 +441,12 @@
                         </td>
                         <td>
                           <v-avatar>
-                            <img :src="getImageUrl(item.user_pic)" alt="User avatar" class="mx-auto"
-                              style="width: 35px; height: 35px" />
+                            <img
+                              :src="getImageUrl(item.user_pic)"
+                              alt="User avatar"
+                              class="mx-auto"
+                              style="width: 35px; height: 35px"
+                            />
                           </v-avatar>
                         </td>
                         <td>
@@ -390,7 +465,11 @@
                           {{ item.user_department }}
                         </td>
                         <td>
-                          <v-icon v-if="item.user_status == 'Active'" color="success">mdi-circle</v-icon>
+                          <v-icon
+                            v-if="item.user_status == 'Active'"
+                            color="success"
+                            >mdi-circle</v-icon
+                          >
                           <v-icon v-else color="error">mdi-circle</v-icon>
                           {{ item.user_status }}
                         </td>
@@ -398,8 +477,11 @@
                           {{ item.user_role }}
                         </td>
                         <td>
-                          <v-btn @click="(dialog_manage = true), editItem(item)" color="primary"
-                            style="color: white; border-radius: 20px">
+                          <v-btn
+                            @click="(dialog_manage = true), editItem(item)"
+                            color="primary"
+                            style="color: white; border-radius: 20px"
+                          >
                             {{ manage }}
                           </v-btn>
                         </td>
@@ -420,8 +502,18 @@
               <v-tab-item>
                 <v-card flat>
                   <!-- hide-default-footer ซ่อน footer-->
+<<<<<<< HEAD
                   <v-data-table :headers="headers" :items="data_position_ReportDeveloper" :search="search"
                     class="elevation-1" style="text-align: center; ">
+=======
+                  <v-data-table
+                    :headers="headers"
+                    :items="data_position_ReportDeveloper"
+                    :search="search"
+                    class="elevation-1"
+                    style="text-align: center"
+                  >
+>>>>>>> fdad955d6dc424bb0ecd7e3caac604f86139934c
                     <template v-slot:item="{ item, index }">
                       <!-- :class="index % 2 === 0 ? 'row-even' : 'row-odd'" -->
                       <tr>
@@ -430,8 +522,12 @@
                         </td>
                         <td>
                           <v-avatar>
-                            <img :src="getImageUrl(item.user_pic)" alt="User avatar" class="mx-auto"
-                              style="width: 35px; height: 35px" />
+                            <img
+                              :src="getImageUrl(item.user_pic)"
+                              alt="User avatar"
+                              class="mx-auto"
+                              style="width: 35px; height: 35px"
+                            />
                           </v-avatar>
                         </td>
                         <td>
@@ -450,7 +546,11 @@
                           {{ item.user_department }}
                         </td>
                         <td>
-                          <v-icon v-if="item.user_status == 'Active'" color="success">mdi-circle</v-icon>
+                          <v-icon
+                            v-if="item.user_status == 'Active'"
+                            color="success"
+                            >mdi-circle</v-icon
+                          >
                           <v-icon v-else color="error">mdi-circle</v-icon>
                           {{ item.user_status }}
                         </td>
@@ -458,8 +558,11 @@
                           {{ item.user_role }}
                         </td>
                         <td>
-                          <v-btn @click="(dialog_manage = true), editItem(item)" color="primary"
-                            style="color: white; border-radius: 20px">
+                          <v-btn
+                            @click="(dialog_manage = true), editItem(item)"
+                            color="primary"
+                            style="color: white; border-radius: 20px"
+                          >
                             {{ manage }}
                           </v-btn>
                         </td>
@@ -481,25 +584,40 @@
             <!-- ปุ่มสร้าง User + Dialog -->
             <v-dialog v-model="dialog" width="900px" max-height="100%">
               <v-card class="mx-auto" height="580px" max-height="100%">
-                <v-card-title>
+                <v-card-title style="background-color: #883cfe">
                   <span class="text-h5">
-                    <h4>สร้างผู้ใช้ใหม่</h4>
+                    <h4 style="color: white">สร้างผู้ใช้ใหม่</h4>
                   </span>
                 </v-card-title>
                 <!-- Form -->
                 <v-form ref="formCreate" @submit.prevent="createUser2">
-                  <v-row class="mb-2" no-gutters>
+                  <v-row class="mb-2 pt-5" no-gutters>
                     <!-- Upload image -->
                     <v-col class="col-12" col="12" sm="12" md="2">
-                      <v-card style="border: none" class="mx-auto text-center" outlined tile height="100%">
+                      <v-card
+                        style="border: none"
+                        class="mx-auto text-center"
+                        outlined
+                        tile
+                        height="100%"
+                      >
                         <!--  -->
                         <template>
                           <div>
                             <form>
                               <label class="mt-10 avatar-upload">
-                                <input type="file" ref="fileInput" @change="uploadFile" />
-                                <v-icon class="center mt-7" color="black" size="30px"
-                                  v-if="!photo">mdi-cloud-upload-outline</v-icon>
+                                <input
+                                  type="file"
+                                  ref="fileInput"
+                                  @change="uploadFile"
+                                />
+                                <v-icon
+                                  class="center mt-7"
+                                  color="black"
+                                  size="30px"
+                                  v-if="!photo"
+                                  >mdi-cloud-upload-outline</v-icon
+                                >
                                 <img v-if="photo" :src="photo" />
                               </label>
                             </form>
@@ -510,9 +628,18 @@
                     </v-col>
                     <!-- Input Form -->
                     <v-col col="12" sm="12" md="10">
-                      <v-card style="border: none" class="pa-2" outlined tile height="100%">
+                      <v-card
+                        style="border: none"
+                        class="pa-2"
+                        outlined
+                        tile
+                        height="100%"
+                      >
                         <div>
-                          <v-row class="mr-2" style="margin-bottom: -2%; font-size: 14px">
+                          <v-row
+                            class="mr-2"
+                            style="margin-bottom: -2%; font-size: 14px"
+                          >
                             <v-col class="hidden-xs-only" cols="12" sm="3">
                               คำนำหน้าชื่อ
                             </v-col>
@@ -520,54 +647,110 @@
                               ชื่อจริง
                             </v-col>
 
-                            <v-col class="hidden-xs-only" cols="12" sm="5" style="margin-right: -1%; padding-right: 0%">
+                            <v-col
+                              class="hidden-xs-only"
+                              cols="12"
+                              sm="5"
+                              style="margin-right: -1%; padding-right: 0%"
+                            >
                               นามสกุล
                             </v-col>
                           </v-row>
 
                           <v-row class="mr-2 mt-0" style="margin-bottom: -8%">
-                            <v-col cols="12" sm="3" style="margin-right: -1%; padding-right: 0%">
-                              <v-select :rules="[rules.required]" v-model="name" :items="dataDefault_nametitle"
-                                label="Mr/Miss" dense rounded solo></v-select>
+                            <v-col
+                              cols="12"
+                              sm="3"
+                              style="margin-right: -1%; padding-right: 0%"
+                            >
+                              <v-select
+                                :rules="[rules.required]"
+                                v-model="name"
+                                :items="dataDefault_nametitle"
+                                dense
+                                rounded
+                                outlined
+                              ></v-select>
                             </v-col>
                             <v-col cols="12" sm="4">
-                              <v-text-field :rules="[rules.required]" v-model="firstname" label="ชื่อจริง" dense rounded
-                                solo></v-text-field>
+                              <v-text-field
+                                :rules="[rules.required]"
+                                v-model="firstname"
+                                dense
+                                rounded
+                                outlined
+                              ></v-text-field>
                             </v-col>
                             <v-col cols="12" sm="5">
-                              <v-text-field :rules="[rules.required]" v-model="lastname" label="นามสกุล" dense rounded
-                                solo></v-text-field>
+                              <v-text-field
+                                :rules="[rules.required]"
+                                v-model="lastname"
+                                dense
+                                rounded
+                                outlined
+                              ></v-text-field>
                             </v-col>
                           </v-row>
 
-                          <v-row class="mr-2 mt-6" style="margin-bottom: -2%; font-size: 14px">
+                          <v-row
+                            class="mr-2 mt-6"
+                            style="margin-bottom: -2%; font-size: 14px"
+                          >
                             <v-col class="hidden-xs-only" cols="12" sm="4">
                               รหัสพนักงาน
                             </v-col>
                             <v-col class="hidden-xs-only" cols="12" sm="4">
                               ตำแหน่ง
                             </v-col>
-                            <v-col class="hidden-xs-only" cols="12" sm="4" style="margin-right: -1%; padding-right: 0%">
+                            <v-col
+                              class="hidden-xs-only"
+                              cols="12"
+                              sm="4"
+                              style="margin-right: -1%; padding-right: 0%"
+                            >
                               แผนก
                             </v-col>
                           </v-row>
                           <!--  -->
                           <v-row class="mr-2 mt-0" style="margin-bottom: -6%">
                             <v-col cols="12" sm="4">
-                              <v-text-field :rules="[rules.required]" v-model="code" label="รหัสพนักงาน" dense rounded
-                                solo></v-text-field>
+                              <v-text-field
+                                :rules="[rules.required]"
+                                v-model="code"
+                                label="รหัสพนักงาน"
+                                dense
+                                rounded
+                                outlined
+                              ></v-text-field>
                             </v-col>
                             <v-col cols="12" sm="4">
-                              <v-select :rules="[rules.required]" v-model="position" :items="dataDefault_position"
-                                label="ตำแหน่ง" dense rounded solo></v-select>
+                              <v-select
+                                :rules="[rules.required]"
+                                v-model="position"
+                                :items="dataDefault_position"
+                                label="ตำแหน่ง"
+                                dense
+                                rounded
+                                outlined
+                              ></v-select>
                             </v-col>
                             <v-col cols="12" sm="4">
-                              <v-select :rules="[rules.required]" v-model="department" :items="dataDefault_department"
-                                label="แผนก" dense rounded solo></v-select>
+                              <v-select
+                                :rules="[rules.required]"
+                                v-model="department"
+                                :items="dataDefault_department"
+                                label="แผนก"
+                                dense
+                                rounded
+                                outlined
+                              ></v-select>
                             </v-col>
                           </v-row>
                           <!--  -->
-                          <v-row class="mr-2 mt-2" style="margin-bottom: -2%; font-size: 14px">
+                          <v-row
+                            class="mr-2 mt-2"
+                            style="margin-bottom: -2%; font-size: 14px"
+                          >
                             <v-col class="hidden-xs-only" cols="12" sm="12">
                               อีเมลล์
                             </v-col>
@@ -575,12 +758,21 @@
                           <!--  -->
                           <v-row class="mr-2 mt-0" style="margin-bottom: -6%">
                             <v-col cols="12" sm="12">
-                              <v-text-field :rules="[rules.required, rules.email]" v-model="email" label="อีเมลล์" dense
-                                rounded solo></v-text-field>
+                              <v-text-field
+                                :rules="[rules.required, rules.email]"
+                                v-model="email"
+                                label="อีเมลล์"
+                                dense
+                                rounded
+                                outlined
+                              ></v-text-field>
                             </v-col>
                           </v-row>
                           <!--  -->
-                          <v-row class="mr-2 mt-2" style="margin-bottom: -2%; font-size: 14px">
+                          <v-row
+                            class="mr-2 mt-2"
+                            style="margin-bottom: -2%; font-size: 14px"
+                          >
                             <v-col class="hidden-xs-only" cols="12" sm="12">
                               รหัสผ่าน
                             </v-col>
@@ -588,15 +780,28 @@
                           <!--  -->
                           <v-row class="mr-2 mt-0" style="margin-bottom: -4%">
                             <v-col class="" cols="12" sm="12">
-                              <v-text-field :rules="[rules.required, rules.counter]" v-model="password" label="รหัสผ่าน"
-                                :append-icon="showpassword_newbt ? 'mdi-eye' : 'mdi-eye-off'
-                                  " @click:append="
-    showpassword_newbt = !showpassword_newbt
-    " :type="showpassword_newbt ? 'text' : 'password'" dense rounded solo></v-text-field>
+                              <v-text-field
+                                :rules="[rules.required, rules.counter]"
+                                v-model="password"
+                                label="รหัสผ่าน"
+                                :append-icon="
+                                  showpassword_newbt ? 'mdi-eye' : 'mdi-eye-off'
+                                "
+                                @click:append="
+                                  showpassword_newbt = !showpassword_newbt
+                                "
+                                :type="showpassword_newbt ? 'text' : 'password'"
+                                dense
+                                rounded
+                                outlined
+                              ></v-text-field>
                             </v-col>
                           </v-row>
                           <!--  -->
-                          <v-row class="mr-2 mt-0" style="margin-bottom: -2%; font-size: 14px">
+                          <v-row
+                            class="mr-2 mt-0"
+                            style="margin-bottom: -2%; font-size: 14px"
+                          >
                             <v-col class="hidden-xs-only" cols="12" sm="6">
                               สถานะ
                             </v-col>
@@ -607,24 +812,48 @@
                           <!--  -->
                           <v-row class="mr-2 mt-0">
                             <v-col cols="12" sm="6">
-                              <v-select :rules="[rules.required]" v-model="stratiform" :items="dataDefault_status_user"
-                                label="สถานะ" dense rounded solo></v-select>
+                              <v-select
+                                :rules="[rules.required]"
+                                v-model="stratiform"
+                                :items="dataDefault_status_user"
+                                dense
+                                rounded
+                                outlined
+                              ></v-select>
                             </v-col>
 
                             <v-col cols="12" sm="6">
-                              <v-select :rules="[rules.required]" v-model="role" :items="dataDefault_role_user"
-                                label="บทบาท" dense rounded solo>
+                              <v-select
+                                :rules="[rules.required]"
+                                v-model="role"
+                                :items="dataDefault_role_user"
+                                dense
+                                rounded
+                                outlined
+                              >
                               </v-select>
                             </v-col>
-                            <!--  -->
                           </v-row>
 
-                          <v-row class="mr-6 mt-0 mb-1" style="justify-content: right">
-                            <v-btn class="mr-4" elevation="2" color="error" style="color: white; border-radius: 10px"
-                              @click="(dialog = false), clearInfoNewUser()">
+                          <v-row
+                            class="mr-6 mt-0 mb-1"
+                            style="justify-content: right"
+                          >
+                            <v-btn
+                              class="mr-4"
+                              elevation="2"
+                              color="error"
+                              style="color: white; border-radius: 10px"
+                              @click="(dialog = false), clearInfoNewUser()"
+                            >
                               ยกเลิก
                             </v-btn>
-                            <v-btn elevation="2" color="primary" type="submit" style="color: white; border-radius: 10px">
+                            <v-btn
+                              elevation="2"
+                              color="primary"
+                              type="submit"
+                              style="color: white; border-radius: 10px"
+                            >
                               สร้างผู้ใช้
                             </v-btn>
                           </v-row>
@@ -633,45 +862,75 @@
                     </v-col>
                   </v-row>
                 </v-form>
-                <dialog-success :dialog.sync="dialogSuccess" title="สร้างเสร็จเรียบร้อยแล้ว" />
+                <dialog-success
+                  :dialog.sync="dialogSuccess"
+                  title="สร้างเสร็จเรียบร้อยแล้ว"
+                />
                 <!-- End Form -->
               </v-card>
             </v-dialog>
             <!-- Dialog for button manage -->
             <v-dialog v-model="dialog_manage" width="900px" max-height="100%">
               <v-card class="mx-auto" height="580px" max-height="100%">
-                <v-card-title>
-                  <span class="text-h5" style="font-weight: bold">จัดการผู้ใช้งานระบบ</span>
+                <v-card-title style="background-color: #883cfe">
+                  <span class="text-h6">
+                    <h4 style="color: white">จัดการผู้ใช้งานระบบ</h4>
+                  </span>
                 </v-card-title>
                 <!-- Form -->
                 <v-form ref="form">
                   <v-row class="mb-2" no-gutters>
                     <!-- Upload image -->
                     <v-col class="col-12" col="12" sm="12" md="2">
-                      <v-card style="border: none" class="mx-auto text-center" outlined tile height="100%">
-                        <!--  -->
+                      <v-card
+                        style="border: none"
+                        class="mx-auto text-center"
+                        outlined
+                        tile
+                        height="100%"
+                      >
                         <template>
                           <div>
                             <form>
                               <label class="mt-10 avatar-upload">
-                                <input type="file" ref="fileInput" @change="uploadFile_manage" />
-                                <v-icon class="center mt-7" color="black" size="30px"
-                                  v-if="!imageManage">mdi-cloud-upload-outline</v-icon>
+                                <input
+                                  type="file"
+                                  ref="fileInput"
+                                  @change="uploadFile_manage"
+                                />
+                                <v-icon
+                                  class="center mt-7"
+                                  color="black"
+                                  size="30px"
+                                  v-if="!imageManage"
+                                  >mdi-cloud-upload-outline</v-icon
+                                >
                                 <img v-if="avatar != null" :src="avatar" />
-                                <img v-else-if="imageManage" :src="getImageUrl(imageManage)" />
+                                <img
+                                  v-else-if="imageManage"
+                                  :src="getImageUrl(imageManage)"
+                                />
                               </label>
                             </form>
                           </div>
                         </template>
-                        <!--  -->
                       </v-card>
                     </v-col>
                     <!-- Input Form -->
                     <v-col col="12" sm="12" md="10">
                       <v-form ref="formUpdate" @submit.prevent="updateUser2">
-                        <v-card style="border: none" class="pa-2" outlined tile height="100%">
+                        <v-card
+                          style="border: none"
+                          class="pa-2"
+                          outlined
+                          tile
+                          height="100%"
+                        >
                           <div>
-                            <v-row class="mr-2" style="margin-bottom: -2%; font-size: 14px">
+                            <v-row
+                              class="mr-2"
+                              style="margin-bottom: -2%; font-size: 14px"
+                            >
                               <v-col class="hidden-xs-only" cols="12" sm="3">
                                 คำนำหน้าชื่อ
                               </v-col>
@@ -679,55 +938,108 @@
                                 ชื่อจริง
                               </v-col>
 
-                              <v-col class="hidden-xs-only" cols="12" sm="5" style="margin-right: -1%; padding-right: 0%">
+                              <v-col
+                                class="hidden-xs-only"
+                                cols="12"
+                                sm="5"
+                                style="margin-right: -1%; padding-right: 0%"
+                              >
                                 นามสกุล
                               </v-col>
                             </v-row>
                             <!--  -->
 
                             <v-row class="mr-2 mt-0" style="margin-bottom: -8%">
-                              <v-col cols="12" sm="3" style="margin-right: -1%; padding-right: 0%">
-                                <v-select :rules="[rules.required]" v-model="editedItem.misname"
-                                  :items="dataDefault_nametitle" label="Mr/Miss" dense rounded solo></v-select>
+                              <v-col
+                                cols="12"
+                                sm="3"
+                                style="margin-right: -1%; padding-right: 0%"
+                              >
+                                <v-select
+                                  :rules="[rules.required]"
+                                  v-model="editedItem.misname"
+                                  :items="dataDefault_nametitle"
+                                  dense
+                                  rounded
+                                  outlined
+                                ></v-select>
                               </v-col>
                               <v-col cols="12" sm="4">
-                                <v-text-field :rules="[rules.required]" v-model="editedItem.user_firstname"
-                                  label="ชื่อจริง" dense rounded solo></v-text-field>
+                                <v-text-field
+                                  :rules="[rules.required]"
+                                  v-model="editedItem.user_firstname"
+                                  dense
+                                  rounded
+                                  outlined
+                                ></v-text-field>
                               </v-col>
                               <v-col cols="12" sm="5">
-                                <v-text-field :rules="[rules.required]" v-model="editedItem.user_lastname" label="นามสกุล"
-                                  dense rounded solo></v-text-field>
+                                <v-text-field
+                                  :rules="[rules.required]"
+                                  v-model="editedItem.user_lastname"
+                                  dense
+                                  rounded
+                                  outlined
+                                ></v-text-field>
                               </v-col>
                             </v-row>
                             <!--  -->
-                            <v-row class="mr-2 mt-6" style="margin-bottom: -2%; font-size: 14px">
+                            <v-row
+                              class="mr-2 mt-6"
+                              style="margin-bottom: -2%; font-size: 14px"
+                            >
                               <v-col class="hidden-xs-only" cols="12" sm="4">
                                 รหัสพนักงาน
                               </v-col>
                               <v-col class="hidden-xs-only" cols="12" sm="4">
                                 ตำแหน่ง
                               </v-col>
-                              <v-col class="hidden-xs-only" cols="12" sm="4" style="margin-right: -1%; padding-right: 0%">
+                              <v-col
+                                class="hidden-xs-only"
+                                cols="12"
+                                sm="4"
+                                style="margin-right: -1%; padding-right: 0%"
+                              >
                                 แผนก
                               </v-col>
                             </v-row>
                             <!--  -->
                             <v-row class="mr-2 mt-0" style="margin-bottom: -6%">
                               <v-col cols="12" sm="4">
-                                <v-text-field :rules="[rules.required]" v-model="editedItem.user_id" label="รหัสพนักงาน"
-                                  dense rounded solo></v-text-field>
+                                <v-text-field
+                                  :rules="[rules.required]"
+                                  v-model="editedItem.user_id"
+                                  dense
+                                  rounded
+                                  outlined
+                                ></v-text-field>
                               </v-col>
                               <v-col cols="12" sm="4">
-                                <v-select :rules="[rules.required]" v-model="editedItem.user_position"
-                                  :items="dataDefault_position" label="ตำแหน่ง" dense rounded solo></v-select>
+                                <v-select
+                                  :rules="[rules.required]"
+                                  v-model="editedItem.user_position"
+                                  :items="dataDefault_position"
+                                  dense
+                                  rounded
+                                  outlined
+                                ></v-select>
                               </v-col>
                               <v-col cols="12" sm="4">
-                                <v-select :rules="[rules.required]" v-model="editedItem.user_department"
-                                  :items="dataDefault_department" label="แผนก" dense rounded solo></v-select>
+                                <v-select
+                                  :rules="[rules.required]"
+                                  v-model="editedItem.user_department"
+                                  :items="dataDefault_department"
+                                  dense
+                                  rounded
+                                  outlined
+                                ></v-select>
                               </v-col>
                             </v-row>
                             <!--  -->
-                            <v-row class="mr-2 mt-2" style="margin-bottom: -2%; font-size: 14px">
+                            <v-row
+                              class="mr-2 mt-2"
+                              style="margin-bottom: -2%; font-size: 14px"
+                            >
                               <v-col class="hidden-xs-only" cols="12" sm="12">
                                 อีเมลล์
                               </v-col>
@@ -735,12 +1047,20 @@
 
                             <v-row class="mr-2 mt-0" style="margin-bottom: -6%">
                               <v-col cols="12" sm="12">
-                                <v-text-field :rules="[rules.required, rules.email]" v-model="editedItem.user_email"
-                                  label="อีเมลล์" dense rounded solo></v-text-field>
+                                <v-text-field
+                                  :rules="[rules.required, rules.email]"
+                                  v-model="editedItem.user_email"
+                                  dense
+                                  rounded
+                                  outlined
+                                ></v-text-field>
                               </v-col>
                             </v-row>
                             <!--  -->
-                            <v-row class="mr-2 mt-2" style="margin-bottom: -2%; font-size: 14px">
+                            <v-row
+                              class="mr-2 mt-2"
+                              style="margin-bottom: -2%; font-size: 14px"
+                            >
                               <v-col class="hidden-xs-only" cols="12" sm="12">
                                 รหัสผ่าน
                               </v-col>
@@ -748,20 +1068,33 @@
                             <!--  -->
                             <v-row class="mr-2 mt-0" style="margin-bottom: -4%">
                               <v-col class="" cols="12" sm="12">
-                                <v-text-field :rules="[rules.required, rules.counter]" v-model="editedItem.user_password"
-                                  label="รหัสผ่าน" :append-icon="showpassword_managebt
-                                    ? 'mdi-eye'
-                                    : 'mdi-eye-off'
-                                    " @click:append="
-                                      showpassword_managebt =
+                                <v-text-field
+                                  :rules="[rules.required, rules.counter]"
+                                  v-model="editedItem.user_password"
+                                  :append-icon="
+                                    showpassword_managebt
+                                      ? 'mdi-eye'
+                                      : 'mdi-eye-off'
+                                  "
+                                  @click:append="
+                                    showpassword_managebt =
                                       !showpassword_managebt
-                                      " :type="showpassword_managebt ? 'text' : 'password'
-                                      " dense rounded solo>
-                                      </v-text-field>
+                                  "
+                                  :type="
+                                    showpassword_managebt ? 'text' : 'password'
+                                  "
+                                  dense
+                                  rounded
+                                  outlined
+                                >
+                                </v-text-field>
                               </v-col>
                             </v-row>
                             <!--  -->
-                            <v-row class="mr-2 mt-0" style="margin-bottom: -2%; font-size: 14px">
+                            <v-row
+                              class="mr-2 mt-0"
+                              style="margin-bottom: -2%; font-size: 14px"
+                            >
                               <v-col class="hidden-xs-only" cols="12" sm="6">
                                 สถานะ
                               </v-col>
@@ -772,12 +1105,24 @@
 
                             <v-row class="mr-2 mt-0">
                               <v-col cols="12" sm="6">
-                                <v-select :rules="[rules.required]" v-model="editedItem.user_status"
-                                  :items="dataDefault_status_user" label="สถานะ" dense rounded solo></v-select>
+                                <v-select
+                                  :rules="[rules.required]"
+                                  v-model="editedItem.user_status"
+                                  :items="dataDefault_status_user"
+                                  dense
+                                  rounded
+                                  outlined
+                                ></v-select>
                               </v-col>
                               <v-col cols="12" sm="6">
-                                <v-select :rules="[rules.required]" v-model="editedItem.user_role"
-                                  :items="dataDefault_role_user" label="บทบาท" dense rounded solo></v-select>
+                                <v-select
+                                  :rules="[rules.required]"
+                                  v-model="editedItem.user_role"
+                                  :items="dataDefault_role_user"
+                                  dense
+                                  rounded
+                                  outlined
+                                ></v-select>
                               </v-col>
                             </v-row>
                             <v-row class="mr-6 mt-0 mb-1">
@@ -785,18 +1130,41 @@
                                 <h4>ลบผู้ใช้</h4>
                               </v-btn>
                               <v-spacer></v-spacer>
-                              <v-btn color="error" @click="dialog_manage = false">
+                              <v-btn
+                                color="error"
+                                @click="dialog_manage = false"
+                              >
                                 <h4>ปิด</h4>
                               </v-btn>
                               <!-- @click="updateUser2()" -->
-                              <v-btn color="primary" dark type="submit" class="ml-3">
+                              <v-btn
+                                color="primary"
+                                dark
+                                type="submit"
+                                class="ml-3"
+                              >
                                 <h4>อัปเดต</h4>
                               </v-btn>
                             </v-row>
                           </div>
+<<<<<<< HEAD
                           <dialog-success :dialog.sync="dialogDeleteSuccess" title="ลบเสร็จเรียบร้อยแล้ว" />
                           <dialog-success :dialog.sync="dialogUpdateSuccess" title="อัปเดตเสร็จเรียบร้อยแล้ว" />
                           <dialog-fail :dialog.sync="dialogfail" title="ผู้ใช้รายนี้มีรายการปัญหาที่ต้องจัดการก่อน" />
+=======
+                          <dialog-success
+                            :dialog.sync="dialogDeleteSuccess"
+                            title="ลบเสร็จเรียบร้อยแล้ว"
+                          />
+                          <dialog-success
+                            :dialog.sync="dialogUpdateSuccess"
+                            title="อัปเดตเสร็จเรียบร้อยแล้ว"
+                          />
+                          <dialog-fail
+                            :dialog.sync="dialogfail"
+                            :title="ผู้ใช้รายนี้มีรายการปัญหาที่ต้องจัดการก่อน"
+                          />
+>>>>>>> fdad955d6dc424bb0ecd7e3caac604f86139934c
                         </v-card>
                       </v-form>
                     </v-col>
@@ -814,7 +1182,7 @@
 </template>
 
 <script>
-import DialogFail from '../components/DialogFail.vue';
+import DialogFail from "../components/DialogFail.vue";
 import Searchbar from "../components/Searchbar.vue";
 export default {
   components: { Searchbar, DialogFail },
@@ -937,7 +1305,7 @@ export default {
       tableColor: "#caadf4",
       dialogSuccess: false,
       dialogDeleteSuccess: false,
-      dialogfail:false,
+      dialogfail: false,
       dialogUpdateSuccess: false,
     };
   },
@@ -1105,7 +1473,6 @@ export default {
         });
         promise.then(() => {
           setTimeout(() => {
-            
             this.getUser();
             this.getAll();
             this.getPosition_Developer();
@@ -1464,13 +1831,23 @@ input[type="text"] {
   color: #bbbbbb;
 }
 
+::v-deep .v-data-table-header {
+  background-color: #5c5c5c;
+  color: white;
+}
+
+::v-deep .v-data-table-header span {
+  color: white;
+  font-size: 14px;
+}
+
 .row-even {
-  background-color: rgba(233, 203, 243, 0.788);
+  background-color: rgba(200, 200, 200, 0.788);
   color: black;
 }
 
 .row-odd {
-  background-color: rgba(247, 229, 191, 0.788);
+  background-color: rgba(255, 255, 255, 0.788);
   color: black;
 }
 </style>

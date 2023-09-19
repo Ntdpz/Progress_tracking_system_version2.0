@@ -47,7 +47,6 @@
                   outlined
                   :disabled="isIssueInProcess"
                   v-model="IssueType"
-                  @change="selectedType()"
                 ></v-select>
               </v-col>
               <v-col cols="12" sm="6" md="8" class="pb-0">
@@ -111,7 +110,7 @@
                   outlined
                   disabled
                   dense
-                  v-model="IssueCreate"
+                  v-model="createThai"
                 ></v-text-field>
               </v-col>
 
@@ -126,7 +125,7 @@
                   >
                     <template v-slot:activator="{ on, attrs }">
                       <v-text-field
-                        v-model="IssueEndDate"
+                        v-model="formattedDateEnd"
                         label="วันกำหนดส่ง"
                         prepend-icon="mdi-calendar"
                         readonly
@@ -137,6 +136,11 @@
                     </template>
                     <v-date-picker
                       v-model="IssueEndDate"
+                      :min="IssueCreate"
+                      no-title
+                      scrollable
+                      format="yyyy-MM-dd"
+                      locale="th"
                       @input="endIssueMenu = false"
                     ></v-date-picker>
                   </v-menu>
@@ -283,7 +287,7 @@
                             >
                               <template v-slot:activator="{ on, attrs }">
                                 <v-text-field
-                                  v-model="IssueAccepting"
+                                  v-model="formattedDateAccept"
                                   label="วันที่รับ"
                                   prepend-icon="mdi-calendar"
                                   readonly
@@ -295,7 +299,12 @@
                               </template>
                               <v-date-picker
                                 v-model="IssueAccepting"
+                                no-title
+                                scrollable
+                                format="yyyy-MM-dd"
+                                locale="th"
                                 @input="acceptMenu = false"
+                                @change="changeDate()"
                               ></v-date-picker>
                             </v-menu>
                           </v-row>
@@ -315,7 +324,7 @@
                             >
                               <template v-slot:activator="{ on, attrs }">
                                 <v-text-field
-                                  v-model="IssueStart"
+                                  v-model="formattedDateStart"
                                   label="วันที่เริ่ม"
                                   prepend-icon="mdi-calendar"
                                   readonly
@@ -327,7 +336,12 @@
                               </template>
                               <v-date-picker
                                 v-model="IssueStart"
+                                no-title
+                                scrollable
+                                format="yyyy-MM-dd"
+                                locale="th"
                                 @input="startMenu = false"
+                                @change="changeDate()"
                               ></v-date-picker>
                             </v-menu>
                             <!-- Expected completion Date -->
@@ -343,7 +357,7 @@
                             >
                               <template v-slot:activator="{ on, attrs }">
                                 <v-text-field
-                                  v-model="IssueExpected"
+                                  v-model="formattedDateExpected"
                                   label="วันที่คาดว่าแก้ไขเสร็จ"
                                   prepend-icon="mdi-calendar"
                                   readonly
@@ -355,7 +369,12 @@
                               </template>
                               <v-date-picker
                                 v-model="IssueExpected"
+                                no-title
+                                scrollable
+                                format="yyyy-MM-dd"
+                                locale="th"
                                 @input="expectedMenu = false"
+                                @change="changeDate()"
                               ></v-date-picker>
                             </v-menu>
                           </v-row>
@@ -427,7 +446,7 @@
                             >
                               <template v-slot:activator="{ on, attrs }">
                                 <v-text-field
-                                  v-model="IssueComplete"
+                                  v-model="formattedDateComplete"
                                   label="วันที่เสร็จ"
                                   prepend-icon="mdi-calendar"
                                   readonly
@@ -439,7 +458,12 @@
                               </template>
                               <v-date-picker
                                 v-model="IssueComplete"
+                                no-title
+                                scrollable
+                                format="yyyy-MM-dd"
+                                locale="th"
                                 @input="completionMenu = false"
+                                @change="changeDate()"
                               ></v-date-picker>
                             </v-menu>
                           </v-row>
@@ -541,46 +565,48 @@
       </v-card>
 
       <template>
-          <v-dialog
-            v-model="dialogSuccess"
-            persistent
-            max-width="400px"
-            max-height="100%"
-          >
-            <v-card width="100%" max-height="100%">
-              <v-row class="ma-0 pa-0" style="place-content: center">
-                <v-card-title>
-                  <v-icon size="100px" color="success"
-                    >mdi-check-circle-outline</v-icon
-                  >
-                </v-card-title>
-              </v-row>
-              <v-row class="ma-0 pa-0" style="place-content: center">
-                <v-card-title class="text-h4">
-                  อัปเดตเสร็จเรียบร้อย
-                </v-card-title>
-              </v-row>
-              <v-card-actions style="place-content: center;">
-                <!-- <v-spacer></v-spacer> -->
-                <v-btn
-                  color="success"
-                  dark
-                  @click="(dialogSuccess = false), handleClose()" rounded
+        <v-dialog
+          v-model="dialogSuccess"
+          persistent
+          max-width="400px"
+          max-height="100%"
+        >
+          <v-card width="100%" max-height="100%">
+            <v-row class="ma-0 pa-0" style="place-content: center">
+              <v-card-title>
+                <v-icon size="100px" color="success"
+                  >mdi-check-circle-outline</v-icon
                 >
-                  Ok
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-        </template>
-        <template>
-          <v-dialog
-            v-model="rejectSuccess"
-            persistent
-            max-width="400px"
-            max-height="100%"
-          >
-            <v-card width="100%" max-height="100%">
+              </v-card-title>
+            </v-row>
+            <v-row class="ma-0 pa-0" style="place-content: center">
+              <v-card-title class="text-h4">
+                อัปเดตเสร็จเรียบร้อย
+              </v-card-title>
+            </v-row>
+            <v-card-actions style="place-content: center">
+              <!-- <v-spacer></v-spacer> -->
+              <v-btn
+                color="success"
+                dark
+                @click="(dialogSuccess = false), handleClose()"
+                rounded
+              >
+                Ok
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </template>
+      <template>
+        <v-dialog
+          v-model="rejectSuccess"
+          persistent
+          max-width="400px"
+          max-height="100%"
+        >
+          <v-card width="100%" max-height="100%">
+            <v-row>
               <v-row class="ma-0 pa-0" style="place-content: center">
                 <v-card-title>
                   <v-icon size="100px" color="success"
@@ -589,24 +615,36 @@
                 </v-card-title>
               </v-row>
               <v-row class="ma-0 pa-0" style="place-content: center">
-                <v-card-title class="text-h4">
-                  ลบเสร็จเรียบร้อย
-                </v-card-title>
+                <v-card-title class="text-h4"> ลบเสร็จเรียบร้อย </v-card-title>
               </v-row>
               <v-card-actions style="place-content: center">
                 <!-- <v-spacer></v-spacer> -->
                 <v-btn
                   color="success"
                   dark
-                  @click="(rejectSuccess = false), handleClose()" rounded
-                >
-                  Ok
-                </v-btn>
+                  @click="(rejectSuccess = false), handleClose()"
+                  rounded
+                ></v-btn>
               </v-card-actions>
-            </v-card>
-          </v-dialog>
-        </template>
-
+            </v-row>
+            <v-row class="ma-0 pa-0" style="place-content: center">
+              <v-card-title class="text-h5">
+                อัปเดตเสร็จเรียบร้อย
+              </v-card-title>
+            </v-row>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn
+                color="primary"
+                dark
+                @click="(dialogSuccess = false), handleClose()"
+              >
+                Ok
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </template>
     </v-dialog>
   </row>
 </template>
@@ -664,7 +702,7 @@ export default {
   },
   data() {
     return {
-      rejectSuccess:false,
+      rejectSuccess: false,
       panel: [0],
       disabledDev: false,
       loading: false,
@@ -699,6 +737,33 @@ export default {
       //validate
       rules: [(value) => !!value || "Required."],
       dialogSuccess: false,
+      //datethai
+      createThai: "",
+      formattedDateEnd: new Date(
+        Date.now() - new Date().getTimezoneOffset() * 60000
+      )
+        .toISOString()
+        .substr(0, 10),
+      formattedDateAccept: new Date(
+        Date.now() - new Date().getTimezoneOffset() * 60000
+      )
+        .toISOString()
+        .substr(0, 10),
+      formattedDateStart: new Date(
+        Date.now() - new Date().getTimezoneOffset() * 60000
+      )
+        .toISOString()
+        .substr(0, 10),
+      formattedDateExpected: new Date(
+        Date.now() - new Date().getTimezoneOffset() * 60000
+      )
+        .toISOString()
+        .substr(0, 10),
+      formattedDateComplete: new Date(
+        Date.now() - new Date().getTimezoneOffset() * 60000
+      )
+        .toISOString()
+        .substr(0, 10),
     };
   },
   updated() {
@@ -718,6 +783,7 @@ export default {
         this.getUserSystemsOncreated();
         this.getUser();
         this.checkHistory();
+        this.showDate();
       }
     },
   },
@@ -1056,7 +1122,83 @@ export default {
         console.log(error);
       }
     },
-    selectedType() {},
+    showDate() {
+      console.log("show data");
+      //end date
+      if (this.IssueEndDate != null) {
+        this.formattedDateEnd = moment(this.IssueEndDate)
+          .add(543, "years")
+          .format("DD-MM-YYYY");
+      } else {
+        this.formattedDateEnd = "No day";
+      }
+      //Accepting date
+      if (this.IssueAccepting != null) {
+        this.formattedDateAccept = moment(this.IssueAccepting)
+          .add(543, "years")
+          .format("DD-MM-YYYY");
+      } else {
+        this.formattedDateAccept = "No day";
+      }
+      //Start date
+      if (this.IssueStart != null) {
+        this.formattedDateStart = moment(this.IssueStart)
+          .add(543, "years")
+          .format("DD-MM-YYYY");
+      } else {
+        this.formattedDateStart = "No day";
+      }
+      //Expected date
+      if (this.IssueExpected != null) {
+        this.formattedDateExpected = moment(this.IssueExpected)
+          .add(543, "years")
+          .format("DD-MM-YYYY");
+      } else {
+        this.formattedDateExpected = "No day";
+      }
+      //complete date
+      if (this.IssueComplete != null) {
+        this.formattedDateComplete = moment(this.IssueComplete)
+          .add(543, "years")
+          .format("DD-MM-YYYY");
+      } else {
+        this.formattedDateComplete = "No day";
+      }
+      //create date
+      if (this.IssueCreate != null) {
+        this.createThai = moment(this.IssueCreate, "YYYY-MM-DD")
+          .add(543, "years")
+          .format("DD-MM-YYYY");
+      } else {
+        this.createThai = "No day";
+      }
+    },
+    changeDate() {
+      const formattedDateEnd = moment(this.IssueEndDate)
+        .add(543, "years")
+        .format("DD-MM-YYYY");
+      this.formattedDateEnd = formattedDateEnd;
+      //Accepting date
+      const formattedDateAccept = moment(this.IssueAccepting)
+        .add(543, "years")
+        .format("DD-MM-YYYY");
+      this.formattedDateAccept = formattedDateAccept;
+      //Start date
+      const formattedDateStart = moment(this.IssueStart)
+        .add(543, "years")
+        .format("DD-MM-YYYY");
+      this.formattedDateStart = formattedDateStart;
+      //Expected date
+      const formattedDateExpected = moment(this.IssueExpected)
+        .add(543, "years")
+        .format("DD-MM-YYYY");
+      this.formattedDateExpected = formattedDateExpected;
+      //complete date
+      const formattedDateComplete = moment(this.IssueComplete)
+        .add(543, "years")
+        .format("DD-MM-YYYY");
+      this.formattedDateComplete = formattedDateComplete;
+    },
   },
 };
 </script>
@@ -1071,8 +1213,8 @@ export default {
 }
 
 .v-btn:not(.v-btn--round).v-size--default {
-    height: 36px;
-    min-width: 147px;
-    /* padding: 0 16px; */
+  height: 36px;
+  min-width: 147px;
+  /* padding: 0 16px; */
 }
 </style>
