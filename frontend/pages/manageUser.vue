@@ -73,20 +73,11 @@
                 style="height: 40px"
               >
                 <v-tabs-slider color="primary"></v-tabs-slider>
-<<<<<<< HEAD
-                <!-- background-color: #bb96f1a6; -->
-                <v-tab v-for="item in items" :key="item" style="
-                    font-weight: bold;
-                    color: black;
-                    
-                  ">
-=======
                 <v-tab
                   v-for="item in items"
                   :key="item"
                   style="font-weight: bold; color: black"
                 >
->>>>>>> fdad955d6dc424bb0ecd7e3caac604f86139934c
                   {{ item }}
                 </v-tab>
               </v-tabs>
@@ -97,11 +88,6 @@
               <v-tab-item>
                 <v-card flat>
                   <!-- hide-default-footer ซ่อน footer-->
-<<<<<<< HEAD
-                  <v-data-table :headers="headers" :items="data" :search="search" class="elevation-1"
-                    style="text-align: center; "> 
-                    <!-- background-color: #caadf4 -->
-=======
                   <v-data-table
                     :headers="headers"
                     :items="data"
@@ -109,7 +95,6 @@
                     class="elevation-1"
                     style="text-align: center"
                   >
->>>>>>> fdad955d6dc424bb0ecd7e3caac604f86139934c
                     <template v-slot:item="{ item, index }">
                       <!-- :class="index % 2 === 0 ? 'row-even' : 'row-odd'" -->
                       <tr>
@@ -179,10 +164,6 @@
               <v-tab-item>
                 <v-card flat>
                   <!-- hide-default-footer ซ่อน footer-->
-<<<<<<< HEAD
-                  <v-data-table :headers="headers" :items="data_position_Developer" :search="search" class="elevation-1"
-                    style="text-align: center; ">
-=======
                   <v-data-table
                     :headers="headers"
                     :items="data_position_Developer"
@@ -190,7 +171,6 @@
                     class="elevation-1"
                     style="text-align: center"
                   >
->>>>>>> fdad955d6dc424bb0ecd7e3caac604f86139934c
                     <template v-slot:item="{ item, index }">
                       <tr>
                         <td>
@@ -259,10 +239,6 @@
               <v-tab-item>
                 <v-card flat>
                   <!-- hide-default-footer ซ่อน footer-->
-<<<<<<< HEAD
-                  <v-data-table :headers="headers" :items="data_position_Implementer" :search="search" class="elevation-1"
-                    style="text-align: center; ">
-=======
                   <v-data-table
                     :headers="headers"
                     :items="data_position_Implementer"
@@ -270,7 +246,6 @@
                     class="elevation-1"
                     style="text-align: center"
                   >
->>>>>>> fdad955d6dc424bb0ecd7e3caac604f86139934c
                     <template v-slot:item="{ item, index }">
                       <!-- :class="index % 2 === 0 ? 'row-even' : 'row-odd'" -->
                       <tr>
@@ -340,10 +315,6 @@
               <v-tab-item>
                 <v-card flat>
                   <!-- hide-default-footer ซ่อน footer-->
-<<<<<<< HEAD
-                  <v-data-table :headers="headers" :items="data_position_ProgramManagement" :search="search"
-                    class="elevation-1" style="text-align: center; ">
-=======
                   <v-data-table
                     :headers="headers"
                     :items="data_position_ProgramManagement"
@@ -351,7 +322,6 @@
                     class="elevation-1"
                     style="text-align: center"
                   >
->>>>>>> fdad955d6dc424bb0ecd7e3caac604f86139934c
                     <template v-slot:item="{ item, index }">
                       <!-- :class="index % 2 === 0 ? 'row-even' : 'row-odd'" -->
                       <tr>
@@ -421,10 +391,6 @@
               <v-tab-item>
                 <v-card flat>
                   <!-- hide-default-footer ซ่อน footer-->
-<<<<<<< HEAD
-                  <v-data-table :headers="headers" :items="data_position_SystemAnalyst" :search="search"
-                    class="elevation-1" style="text-align: center; ">
-=======
                   <v-data-table
                     :headers="headers"
                     :items="data_position_SystemAnalyst"
@@ -432,7 +398,6 @@
                     class="elevation-1"
                     style="text-align: center"
                   >
->>>>>>> fdad955d6dc424bb0ecd7e3caac604f86139934c
                     <template v-slot:item="{ item, index }">
                       <!-- :class="index % 2 === 0 ? 'row-even' : 'row-odd'" -->
                       <tr>
@@ -502,10 +467,6 @@
               <v-tab-item>
                 <v-card flat>
                   <!-- hide-default-footer ซ่อน footer-->
-<<<<<<< HEAD
-                  <v-data-table :headers="headers" :items="data_position_ReportDeveloper" :search="search"
-                    class="elevation-1" style="text-align: center; ">
-=======
                   <v-data-table
                     :headers="headers"
                     :items="data_position_ReportDeveloper"
@@ -513,7 +474,6 @@
                     class="elevation-1"
                     style="text-align: center"
                   >
->>>>>>> fdad955d6dc424bb0ecd7e3caac604f86139934c
                     <template v-slot:item="{ item, index }">
                       <!-- :class="index % 2 === 0 ? 'row-even' : 'row-odd'" -->
                       <tr>
@@ -1147,11 +1107,6 @@
                               </v-btn>
                             </v-row>
                           </div>
-<<<<<<< HEAD
-                          <dialog-success :dialog.sync="dialogDeleteSuccess" title="ลบเสร็จเรียบร้อยแล้ว" />
-                          <dialog-success :dialog.sync="dialogUpdateSuccess" title="อัปเดตเสร็จเรียบร้อยแล้ว" />
-                          <dialog-fail :dialog.sync="dialogfail" title="ผู้ใช้รายนี้มีรายการปัญหาที่ต้องจัดการก่อน" />
-=======
                           <dialog-success
                             :dialog.sync="dialogDeleteSuccess"
                             title="ลบเสร็จเรียบร้อยแล้ว"
@@ -1164,7 +1119,6 @@
                             :dialog.sync="dialogfail"
                             :title="ผู้ใช้รายนี้มีรายการปัญหาที่ต้องจัดการก่อน"
                           />
->>>>>>> fdad955d6dc424bb0ecd7e3caac604f86139934c
                         </v-card>
                       </v-form>
                     </v-col>

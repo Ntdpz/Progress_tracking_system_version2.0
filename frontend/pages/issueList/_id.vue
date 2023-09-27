@@ -378,7 +378,7 @@
                     ></v-text-field>
                   </v-toolbar>
                 </template>
-                <template v-slot:item="{ item, index }">
+                <template v-slot:item="{ item }">
                   <tr>
                     <td>
                       {{ item.issue_id }}
@@ -537,7 +537,7 @@
                     ></v-text-field>
                   </v-toolbar>
                 </template>
-                <template v-slot:item="{ item, index }">
+                <template v-slot:item="{ item }">
                   <tr>
                     <td>
                       {{ item.issue_id }}
@@ -698,7 +698,7 @@
                     ></v-text-field>
                   </v-toolbar>
                 </template>
-                <template v-slot:item="{ item, index }">
+                <template v-slot:item="{ item }">
                   <tr>
                     <td>
                       {{ item.issue_id }}
@@ -856,7 +856,7 @@
                     ></v-text-field>
                   </v-toolbar>
                 </template>
-                <template v-slot:item="{ item, index }">
+                <template v-slot:item="{ item }">
                   <tr>
                     <td>
                       {{ item.issue_id }}
@@ -1017,7 +1017,7 @@
                     ></v-text-field>
                   </v-toolbar>
                 </template>
-                <template v-slot:item="{ item, index }">
+                <template v-slot:item="{ item }">
                   <tr>
                     <td>
                       {{ item.issue_id }}
@@ -1175,7 +1175,7 @@
                     ></v-text-field>
                   </v-toolbar>
                 </template>
-                <template v-slot:item="{ item, index }">
+                <template v-slot:item="{ item }">
                   <tr>
                     <td>
                       {{ item.issue_id }}
@@ -1336,7 +1336,7 @@
                     ></v-text-field>
                   </v-toolbar>
                 </template>
-                <template v-slot:item="{ item, index }">
+                <template v-slot:item="{ item }">
                   <tr>
                     <td>
                       {{ item.issue_id }}
@@ -1494,7 +1494,7 @@
                     ></v-text-field>
                   </v-toolbar>
                 </template>
-                <template v-slot:item="{ item, index }">
+                <template v-slot:item="{ item }">
                   <tr>
                     <td>
                       {{ item.issue_id }}
@@ -1631,7 +1631,7 @@
                 class="v-data-table elevation-1 mb-2"
                 :style="{ 'background-color': tableColor }"
               >
-                <template v-slot:item="{ item, index }">
+                <template v-slot:item="{ item }">
                   <tr>
                     <td>
                       {{ item.issue_id }}
