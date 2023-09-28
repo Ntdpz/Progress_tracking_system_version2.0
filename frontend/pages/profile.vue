@@ -67,18 +67,18 @@
                   class="mr-2"
                   style="margin-bottom: -2%; font-weight: bold; color: black"
                 >
-                  <v-col class="hidden-xs-only" cols="2" xs="2" sm="2" md="2">
+                  <v-col class="hidden-xs-only" cols="12" xs="4" sm="4" md="4">
                     คำนำหน้าชื่อ
                   </v-col>
-                  <v-col class="hidden-xs-only" cols="5" xs="5" sm="5" md="5">
+                  <v-col class="hidden-xs-only" cols="12" xs="4" sm="4" md="4">
                     ชื่อจริง
                   </v-col>
                   <v-col
                     class="hidden-xs-only"
-                    cols="5"
-                    xs="5"
-                    sm="5"
-                    md="5"
+                    cols="12"
+                    xs="4"
+                    sm="4"
+                    md="4"
                     style="margin-right: -1%; padding-right: 0%"
                   >
                     นามสกุล
@@ -91,8 +91,10 @@
                 >
                   <v-col
                     class=""
-                    cols="4"
-                    sm="2"
+                    cols="12"
+                    xs="4"
+                    sm="4"
+                    md="4"
                     style="margin-right: -1%; padding-right: 1%"
                   >
                     <v-select
@@ -116,7 +118,7 @@
                       </template>
                     </v-select>
                   </v-col>
-                  <v-col class="" cols="4" sm="5">
+                  <v-col class="" cols="12" xs="4" sm="4" md="4">
                     <v-text-field
                       v-model="firstname"
                       :rules="rules"
@@ -125,7 +127,7 @@
                       outlined
                     ></v-text-field>
                   </v-col>
-                  <v-col class="" cols="4" sm="5">
+                  <v-col class="" cols="12" xs="4" sm="4" md="4">
                     <v-text-field
                       v-model="user_lastname"
                       :rules="rules"
@@ -141,19 +143,21 @@
                   class="mr-2 mt-0"
                   style="margin-bottom: -2%; font-weight: bold; color: black"
                 >
-                  <v-col class="hidden-xs-only" cols="4" sm="4">
+                  <v-col class="hidden-xs-only" cols="12" xs="4" sm="4" md="4">
                     รหัสพนักงาน
                   </v-col>
-                  <v-col class="hidden-xs-only" cols="4" sm="4">
+                  <v-col class="hidden-xs-only" cols="12" xs="4" sm="4" md="4">
                     ตำแหน่ง
                   </v-col>
-                  <v-col class="hidden-xs-only" cols="4" sm="4"> แผนก </v-col>
+                  <v-col class="hidden-xs-only" cols="12" xs="4" sm="4" md="4">
+                    แผนก
+                  </v-col>
                 </v-row>
                 <v-row
                   class="mr-2 mt-0"
                   style="margin-bottom: -4%; font-weight: bold; color: black"
                 >
-                  <v-col cols="4" sm="4">
+                  <v-col cols="12" xs="4" sm="4" md="4">
                     <v-text-field
                       v-model="user_id"
                       :rules="rules"
@@ -162,7 +166,7 @@
                       rounded
                     ></v-text-field>
                   </v-col>
-                  <v-col cols="4" sm="4">
+                  <v-col cols="12" xs="4" sm="4" md="4">
                     <v-text-field
                       v-model="user_position"
                       :rules="rules"
@@ -172,7 +176,7 @@
                       rounded
                     ></v-text-field>
                   </v-col>
-                  <v-col cols="4" sm="4">
+                  <v-col cols="12" xs="4" sm="4" md="4">
                     <v-text-field
                       v-model="user_department"
                       :rules="rules"

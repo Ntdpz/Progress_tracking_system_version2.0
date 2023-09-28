@@ -1026,11 +1026,10 @@
           :items="AllScreens"
           sort-by="calories"
           class="v-data-table elevation-1 ma-4"
-          remove-row-borders
           style="text-align: center; background-color: #ffff"
         >
           <template v-slot:item="{ item, index }">
-            <tr :class="index % 2 === 0 ? 'white' : 'deep-purple lighten-4'">
+            <tr>
               <td>{{ index + 1 }}</td>
               <td>{{ item.screen_id }}</td>
               <td>{{ item.screen_name }}</td>
@@ -1038,72 +1037,18 @@
               <td>{{ item.screen_type }}</td>
               <td>
                 <v-btn
-                  icon
                   :to="`/screendetail/${item.id}`"
                   color="primary"
                   style="color: white; border-radius: 20px"
+                  small
                 >
-                  <v-icon>mdi-arrow-right-circle-outline</v-icon>
+                  จัดการ
                 </v-btn>
               </td>
             </tr>
           </template>
         </v-data-table>
-
-        <!-- <v-data-table
-        :headers="headers"
-        :items="AllScreens"
-          class="elevation-1 ma-7"
-          v-remove-row-borders
-          :style="{ 'background-color': tableColor, 'text-align': center}"
-        >
-          <template v-slot:item="{ item, index }">
-            <tr :class="index % 2 === 0 ? 'row-even' : 'row-odd'">
-              <td>
-                {{ index + 1 }}
-              </td>
-              <td>
-                {{ item.screen_id }}
-              </td>
-              <td>
-                {{ item.screen_name }}
-              </td>
-              <td>
-                {{ item.screen_level }}
-              </td>
-              <td>
-                {{ item.screen_type }}
-              </td>
-              <td>
-                <v-btn
-                  icon
-                  :to="`/screendetail/${item.id}`"
-                  color="primary"
-                  style="color: white; border-radius: 20px"
-                >
-                  <v-icon>mdi-arrow-right-circle-outline</v-icon>
-                </v-btn>
-              </td>
-            </tr>
-          </template>
-
-           <template v-slot:[`item.id`]="{ index }">
-            {{ index + 1 }}
-          </template>
-          <template v-slot:[`item.action`]="{ item }">
-            <v-btn
-              icon
-              :to="`/screendetail/${item.id}`"
-              color="primary"
-              style="color: white; border-radius: 20px"
-            >
-              <v-icon>mdi-arrow-right-circle-outline</v-icon>
-            </v-btn>
-          </template>
-        </v-data-table> -->
       </v-container>
-
-      <!--  -->
     </v-container>
     <dialog-success
       :dialog.sync="dialogSuccess"
@@ -1663,30 +1608,6 @@ export default {
             "Content-Type": "multipart/form-data",
           },
         });
-
-        // const dateEnd = this.newscreen_dateEnd;
-        // const id_screen = this.screenID;
-        // const formData = new FormData();
-        // formData.append("image", this.imageFileUpload);
-        // formData.append("system_id", this.id);
-        // formData.append("project_id", this.projectID);
-        // formData.append("screen_id", this.screenID);
-        // formData.append("screen_name", this.screenname);
-        // formData.append("screen_developer", "");
-        // formData.append("screen_implementer", "");
-        // formData.append("screen_status", this.status);
-        // formData.append("screen_level", this.level);
-        // formData.append("screen_start", datestart);
-        // formData.append("screen_end", dateEnd);
-        // formData.append("screen_manday", this.manday);
-        // formData.append("screen_type", this.screentype);
-
-        // await this.$axios.post("/screens/createScreen", formData, {
-        //   headers: {
-        //     "Content-Type": "multipart/form-data",
-        //   },
-        // });
-        // console.log("create screen success");
       } catch (error) {
         console.error(error);
         alert("Error submitting form");
@@ -1745,12 +1666,23 @@ input[type="text"] {
   align-items: center;
   justify-content: center;
 }
+::v-deep .v-data-table-header {
+  background-color: #5c5c5c;
+  color: white;
+}
+
+::v-deep .v-data-table-header span {
+  color: white;
+  font-size: 14px;
+}
+
 .row-even {
-  background-color: rgba(233, 203, 243, 0.788) !important;
+  background-color: rgba(200, 200, 200, 0.788);
   color: black;
 }
+
 .row-odd {
-  background-color: rgba(247, 229, 191, 0.788) !important;
+  background-color: rgba(255, 255, 255, 0.788);
   color: black;
 }
 </style>

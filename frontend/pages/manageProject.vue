@@ -578,14 +578,10 @@
               :items="project.systems"
               sort-by="calories"
               class="v-data-table elevation-1 mb-2 mt-5"
-              v-remove-row-borders
-              :style="{ 'background-color': tableColor }"
             >
               <!-- <template v-slot:top> </template> -->
               <template v-slot:item="{ item, index }">
-                <tr
-                  :class="index % 2 === 0 ? 'white' : 'deep-purple lighten-4'"
-                >
+                <tr>
                   <td>
                     {{ item.system_nameTH }}
                   </td>
@@ -598,12 +594,11 @@
                   <td>
                     <v-btn
                       color="primary"
-                      icon
+                      style="color: white; border-radius: 20px"
+                      small
                       :to="`/systemdetail/${item.id}`"
                     >
-                      <v-icon class="mr-2 ml-2" size="20" color="primary">
-                        mdi mdi-chevron-right-circle-outline
-                      </v-icon>
+                      จัดการ
                     </v-btn>
                   </td>
                 </tr>
@@ -665,14 +660,10 @@
               :items="project.systems"
               sort-by="calories"
               class="v-data-table elevation-1 mb-2 mt-5"
-              v-remove-row-borders
-              :style="{ 'background-color': tableColor }"
             >
               <!-- <template v-slot:top> </template> -->
               <template v-slot:item="{ item, index }">
-                <tr
-                  :class="index % 2 === 0 ? 'white' : 'deep-purple lighten-4'"
-                >
+                <tr>
                   <td>
                     {{ item.system_nameTH }}
                   </td>
@@ -732,16 +723,6 @@ import Searchbar from "../components/Searchbar.vue";
 export default {
   components: { DialogSuccess, Searchbar },
   layout: "admin",
-  directives: {
-    "remove-row-borders": {
-      inserted(el) {
-        const trs = el.querySelectorAll("td");
-        trs.forEach((tr) => {
-          tr.style.borderBottom = "none";
-        });
-      },
-    },
-  },
   data() {
     return {
       // new Date().toISOString().substr(0, 10)
@@ -831,7 +812,6 @@ export default {
       projectListAdmin: [],
       loading: false,
       rules: [(value) => !!value || "*กรุณาใส่ข้อมูลให้ถูกต้อง*"],
-      tableColor: "#ffff",
     };
   },
   async created() {
@@ -1371,15 +1351,24 @@ export default {
   border: 2px dotted #333;
   padding: 8px 16px;
 }
+
+::v-deep .v-data-table-header {
+  background-color: #5c5c5c;
+  color: white;
+}
+
+::v-deep .v-data-table-header span {
+  color: white;
+  font-size: 14px;
+}
+
 .row-even {
-  background-color: rgba(233, 203, 243, 0.788);
+  background-color: rgba(200, 200, 200, 0.788);
   color: black;
 }
+
 .row-odd {
-  background-color: rgba(247, 229, 191, 0.788);
+  background-color: rgba(255, 255, 255, 0.788);
   color: black;
-}
-.header-bg-color {
-  background-color: #bb96f1a6;
 }
 </style>

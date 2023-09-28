@@ -7,8 +7,8 @@
           title="จัดการผู้ใช้งานระบบ"
           @input="performSearch"
         />
-        <!-- <v-spacer></v-spacer>
-        <v-text-field
+        <v-spacer></v-spacer>
+        <!-- <v-text-field
         v-model="search"
         append-icon="mdi-magnify"
         label="Search"
@@ -130,6 +130,7 @@
                           <v-icon
                             v-if="item.user_status == 'Active'"
                             color="success"
+                            small
                             >mdi-circle</v-icon
                           >
                           <v-icon v-else color="error">mdi-circle</v-icon>
@@ -143,6 +144,7 @@
                             @click="(dialog_manage = true), editItem(item)"
                             color="primary"
                             style="color: white; border-radius: 20px"
+                            small
                           >
                             {{ manage }}
                           </v-btn>
@@ -205,6 +207,7 @@
                           <v-icon
                             v-if="item.user_status == 'Active'"
                             color="success"
+                            small
                             >mdi-circle</v-icon
                           >
                           <v-icon v-else color="error">mdi-circle</v-icon>
@@ -218,6 +221,7 @@
                             @click="(dialog_manage = true), editItem(item)"
                             color="primary"
                             style="color: white; border-radius: 20px"
+                            small
                           >
                             {{ manage }}
                           </v-btn>
@@ -281,6 +285,7 @@
                           <v-icon
                             v-if="item.user_status == 'Active'"
                             color="success"
+                            small
                             >mdi-circle</v-icon
                           >
                           <v-icon v-else color="error">mdi-circle</v-icon>
@@ -294,6 +299,7 @@
                             @click="(dialog_manage = true), editItem(item)"
                             color="primary"
                             style="color: white; border-radius: 20px"
+                            small
                           >
                             {{ manage }}
                           </v-btn>
@@ -357,6 +363,7 @@
                           <v-icon
                             v-if="item.user_status == 'Active'"
                             color="success"
+                            small
                             >mdi-circle</v-icon
                           >
                           <v-icon v-else color="error">mdi-circle</v-icon>
@@ -369,6 +376,7 @@
                           <v-btn
                             @click="(dialog_manage = true), editItem(item)"
                             color="primary"
+                            small
                             style="color: white; border-radius: 20px"
                           >
                             {{ manage }}
@@ -433,6 +441,7 @@
                           <v-icon
                             v-if="item.user_status == 'Active'"
                             color="success"
+                            small
                             >mdi-circle</v-icon
                           >
                           <v-icon v-else color="error">mdi-circle</v-icon>
@@ -446,6 +455,7 @@
                             @click="(dialog_manage = true), editItem(item)"
                             color="primary"
                             style="color: white; border-radius: 20px"
+                            small
                           >
                             {{ manage }}
                           </v-btn>
@@ -509,6 +519,7 @@
                           <v-icon
                             v-if="item.user_status == 'Active'"
                             color="success"
+                            small
                             >mdi-circle</v-icon
                           >
                           <v-icon v-else color="error">mdi-circle</v-icon>
@@ -522,6 +533,7 @@
                             @click="(dialog_manage = true), editItem(item)"
                             color="primary"
                             style="color: white; border-radius: 20px"
+                            small
                           >
                             {{ manage }}
                           </v-btn>
@@ -600,17 +612,31 @@
                             class="mr-2"
                             style="margin-bottom: -2%; font-size: 14px"
                           >
-                            <v-col class="hidden-xs-only" cols="12" sm="3">
+                            <v-col
+                              class="hidden-xs-only"
+                              cols="12"
+                              xs="4"
+                              sm="4"
+                              md="4"
+                            >
                               คำนำหน้าชื่อ
                             </v-col>
-                            <v-col class="hidden-xs-only" cols="12" sm="4">
+                            <v-col
+                              class="hidden-xs-only"
+                              cols="12"
+                              xs="4"
+                              sm="4"
+                              md="4"
+                            >
                               ชื่อจริง
                             </v-col>
 
                             <v-col
                               class="hidden-xs-only"
                               cols="12"
-                              sm="5"
+                              xs="4"
+                              sm="4"
+                              md="4"
                               style="margin-right: -1%; padding-right: 0%"
                             >
                               นามสกุล
@@ -620,7 +646,9 @@
                           <v-row class="mr-2 mt-0" style="margin-bottom: -8%">
                             <v-col
                               cols="12"
-                              sm="3"
+                              xs="4"
+                              sm="4"
+                              md="4"
                               style="margin-right: -1%; padding-right: 0%"
                             >
                               <v-select
@@ -632,7 +660,7 @@
                                 outlined
                               ></v-select>
                             </v-col>
-                            <v-col cols="12" sm="4">
+                            <v-col cols="12" xs="4" sm="4" md="4">
                               <v-text-field
                                 :rules="[rules.required]"
                                 v-model="firstname"
@@ -641,7 +669,7 @@
                                 outlined
                               ></v-text-field>
                             </v-col>
-                            <v-col cols="12" sm="5">
+                            <v-col cols="12" xs="4" sm="4" md="4">
                               <v-text-field
                                 :rules="[rules.required]"
                                 v-model="lastname"
@@ -656,16 +684,30 @@
                             class="mr-2 mt-6"
                             style="margin-bottom: -2%; font-size: 14px"
                           >
-                            <v-col class="hidden-xs-only" cols="12" sm="4">
+                            <v-col
+                              class="hidden-xs-only"
+                              cols="12"
+                              xs="4"
+                              sm="4"
+                              md="4"
+                            >
                               รหัสพนักงาน
                             </v-col>
-                            <v-col class="hidden-xs-only" cols="12" sm="4">
+                            <v-col
+                              class="hidden-xs-only"
+                              cols="12"
+                              xs="4"
+                              sm="4"
+                              md="4"
+                            >
                               ตำแหน่ง
                             </v-col>
                             <v-col
                               class="hidden-xs-only"
                               cols="12"
+                              xs="4"
                               sm="4"
+                              md="4"
                               style="margin-right: -1%; padding-right: 0%"
                             >
                               แผนก
@@ -673,7 +715,7 @@
                           </v-row>
                           <!--  -->
                           <v-row class="mr-2 mt-0" style="margin-bottom: -6%">
-                            <v-col cols="12" sm="4">
+                            <v-col cols="12" xs="4" sm="4" md="4">
                               <v-text-field
                                 :rules="[rules.required]"
                                 v-model="code"
@@ -683,7 +725,7 @@
                                 outlined
                               ></v-text-field>
                             </v-col>
-                            <v-col cols="12" sm="4">
+                            <v-col cols="12" xs="4" sm="4" md="4">
                               <v-select
                                 :rules="[rules.required]"
                                 v-model="position"
@@ -694,7 +736,7 @@
                                 outlined
                               ></v-select>
                             </v-col>
-                            <v-col cols="12" sm="4">
+                            <v-col cols="12" xs="4" sm="4" md="4">
                               <v-select
                                 :rules="[rules.required]"
                                 v-model="department"
@@ -891,17 +933,31 @@
                               class="mr-2"
                               style="margin-bottom: -2%; font-size: 14px"
                             >
-                              <v-col class="hidden-xs-only" cols="12" sm="3">
+                              <v-col
+                                class="hidden-xs-only"
+                                cols="12"
+                                xs="4"
+                                sm="4"
+                                md="4"
+                              >
                                 คำนำหน้าชื่อ
                               </v-col>
-                              <v-col class="hidden-xs-only" cols="12" sm="4">
+                              <v-col
+                                class="hidden-xs-only"
+                                cols="12"
+                                xs="4"
+                                sm="4"
+                                md="4"
+                              >
                                 ชื่อจริง
                               </v-col>
 
                               <v-col
                                 class="hidden-xs-only"
                                 cols="12"
-                                sm="5"
+                                xs="4"
+                                sm="4"
+                                md="4"
                                 style="margin-right: -1%; padding-right: 0%"
                               >
                                 นามสกุล
@@ -912,7 +968,9 @@
                             <v-row class="mr-2 mt-0" style="margin-bottom: -8%">
                               <v-col
                                 cols="12"
-                                sm="3"
+                                xs="4"
+                                sm="4"
+                                md="4"
                                 style="margin-right: -1%; padding-right: 0%"
                               >
                                 <v-select
@@ -924,7 +982,7 @@
                                   outlined
                                 ></v-select>
                               </v-col>
-                              <v-col cols="12" sm="4">
+                              <v-col cols="12" xs="4" sm="4" md="4">
                                 <v-text-field
                                   :rules="[rules.required]"
                                   v-model="editedItem.user_firstname"
@@ -933,7 +991,7 @@
                                   outlined
                                 ></v-text-field>
                               </v-col>
-                              <v-col cols="12" sm="5">
+                              <v-col cols="12" xs="4" sm="4" md="4">
                                 <v-text-field
                                   :rules="[rules.required]"
                                   v-model="editedItem.user_lastname"
@@ -948,16 +1006,30 @@
                               class="mr-2 mt-6"
                               style="margin-bottom: -2%; font-size: 14px"
                             >
-                              <v-col class="hidden-xs-only" cols="12" sm="4">
+                              <v-col
+                                class="hidden-xs-only"
+                                cols="12"
+                                xs="4"
+                                sm="4"
+                                md="4"
+                              >
                                 รหัสพนักงาน
                               </v-col>
-                              <v-col class="hidden-xs-only" cols="12" sm="4">
+                              <v-col
+                                class="hidden-xs-only"
+                                cols="12"
+                                xs="4"
+                                sm="4"
+                                md="4"
+                              >
                                 ตำแหน่ง
                               </v-col>
                               <v-col
                                 class="hidden-xs-only"
                                 cols="12"
+                                xs="4"
                                 sm="4"
+                                md="4"
                                 style="margin-right: -1%; padding-right: 0%"
                               >
                                 แผนก
@@ -965,7 +1037,7 @@
                             </v-row>
                             <!--  -->
                             <v-row class="mr-2 mt-0" style="margin-bottom: -6%">
-                              <v-col cols="12" sm="4">
+                              <v-col cols="12" xs="4" sm="4" md="4">
                                 <v-text-field
                                   :rules="[rules.required]"
                                   v-model="editedItem.user_id"
@@ -974,7 +1046,7 @@
                                   outlined
                                 ></v-text-field>
                               </v-col>
-                              <v-col cols="12" sm="4">
+                              <v-col cols="12" xs="4" sm="4" md="4">
                                 <v-select
                                   :rules="[rules.required]"
                                   v-model="editedItem.user_position"
@@ -984,7 +1056,7 @@
                                   outlined
                                 ></v-select>
                               </v-col>
-                              <v-col cols="12" sm="4">
+                              <v-col cols="12" xs="4" sm="4" md="4">
                                 <v-select
                                   :rules="[rules.required]"
                                   v-model="editedItem.user_department"

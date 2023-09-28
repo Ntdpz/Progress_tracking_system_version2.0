@@ -5,144 +5,278 @@
     <Searchbar title="รายละเอียดหน้าจอ" :search="search" />
     <v-divider></v-divider>
     <!-- Screen detail -->
-    <v-container>
-      <!-- title -->
-      <v-row no-gutters>
-        <v-col col="12" sm="12" md="12">
-          <v-card class="mt-0" outlined tile style="box-shadow: none; border: none">
-            <v-card-title>
-              <v-btn icon :to="`/systemdetail/${screensID.system_id}`" class="mr-4" color="primary" size="35px" left>
-                <v-icon size="35px">mdi-arrow-left-circle</v-icon>
-              </v-btn>
-              รหัสหน้าจอ {{ screensID.screen_id }} : ชื่อหน้าจอ
-              {{ screensID.screen_name }}
-            </v-card-title>
-          </v-card>
-        </v-col>
-      </v-row>
-      <!-- รูป กับรายลละเอียด -->
-      <v-row no-gutters>
-        <v-col class="mb-2" col="12" sm="12" md="12" style="text-align: -webkit-center">
-          <!-- height="100%" -->
-          <v-card class="ma-1 mt-0" tile height="350px" width="45%" outlined flex="true" style="display: flex">
-            <div v-if="loading">
-              <v-progress-circular class="center" :size="70" :width="7" color="purple"
-                indeterminate></v-progress-circular>
-            </div>
-            <v-img v-else-if="selectedImage" :src="selectedImage" max-height="300px" aspect-ratio="1" contain></v-img>
-            <v-img v-else-if="screensID" :src="getImageUrl(screensID.screen_pic)" max-hight="300px" aspect-ratio="1"
-              contain></v-img>
-          </v-card>
-          <v-btn class="mt-4" elevation="2" color="primary" style="color: white; border-radius: 10px" @click="selectImage"
-            :disabled="disabled">เปลี่ยนรูปภาพ...
-          </v-btn>
-        </v-col>
+    <v-card class="mx-auto my-12" max-width="900">
+      <v-container>
+        <!-- title -->
+        <v-row no-gutters>
+          <v-col col="12" sm="12" md="12">
+            <v-card
+              class="mt-0"
+              outlined
+              tile
+              style="box-shadow: none; border: none"
+            >
+              <v-card-title>
+                <v-btn
+                  icon
+                  :to="`/systemdetail/${screensID.system_id}`"
+                  class="mr-4"
+                  color="primary"
+                  size="35px"
+                  left
+                >
+                  <v-icon size="35px">mdi-arrow-left-circle</v-icon>
+                </v-btn>
+                รหัสหน้าจอ {{ screensID.screen_id }} : ชื่อหน้าจอ
+                {{ screensID.screen_name }}
+              </v-card-title>
+            </v-card>
+          </v-col>
+        </v-row>
+        <!-- รูป กับรายลละเอียด -->
+        <v-row no-gutters>
+          <v-col
+            class="mb-2"
+            col="12"
+            sm="12"
+            md="12"
+            style="text-align: -webkit-center"
+          >
+            <!-- height="100%" -->
+            <v-card
+              class="ma-1 mt-0"
+              tile
+              height="350px"
+              width="45%"
+              outlined
+              flex="true"
+              style="display: flex"
+            >
+              <div v-if="loading">
+                <v-progress-circular
+                  class="center"
+                  :size="70"
+                  :width="7"
+                  color="purple"
+                  indeterminate
+                ></v-progress-circular>
+              </div>
+              <v-img
+                v-else-if="selectedImage"
+                :src="selectedImage"
+                max-height="300px"
+                aspect-ratio="1"
+                contain
+              ></v-img>
+              <v-img
+                v-else-if="screensID"
+                :src="getImageUrl(screensID.screen_pic)"
+                max-hight="300px"
+                aspect-ratio="1"
+                contain
+              ></v-img>
+            </v-card>
+            <v-btn
+              class="mt-4"
+              elevation="2"
+              color="primary"
+              style="color: white; border-radius: 10px"
+              @click="selectImage"
+              :disabled="disabled"
+              >เปลี่ยนรูปภาพ...
+            </v-btn>
+          </v-col>
 
-        <v-col col="12" sm="12" md="12">
-          <v-card outlined tile height="100%">
-            <v-container fluid>
-              <v-row>
-                <v-col class="mb-0 pb-0 hidden-sm-and-up" style="place-self: center">
-                  <h4 class="">รหัสหน้าจอ</h4>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col class="hidden-xs-only" sm="4" md="4" style="place-self: center">
-                  <h4 class="">รหัสหน้าจอ</h4>
-                </v-col>
+          <v-col col="12" sm="12" md="12">
+            <v-card elevation="0">
+              <v-container fluid>
+                <v-row>
+                  <v-col
+                    class="mb-0 pb-0 hidden-sm-and-up"
+                    style="place-self: center"
+                  >
+                    <h4 class="">รหัสหน้าจอ</h4>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col
+                    class="hidden-xs-only"
+                    sm="4"
+                    md="4"
+                    style="place-self: center"
+                  >
+                    <h4 class="">รหัสหน้าจอ</h4>
+                  </v-col>
 
-                <v-col class="col-12" sm="8" md="8">
-                  <v-text-field style="text-align-last: left" v-model="screensID.screen_id" hide-details="auto" dense
-                    outlined :disabled="disabled"></v-text-field>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col class="mb-0 pb-0 hidden-sm-and-up" style="place-self: center">
-                  <h4 class="">ชื่อหน้าจอ</h4>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col class="hidden-xs-only" sm="4" md="4" style="place-self: center">
-                  <h4 class="">ชื่อหน้าจอ</h4>
-                </v-col>
-                <v-col class="col-12" sm="8" md="8">
-                  <v-text-field style="text-align-last: left" v-model="screenname" hide-details="auto" dense outlined
-                    :disabled="disabled"></v-text-field>
-                </v-col>
-              </v-row>
+                  <v-col class="col-12" sm="8" md="8">
+                    <v-text-field
+                      style="text-align-last: left"
+                      v-model="screensID.screen_id"
+                      hide-details="auto"
+                      dense
+                      outlined
+                      :disabled="disabled"
+                    ></v-text-field>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col
+                    class="mb-0 pb-0 hidden-sm-and-up"
+                    style="place-self: center"
+                  >
+                    <h4 class="">ชื่อหน้าจอ</h4>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col
+                    class="hidden-xs-only"
+                    sm="4"
+                    md="4"
+                    style="place-self: center"
+                  >
+                    <h4 class="">ชื่อหน้าจอ</h4>
+                  </v-col>
+                  <v-col class="col-12" sm="8" md="8">
+                    <v-text-field
+                      style="text-align-last: left"
+                      v-model="screenname"
+                      hide-details="auto"
+                      dense
+                      outlined
+                      :disabled="disabled"
+                    ></v-text-field>
+                  </v-col>
+                </v-row>
 
-              <v-row>
-                <v-col class="mb-0 pb-0 hidden-sm-and-up" style="place-self: center">
-                  <h4 class="">System Analyst</h4>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col class="hidden-xs-only" sm="4" md="4" style="place-self: center">
-                  <h4 class="">System Analyst</h4>
-                </v-col>
-                <v-col class="col-12" sm="8" md="8">
-                  <v-select style="text-align-last: left" v-model="sa" item-text="user_firstname" item-value="id"
-                    :items="position_Sa" hide-details="auto" dense outlined chips multiple :disabled="disabled">
-                    <template v-slot:item="{ item }">
-                      {{ item.user_firstname }} : {{ item.user_lastname }}
-                    </template>
-                    <template #selection="{ item }">
-                      <v-chip class="ma-1" outlined color="primary" dark>
-                        {{ item.user_firstname }} {{ item.user_lastname }}
-                      </v-chip>
-                    </template>
-                  </v-select>
-                </v-col>
-              </v-row>
+                <v-row>
+                  <v-col
+                    class="mb-0 pb-0 hidden-sm-and-up"
+                    style="place-self: center"
+                  >
+                    <h4 class="">System Analyst</h4>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col
+                    class="hidden-xs-only"
+                    sm="4"
+                    md="4"
+                    style="place-self: center"
+                  >
+                    <h4 class="">System Analyst</h4>
+                  </v-col>
+                  <v-col class="col-12" sm="8" md="8">
+                    <v-select
+                      style="text-align-last: left"
+                      v-model="sa"
+                      item-text="user_firstname"
+                      item-value="id"
+                      :items="position_Sa"
+                      hide-details="auto"
+                      dense
+                      outlined
+                      chips
+                      multiple
+                      :disabled="disabled"
+                    >
+                      <template v-slot:item="{ item }">
+                        {{ item.user_firstname }} : {{ item.user_lastname }}
+                      </template>
+                      <template #selection="{ item }">
+                        <v-chip class="ma-1" outlined color="primary" dark>
+                          {{ item.user_firstname }} {{ item.user_lastname }}
+                        </v-chip>
+                      </template>
+                    </v-select>
+                  </v-col>
+                </v-row>
 
-              <v-row>
-                <v-col class="mb-0 pb-0 hidden-sm-and-up" style="place-self: center">
-                  <h4 class="">Developer</h4>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col class="hidden-xs-only" sm="4" md="4" style="place-self: center">
-                  <h4 class="">Developer</h4>
-                </v-col>
-                <v-col class="col-12" sm="8" md="8">
-                  <v-select style="text-align-last: left" v-model="developer" item-text="user_firstname" item-value="id"
-                    :items="position_Developers" hide-details="auto" dense outlined chips multiple :disabled="disabled">
-                    <template v-slot:item="{ item }">
-                      {{ item.user_firstname }} : {{ item.user_lastname }}
-                    </template>
-                    <template #selection="{ item }">
-                      <v-chip class="ma-1" outlined color="primary" dark>
-                        {{ item.user_firstname }} {{ item.user_lastname }}
-                      </v-chip>
-                    </template>
-                  </v-select>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col class="mb-0 pb-0 hidden-sm-and-up" style="place-self: center">
-                  <h4 class="">Implementer</h4>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col class="hidden-xs-only" sm="4" md="4" style="place-self: center">
-                  <h4 class="">Implementer</h4>
-                </v-col>
-                <v-col class="col-12" sm="8" md="8">
-                  <v-select class="select-with-margin" style="text-align-last: left" v-model="implementer"
-                    item-text="user_firstname" item-value="id" :items="position_Implementers" hide-details="auto" dense
-                    outlined chips multiple :disabled="disabled">
-                    <template v-slot:item="{ item }">
-                      {{ item.user_firstname }} : {{ item.user_lastname }}
-                    </template>
-                    <template #selection="{ item }">
-                      <v-chip class="ma-1" outlined color="primary" dark>
-                        {{ item.user_firstname }} {{ item.user_lastname }}
-                      </v-chip>
-                    </template>
-                  </v-select>
-                </v-col>
-              </v-row>
-              <!-- <v-row>
+                <v-row>
+                  <v-col
+                    class="mb-0 pb-0 hidden-sm-and-up"
+                    style="place-self: center"
+                  >
+                    <h4 class="">Developer</h4>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col
+                    class="hidden-xs-only"
+                    sm="4"
+                    md="4"
+                    style="place-self: center"
+                  >
+                    <h4 class="">Developer</h4>
+                  </v-col>
+                  <v-col class="col-12" sm="8" md="8">
+                    <v-select
+                      style="text-align-last: left"
+                      v-model="developer"
+                      item-text="user_firstname"
+                      item-value="id"
+                      :items="position_Developers"
+                      hide-details="auto"
+                      dense
+                      outlined
+                      chips
+                      multiple
+                      :disabled="disabled"
+                    >
+                      <template v-slot:item="{ item }">
+                        {{ item.user_firstname }} : {{ item.user_lastname }}
+                      </template>
+                      <template #selection="{ item }">
+                        <v-chip class="ma-1" outlined color="primary" dark>
+                          {{ item.user_firstname }} {{ item.user_lastname }}
+                        </v-chip>
+                      </template>
+                    </v-select>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col
+                    class="mb-0 pb-0 hidden-sm-and-up"
+                    style="place-self: center"
+                  >
+                    <h4 class="">Implementer</h4>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col
+                    class="hidden-xs-only"
+                    sm="4"
+                    md="4"
+                    style="place-self: center"
+                  >
+                    <h4 class="">Implementer</h4>
+                  </v-col>
+                  <v-col class="col-12" sm="8" md="8">
+                    <v-select
+                      class="select-with-margin"
+                      style="text-align-last: left"
+                      v-model="implementer"
+                      item-text="user_firstname"
+                      item-value="id"
+                      :items="position_Implementers"
+                      hide-details="auto"
+                      dense
+                      outlined
+                      chips
+                      multiple
+                      :disabled="disabled"
+                    >
+                      <template v-slot:item="{ item }">
+                        {{ item.user_firstname }} : {{ item.user_lastname }}
+                      </template>
+                      <template #selection="{ item }">
+                        <v-chip class="ma-1" outlined color="primary" dark>
+                          {{ item.user_firstname }} {{ item.user_lastname }}
+                        </v-chip>
+                      </template>
+                    </v-select>
+                  </v-col>
+                </v-row>
+                <!-- <v-row>
                 <v-col
                   class="mb-0 pb-0 hidden-sm-and-up"
                   style="place-self: center"
@@ -170,162 +304,311 @@
                   </template>
                 </v-col>
               </v-row> -->
-              <v-row>
-                <v-col class="mb-0 pb-0 hidden-sm-and-up" style="place-self: center">
-                  <h4 class="">ระดับหน้าจอ</h4>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col class="hidden-xs-only" sm="4" md="4" style="place-self: center">
-                  <h4 class="">ระดับหน้าจอ</h4>
-                </v-col>
-                <v-col class="" sm="8" md="8">
-                  <v-select style="text-align-last: left" v-model="screensID.screen_level" :items="selectlevel"
-                    hide-details="auto" dense outlined :disabled="disabled"></v-select>
-                </v-col>
-              </v-row>
-              <!--  -->
-              <v-row>
-                <v-col class="mb-0 pb-0 hidden-sm-and-up" style="place-self: center">
-                  <h4 class="">ประเภทหน้าจอ</h4>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col class="hidden-xs-only" sm="4" md="4" style="place-self: center">
-                  <h4 class="">ประเภทหน้าจอ</h4>
-                </v-col>
-                <v-col class="" sm="8" md="8">
-                  <v-select style="text-align-last: left" v-model="screensID.screen_type" :items="SelectScreenType"
-                    hide-details="auto" dense outlined :disabled="disabled"></v-select>
-                </v-col>
-              </v-row>
-              <!--  -->
-              <v-row>
-                <v-col class="mb-0 pb-0 hidden-sm-and-up" style="place-self: center">
-                  <h4 class="">วันเริ่ม-วันจบ</h4>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col class="hidden-xs-only" sm="4" md="4" style="place-self: center">
-                  <h4 class="">วันเริ่ม-วันจบ</h4>
-                </v-col>
-                <!-- ปุ่มเลือกวันที่-->
-                <v-col cols="12" sm="4" md="4">
-                  <v-menu ref="menuDateStart" v-model="menuDateStart" :close-on-content-click="false"
-                    transition="scale-transition" offset-y min-width="290px" :disabled="disabled">
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-text-field :disabled="disabled" :v-model="screensID.screen_start != undefined ? dateStart : ''"
-                        :value="screensID.screen_start != undefined ? dateStart : ''" label="วันเริ่ม"
-                        prepend-icon="mdi mdi-calendar-clock-outline" readonly v-bind="attrs" v-on="on"></v-text-field>
-                    </template>
-                    <v-date-picker v-model="screensID.screen_start" no-title scrollable format="yyyy-MM-dd" locale="th">
-                      <v-spacer></v-spacer>
-                      <v-btn text color="primary" @click="menuDateStart = false">ยกเลิก</v-btn>
-                      <v-btn text color="primary" @click="
-                        $refs.menuDateStart.save(screensID.screen_start)
-                        ">ตกลง</v-btn>
-                    </v-date-picker>
-                  </v-menu>
-                </v-col>
-                <v-col cols="12" sm="4" md="4">
-                  <v-menu ref="menuDateEnd" v-model="menuDateEnd" :close-on-content-click="false"
-                    transition="scale-transition" offset-y min-width="290px" :disabled="disabled">
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-text-field :disabled="disabled" :v-model="screensID.screen_end != undefined ? dateEnd : ''"
-                        :value="screensID.screen_end != undefined ? dateEnd : ''" label="วันจบ"
-                        prepend-icon="mdi mdi-calendar-clock-outline" readonly v-bind="attrs" v-on="on"></v-text-field>
-                    </template>
-                    <v-date-picker v-model="screensID.screen_end" no-title scrollable :min="screensID.screen_start"
-                      format="yyyy-MM-dd" locale="th">
-                      <v-spacer></v-spacer>
-                      <v-btn text color="primary" @click="menuDateEnd = false">ยกเลิก</v-btn>
-                      <v-btn text color="primary" @click="$refs.menuDateEnd.save(screensID.screen_end)">ตกลง</v-btn>
-                    </v-date-picker>
-                  </v-menu>
-                </v-col>
+                <v-row>
+                  <v-col
+                    class="mb-0 pb-0 hidden-sm-and-up"
+                    style="place-self: center"
+                  >
+                    <h4 class="">ระดับหน้าจอ</h4>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col
+                    class="hidden-xs-only"
+                    sm="4"
+                    md="4"
+                    style="place-self: center"
+                  >
+                    <h4 class="">ระดับหน้าจอ</h4>
+                  </v-col>
+                  <v-col class="" sm="8" md="8">
+                    <v-select
+                      style="text-align-last: left"
+                      v-model="screensID.screen_level"
+                      :items="selectlevel"
+                      hide-details="auto"
+                      dense
+                      outlined
+                      :disabled="disabled"
+                    ></v-select>
+                  </v-col>
+                </v-row>
                 <!--  -->
-              </v-row>
-              <v-row>
-                <v-col class="mb-0 pb-0 hidden-sm-and-up" style="place-self: center">
-                  <h4 class="">จำนวนวัน</h4>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col class="hidden-xs-only" cols="4" style="place-self: center">
-                  <h4 class="">จำนวนวัน</h4>
-                </v-col>
-                <v-col class="col-10" sm="6" md="6">
-                  <!-- <h4 class="">
+                <v-row>
+                  <v-col
+                    class="mb-0 pb-0 hidden-sm-and-up"
+                    style="place-self: center"
+                  >
+                    <h4 class="">ประเภทหน้าจอ</h4>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col
+                    class="hidden-xs-only"
+                    sm="4"
+                    md="4"
+                    style="place-self: center"
+                  >
+                    <h4 class="">ประเภทหน้าจอ</h4>
+                  </v-col>
+                  <v-col class="" sm="8" md="8">
+                    <v-select
+                      style="text-align-last: left"
+                      v-model="screensID.screen_type"
+                      :items="SelectScreenType"
+                      hide-details="auto"
+                      dense
+                      outlined
+                      :disabled="disabled"
+                    ></v-select>
+                  </v-col>
+                </v-row>
+                <!--  -->
+                <v-row>
+                  <v-col
+                    class="mb-0 pb-0 hidden-sm-and-up"
+                    style="place-self: center"
+                  >
+                    <h4 class="">วันเริ่ม-วันจบ</h4>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col
+                    class="hidden-xs-only"
+                    sm="4"
+                    md="4"
+                    style="place-self: center"
+                  >
+                    <h4 class="">วันเริ่ม-วันจบ</h4>
+                  </v-col>
+                  <!-- ปุ่มเลือกวันที่-->
+                  <v-col cols="12" sm="4" md="4">
+                    <v-menu
+                      ref="menuDateStart"
+                      v-model="menuDateStart"
+                      :close-on-content-click="false"
+                      transition="scale-transition"
+                      offset-y
+                      min-width="290px"
+                      :disabled="disabled"
+                    >
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-text-field
+                          :disabled="disabled"
+                          :v-model="
+                            screensID.screen_start != undefined ? dateStart : ''
+                          "
+                          :value="
+                            screensID.screen_start != undefined ? dateStart : ''
+                          "
+                          label="วันเริ่ม"
+                          prepend-icon="mdi mdi-calendar-clock-outline"
+                          readonly
+                          v-bind="attrs"
+                          v-on="on"
+                        ></v-text-field>
+                      </template>
+                      <v-date-picker
+                        v-model="screensID.screen_start"
+                        no-title
+                        scrollable
+                        format="yyyy-MM-dd"
+                        locale="th"
+                      >
+                        <v-spacer></v-spacer>
+                        <v-btn
+                          text
+                          color="primary"
+                          @click="menuDateStart = false"
+                          >ยกเลิก</v-btn
+                        >
+                        <v-btn
+                          text
+                          color="primary"
+                          @click="
+                            $refs.menuDateStart.save(screensID.screen_start)
+                          "
+                          >ตกลง</v-btn
+                        >
+                      </v-date-picker>
+                    </v-menu>
+                  </v-col>
+                  <v-col cols="12" sm="4" md="4">
+                    <v-menu
+                      ref="menuDateEnd"
+                      v-model="menuDateEnd"
+                      :close-on-content-click="false"
+                      transition="scale-transition"
+                      offset-y
+                      min-width="290px"
+                      :disabled="disabled"
+                    >
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-text-field
+                          :disabled="disabled"
+                          :v-model="
+                            screensID.screen_end != undefined ? dateEnd : ''
+                          "
+                          :value="
+                            screensID.screen_end != undefined ? dateEnd : ''
+                          "
+                          label="วันจบ"
+                          prepend-icon="mdi mdi-calendar-clock-outline"
+                          readonly
+                          v-bind="attrs"
+                          v-on="on"
+                        ></v-text-field>
+                      </template>
+                      <v-date-picker
+                        v-model="screensID.screen_end"
+                        no-title
+                        scrollable
+                        :min="screensID.screen_start"
+                        format="yyyy-MM-dd"
+                        locale="th"
+                      >
+                        <v-spacer></v-spacer>
+                        <v-btn text color="primary" @click="menuDateEnd = false"
+                          >ยกเลิก</v-btn
+                        >
+                        <v-btn
+                          text
+                          color="primary"
+                          @click="$refs.menuDateEnd.save(screensID.screen_end)"
+                          >ตกลง</v-btn
+                        >
+                      </v-date-picker>
+                    </v-menu>
+                  </v-col>
+                  <!--  -->
+                </v-row>
+                <v-row>
+                  <v-col
+                    class="mb-0 pb-0 hidden-sm-and-up"
+                    style="place-self: center"
+                  >
+                    <h4 class="">จำนวนวัน</h4>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col
+                    class="hidden-xs-only"
+                    cols="4"
+                    style="place-self: center"
+                  >
+                    <h4 class="">จำนวนวัน</h4>
+                  </v-col>
+                  <v-col class="col-10" sm="6" md="6">
+                    <!-- <h4 class="">
                     {{ screensID.screen_manday }}
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Day
                   </h4> -->
-                  <v-text-field v-model="screensID.screen_manday" style="text-align-last: left" hide-details="auto"
-                    type="number" :disabled="disabled" dense outlined>
-                  </v-text-field>
-                </v-col>
-                <v-col style="place-self: center">
-                  <h4 class="">วัน</h4>
-                </v-col>
-                <!-- <v-col style="place-self: center">
+                    <v-text-field
+                      v-model="screensID.screen_manday"
+                      style="text-align-last: left"
+                      hide-details="auto"
+                      type="number"
+                      :disabled="disabled"
+                      dense
+                      outlined
+                    >
+                    </v-text-field>
+                  </v-col>
+                  <v-col style="place-self: center">
+                    <h4 class="">วัน</h4>
+                  </v-col>
+                  <!-- <v-col style="place-self: center">
                   <h4 class="">Days</h4>
                 </v-col> -->
-              </v-row>
-              <!--  -->
-              <v-row justify="space-between">
-                <v-col xs="12" sm="6" md="3">
-                  <v-btn class="mr-0" elevation="2" color="error" style="color: white; border-radius: 10px"
-                    @click="deleteScreenAndUserScreen()" :disabled="disabled">
-                    ลบ
-                  </v-btn>
-                </v-col>
-                <v-col xs="12" sm="6" md="9" class="d-flex justify-end">
-                  <v-btn @click="dialog_canEdit = true" class="mr-2" elevation="2" color="primary"
-                    style="color: white; border-radius: 10px" :disabled="disabledEdit">
-                    แก้ไข
-                  </v-btn>
-                  <v-btn elevation="2" color="primary" style="color: white; border-radius: 10px" @click="update()"
-                    :disabled="disabled">
-                    อัปเดต
-                  </v-btn>
-                </v-col>
+                </v-row>
                 <!--  -->
-                <v-dialog v-model="dialog_canEdit" max-width="450px">
-                  <v-card>
-                    <v-row class="ma-0 pa-0" style="place-content: center">
-                      <v-card-title>
-                        <v-icon size="50px" color="success">mdi-check-circle-outline</v-icon>
-                      </v-card-title>
-                    </v-row>
-                    <v-row class="ma-0 pa-0" style="place-content: center">
-                      <v-card-title>
-                        ตอนนี้คุณสามารถ ลบ และ แก้ไข ได้แล้ว
-                      </v-card-title>
-                    </v-row>
+                <v-row justify="space-between">
+                  <v-col xs="12" sm="6" md="3">
+                    <v-btn
+                      class="mr-0"
+                      elevation="2"
+                      color="error"
+                      style="color: white; border-radius: 10px"
+                      @click="deleteScreenAndUserScreen()"
+                      :disabled="disabled"
+                    >
+                      ลบ
+                    </v-btn>
+                  </v-col>
+                  <v-col xs="12" sm="6" md="9" class="d-flex justify-end">
+                    <v-btn
+                      @click="dialog_canEdit = true"
+                      class="mr-2"
+                      elevation="2"
+                      color="primary"
+                      style="color: white; border-radius: 10px"
+                      :disabled="disabledEdit"
+                    >
+                      แก้ไข
+                    </v-btn>
+                    <v-btn
+                      elevation="2"
+                      color="primary"
+                      style="color: white; border-radius: 10px"
+                      @click="update()"
+                      :disabled="disabled"
+                    >
+                      อัปเดต
+                    </v-btn>
+                  </v-col>
+                  <!--  -->
+                  <v-dialog v-model="dialog_canEdit" max-width="450px">
+                    <v-card>
+                      <v-row class="ma-0 pa-0" style="place-content: center">
+                        <v-card-title>
+                          <v-icon size="50px" color="success"
+                            >mdi-check-circle-outline</v-icon
+                          >
+                        </v-card-title>
+                      </v-row>
+                      <v-row class="ma-0 pa-0" style="place-content: center">
+                        <v-card-title>
+                          ตอนนี้คุณสามารถ ลบ และ แก้ไข ได้แล้ว
+                        </v-card-title>
+                      </v-row>
 
-                    <v-card-actions>
-                      <v-spacer></v-spacer>
-                      <v-btn color="primary" dark @click="
-                        (dialog_canEdit = false),
-                        (disabled = false),
-                        (disabledEdit = true)
-                        ">
-                        ตกลง
-                      </v-btn>
-                    </v-card-actions>
-                  </v-card>
-                </v-dialog>
-              </v-row>
+                      <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn
+                          color="primary"
+                          dark
+                          @click="
+                            (dialog_canEdit = false),
+                              (disabled = false),
+                              (disabledEdit = true)
+                          "
+                        >
+                          ตกลง
+                        </v-btn>
+                      </v-card-actions>
+                    </v-card>
+                  </v-dialog>
+                </v-row>
 
-              <!--  -->
-            </v-container>
-          </v-card>
-        </v-col>
-      </v-row>
-    </v-container>
-    <dialog-success :dialog.sync="dialogSuccess" title="บันทึกข้อมูลเสร็จเรียบร้อย" />
-    <dialog-success :dialog.sync="dialogDeleteSuccess" title="ลบข้อมูลเสร็จเรียบร้อย" />
-    <dialog-fail :dialog.sync="dialogScreenHaveIssue"
-      title="ไม่สามารถลบได้ เนื่องจากหน้าจอนี้ติดปัญหาที่หน้ารายการปัญหา" />
+                <!--  -->
+              </v-container>
+            </v-card>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-card>
+    <dialog-success
+      :dialog.sync="dialogSuccess"
+      title="บันทึกข้อมูลเสร็จเรียบร้อย"
+    />
+    <dialog-success
+      :dialog.sync="dialogDeleteSuccess"
+      title="ลบข้อมูลเสร็จเรียบร้อย"
+    />
+    <dialog-fail
+      :dialog.sync="dialogScreenHaveIssue"
+      title="ไม่สามารถลบได้ เนื่องจากหน้าจอนี้ติดปัญหาที่หน้ารายการปัญหา"
+    />
   </div>
 </template>
 
@@ -445,7 +728,10 @@ export default {
         this.IDdelete = this.screensID.system_id;
 
         this.getUserSystems();
-        const date = moment(this.screensID.screen_start, "YYYY-MM-DDTHH:mm:ss.SSSZ");
+        const date = moment(
+          this.screensID.screen_start,
+          "YYYY-MM-DDTHH:mm:ss.SSSZ"
+        );
         if (date.isValid()) {
           this.screensID.screen_start = date.format("YYYY-MM-DD");
         } else {
@@ -453,7 +739,10 @@ export default {
           this.screensID.screen_start = null; // or any other desired value
         }
 
-        const dateEnd = moment(this.screensID.screen_end, "YYYY-MM-DDTHH:mm:ss.SSSZ");
+        const dateEnd = moment(
+          this.screensID.screen_end,
+          "YYYY-MM-DDTHH:mm:ss.SSSZ"
+        );
         if (dateEnd.isValid()) {
           this.screensID.screen_end = dateEnd.format("YYYY-MM-DD");
         } else {
