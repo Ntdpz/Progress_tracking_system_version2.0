@@ -556,7 +556,7 @@
             <!-- ปุ่มสร้าง User + Dialog -->
             <v-dialog v-model="dialog" width="900px" max-height="100%">
               <v-card class="mx-auto" height="580px" max-height="100%">
-                <v-card-title style="background-color: #883cfe">
+                <v-card-title style="background-color: #5c3efe">
                   <span class="text-h5">
                     <h4 style="color: white">สร้างผู้ใช้ใหม่</h4>
                   </span>
@@ -874,7 +874,7 @@
             <!-- Dialog for button manage -->
             <v-dialog v-model="dialog_manage" width="900px" max-height="100%">
               <v-card class="mx-auto" height="580px" max-height="100%">
-                <v-card-title style="background-color: #883cfe">
+                <v-card-title style="background-color: #5c3efe">
                   <span class="text-h6">
                     <h4 style="color: white">จัดการผู้ใช้งานระบบ</h4>
                   </span>

@@ -5,7 +5,7 @@
         <h1>Loading.....</h1>
       </v-card>
       <v-card v-else>
-        <v-card-title class="pt-3" style="background-color: #883cfe">
+        <v-card-title class="pt-3" style="background-color: #5c3efe">
           <h5 style="color: white">
             รายละเอียดปัญหาที่พบ | โครงการ : {{ ProjectName }} > ระบบ :
             {{ SystemName }}
@@ -259,7 +259,7 @@
                 <v-expansion-panel-header
                   disable-icon-rotate
                   class="pb-0 pt-0"
-                  style="background-color: #883cfe"
+                  style="background-color: #5c3efe"
                 >
                   <h3 style="color: white">ส่วนของผู้พัฒนา</h3>
                   <template v-slot:actions>
@@ -488,7 +488,7 @@
                 <v-expansion-panel-header
                   disable-icon-rotate
                   class="pb-0 pt-0"
-                  style="background-color: #883cfe"
+                  style="background-color: #5c3efe"
                 >
                   <h3 style="color: white">ส่วนของผู้ตรวจสอบ</h3>
                   <template v-slot:actions>

@@ -44,11 +44,54 @@
 
         <!-- *content -->
         <v-expansion-panel-content class="mt-2">
-          <v-row justify="center">
-            <v-btn
+          <v-row justify="center" align="center">
+            <v-row class="mt-5 ml-5">
+              <v-col>
+                <v-btn
+                  v-if="user_role == 'Admin' || user_position == 'Implementer'"
+                  class="new-btn"
+                  color="primary"
+                  dark
+                  v-bind="attrs"
+                  v-on="on"
+                  block
+                  style="width: 400px"
+                  large
+                  @click="
+                    showIssueCreateDialog(
+                      system.system_nameTH,
+                      system.id,
+                      system.system_id,
+                      system.system_shortname
+                    )
+                  "
+                >
+                  <span
+                    class="mdi mdi-plus-circle-outline"
+                    style="font-size: 25px; color: white"
+                  ></span>
+                  <h3 style="color: white; font-weight: bolder">
+                    สร้างปัญหาใหม่
+                  </h3>
+                </v-btn>
+              </v-col>
+              <v-spacer></v-spacer>
+              <v-col>
+                <v-text-field
+                  v-model="searchText"
+                  placeholder="Search"
+                  filled
+                  rounded
+                  outlinde
+                  prepend-inner-icon="mdi-magnify"
+                  dense
+                  style="width: 500px"
+                ></v-text-field>
+              </v-col>
+            </v-row>
+            <!-- <v-btn
               v-if="user_role == 'Admin' || user_position == 'Implementer'"
               class="new-btn ma-5 text-left"
-              outlined
               color="primary"
               dark
               v-bind="attrs"
@@ -58,37 +101,12 @@
             >
               <span
                 class="mdi mdi-plus-circle-outline"
-                style="font-size: 25px; color: black"
+                style="font-size: 25px; color: white"
               ></span>
-              <h3 style="color: black; font-weight: bolder">
+              <h3 style="color: white; font-weight: bolder">
                 New สร้างปัญหาใหม่
               </h3>
-            </v-btn>
-
-            <v-btn
-              v-if="user_role == 'Admin' || user_position == 'Implementer'"
-              class="new-btn ma-5 text-left"
-              outlined
-              color="primary"
-              dark
-              v-bind="attrs"
-              v-on="on"
-              block
-              @click="
-                showIssueCreateDialog(
-                  system.system_nameTH,
-                  system.id,
-                  system.system_id,
-                  system.system_shortname
-                )
-              "
-            >
-              <span
-                class="mdi mdi-plus-circle-outline"
-                style="font-size: 25px; color: black"
-              ></span>
-              <h3 style="color: black; font-weight: bolder">สร้างปัญหาใหม่</h3>
-            </v-btn>
+            </v-btn> -->
 
             <!-- *dialog -->
             <dialog-issue
@@ -115,11 +133,11 @@
             next-icon="mdi-menu-right-outline"
             prev-icon="mdi-menu-left-outline"
             show-arrows
-            color="primary"
+            color="#454545"
             class="mt-5 mb-3"
           >
             <v-tab
-              :style="tab1 ? 'background-color:#9D68FF;' : null"
+              :style="tab1 ? 'background-color:#454545;' : null"
               @click="
                 (tab1 = true),
                   (tab2 = false),
@@ -131,7 +149,7 @@
               <h3 :style="tab1 ? 'color:#ffff;' : 'color:#000;'">My issue</h3>
             </v-tab>
             <v-tab
-              :style="tab2 ? 'background-color: #9D68FF;' : null"
+              :style="tab2 ? 'background-color: #454545;' : null"
               @click="
                 (tab1 = false),
                   (tab2 = true),
@@ -143,7 +161,7 @@
               <h3 :style="tab2 ? 'color:#ffff;' : 'color:#000;'">PNI</h3>
             </v-tab>
             <v-tab
-              :style="tab3 ? 'background-color:#9D68FF;' : null"
+              :style="tab3 ? 'background-color:#454545;' : null"
               @click="
                 (tab1 = false),
                   (tab2 = false),
@@ -155,7 +173,7 @@
               <h3 :style="tab3 ? 'color:#ffff;' : 'color:#000;'">PNC</h3>
             </v-tab>
             <v-tab
-              :style="tab4 ? 'background-color:#9D68FF;' : null"
+              :style="tab4 ? 'background-color:#454545;' : null"
               @click="
                 (tab1 = false),
                   (tab2 = false),
@@ -167,7 +185,7 @@
               <h3 :style="tab4 ? 'color:#ffff;' : 'color:#000;'">NewReq</h3>
             </v-tab>
             <v-tab
-              :style="tab5 ? 'background-color:#9D68FF;' : null"
+              :style="tab5 ? 'background-color:#454545;' : null"
               @click="
                 (tab1 = false),
                   (tab2 = false),
@@ -311,18 +329,18 @@
             :NoAssginCheck="selected.no_assign"
             @button-clicked="getIssue()"
           />
-          <v-tabs-items v-model="tab">
+          <v-tabs-items v-model="tab" style="width: 100%">
             <v-tabs
               fixed-tabs
               v-model="tab_issue"
               next-icon="mdi-menu-right-outline"
               prev-icon="mdi-menu-left-outline"
               show-arrows
-              color="primary"
+              color="#454545"
               class="mt-5 mb-3"
             >
               <v-tab
-                :style="tab_assign ? 'background-color:#9D68FF;' : null"
+                :style="tab_assign ? 'background-color:#454545;' : null"
                 @click="(tab_assign = true), (tab_unassign = false)"
               >
                 <h3 :style="tab_assign ? 'color:#ffff;' : 'color:#000;'">
@@ -332,7 +350,7 @@
                 <!-- ถึงตรงนี้ -->
               </v-tab>
               <v-tab
-                :style="tab_unassign ? 'background-color:#9D68FF;' : null"
+                :style="tab_unassign ? 'background-color:#454545;' : null"
                 @click="(tab_assign = false), (tab_unassign = true)"
               >
                 <h3 :style="tab_unassign ? 'color:#ffff;' : 'color:#000;'">
@@ -505,7 +523,7 @@
               </v-data-table>
 
               <!-- *Table 2 unassignedIssues-->
-              <v-data-table
+              <!-- <v-data-table
                 :headers="headers"
                 :items="system.unassignedIssues"
                 :sort-by="['created_at']"
@@ -661,7 +679,7 @@
                     </td>
                   </tr>
                 </template>
-              </v-data-table>
+              </v-data-table> -->
             </v-tab-item>
             <v-tab-item>
               <!-- *card PNI -->
@@ -824,7 +842,7 @@
                 </template>
               </v-data-table>
               <!-- *Table 2 unassignedIssues-->
-              <v-data-table
+              <!-- <v-data-table
                 :headers="headers"
                 :items="system.unassignedIssuesPNI"
                 :sort-by="['created_at']"
@@ -980,7 +998,7 @@
                     </td>
                   </tr>
                 </template>
-              </v-data-table>
+              </v-data-table> -->
             </v-tab-item>
             <v-tab-item>
               <!-- *card PNC -->
@@ -1143,7 +1161,7 @@
                 </template>
               </v-data-table>
               <!-- *Table 2 unassignedIssues-->
-              <v-data-table
+              <!-- <v-data-table
                 :headers="headers"
                 :items="system.unassignedIssuesPNC"
                 :sort-by="['created_at']"
@@ -1299,7 +1317,7 @@
                     </td>
                   </tr>
                 </template>
-              </v-data-table>
+              </v-data-table> -->
             </v-tab-item>
             <v-tab-item>
               <!-- *card New req -->
@@ -1462,7 +1480,7 @@
                 </template>
               </v-data-table>
               <!-- *Table 2 unassignedIssues-->
-              <v-data-table
+              <!-- <v-data-table
                 :headers="headers"
                 :items="system.unassignedIssuesNewReq"
                 :sort-by="['created_at']"
@@ -1618,7 +1636,7 @@
                     </td>
                   </tr>
                 </template>
-              </v-data-table>
+              </v-data-table> -->
             </v-tab-item>
             <v-tab-item>
               <!-- *card History -->
@@ -1790,6 +1808,7 @@ export default {
   },
   data() {
     return {
+      id: this.$route.params.id,
       tab1: true,
       tab2: false,
       tab3: false,
@@ -1798,7 +1817,7 @@ export default {
       tab_assign: true,
       tab_unassign: false,
       search: "",
-      id: this.$route.params.id,
+      searchText: "",
       tab: null,
       tab_issue: null,
       dialog: false,
@@ -2519,7 +2538,6 @@ export default {
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  border: 2px dotted #333;
   padding: 8px 16px;
 }
 

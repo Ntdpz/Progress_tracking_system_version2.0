@@ -33,7 +33,7 @@
     <template v-slot:expanded-item="{ headers, item }">
       <td :colspan="headers.length">
         <v-card elevation="2" class="mt-5">
-          <v-card-title style="background-color: #883cfe; height: 50px">
+          <v-card-title style="background-color: #5c3efe; height: 50px">
             <p
               style="font-size: 18px; font-weight: bold; color: white"
               class="mb-2"
@@ -102,7 +102,7 @@
           </div>
         </v-card>
         <v-card elevation="2" class="mt-5">
-          <v-card-title style="background-color: #883cfe; height: 50px">
+          <v-card-title style="background-color: #5c3efe; height: 50px">
             <p
               style="font-size: 18px; font-weight: bold; color: white"
               class="mb-2"
@@ -148,7 +148,7 @@
           </div>
         </v-card>
         <v-card elevation="2" class="mt-5 mb-5">
-          <v-card-title style="background-color: #883cfe; height: 50px">
+          <v-card-title style="background-color: #5c3efe; height: 50px">
             <p
               style="font-size: 18px; font-weight: bold; color: white"
               class="mb-2"

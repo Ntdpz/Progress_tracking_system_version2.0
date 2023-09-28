@@ -3,7 +3,7 @@
     <v-form ref="form">
       <v-dialog v-model="dialog" persistent max-width="750">
         <v-card>
-          <v-card-title class="pt-3 mb-2" style="background-color: #883cfe">
+          <v-card-title class="pt-3 mb-2" style="background-color: #5c3efe">
             <h5 style="color: white">
               สร้างปัญหาใหม่ | {{ systemName }} ({{ systemShortname }})
             </h5>
@@ -355,12 +355,13 @@
                   สร้างเสร็จเรียบร้อย
                 </v-card-title>
               </v-row>
-              <v-card-actions style="place-content: center;">
+              <v-card-actions style="place-content: center">
                 <!-- <v-spacer></v-spacer> -->
                 <v-btn
                   color="success"
                   dark
-                  @click="(dialogSuccess = false), close()" rounded
+                  @click="(dialogSuccess = false), close()"
+                  rounded
                 >
                   Ok
                 </v-btn>
@@ -389,13 +390,9 @@
                   กรุณาใส่ข้อมูลให้ครบถ้วน
                 </v-card-title>
               </v-row>
-              <v-card-actions style="place-content: center;">
+              <v-card-actions style="place-content: center">
                 <!-- <v-spacer></v-spacer> -->
-                <v-btn
-                  color="error"
-                  dark
-                  @click="(dialogFail = false)" rounded
-                >
+                <v-btn color="error" dark @click="dialogFail = false" rounded>
                   Ok
                 </v-btn>
               </v-card-actions>
@@ -477,7 +474,7 @@ export default {
         issue_manday: "",
         issue_complete: "",
         dialogSuccess: false,
-        
+
         dayQc: "",
         hourQc: "",
       },
@@ -777,8 +774,8 @@ export default {
 }
 
 .v-btn:not(.v-btn--round).v-size--default {
-    height: 36px;
-    min-width: 147px;
-    /* padding: 0 16px; */
+  height: 36px;
+  min-width: 147px;
+  /* padding: 0 16px; */
 }
 </style>

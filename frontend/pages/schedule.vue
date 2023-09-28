@@ -57,7 +57,7 @@
                 @click="ClickDay(), (type = 'day')"
                 style="border: none"
                 :style="{
-                  backgroundColor: colorday ? '#883cfe' : null,
+                  backgroundColor: colorday ? '#5c3efe' : null,
                   color: colorday ? 'white' : 'black',
                 }"
                 class="mr-2"
@@ -69,7 +69,7 @@
                 @click="ClickWeek(), (type = 'week')"
                 style="border: none"
                 :style="{
-                  backgroundColor: colorweek ? '#883cfe' : null,
+                  backgroundColor: colorweek ? '#5c3efe' : null,
                   color: colorweek ? 'white' : 'black',
                 }"
               >
@@ -80,7 +80,7 @@
                 @click="ClickMonth(), (type = 'month')"
                 style="border: none"
                 :style="{
-                  backgroundColor: colormonth ? '#883cfe' : null,
+                  backgroundColor: colormonth ? '#5c3efe' : null,
                   color: colormonth ? 'white' : 'black',
                 }"
               >
@@ -91,7 +91,7 @@
                 @click="Click4Day(), (type = '4day')"
                 style="border: none"
                 :style="{
-                  backgroundColor: color4day ? '#883cfe' : null,
+                  backgroundColor: color4day ? '#5c3efe' : null,
                   color: color4day ? 'white' : 'black',
                 }"
               >

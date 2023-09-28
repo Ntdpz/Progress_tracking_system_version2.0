@@ -40,7 +40,7 @@
       </v-col>
     </v-row>
 
-    <v-divider color="#883CFE"></v-divider>
+    <v-divider color="#5c3efe"></v-divider>
 
     <v-container fluid class="mt-1 pl-16" height="100%">
       <v-card class="pa-2" tile outlined style="border: none; height: 100%">

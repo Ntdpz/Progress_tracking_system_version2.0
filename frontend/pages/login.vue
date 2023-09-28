@@ -66,7 +66,7 @@
                   <v-btn
                     class="mb-8"
                     style="color: white; font-weight: bold; height: 43px"
-                    color="#883CFE"
+                    color="#5c3efe"
                     width="90%"
                     type="submit"
                     >เข้าสู่ระบบ</v-btn

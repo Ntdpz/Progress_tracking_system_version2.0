@@ -75,7 +75,7 @@
             <!--  -->
             <v-dialog v-model="dialog_newscreen" max-width="600px">
               <v-card outlined tile height="100%" style="border: none">
-                <v-card-title class="pt-3" style="background-color: #883cfe">
+                <v-card-title class="pt-3" style="background-color: #5c3efe">
                   <h5 style="color: white">สร้างหน้าจอใหม่</h5>
                 </v-card-title>
                 <v-container fluid>
@@ -552,7 +552,7 @@
                 outlined
                 style="box-shadow: none; border: none"
               >
-                <v-card-title class="pt-3" style="background-color: #883cfe">
+                <v-card-title class="pt-3" style="background-color: #5c3efe">
                   <h5 style="color: white">รายละเอียดระบบ</h5>
                 </v-card-title>
                 <!-- code text fields system  -->

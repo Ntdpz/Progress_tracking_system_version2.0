@@ -30,21 +30,21 @@
     <v-btn
       v-if="userposition != 'Developer' || userrole == 'Admin'"
       class="new-btn ma-2 text-left"
-      outlined
       color="primary"
       dark
       block
+      large
       @click="openDialog('create')"
     >
       <span
         class="mdi mdi-plus-circle-outline"
-        style="font-size: 20px; color: black"
+        style="font-size: 25px; color: white"
       ></span>
-      <h4 style="color: black">&nbsp;&nbsp; สร้างโครงการใหม่</h4>
+      <h4 style="color: white">&nbsp;&nbsp; สร้างโครงการใหม่</h4>
     </v-btn>
     <v-dialog v-model="dialog" max-width="500px" :retain-focus="false">
       <v-card>
-        <v-card-title class="pt-3" style="background-color: #883cfe">
+        <v-card-title class="pt-3" style="background-color: #5c3efe">
           <h5 style="color: white">
             {{ mode === "create" ? "สร้างโครงการใหม่" : "แก้ไขโครงการ" }}
           </h5>
@@ -321,7 +321,7 @@
         <v-expansion-panel>
           <v-expansion-panel-header
             disable-icon-rotate
-            style="background-color: #5c3efe"
+            style="background-color: #735bff"
           >
             <v-row no-gutters>
               <v-col cols="3">
@@ -370,19 +370,19 @@
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
                     class="new-btn ma-4 text-left"
-                    outlined
                     color="primary"
                     dark
                     v-bind="attrs"
                     v-on="on"
                     block
+                    large
                     @click="dialogSystem(projectList[index])"
                   >
                     <span
                       class="mdi mdi-plus-circle-outline"
-                      style="font-size: 20px; color: black"
+                      style="font-size: 25px; color: white"
                     ></span>
-                    <h4 style="color: black">&nbsp;&nbsp; สร้างระบบใหม่</h4>
+                    <h4 style="color: white">&nbsp;&nbsp; สร้างระบบใหม่</h4>
                   </v-btn>
                 </template>
                 <v-card>
@@ -1348,7 +1348,6 @@ export default {
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  border: 2px dotted #333;
   padding: 8px 16px;
 }
 

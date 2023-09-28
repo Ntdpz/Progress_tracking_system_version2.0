@@ -75,7 +75,7 @@ export default {
       dark: false,
       themes: {
         dark: {
-          primary: "#883CFE",
+          primary: "#5c3efe",
           accent: colors.grey.darken3,
           secondary: colors.amber.darken3,
           info: colors.teal.lighten1,
@@ -84,7 +84,7 @@ export default {
           success: colors.green.accent3,
         },
         light: {
-          primary: "#883CFE",
+          primary: "#5c3efe",
         },
       },
     },

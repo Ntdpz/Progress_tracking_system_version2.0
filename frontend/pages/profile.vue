@@ -34,7 +34,7 @@
                 color="white"
                 icon
                 style="
-                  background-color: #883cfe;
+                  background-color: #5c3efe;
                   float: right;
                   margin-left: -42px;
                   margin-top: 131px;
@@ -300,7 +300,7 @@
             <!-- dialog password persistent -->
             <v-dialog v-model="show3" max-width="500px" persistent>
               <v-card width="100%" height="100%">
-                <v-card-title style="background-color: #883cfe">
+                <v-card-title style="background-color: #5c3efe">
                   <span class="text-h5" style="font-weight: bold; color: white"
                     >เปลี่ยนรหัสผ่าน</span
                   >

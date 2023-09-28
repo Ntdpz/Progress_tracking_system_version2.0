@@ -5,7 +5,7 @@
       :clipped="clipped"
       fixed
       app
-      style="background-color: #f5efff"
+      style="background-color: #f3f3f3"
     >
       <v-list-item>
         <v-list-item-content>
