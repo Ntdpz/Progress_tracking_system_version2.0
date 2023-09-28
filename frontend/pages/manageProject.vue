@@ -386,7 +386,7 @@
                   </v-btn>
                 </template>
                 <v-card>
-                  <v-card-title>
+                  <v-card-title style="background-color: #5c3efe; color: white">
                     <v-col cols="12">
                       <v-row>
                         <h5>สร้างระบบใหม่</h5>
