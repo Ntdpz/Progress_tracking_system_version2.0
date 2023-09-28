@@ -14,6 +14,7 @@ const connection = mysql.createConnection({
 //   database: "notemanagement_db",
 // });
 
+
 connection.connect((err) => {
   if (err) {
     console.error("Error connecting to database:", err);

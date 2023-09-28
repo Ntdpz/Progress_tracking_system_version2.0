@@ -312,6 +312,36 @@
             @button-clicked="getIssue()"
           />
           <v-tabs-items v-model="tab">
+            <v-tabs
+              fixed-tabs
+              v-model="tab_issue"
+              next-icon="mdi-menu-right-outline"
+              prev-icon="mdi-menu-left-outline"
+              show-arrows
+              color="primary"
+              class="mt-5 mb-3"
+            >
+              <v-tab
+                :style="tab_assign ? 'background-color:#9D68FF;' : null"
+                @click="(tab_assign = true), (tab_unassign = false)"
+              >
+                <h3 :style="tab_assign ? 'color:#ffff;' : 'color:#000;'">
+                  ปัญหาที่มีคนรับผิดชอบ
+                </h3>
+
+                <!-- ถึงตรงนี้ -->
+              </v-tab>
+              <v-tab
+                :style="tab_unassign ? 'background-color:#9D68FF;' : null"
+                @click="(tab_assign = false), (tab_unassign = true)"
+              >
+                <h3 :style="tab_unassign ? 'color:#ffff;' : 'color:#000;'">
+                  ปัญหาที่ไม่มีคนรับผิดชอบ
+                </h3>
+              </v-tab>
+            </v-tabs>
+          </v-tabs-items>
+          <v-tabs-items v-model="tab">
             <v-tab-item>
               <!-- *cardAll -->
               <!-- *Table assignedIssues -->
@@ -348,7 +378,7 @@
                     ></v-text-field>
                   </v-toolbar>
                 </template>
-                <template v-slot:item="{ item, index }">
+                <template v-slot:item="{ item }">
                   <tr>
                     <td>
                       {{ item.issue_id }}
@@ -359,7 +389,7 @@
                     <td>
                       {{ item.issue_type }}
                     </td>
-                    <td>{{ item.formattedDateEndTH }}</td>
+                    <td>{{ item.formattedDateEnd }}</td>
                     <td>{{ item.issue_status }}</td>
                     <td>
                       <v-icon
@@ -507,7 +537,7 @@
                     ></v-text-field>
                   </v-toolbar>
                 </template>
-                <template v-slot:item="{ item, index }">
+                <template v-slot:item="{ item }">
                   <tr>
                     <td>
                       {{ item.issue_id }}
@@ -518,7 +548,7 @@
                     <td>
                       {{ item.issue_type }}
                     </td>
-                    <td>{{ item.formattedDateEndTH }}</td>
+                    <td>{{ item.formattedDateEnd }}</td>
                     <td>{{ item.issue_status }}</td>
                     <td>
                       <v-icon
@@ -668,7 +698,7 @@
                     ></v-text-field>
                   </v-toolbar>
                 </template>
-                <template v-slot:item="{ item, index }">
+                <template v-slot:item="{ item }">
                   <tr>
                     <td>
                       {{ item.issue_id }}
@@ -679,7 +709,7 @@
                     <td>
                       {{ item.issue_type }}
                     </td>
-                    <td>{{ item.formattedDateEndTH }}</td>
+                    <td>{{ item.formattedDateEnd }}</td>
                     <td>{{ item.issue_status }}</td>
                     <td>
                       <v-icon
@@ -826,7 +856,7 @@
                     ></v-text-field>
                   </v-toolbar>
                 </template>
-                <template v-slot:item="{ item, index }">
+                <template v-slot:item="{ item }">
                   <tr>
                     <td>
                       {{ item.issue_id }}
@@ -837,7 +867,7 @@
                     <td>
                       {{ item.issue_type }}
                     </td>
-                    <td>{{ item.formattedDateEndTH }}</td>
+                    <td>{{ item.formattedDateEnd }}</td>
                     <td>{{ item.issue_status }}</td>
                     <td>
                       <v-icon
@@ -987,7 +1017,7 @@
                     ></v-text-field>
                   </v-toolbar>
                 </template>
-                <template v-slot:item="{ item, index }">
+                <template v-slot:item="{ item }">
                   <tr>
                     <td>
                       {{ item.issue_id }}
@@ -998,7 +1028,7 @@
                     <td>
                       {{ item.issue_type }}
                     </td>
-                    <td>{{ item.formattedDateEndTH }}</td>
+                    <td>{{ item.formattedDateEnd }}</td>
                     <td>{{ item.issue_status }}</td>
                     <td>
                       <v-icon
@@ -1145,7 +1175,7 @@
                     ></v-text-field>
                   </v-toolbar>
                 </template>
-                <template v-slot:item="{ item, index }">
+                <template v-slot:item="{ item }">
                   <tr>
                     <td>
                       {{ item.issue_id }}
@@ -1156,7 +1186,7 @@
                     <td>
                       {{ item.issue_type }}
                     </td>
-                    <td>{{ item.formattedDateEndTH }}</td>
+                    <td>{{ item.formattedDateEnd }}</td>
                     <td>{{ item.issue_status }}</td>
                     <td>
                       <v-icon
@@ -1306,7 +1336,7 @@
                     ></v-text-field>
                   </v-toolbar>
                 </template>
-                <template v-slot:item="{ item, index }">
+                <template v-slot:item="{ item }">
                   <tr>
                     <td>
                       {{ item.issue_id }}
@@ -1317,7 +1347,7 @@
                     <td>
                       {{ item.issue_type }}
                     </td>
-                    <td>{{ item.formattedDateEndTH }}</td>
+                    <td>{{ item.formattedDateEnd }}</td>
                     <td>{{ item.issue_status }}</td>
                     <td>
                       <v-icon
@@ -1464,7 +1494,7 @@
                     ></v-text-field>
                   </v-toolbar>
                 </template>
-                <template v-slot:item="{ item, index }">
+                <template v-slot:item="{ item }">
                   <tr>
                     <td>
                       {{ item.issue_id }}
@@ -1475,7 +1505,7 @@
                     <td>
                       {{ item.issue_type }}
                     </td>
-                    <td>{{ item.formattedDateEndTH }}</td>
+                    <td>{{ item.formattedDateEnd }}</td>
                     <td>{{ item.issue_status }}</td>
                     <td>
                       <v-icon
@@ -1601,7 +1631,7 @@
                 class="v-data-table elevation-1 mb-2"
                 :style="{ 'background-color': tableColor }"
               >
-                <template v-slot:item="{ item, index }">
+                <template v-slot:item="{ item }">
                   <tr>
                     <td>
                       {{ item.issue_id }}
@@ -1612,7 +1642,7 @@
                     <td>
                       {{ item.issue_type }}
                     </td>
-                    <td>{{ item.formattedDateEndTH }}</td>
+                    <td>{{ item.formattedDateEnd }}</td>
                     <td>{{ item.issue_status }}</td>
                     <td>
                       <v-icon
@@ -1765,9 +1795,12 @@ export default {
       tab3: false,
       tab4: false,
       tab5: false,
+      tab_assign: true,
+      tab_unassign: false,
       search: "",
       id: this.$route.params.id,
       tab: null,
+      tab_issue: null,
       dialog: false,
       date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
         .toISOString()
@@ -1835,47 +1868,14 @@ export default {
           value: "issue_id",
           class: "blue-grey darken-4 white--text",
         },
-        {
-          text: "ชื่อปัญหา",
-          value: "issue_name",
-          class: "blue-grey darken-4 white--text",
-        },
-        {
-          text: "ประเภทปัญหา",
-          value: "issue_type",
-          class: "blue-grey darken-4 white--text",
-        },
-        {
-          text: "วันกำหนดส่ง",
-          value: "formattedDateEndTH",
-          class: "blue-grey darken-4 white--text",
-        },
-        {
-          text: "สถานะ",
-          value: "issue_status",
-          class: "blue-grey darken-4 white--text",
-        },
-        {
-          text: "ความสำคัญของปัญหา",
-          value: "issue_priority",
-          class: "blue-grey darken-4 white--text",
-        },
-        {
-          text: "ผู้รับผิดชอบ",
-          value: "issue_assign",
-          class: "blue-grey darken-4 white--text",
-        },
-        {
-          text: "ผู้รับตรวจสอบ",
-          value: "issue_qc",
-          class: "blue-grey darken-4 white--text",
-        },
-        {
-          text: "จัดการ",
-          value: "actions",
-          sortable: false,
-          class: "blue-grey darken-4 white--text",
-        },
+        { text: "ชื่อปัญหา", value: "issue_name" },
+        { text: "ประเภทปัญหา", value: "issue_type" },
+        { text: "วันกำหนดส่ง", value: "formattedDateEnd" },
+        { text: "สถานะ", value: "issue_status" },
+        { text: "ความสำคัญของปัญหา", value: "issue_priority" },
+        { text: "ผู้รับผิดชอบ", value: "issue_assign" },
+        { text: "ผู้รับตรวจสอบ", value: "issue_qc" },
+        { text: "จัดการ", value: "actions", sortable: false },
       ],
       issue: [],
       issueDev: [],
