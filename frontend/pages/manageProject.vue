@@ -53,7 +53,7 @@
           <v-card-text>
             <v-container>
               <v-row>
-                <v-col cols="12">
+                <v-col class="pb-0" cols="12">
                   <v-text-field
                     label="ชื่อโครงการ"
                     placeholder="ชื่อโครงการ"
@@ -63,7 +63,7 @@
                     v-model="editedItem.project_name"
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" sm="6" md="4">
+                <v-col class="pb-0 pt-0" cols="12">
                   <v-text-field
                     label="ตัวย่อ"
                     placeholder="ตัวย่อ"
@@ -73,7 +73,7 @@
                     v-model="editedItem.project_shortname"
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" sm="8" md="8">
+                <v-col class="pb-0 pt-0" cols="12">
                   <v-text-field
                     label="รหัสโครงการ"
                     placeholder="รหัสโครงการ"
@@ -83,7 +83,7 @@
                     v-model="editedItem.project_id"
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" class="pb-0">
+                <v-col cols="12" class="pb-0 pt-0">
                   <v-text-field
                     label="หน่วยงาน"
                     placeholder="หน่วยงาน"
@@ -298,7 +298,7 @@
               <h4>ลบโครงการ</h4>
             </v-btn>
             <v-spacer></v-spacer>
-            <v-btn color="error" dark @click="clearCreateProject">
+            <v-btn text color="primary" @click="clearCreateProject">
               <h4>ปิด</h4>
             </v-btn>
             <v-btn color="primary" dark type="submit">
@@ -397,7 +397,7 @@
                     <v-card-text>
                       <v-container>
                         <v-row>
-                          <v-col cols="12">
+                          <v-col class="pb-0 pt-0" cols="12">
                             <p>สร้างโครงการจากรหัสโครงการ</p>
                             <v-text-field
                               :rules="rules"
@@ -410,7 +410,7 @@
                               required
                             ></v-text-field>
                           </v-col>
-                          <v-col cols="12">
+                          <v-col class="pb-0 pt-0" cols="12">
                             <v-text-field
                               :rules="rules"
                               label="รหัสของระบบ"
@@ -421,7 +421,7 @@
                               required
                             ></v-text-field>
                           </v-col>
-                          <v-col cols="12">
+                          <v-col class="pb-0 pt-0" cols="12">
                             <v-text-field
                               :rules="rules"
                               label="ชื่อระบบ (ภาษาไทย)"
@@ -432,7 +432,7 @@
                               required
                             ></v-text-field>
                           </v-col>
-                          <v-col cols="12">
+                          <v-col class="pb-0 pt-0" cols="12">
                             <v-text-field
                               :rules="rules"
                               label="ชื่อระบบ (ภาษาอังกฤษ)"
@@ -443,7 +443,7 @@
                               required
                             ></v-text-field>
                           </v-col>
-                          <v-col cols="12" sm="6" md="6">
+                          <v-col class="pb-0 pt-0" cols="12">
                             <v-text-field
                               :rules="rules"
                               label="ชื่อย่อของระบบ"
@@ -454,7 +454,7 @@
                               required
                             ></v-text-field>
                           </v-col>
-                          <v-col cols="12">
+                          <v-col class="pb-0 pt-0" cols="12">
                             <v-select
                               :rules="rules"
                               required
@@ -486,8 +486,7 @@
                               </template>
                             </v-select>
                           </v-col>
-                          <v-col class="col-12" sm="12" md="12">
-                            <!--  -->
+                          <v-col class="pb-0 pt-0" cols="12">
                             <v-select
                               :rules="rules"
                               required
@@ -518,7 +517,7 @@
                               </template>
                             </v-select>
                           </v-col>
-                          <v-col class="col-12" sm="12" md="12">
+                          <v-col class="pb-0 pt-0" cols="12">
                             <v-select
                               :rules="rules"
                               required

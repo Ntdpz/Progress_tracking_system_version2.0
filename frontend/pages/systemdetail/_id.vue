@@ -559,7 +559,7 @@
                 <v-container fluid>
                   <!-- กล่องข้อความ 1 -->
                   <v-row>
-                    <v-col>
+                    <v-col class="pb-0 pt-0">
                       <v-row>
                         <v-col
                           class="mb-0 pb-0 hidden-sm-and-up"
@@ -571,16 +571,14 @@
                       <v-row>
                         <v-col
                           class="hidden-xs-only"
-                          sm="4"
-                          md="4"
+                          cols="4"
                           style="place-self: center"
                         >
                           <v-card-text class="">รหัสของระบบ</v-card-text>
                         </v-col>
                         <v-col
-                          class="col-12"
-                          sm="8"
-                          md="8"
+                          class="pb-0 pt-0"
+                          cols="8"
                           style="align-self: center"
                         >
                           <v-text-field
