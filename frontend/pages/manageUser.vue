@@ -103,11 +103,16 @@
                         </td>
                         <td>
                           <v-avatar>
-                            <img
+                            <!-- <img
                               :src="getImageUrl(item.user_pic)"
                               alt="User avatar"
                               class="mx-auto"
                               style="width: 35px; height: 35px"
+                            /> -->
+                            <v-img
+                              :src="item.user_pic"
+                              alt="Selected Image"
+                              v-if="item.user_pic"
                             />
                           </v-avatar>
                         </td>
@@ -180,11 +185,16 @@
                         </td>
                         <td>
                           <v-avatar>
-                            <img
+                            <!-- <img
                               :src="getImageUrl(item.user_pic)"
                               alt="User avatar"
                               class="mx-auto"
                               style="width: 35px; height: 35px"
+                            /> -->
+                            <v-img
+                              :src="item.user_pic"
+                              alt="Selected Image"
+                              v-if="item.user_pic"
                             />
                           </v-avatar>
                         </td>
@@ -258,11 +268,16 @@
                         </td>
                         <td>
                           <v-avatar>
-                            <img
+                            <!-- <img
                               :src="getImageUrl(item.user_pic)"
                               alt="User avatar"
                               class="mx-auto"
                               style="width: 35px; height: 35px"
+                            /> -->
+                            <v-img
+                              :src="item.user_pic"
+                              alt="Selected Image"
+                              v-if="item.user_pic"
                             />
                           </v-avatar>
                         </td>
@@ -336,11 +351,16 @@
                         </td>
                         <td>
                           <v-avatar>
-                            <img
+                            <!-- <img
                               :src="getImageUrl(item.user_pic)"
                               alt="User avatar"
                               class="mx-auto"
                               style="width: 35px; height: 35px"
+                            /> -->
+                            <v-img
+                              :src="item.user_pic"
+                              alt="Selected Image"
+                              v-if="item.user_pic"
                             />
                           </v-avatar>
                         </td>
@@ -414,11 +434,16 @@
                         </td>
                         <td>
                           <v-avatar>
-                            <img
+                            <!-- <img
                               :src="getImageUrl(item.user_pic)"
                               alt="User avatar"
                               class="mx-auto"
                               style="width: 35px; height: 35px"
+                            /> -->
+                            <v-img
+                              :src="item.user_pic"
+                              alt="Selected Image"
+                              v-if="item.user_pic"
                             />
                           </v-avatar>
                         </td>
@@ -492,11 +517,16 @@
                         </td>
                         <td>
                           <v-avatar>
-                            <img
+                            <!-- <img
                               :src="getImageUrl(item.user_pic)"
                               alt="User avatar"
                               class="mx-auto"
                               style="width: 35px; height: 35px"
+                            /> -->
+                            <v-img
+                              :src="item.user_pic"
+                              alt="Selected Image"
+                              v-if="item.user_pic"
                             />
                           </v-avatar>
                         </td>
@@ -587,10 +617,10 @@
                                   class="center mt-7"
                                   color="black"
                                   size="30px"
-                                  v-if="!photo"
+                                  v-if="!base64"
                                   >mdi-cloud-upload-outline</v-icon
                                 >
-                                <img v-if="photo" :src="photo" />
+                                <img v-if="base64" :src="base64" />
                               </label>
                             </form>
                           </div>
@@ -907,11 +937,12 @@
                                   v-if="!imageManage"
                                   >mdi-cloud-upload-outline</v-icon
                                 >
-                                <img v-if="avatar != null" :src="avatar" />
                                 <img
-                                  v-else-if="imageManage"
-                                  :src="getImageUrl(imageManage)"
+                                  :src="base64"
+                                  alt="Selected Image"
+                                  v-if="base64"
                                 />
+                                <img v-else-if="imageManage != null" :src="imageManage" />
                               </label>
                             </form>
                           </div>
@@ -1333,6 +1364,7 @@ export default {
       dialogDeleteSuccess: false,
       dialogfail: false,
       dialogUpdateSuccess: false,
+      base64: "",
     };
   },
   created() {
@@ -1466,22 +1498,30 @@ export default {
 
       try {
         await this.$refs.formCreate.validate();
-        const formData = new FormData();
-        formData.append("user_firstname", this.name + " " + this.firstname);
-        formData.append("user_lastname", this.lastname);
-        formData.append("user_id", this.code);
-        formData.append("user_position", this.position);
-        formData.append("user_department", this.department);
-        formData.append("user_email", this.email);
-        formData.append("user_password", this.password);
-        formData.append("user_status", this.stratiform);
-        formData.append("user_role", this.role);
-        formData.append("image", this.imageFileUpload);
-        await this.$axios.post("/users/createUser", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
+        // const formData = new FormData();
+        // formData.append("user_firstname", this.name + " " + this.firstname);
+        // formData.append("user_lastname", this.lastname);
+        // formData.append("user_id", this.code);
+        // formData.append("user_position", this.position);
+        // formData.append("user_department", this.department);
+        // formData.append("user_email", this.email);
+        // formData.append("user_password", this.password);
+        // formData.append("user_status", this.stratiform);
+        // formData.append("user_role", this.role);
+        // formData.append("image", this.imageFileUpload);
+        const formdatas = {
+          user_firstname:this.name + " " + this.firstname,
+          user_lastname:this.lastname,
+          user_id:this.code,
+          user_position:this.position,
+          user_department:this.department,
+          user_email:this.email,
+          user_password:this.password,
+          user_status:this.stratiform,
+          user_role:this.role,
+          user_pic:this.base64,
+        };
+        await this.$axios.post("/users/createUser", formdatas);
         const promise = new Promise((resolve, reject) => {
           this.dialogSuccess = true;
           this.dialog = false;
@@ -1531,26 +1571,47 @@ export default {
     uploadFile() {
       const input2 = this.$refs.fileInput;
       this.imageFileUpload = input2.files[0];
-      try {
-        this.photo = URL.createObjectURL(this.imageFileUpload);
-      } catch (error) {
-        console.error(error);
-        this.photo = null;
-        this.imageFileUpload = "";
+      console.log(this.imageFileUpload);
+
+      const selectedFile = this.imageFileUpload;
+      if (selectedFile) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          this.base64 = event.target.result;
+          console.log(this.base64);
+        };
+        reader.readAsDataURL(selectedFile);
       }
+      // try {
+      //   this.photo = URL.createObjectURL(this.imageFileUpload);
+      // } catch (error) {
+      //   console.error(error);
+      //   this.photo = null;
+      //   this.imageFileUpload = "";
+      // }
     },
     uploadFile_manage() {
       const input = this.$refs.fileInput;
       this.imageManageUpload = input.files[0];
-      try {
-        // editedItem.photo
-        this.avatar = URL.createObjectURL(this.imageManageUpload);
-        // Do something with the file, for example upload to a server
-      } catch (error) {
-        console.error(error);
-        // this.avatar = null;
-        // this.imageFileUpload = "";
+      console.log(this.imageManageUpload);
+      const selectedFile = this.imageManageUpload;
+      if (selectedFile) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          this.base64 = event.target.result;
+          console.log(this.base64);
+        };
+        reader.readAsDataURL(selectedFile);
       }
+      // try {
+      // editedItem.photo
+      // this.avatar = URL.createObjectURL(this.imageManageUpload);
+      // Do something with the file, for example upload to a server
+      // } catch (error) {
+      //   console.error(error);
+      // this.avatar = null;
+      // this.imageFileUpload = "";
+      // }
     },
     // async updateUser() {
     //   await this.$axios
@@ -1605,24 +1666,20 @@ export default {
       }
       try {
         this.$refs.formUpdate.validate();
-
-        const formData = new FormData();
-        formData.append("image", this.imageManageUpload);
-        formData.append(
-          "user_firstname",
-          this.editedItem.misname + " " + this.editedItem.user_firstname
-        );
-        formData.append("user_lastname", this.editedItem.user_lastname);
-        formData.append("user_id", this.editedItem.user_id);
-        formData.append("user_position", this.editedItem.user_position);
-        formData.append("user_department", this.editedItem.user_department);
-        formData.append("user_email", this.editedItem.user_email);
-        formData.append("user_password", this.editedItem.user_password);
-        formData.append("user_status", this.editedItem.user_status);
-        formData.append("user_role", this.editedItem.user_role);
-
+        const formdatas = {
+          user_firstname:this.editedItem.misname + " " + this.editedItem.user_firstname,
+          user_lastname:this.editedItem.user_lastname,
+          user_id:this.editedItem.user_id,
+          user_position:this.editedItem.user_position,
+          user_department:this.editedItem.user_department,
+          user_email:this.editedItem.user_email,
+          user_password:this.editedItem.user_password,
+          user_status:this.editedItem.user_status,
+          user_role:this.editedItem.user_role,
+          user_pic:this.base64,
+        };
         await this.$axios
-          .put("/users/updateUsers/" + this.editedItem.id + "/image", formData)
+          .put(`/users/updateUsers/${this.editedItem.id}`, formdatas)
           .then((response) => {
             this.getUser();
             this.getAll();

@@ -27,7 +27,7 @@
               >
                 <!-- <img src="https://cdn.vuetifyjs.com/images/john.jpg" alt="John" /> -->
                 <img v-if="avatar != null" :src="avatar" />
-                <img v-else-if="user_pic" :src="getImageUrl(user_pic)" />
+                <img v-else-if="user_pic" :src="user_pic" />
                 <img v-else :src="getdefaultImageUrl(defaultImage)" />
               </v-avatar>
               <v-btn

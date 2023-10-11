@@ -5,7 +5,7 @@
     <v-row class="pl-16 mb-6" no-gutters justify-start>
       <v-col class="mr-10" style="flex-grow: 0 !important">
         <v-avatar class="ml-6 mt-4" style="width: 100px; height: 100px">
-          <img v-if="user_pic" :src="getImageUrl(user_pic)" />
+          <img v-if="user_pic" :src="user_pic" />
           <img v-else :src="getdefaultImageUrl(defaultImage)" />
         </v-avatar>
       </v-col>

@@ -34,22 +34,12 @@ function generateId() {
 }
 
 // * post user + image
-router.post("/createUser", upload.single("image"), (req, res) => {
-  const {
-    user_firstname,
-    user_lastname,
-    user_id,
-    user_position,
-    user_department,
-    user_email,
-    user_password,
-    user_status,
-    user_role,
-  } = req.body;
+router.post("/createUser", (req, res) => {
+  const data = req.body;
 
-  const user_pic = req.file
-    ? req.file.filename
-    : defaultImage;
+  // const user_pic = req.file
+  //   ? req.file.filename
+  //   : defaultImage;
 
   const id = generateId();
 
@@ -58,22 +48,9 @@ router.post("/createUser", upload.single("image"), (req, res) => {
   //   fs.copyFileSync("../frontend/defaultimage/Avatar.jpg", targetPath);
   // }
 
-  const sql = `INSERT INTO users(id,user_firstname, user_lastname, user_id, user_position , user_department , user_email , user_password , user_status ,user_role , user_pic ) VALUES(?,?, ?, ?, ? , ?, ?, ?, ?, ?, ?)`;
+  const sql = `INSERT INTO users SET ?`;
   connection.query(
-    sql,
-    [
-      id,
-      user_firstname,
-      user_lastname,
-      user_id,
-      user_position,
-      user_department,
-      user_email,
-      user_password,
-      user_status,
-      user_role,
-      user_pic,
-    ],
+    sql,[data,id],
     (err, result) => {
       if (err) {
         console.error(err);
@@ -88,88 +65,18 @@ router.post("/createUser", upload.single("image"), (req, res) => {
 
 // * Edit user + image
 // PUT update user information and profile picture
-router.put("/updateUsers/:id/image", upload.single("image"), (req, res) => {
+router.put("/updateUsers/:id", (req, res) => {
   const id = req.params.id;
-  const {
-    user_firstname,
-    user_lastname,
-    user_id,
-    user_position,
-    user_department,
-    user_email,
-    user_password,
-    user_status,
-    user_role,
-  } = req.body;
-  const user_pic = req.file ? req.file.filename : null;
+  const data = req.body;
+  // const user_pic = req.file ? req.file.filename : null;
 
   try {
     let sql;
     let values;
-    let deletePath = null; // Initialize the deletePath variable to null
-
-    if (user_pic) {
-      // Get the current profile picture path of the user
-      connection.query(
-        `SELECT user_pic FROM users WHERE id = ?`,
-        [id],
-        (err, results, fields) => {
-          if (err) {
-            console.log(err);
-            return res.status(400).send(err);
-          }
-          // If the user already has a profile picture, delete it
-          if (
-            results[0].user_pic ===
-            "DefaultAvatar.jpg"
-          ) {
-            console.log("it is save!");
-          } else if (results[0].user_pic !=
-            "DefaultAvatar.jpg" && results[0].user_pic) {
-            deletePath = "../frontend/static/uploads/" + results[0].user_pic;
-            fs.unlink(deletePath, (err) => {
-              if (err) {
-                console.error(err);
-                return;
-              }
-              console.log("Old profile picture deleted" + results[0].user_pic)
-            });
-          }
-          // if (results[0].user_pic) {
-          //   deletePath = "../frontend/static/uploads/" + results[0].user_pic;
-          //   fs.unlink(deletePath, (err) => {
-          //     if (err) {
-          //       console.error(err);
-          //       return;
-          //     }
-          //     console.log("Old profile picture deleted!");
-          //   });
-          // }
-          // Update user with new image
-          sql = `UPDATE users SET 
-              user_firstname = ?,
-              user_lastname = ?,
-              user_id = ?,
-              user_position = ?,
-              user_department = ?,
-              user_email = ?,
-              user_password = ?,
-              user_status = ?,
-              user_role = ?,
-              user_pic = ?
-            WHERE id = ?`;
+    // let deletePath = null;
+          sql = `UPDATE users SET ? WHERE id = ?`;
           values = [
-            user_firstname,
-            user_lastname,
-            user_id,
-            user_position,
-            user_department,
-            user_email,
-            user_password,
-            user_status,
-            user_role,
-            user_pic,
-            id,
+            data, id,
           ];
           connection.query(sql, values, (err, results, fields) => {
             if (err) {
@@ -178,42 +85,7 @@ router.put("/updateUsers/:id/image", upload.single("image"), (req, res) => {
             }
             res.status(200).json({ message: "User updated successfully!" });
           });
-        }
-      );
-    } else {
-      // Update user without changing the image
-      sql = `UPDATE users SET 
-              user_firstname = ?,
-              user_lastname = ?,
-              user_id = ?,
-              user_position = ?,
-              user_department = ?,
-              user_email = ?,
-              user_password = ?,
-              user_status = ?,
-              user_role = ?
-            WHERE id = ?`;
-      values = [
-        user_firstname,
-        user_lastname,
-        user_id,
-        user_position,
-        user_department,
-        user_email,
-        user_password,
-        user_status,
-        user_role,
-        id,
-      ];
-      connection.query(sql, values, (err, results, fields) => {
-        if (err) {
-          console.log(err);
-          return res.status(400).send(err);
-        }
-        res.status(200).json({ message: "User updated successfully!" });
-      });
-    }
-  } catch (err) {
+        }catch (err) {
     console.log(err);
     return res.status(500).send(err);
   }
