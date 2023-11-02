@@ -724,6 +724,9 @@ export default {
   layout: "admin",
   data() {
     return {
+            //auth
+            user: this.$auth.user,
+      loggedIn: this.$auth.loggedIn,
       // new Date().toISOString().substr(0, 10)
       dateStart: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
         .toISOString()
@@ -846,14 +849,6 @@ export default {
       .format("DD-MM-YYYY");
     this.dateEndEdit = dateEndEdit;
   },
-  computed: {
-    userId() {
-      if (typeof window !== "undefined") {
-        return window.localStorage.getItem("userId");
-      }
-      return null; // or some default value if localStorage is not available
-    },
-  },
   mounted() {
     this.getSystemsOwner();
   },
@@ -863,7 +858,7 @@ export default {
       this.projectListAdmin = [];
     },
     async getUser() {
-      await this.$axios.get("/users/getOne/" + this.userId).then((res) => {
+      await this.$axios.get("/users/getOne/" + this.$auth.user.id).then((res) => {
         this.userid = res.data[0].user_id;
         this.userfirstname = res.data[0].user_firstname;
         this.userlastname = res.data[0].user_lastname;
@@ -1270,7 +1265,7 @@ export default {
     },
     async getSystemOwner() {
       await this.$axios
-        .get("/user_systems/getOneUserID/" + this.userId)
+        .get("/user_systems/getOneUserID/" + this.$auth.user.id)
         .then((data) => {
           this.systemOwner = data.data;
         })

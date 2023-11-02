@@ -1,78 +1,140 @@
 const express = require("express");
+const cors = require("cors");
+
+const app = express();
 const router = express.Router();
-const db = require("../db");
 const mysql = require("mysql");
-
 const session = require("express-session");
-const MySQLStore = require("express-mysql-session")(session);
-
-const options = {
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "notemanagement_db",
-};
-
-const sessionStore = new MySQLStore(options); // create a new session store
-
-router.use(
+const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
+const jwt = require("jsonwebtoken");
+const db = require("../db");
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(cors());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(cookieParser());
+app.use(
   session({
-    secret: "your-secret-key",
-    store: sessionStore, // use the session store here
+    secret: "secret",
     resave: false,
-    saveUninitialized: false,
+    saveUninitialized: true,
   })
 );
 
-const cookieParser = require("cookie-parser");
-router.use(cookieParser());
+// router.post("/api/login", (req, res) => {
+//   const { username, password } = req.body;
 
+//   const query = `SELECT * FROM users WHERE user_id = '${username}' AND user_password = '${password}'`;
+//   db.query(query, (err, results) => {
+//     if (err) {
+//       console.error(err);
+//       res.status(500).json({ message: "An error occurred" });
+//     } else if (results.length === 0) {
+//       res.status(401).json({ message: "Invalid username or password" });
+//     } else {
+
+//       req.session.userId = results[0].id;
+
+//       const user = {
+//         id: results[0].id,
+//         username: results[0].username,
+//       };
+//       res.status(200).json({ message: "Login successful", user });
+//     }
+//   });
+// });
+
+// Login route
 router.post("/api/login", (req, res) => {
-  const { username, password } = req.body;
+  const { user_id, user_password } = req.body;
 
-  // Check if the username and password are correct
-  // Query the database to find the user
-  const query = `SELECT * FROM users WHERE user_id = '${username}' AND user_password = '${password}'`;
-  db.query(query, (err, results) => {
-    if (err) {
-      console.error(err);
-      res.status(500).json({ message: "An error occurred" });
-    } else if (results.length === 0) {
-      res.status(401).json({ message: "Invalid username or password" });
-    } else {
-      // Set the user ID in the session
-      req.session.userId = results[0].id;
+  db.query(
+    "SELECT * FROM users WHERE user_id = ?",
+    [user_id],
+    (error, results) => {
+      if (error) {
+        console.error("Database query error:", error);
+        return res.status(500).json({ message: "Database error" });
+      }
 
-      // Return the user's id and username
-      const user = {
-        id: results[0].id,
-        username: results[0].username,
-      };
-      res.status(200).json({ message: "Login successful", user });
+      if (results.length === 1) {
+        const user = results[0];
+        console.log("user", user);
+        if (user.user_password === user_password) {
+          const token = jwt.sign(
+            { id: user.id, firstname: user.user_firstname },
+            "secret_key",
+            { expiresIn: "1h" }
+          );
+          res.json({ token });
+        } else {
+          res.status(401).json({ message: "Invalid user_password" });
+        }
+      } else {
+        res.status(401).json({ message: "User not found" });
+      }
     }
-  });
+  );
 });
 
-router.get("/api/me", (req, res) => {
-  if (req.session && req.session.userId) {
-    const query = `SELECT * FROM users WHERE id = ${req.session.userId}`;
-    db.query(query, (err, results) => {
-      if (err) {
-        console.error(err);
-        res.status(500).json({ message: "An error occurred" });
-      } else if (results.length === 0) {
-        res.status(401).json({ message: "Unauthorized" });
-      } else {
-        const user = {
-          id: results[0].id,
-          username: results[0].username,
-        };
+// router.get("/api/me", (req, res) => {
+//   if (req.session && req.session.userId) {
+//     const query = `SELECT * FROM users WHERE id = ${req.session.userId}`;
+//     db.query(query, (err, results) => {
+//       if (err) {
+//         console.error(err);
+//         res.status(500).json({ message: "An error occurred" });
+//       } else if (results.length === 0) {
+//         res.status(401).json({ message: "Unauthorized" });
+//       } else {
+//         const user = {
+//           id: results[0].id,
+//           username: results[0].username,
+//         };
 
-        res.status(200).json({ user });
+//         res.status(200).json({ user });
+//       }
+//     });
+//   } else {
+//     res.status(401).json({ message: "Unauthorized" });
+//   }
+// });
+
+router.get("/api/me", (req, res) => {
+  const token = req.headers.authorization.split(" ")[1];
+
+  if (!token) {
+    return res
+      .status(401)
+      .json({ message: "Access denied. No token provided." });
+  }
+
+  try {
+    const decoded = jwt.verify(token, "secret_key");
+    db.query(
+      "SELECT id, user_firstname, user_role FROM users WHERE id = ?",
+      [decoded.id],
+      (error, results) => {
+        if (error) {
+          console.error("Database query error:", error);
+          return res.status(500).json({ message: "Database error" });
+        }
+
+        if (results.length === 1) {
+          const user = results[0];
+          res.json({ user });
+          console.log("user", user);
+        } else {
+          res.status(401).json({ message: "User not found" });
+        }
       }
-    });
-  } else {
-    res.status(401).json({ message: "Unauthorized" });
+    );
+    // res.json(decoded);
+  } catch (err) {
+    console.error("JWT verification error:", err);
+    res.status(401).json({ message: "Invalid token" });
   }
 });
 

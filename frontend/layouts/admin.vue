@@ -147,6 +147,9 @@
 export default {
   data() {
     return {
+      //auth
+      user: this.$auth.user,
+      loggedIn: this.$auth.loggedIn,
       clipped: false,
       drawer: false,
       user_role: "",
@@ -202,12 +205,12 @@ export default {
     await this.getOwnProject();
   },
   computed: {
-    userId() {
-      if (typeof window !== "undefined") {
-        return window.localStorage.getItem("userId");
-      }
-      return null; // or some default value if localStorage is not available
-    },
+    // userId() {
+    //   if (typeof window !== "undefined") {
+    //     return window.localStorage.getItem("userId");
+    //   }
+    //   return null; // or some default value if localStorage is not available
+    // },
     filteredItems() {
       if (this.user_role === "Admin") {
         const items = this.menuOption.filter(
@@ -264,7 +267,7 @@ export default {
   methods: {
     async getOwnProject() {
       await this.$axios
-        .get("/user_projects/getOneUserID/" + this.userId)
+        .get("/user_projects/getOneUserID/" + this.$auth.user.id)
         .then((res) => {
           this.ownProject = res.data;
           // console.log("ownProject", this.ownProject);
@@ -288,20 +291,14 @@ export default {
         });
     },
     async getUser() {
-      await this.$axios.get("/users/getOne/" + this.userId).then((res) => {
+      await this.$axios.get("/users/getOne/" + this.$auth.user.id).then((res) => {
         this.user_role = res.data[0].user_role;
         // console.log(this.user_role, "user position");
       });
     },
     async logout() {
-      const response = await this.$axios.post("/auth/api/logout");
-
-      if (response.status === 200) {
-        // Clear the user data from Vuex store and localStorage
-        this.$store.commit("clearUser");
-        localStorage.removeItem("userId");
-        this.$router.push("/login");
-      }
+      await this.$auth.logout();
+      this.$router.push("/login");
     },
   },
 };

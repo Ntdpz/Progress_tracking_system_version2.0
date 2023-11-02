@@ -43,7 +43,6 @@ export default {
   updated() {
     // console.log(this.search);
   },
-
 };
 </script>
 

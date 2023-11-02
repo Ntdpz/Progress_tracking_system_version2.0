@@ -410,6 +410,9 @@ export default {
   layout: "admin",
   data() {
     return {
+      //auth
+      user: this.$auth.user,
+      loggedIn: this.$auth.loggedIn,
       rules: [(value) => !!value || "กรุณากรอกข้อมูลให้ครบถ้วน."],
       show1: false,
       show2: false,
@@ -452,17 +455,9 @@ export default {
     this.getUser();
     this.getAllDefault();
   },
-  computed: {
-    userId() {
-      if (typeof window !== "undefined") {
-        return window.localStorage.getItem("userId");
-      }
-      return null; // or some default value if localStorage is not available
-    },
-  },
   methods: {
     async getUser() {
-      await this.$axios.get("/users/getOne/" + this.userId).then((res) => {
+      await this.$axios.get("/users/getOne/" + this.$auth.user.id).then((res) => {
         this.id = res.data[0].id;
         this.user_id = res.data[0].user_id;
         this.user_firstname = res.data[0].user_firstname;

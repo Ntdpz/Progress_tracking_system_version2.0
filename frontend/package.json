@@ -22,7 +22,8 @@
     "moment": "^2.29.4",
     "nuxt": "^2.15.7",
     "vue-cal": "^4.8.1",
-    "vuetify": "^2.5.5"
+    "vuetify": "^2.5.5",
+    "@nuxtjs/auth": "^4.9.1"
   },
   "devDependencies": {
     "@nuxt/image": "^0.7.1",

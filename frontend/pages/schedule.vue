@@ -253,17 +253,9 @@ export default {
       console.log(error);
     }
   },
-  computed: {
-    userId() {
-      if (typeof window !== "undefined") {
-        return window.localStorage.getItem("userId");
-      }
-      return null; // or some default value if localStorage is not available
-    },
-  },
   methods: {
     async getUser() {
-      await this.$axios.get("/users/getOne/" + this.userId).then((res) => {
+      await this.$axios.get("/users/getOne/" + this.$auth.user.id).then((res) => {
         this.user_id = res.data[0].user_id;
         this.user_firstname = res.data[0].user_firstname;
         this.user_lastname = res.data[0].user_lastname;
@@ -352,7 +344,7 @@ export default {
     async updateRangeOwner() {
       try {
         const { data } = await this.$axios.get(
-          `/issues/getOneName/${this.userId}`,
+          `/issues/getOneName/${this.$auth.user.id}`,
           {}
         );
         const events = data.map((issue) => ({
@@ -372,7 +364,7 @@ export default {
     async updateRangeOwnerQc() {
       try {
         const { data } = await this.$axios.get(
-          `/issues/getOneNameQc/${this.userId}`,
+          `/issues/getOneNameQc/${this.$auth.user.id}`,
           {}
         );
         const events = data.map((issue) => ({

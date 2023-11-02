@@ -60,12 +60,32 @@ export default {
   modules: [
     // https://go.nuxtjs.dev/axios
     "@nuxtjs/axios",
+    "@nuxtjs/auth",
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
     baseURL: "http://localhost:7777",
     // proxy: true,
+  },
+
+  auth: {
+    strategies: {
+      local: {
+        endpoints: {
+          login: {
+            url: "/auth/api/login",
+            method: "post",
+            propertyName: "token",
+          },
+          user: { url: "/auth/api/me", method: "get", propertyName: "user" },
+          logout: false,
+        },
+      },
+      redirect: {
+        login: "/login", // Redirect to the login page when not authenticated
+      },
+    },
   },
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify

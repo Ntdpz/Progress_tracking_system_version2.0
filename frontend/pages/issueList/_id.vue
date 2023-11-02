@@ -1808,6 +1808,9 @@ export default {
   },
   data() {
     return {
+      //auth
+      user: this.$auth.user,
+      loggedIn: this.$auth.loggedIn,
       id: this.$route.params.id,
       tab1: true,
       tab2: false,
@@ -1941,12 +1944,6 @@ export default {
     await this.getIssue();
   },
   computed: {
-    userId() {
-      if (typeof window !== "undefined") {
-        return window.localStorage.getItem("userId");
-      }
-      return null; // or some default value if localStorage is not available
-    },
     systemsList() {
       if (this.user_role === "Admin" || this.user_position === "Implementer") {
         return this.systems;
@@ -1964,7 +1961,7 @@ export default {
 
   methods: {
     async getUser() {
-      await this.$axios.get("/users/getOne/" + this.userId).then((res) => {
+      await this.$axios.get("/users/getOne/" + this.$auth.user.id).then((res) => {
         this.user_id = res.data[0].user_id;
         this.user_firstname = res.data[0].user_firstname;
         this.user_lastname = res.data[0].user_lastname;
@@ -2433,7 +2430,7 @@ export default {
       issueUserAssignId,
       issueUserQCId
     ) {
-      this.selected.userId = this.userId;
+      this.selected.userId = this.$auth.user.id;
       //formattedDateAccepting
       this.selected.formattedDateAccepting =
         issueformattedDateAccepting == null ||

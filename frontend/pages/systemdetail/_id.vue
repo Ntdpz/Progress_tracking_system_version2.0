@@ -1068,6 +1068,9 @@ export default {
   layout: "admin",
   data() {
     return {
+      //auth
+      user: this.$auth.user,
+      loggedIn: this.$auth.loggedIn,
       newscreen_dateStart: null,
       newscreen_dateEnd: null,
       datestartformat: "",
@@ -1188,14 +1191,6 @@ export default {
     this.dateendformat = moment().add(543, "years").format("DD-MM-YYYY");
     console.log(this.newscreen_dateStart);
   },
-  computed: {
-    userId() {
-      if (typeof window !== "undefined") {
-        return window.localStorage.getItem("userId");
-      }
-      return null; // or some default value if localStorage is not available
-    },
-  },
   updated() {
     this.sumUser = this.user_developer.concat(
       this.user_implementer,
@@ -1213,13 +1208,15 @@ export default {
   },
   methods: {
     async getUser() {
-      await this.$axios.get("/users/getOne/" + this.userId).then((res) => {
-        this.userid = res.data[0].user_id;
-        this.userfirstname = res.data[0].user_firstname;
-        this.userlastname = res.data[0].user_lastname;
-        this.userposition = res.data[0].user_position;
-        this.userrole = res.data[0].user_role;
-      });
+      await this.$axios
+        .get("/users/getOne/" + this.$auth.user.id)
+        .then((res) => {
+          this.userid = res.data[0].user_id;
+          this.userfirstname = res.data[0].user_firstname;
+          this.userlastname = res.data[0].user_lastname;
+          this.userposition = res.data[0].user_position;
+          this.userrole = res.data[0].user_role;
+        });
     },
     clicks(title) {
       this.type_show = title;

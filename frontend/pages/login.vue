@@ -26,7 +26,7 @@
                   <v-text-field
                     class="mb-2"
                     placeholder="กรุณาใส่รหัสพนักงานของคุณ"
-                    v-model="user_id"
+                    v-model="form.user_id"
                     type="text"
                     outlined
                     hide-details="auto"
@@ -49,7 +49,7 @@
                   <v-text-field
                     class="mb-2"
                     placeholder="กรุณาใส่รหัสผ่านให้ถูกต้อง"
-                    v-model="user_password"
+                    v-model="form.user_password"
                     type="password"
                     outlined
                     hide-details="auto"
@@ -170,8 +170,10 @@
 export default {
   data() {
     return {
-      user_id: "",
-      user_password: "",
+      form: {
+        user_id: "",
+        user_password: "",
+      },
       checkbox: false,
       dialog: false,
       dialogWrong: false,
@@ -183,31 +185,10 @@ export default {
   methods: {
     async handleLogin() {
       try {
-        await this.$refs.form.validate();
-        const response = await this.$axios.post("/auth/api/login", {
-          username: this.user_id,
-          password: this.user_password,
-        });
-        console.log(response.data.user);
-        if (response.status === 200) {
-          this.$store.commit("setState", {
-            user_id: response.data.user.id,
-          });
-          localStorage.setItem("userId", response.data.user.id);
-          this.$router.push("/");
-        } else {
-          this.error = response.data.message;
-        }
+        await this.$auth.loginWith("local", { data: this.form });
+        this.$router.push("/test2"); // Redirect to a protected route
       } catch (error) {
-        this.countLogin = this.countLogin + 1;
         console.error(error);
-        console.error(this.countLogin);
-        this.error = "An error occurred";
-        if (this.countLogin > 3) {
-          this.dialog = true;
-        } else {
-          this.dialogWrong = true;
-        }
       }
     },
   },

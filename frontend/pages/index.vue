@@ -125,6 +125,9 @@ export default {
   layout: "admin",
   data() {
     return {
+      //auth
+      user: this.$auth.user,
+      loggedIn: this.$auth.loggedIn,
       dialog: false,
       dialog_newproject: false,
       query: "",
@@ -151,17 +154,9 @@ export default {
   mounted() {
     this.getUser();
   },
-  computed: {
-    userId() {
-      if (typeof window !== "undefined") {
-        return window.localStorage.getItem("userId");
-      }
-      return null; // or some default value if localStorage is not available
-    },
-  },
   methods: {
     async getUser() {
-      await this.$axios.get("/users/getOne/" + this.userId).then((res) => {
+      await this.$axios.get("/users/getOne/" + this.$auth.user.id).then((res) => {
         this.user_id = res.data[0].user_id;
         this.user_firstname = res.data[0].user_firstname;
         this.user_lastname = res.data[0].user_lastname;
@@ -172,7 +167,7 @@ export default {
     },
     async getOwnProject() {
       await this.$axios
-        .get("/user_projects/getOneUserID/" + this.userId)
+        .get("/user_projects/getOneUserID/" + this.$auth.user.id)
         .then((res) => {
           this.ownProject = res.data;
 
@@ -201,16 +196,6 @@ export default {
     getdefaultImageUrl(fileName) {
       return require(`@/static/defaultimage/${fileName}`);
     },
-    // async logout() {
-    //   const response = await this.$axios.post("/auth/api/logout");
-
-    //   if (response.status === 200) {
-    //     // Clear the user data from Vuex store and localStorage
-    //     this.$store.commit("clearUser");
-    //     localStorage.removeItem("userId");
-    //     this.$router.push("/login");
-    //   }
-    // },
   },
 };
 </script>

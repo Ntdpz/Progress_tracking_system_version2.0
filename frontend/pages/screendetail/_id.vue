@@ -620,9 +620,9 @@ export default {
   layout: "admin",
   data() {
     return {
-      // new Date(Date.now() - new Date().getTimezoneOffset() /* 60000)
-      //   .toISOString()
-      //   .substr(0, 10)
+     //auth
+     user: this.$auth.user,
+      loggedIn: this.$auth.loggedIn,
       dateStart: "",
       dateEnd: "",
       search: "",
@@ -685,14 +685,6 @@ export default {
       .add(543, "years")
       .format("DD-MM-YYYY");
   },
-  computed: {
-    userId() {
-      if (typeof window !== "undefined") {
-        return window.localStorage.getItem("userId");
-      }
-      return null; // or some default value if localStorage is not available
-    },
-  },
   updated() {
     // this.getScreenID();
     // this.calculateManDay();
@@ -709,7 +701,7 @@ export default {
   },
   methods: {
     async getUser() {
-      await this.$axios.get("/users/getOne/" + this.userId).then((res) => {
+      await this.$axios.get("/users/getOne/" + this.$auth.user.id).then((res) => {
         this.userid = res.data[0].user_id;
         this.userfirstname = res.data[0].user_firstname;
         this.userlastname = res.data[0].user_lastname;

@@ -942,7 +942,10 @@
                                   alt="Selected Image"
                                   v-if="base64"
                                 />
-                                <img v-else-if="imageManage != null" :src="imageManage" />
+                                <img
+                                  v-else-if="imageManage != null"
+                                  :src="imageManage"
+                                />
                               </label>
                             </form>
                           </div>
@@ -1246,6 +1249,9 @@ export default {
   layout: "admin",
   data() {
     return {
+      //auth
+      user: this.$auth.user,
+      loggedIn: this.$auth.loggedIn,
       search: "",
       titleName: "",
       titleFirstname: "",
@@ -1374,14 +1380,6 @@ export default {
   mounted() {
     this.getUser();
   },
-  computed: {
-    userId() {
-      if (typeof window !== "undefined") {
-        return window.localStorage.getItem("userId");
-      }
-      return null; // or some default value if localStorage is not available
-    },
-  },
   methods: {
     initialize() {
       this.getUser();
@@ -1394,7 +1392,7 @@ export default {
       this.getAllDefault();
     },
     async getUser() {
-      await this.$axios.get("/users/getOne/" + this.userId).then((res) => {
+      await this.$axios.get("/users/getOne/" + this.$auth.user.id).then((res) => {
         this.check_role = res.data[0].user_role;
       });
     },
@@ -1498,28 +1496,17 @@ export default {
 
       try {
         await this.$refs.formCreate.validate();
-        // const formData = new FormData();
-        // formData.append("user_firstname", this.name + " " + this.firstname);
-        // formData.append("user_lastname", this.lastname);
-        // formData.append("user_id", this.code);
-        // formData.append("user_position", this.position);
-        // formData.append("user_department", this.department);
-        // formData.append("user_email", this.email);
-        // formData.append("user_password", this.password);
-        // formData.append("user_status", this.stratiform);
-        // formData.append("user_role", this.role);
-        // formData.append("image", this.imageFileUpload);
         const formdatas = {
-          user_firstname:this.name + " " + this.firstname,
-          user_lastname:this.lastname,
-          user_id:this.code,
-          user_position:this.position,
-          user_department:this.department,
-          user_email:this.email,
-          user_password:this.password,
-          user_status:this.stratiform,
-          user_role:this.role,
-          user_pic:this.base64,
+          user_firstname: this.name + " " + this.firstname,
+          user_lastname: this.lastname,
+          user_id: this.code,
+          user_position: this.position,
+          user_department: this.department,
+          user_email: this.email,
+          user_password: this.password,
+          user_status: this.stratiform,
+          user_role: this.role,
+          user_pic: this.base64,
         };
         await this.$axios.post("/users/createUser", formdatas);
         const promise = new Promise((resolve, reject) => {
@@ -1603,50 +1590,7 @@ export default {
         };
         reader.readAsDataURL(selectedFile);
       }
-      // try {
-      // editedItem.photo
-      // this.avatar = URL.createObjectURL(this.imageManageUpload);
-      // Do something with the file, for example upload to a server
-      // } catch (error) {
-      //   console.error(error);
-      // this.avatar = null;
-      // this.imageFileUpload = "";
-      // }
     },
-    // async updateUser() {
-    //   await this.$axios
-    //     .put("/users/update/" + this.editedItem.id, {
-    //       user_firstname: this.editedItem.user_firstname,
-    //       user_lastname: this.editedItem.user_lastname,
-    //       user_id: this.editedItem.user_id,
-    //       user_position: this.editedItem.user_position,
-    //       user_department: this.editedItem.user_department,
-    //       user_email: this.editedItem.user_email,
-    //       user_password: this.editedItem.user_password,
-    //       user_status: this.editedItem.user_status,
-    //       user_role: this.editedItem.user_role,
-    //       user_pic: "-",
-    //     })
-    //     .then((response) => {
-    //       console.log(response);
-    //       console.log("Update success");
-    //       this.getUser();
-    //       this.getAll();
-    //       this.getPosition_Developer();
-    //       this.getPosition_Implementer();
-    //       this.getPosition_ProgramManagement();
-    //       this.getPosition_SystemAnalyst();
-    //       this.getPosition_ReportDeveloper();
-    //       this.getAllDefault();
-    //       alert("Update success");
-    //       this.dialog_manage = false;
-    //     })
-    //     .catch((err) => {
-    //       console.log(err);
-    //       alert(err);
-    //     });
-    // },
-
     async updateUser2() {
       if (
         this.editedItem.misname.trim() == "" ||
@@ -1667,16 +1611,17 @@ export default {
       try {
         this.$refs.formUpdate.validate();
         const formdatas = {
-          user_firstname:this.editedItem.misname + " " + this.editedItem.user_firstname,
-          user_lastname:this.editedItem.user_lastname,
-          user_id:this.editedItem.user_id,
-          user_position:this.editedItem.user_position,
-          user_department:this.editedItem.user_department,
-          user_email:this.editedItem.user_email,
-          user_password:this.editedItem.user_password,
-          user_status:this.editedItem.user_status,
-          user_role:this.editedItem.user_role,
-          user_pic:this.base64,
+          user_firstname:
+            this.editedItem.misname + " " + this.editedItem.user_firstname,
+          user_lastname: this.editedItem.user_lastname,
+          user_id: this.editedItem.user_id,
+          user_position: this.editedItem.user_position,
+          user_department: this.editedItem.user_department,
+          user_email: this.editedItem.user_email,
+          user_password: this.editedItem.user_password,
+          user_status: this.editedItem.user_status,
+          user_role: this.editedItem.user_role,
+          user_pic: this.base64,
         };
         await this.$axios
           .put(`/users/updateUsers/${this.editedItem.id}`, formdatas)
