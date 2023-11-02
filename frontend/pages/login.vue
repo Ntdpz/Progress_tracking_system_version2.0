@@ -1,78 +1,104 @@
 <template>
   <v-app>
     <v-main>
-      <v-container fluid fill-height style="background-color: #f1f1f1">
+      <v-container fluid fill-height class="main-bg">
         <v-layout align-center justify-center>
           <v-flex style="text-align: -webkit-center">
-            <v-card class="elevation-12" height="100%" width="400px">
-              <v-toolbar style="display: initial">
-                <v-toolbar-title
-                  class="font-weight-bold ml-2 mt-3"
-                  style="font-size: 30px"
-                  >เข้าสู่ระบบ</v-toolbar-title
-                >
-              </v-toolbar>
-
-              <v-card-text>
-                <v-row>
-                  <v-col class="ma-0 pa-0">
-                    <v-card-subtitle
-                      style="text-align: left; font-weight: bold; color: black"
-                      >รหัสพนักงาน</v-card-subtitle
-                    >
-                  </v-col>
-                </v-row>
-                <v-form @submit.prevent="handleLogin" ref="form">
-                  <v-text-field
-                    class="mb-2"
-                    placeholder="กรุณาใส่รหัสพนักงานของคุณ"
-                    v-model="form.user_id"
-                    type="text"
-                    outlined
-                    hide-details="auto"
-                    :rules="rules"
-                    style="border-radius: 15px"
-                  >
-                  </v-text-field>
-                  <v-row>
-                    <v-col class="ma-0 pa-0">
-                      <v-card-subtitle
+            <v-card class="elevation-12" max-width="1000px">
+              <v-row>
+                <v-col class="main-bg">
+                  <v-img
+                    lazy-src="/palm-recognition.png"
+                    max-height="500"
+                    max-width="500"
+                    src="/palm-recognition.png"
+                  ></v-img>
+                </v-col>
+                <v-col style="margin-top: 50px">
+                  <v-container>
+                    <v-toolbar style="display: initial">
+                      <v-toolbar-title
+                        class="font-weight-bold ml-2 mt-3"
                         style="
-                          text-align: left;
-                          font-weight: bold;
-                          color: black;
+                          font-size: 30px;
+                          text-align: center;
+                          font-family: sans-serif;
                         "
-                        >รหัสผ่าน</v-card-subtitle
+                        >Problem Note Management</v-toolbar-title
                       >
-                    </v-col>
-                  </v-row>
-                  <v-text-field
-                    class="mb-2"
-                    placeholder="กรุณาใส่รหัสผ่านให้ถูกต้อง"
-                    v-model="form.user_password"
-                    type="password"
-                    outlined
-                    hide-details="auto"
-                    :rules="rules"
-                    style="border-radius: 15px"
-                  >
-                  </v-text-field>
-                  <br />
-                  <!-- <v-checkbox
+                    </v-toolbar>
+                    <v-card-text>
+                      <v-row>
+                        <v-col class="ma-0 pa-0">
+                          <v-card-subtitle
+                            style="
+                              text-align: left;
+                              font-weight: bold;
+                              color: black;
+                            "
+                            >รหัสพนักงาน</v-card-subtitle
+                          >
+                        </v-col>
+                      </v-row>
+                      <v-form @submit.prevent="handleLogin" ref="form">
+                        <v-text-field
+                          class="mb-2"
+                          prepend-inner-icon="mdi-account-outline"
+                          placeholder="กรุณาใส่รหัสพนักงานของคุณ"
+                          v-model="form.user_id"
+                          type="text"
+                          outlined
+                          dense
+                          hide-details="auto"
+                          :rules="rules"
+                          style="border-radius: 15px"
+                        >
+                        </v-text-field>
+                        <v-row>
+                          <v-col class="ma-0 pa-0">
+                            <v-card-subtitle
+                              style="
+                                text-align: left;
+                                font-weight: bold;
+                                color: black;
+                              "
+                              >รหัสผ่าน</v-card-subtitle
+                            >
+                          </v-col>
+                        </v-row>
+                        <v-text-field
+                          class="mb-2"
+                          placeholder="กรุณาใส่รหัสผ่านให้ถูกต้อง"
+                          prepend-inner-icon="mdi-lock-outline"
+                          v-model="form.user_password"
+                          type="password"
+                          outlined
+                          dense
+                          hide-details="auto"
+                          :rules="rules"
+                          style="border-radius: 15px"
+                        >
+                        </v-text-field>
+                        <br />
+                        <!-- <v-checkbox
                     v-model="checkbox"
                     class="mt-0"
                     :label="`Remember Me`"
                   ></v-checkbox> -->
-                  <v-btn
-                    class="mb-8"
-                    style="color: white; font-weight: bold; height: 43px"
-                    color="#5c3efe"
-                    width="90%"
-                    type="submit"
-                    >เข้าสู่ระบบ</v-btn
-                  >
-                </v-form>
-              </v-card-text>
+                        <v-btn
+                          class="mb-8"
+                          style="color: white; font-weight: bold; height: 43px"
+                          color="#5c3efe"
+                          type="submit"
+                          rounded
+                          block
+                          >เข้าสู่ระบบ</v-btn
+                        >
+                      </v-form>
+                    </v-card-text>
+                  </v-container>
+                </v-col>
+              </v-row>
             </v-card>
 
             <!-- dialog -->
@@ -198,5 +224,8 @@ export default {
 <style scoped>
 * {
   font-family: "Lato", sans-serif;
+}
+.main-bg {
+  background-image: linear-gradient(to right, #574ae4, #bb5fbe);
 }
 </style>
