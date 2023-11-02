@@ -1392,9 +1392,11 @@ export default {
       this.getAllDefault();
     },
     async getUser() {
-      await this.$axios.get("/users/getOne/" + this.$auth.user.id).then((res) => {
-        this.check_role = res.data[0].user_role;
-      });
+      await this.$axios
+        .get("/users/getOne/" + this.$auth.user.id)
+        .then((res) => {
+          this.check_role = res.data[0].user_role;
+        });
     },
     async getAll() {
       await this.$axios.get("/users/getAll").then((data) => {
@@ -1867,15 +1869,5 @@ input[type="text"] {
 ::v-deep .v-data-table-header span {
   color: white;
   font-size: 14px;
-}
-
-.row-even {
-  background-color: rgba(200, 200, 200, 0.788);
-  color: black;
-}
-
-.row-odd {
-  background-color: rgba(255, 255, 255, 0.788);
-  color: black;
 }
 </style>

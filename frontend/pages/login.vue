@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-main>
-      <v-container fluid fill-height class="main-bg">
+      <v-container fluid fill-height class="">
         <v-layout align-center justify-center>
           <v-flex style="text-align: -webkit-center">
             <v-card class="elevation-12" max-width="1000px">
@@ -212,7 +212,7 @@ export default {
     async handleLogin() {
       try {
         await this.$auth.loginWith("local", { data: this.form });
-        this.$router.push("/test2"); // Redirect to a protected route
+        this.$router.push("/"); // Redirect to a protected route
       } catch (error) {
         console.error(error);
       }

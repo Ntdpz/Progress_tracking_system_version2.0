@@ -1,24 +1,23 @@
 <template>
   <v-app dark>
-    <v-navigation-drawer
-      v-model="drawer"
-      :clipped="clipped"
-      fixed
-      app
-      style="background-color: #f3f3f3"
-    >
-      <v-list-item>
+    <v-navigation-drawer v-model="drawer" :clipped="clipped" app>
+      <v-list-item class="pt-1 pb-5">
         <v-list-item-content>
           <v-list-item-title class="text-h6">
             <v-layout align-center justify-center>
               <v-icon class="mr-2" color="primary"> mdi-domain </v-icon>
-              <h5 class="">Note Management</h5>
+              <v-img
+                lazy-src="/logo.png"
+                max-height="250"
+                max-width="250"
+                src="/logo.png"
+              ></v-img>
             </v-layout>
           </v-list-item-title>
         </v-list-item-content>
       </v-list-item>
 
-      <v-list class="pb-0">
+      <v-list class="pb-0" dense rounded>
         <v-list-item
           v-for="(item, i) in items"
           :key="i"
@@ -36,13 +35,14 @@
         </v-list-item>
       </v-list>
 
-      <v-list class="pa-0" v-show="user_role == 'Admin'">
+      <v-list class="pa-0" v-show="user_role == 'Admin'" dense rounded>
         <v-list-group
           v-for="(project, index) in items3"
           :key="index"
           v-model="project.active"
           :prepend-icon="project.action"
           no-action
+          class="pl-2"
         >
           <template v-slot:activator>
             <v-list-item-content>
@@ -66,7 +66,7 @@
         </v-list-group>
       </v-list>
       <!-- {{ this.projectDetails.projectList }} -->
-      <v-list v-show="user_role == 'User'">
+      <v-list v-show="user_role == 'User'" dense rounded>
         <v-list-group
           v-for="(project, index) in projectDetails"
           :key="index"
@@ -96,7 +96,7 @@
         </v-list-group>
       </v-list>
 
-      <v-list class="pt-0">
+      <v-list class="pt-0 pb-0" dense rounded>
         <v-list-item
           v-for="(item, i) in filteredItems"
           :key="i"
@@ -113,6 +113,60 @@
           </v-list-item-content>
         </v-list-item>
       </v-list>
+
+      <v-list class="pt-0" dense rounded>
+        <v-list-item
+          v-for="(item, i) in logout"
+          :key="i"
+          router
+          exact
+          color="error"
+          @click="handleLogout()"
+        >
+          <v-list-item-action>
+            <v-icon color="error">{{ item.icon }}</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title v-text="item.title" />
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+
+      <template v-slot:append>
+        <div class="pa-5">
+          <v-card elevation="0">
+            <v-row align="center">
+              <v-col cols="2">
+                <v-avatar size="40">
+                  <img
+                    src="https://cdn.vuetifyjs.com/images/john.jpg"
+                    alt="User Avatar"
+                  />
+                </v-avatar>
+              </v-col>
+              <v-col cols="8">
+                <v-col>
+                  <v-row
+                    ><p class="ml-2 mb-0" style="font-size: 15px">
+                      {{ user.user_firstname }}
+                    </p>
+                  </v-row>
+                  <v-row>
+                    <p class="ml-2 mb-0" style="font-size: 15px">
+                      {{ user.user_role }}
+                    </p>
+                  </v-row>
+                </v-col>
+              </v-col>
+              <v-col cols="2" class="pa-0">
+                <v-btn icon to="/profile"
+                  ><v-icon small color="primary">mdi-pencil</v-icon></v-btn
+                >
+              </v-col>
+            </v-row>
+          </v-card>
+        </div>
+      </template>
     </v-navigation-drawer>
     <v-app-bar
       :clipped-left="clipped"
@@ -128,9 +182,16 @@
         @click.stop="drawer = !drawer"
         class="mb-3"
       />
-      <v-toolbar-title v-text="title" class="mb-3" />
+      <v-toolbar-title class="mb-3">
+        <v-img
+          lazy-src="/logo.png"
+          max-height="250"
+          max-width="250"
+          src="/logo.png"
+        ></v-img>
+      </v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn icon color="error" class="mb-3" @click="logout">
+      <v-btn icon class="mb-3" color="error" @click="logout">
         <v-icon>mdi-logout</v-icon>
       </v-btn>
     </v-app-bar>
@@ -145,6 +206,7 @@
     
 <script>
 export default {
+  middleware: "auth",
   data() {
     return {
       //auth
@@ -174,6 +236,12 @@ export default {
         //   title: "แจ้งเตือน",
         //   to: "/notification",
         // },
+      ],
+      logout: [
+        {
+          icon: "mdi-logout",
+          title: "ออกจากระบบ",
+        },
       ],
       items3: [
         {
@@ -205,12 +273,6 @@ export default {
     await this.getOwnProject();
   },
   computed: {
-    // userId() {
-    //   if (typeof window !== "undefined") {
-    //     return window.localStorage.getItem("userId");
-    //   }
-    //   return null; // or some default value if localStorage is not available
-    // },
     filteredItems() {
       if (this.user_role === "Admin") {
         const items = this.menuOption.filter(
@@ -282,21 +344,18 @@ export default {
           });
           Promise.all(requests).then((responses) => {
             this.projectDetails.projectList = responses.map((res) => res.data);
-
-            // console.log(
-            //   "this.projectDetails.projectList",
-            //   this.projectDetails.projectList
-            // );
           });
         });
     },
     async getUser() {
-      await this.$axios.get("/users/getOne/" + this.$auth.user.id).then((res) => {
-        this.user_role = res.data[0].user_role;
-        // console.log(this.user_role, "user position");
-      });
+      await this.$axios
+        .get("/users/getOne/" + this.$auth.user.id)
+        .then((res) => {
+          this.user_role = res.data[0].user_role;
+          // console.log(this.user_role, "user position");
+        });
     },
-    async logout() {
+    async handleLogout() {
       await this.$auth.logout();
       this.$router.push("/login");
     },
