@@ -6,7 +6,7 @@ const session = require("express-session");
 const app = express();
 
 const router = require("./router");
-app.use(express.json({ limit: '10mb' }));
+app.use(express.json({ limit: '1500mb' }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({ origin: true }));

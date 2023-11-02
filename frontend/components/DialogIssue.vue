@@ -474,7 +474,7 @@ export default {
         issue_manday: "",
         issue_complete: "",
         dialogSuccess: false,
-
+        pdf: "",
         dayQc: "",
         hourQc: "",
       },
@@ -497,6 +497,7 @@ export default {
       )
         .toISOString()
         .substr(0, 10),
+      
     };
   },
   created() {
@@ -536,12 +537,23 @@ export default {
       }
     },
     uploadFile() {
-      let formData = new FormData();
       if (this.form.issue_filename) {
-        formData.append("file", this.form.issue_filename);
+        this.readFileAndConvertToBase64(this.form.issue_filename);
       } else {
         console.log("No file");
       }
+    },
+    readFileAndConvertToBase64(file) {
+      const reader = new FileReader();
+
+      reader.onload = (event) => {
+        this.form.pdf = event.target.result; // เก็บข้อมูลใน this.pdf เป็น base64
+        console.log("File: ", file);
+        console.log("Base64: ", this.form.pdf);
+      };
+
+      reader.readAsDataURL(file); // อ่านไฟล์และแปลงเป็น base64
+      // reader.readAsArrayBuffer(file);
     },
     resetForm() {
       this.projectName = "";
@@ -652,7 +664,7 @@ export default {
             issue_type_sa: this.form.issue_type_sa,
             issue_doc_id: this.form.issue_doc_id,
             issue_customer: this.form.issue_customer,
-            issue_filename: this.form.issue_filename,
+            issue_filename: this.form.pdf, 
             issue_des_dev: this.form.issue_des_dev,
             issue_des_implementer: this.form.issue_des_implementer,
             issue_start: null,
@@ -666,7 +678,7 @@ export default {
             issue_round: 0,
           };
           try {
-            await this.$axios.post("/issues/createIssue", data);
+            await this.$axios.post("/issues/createIssue", data, {timeout: 10000});
 
             const promise = new Promise((resolve, reject) => {
               resolve();
@@ -687,7 +699,7 @@ export default {
               this.form.issue_type_sa = "";
               this.form.issue_doc_id = "";
               this.form.issue_customer = "";
-              this.form.issue_filename = "";
+              // this.form.issue_filename = "";
               this.form.issue_des_dev = "";
               this.form.issue_des_implementer = "";
               this.form.issue_start = "";

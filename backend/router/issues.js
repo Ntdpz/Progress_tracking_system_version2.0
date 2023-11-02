@@ -4,6 +4,7 @@ const connection = require("../db");
 const multer = require("multer");
 const fs = require("fs");
 const path = require("path");
+const PDFDocument = require("pdfkit"); // เพิ่มโมดูล pdfkit
 
 function generateId() {
   const maxId = 999999999;
@@ -158,9 +159,10 @@ router.post("/createIssue", upload.single("file"), (req, res) => {
     issue_status_developer,
     issue_status_implement,
     issue_round,
+    issue_filename,
   } = req.body;
 
-  const issue_filename = req.file ? req.file.filename : null;
+  // const issue_filename = req.file ? req.file.filename : null;
 
   try {
     connection.query(
@@ -212,6 +214,46 @@ router.post("/createIssue", upload.single("file"), (req, res) => {
     return res.status(500).send();
   }
 });
+
+// getpdf
+router.get("/getpdf/:id", (req, res) => {
+  const id = req.params.id;
+  const query = "SELECT issue_filename FROM issues WHERE id = ?";
+
+  connection.query(query, id, (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: "Error retrieving data" });
+      return;
+    }
+
+    if (results.length > 0) {
+      let pdfData = results[0].issue_filename;
+
+      if (pdfData && pdfData.startsWith("data:application/pdf;base64,")) {
+        // Remove the data URI prefix if it exists
+        pdfData = pdfData.replace(/^data:application\/pdf;base64,/, "");
+      }
+
+      const pdfBuffer = Buffer.from(pdfData, "base64");
+
+      console.log("Length of retrieved PDF data:", pdfData.length);
+      console.log("Length of PDF buffer:", pdfBuffer.length);
+
+      if (pdfBuffer.length > 0) {
+        res.setHeader("Content-Type", "application/pdf");
+        res.end(pdfBuffer);
+      } else {
+        res.status(404).json({ error: "Invalid PDF data" });
+      }
+    } else {
+      res.status(404).json({ error: "Data not found" });
+    }
+  });
+});
+
+
+
 
 //* Update issue by dev แก้ตรงนี้ File
 router.put("/updateIssueDev/:id", upload.single("file"), (req, res) => {
