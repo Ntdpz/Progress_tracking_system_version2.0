@@ -26,9 +26,9 @@
                 style="width: 150px; height: 150px"
               >
                 <!-- <img src="https://cdn.vuetifyjs.com/images/john.jpg" alt="John" /> -->
-                <img v-if="avatar != null" :src="avatar" />
-                <img v-else-if="user_pic" :src="user_pic" />
-                <img v-else :src="getdefaultImageUrl(defaultImage)" />
+                <img v-if="base64 != null" :src="base64" />
+                <!-- <img v-else-if="base64 = ''" :src="user_pic" /> -->
+                <!-- <img v-else :src="getdefaultImageUrl(defaultImage)" /> -->
               </v-avatar>
               <v-btn
                 color="white"
@@ -434,7 +434,7 @@ export default {
       name: "",
       firstname: "",
       online: true,
-      user_pic: null,
+      user_pic: "",
       imageUpload: null,
       avatar: null,
       dataDefault: [],
@@ -446,6 +446,7 @@ export default {
       dataDefault_issue_type: [],
       dataDefault_issue_priotity: [],
       dialogSuccess: false,
+      base64: "",
     };
   },
   mounted() {
@@ -468,8 +469,9 @@ export default {
         this.user_password = res.data[0].user_password;
         this.user_email = res.data[0].user_email;
         this.user_department = res.data[0].user_department;
-        this.user_pic = res.data[0].user_pic;
+        this.base64 = res.data[0].user_pic;
         this.titleName();
+        // console.log(this.user_pic);
       });
     },
     titleName() {
@@ -494,14 +496,25 @@ export default {
     uploadFile() {
       const input = this.$refs.fileInput;
       this.imageUpload = input.files[0];
-      try {
-        // editedItem.photo
-        this.avatar = URL.createObjectURL(this.imageUpload);
-        // Do something with the file, for example upload to a server
-      } catch (error) {
-        console.error(error);
-        // this.avatar = null;
+
+      const selectedFile = this.imageUpload;
+      if (selectedFile) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          this.base64 = event.target.result;
+          console.log(this.base64);
+        };
+        reader.readAsDataURL(selectedFile);
       }
+
+      // try {
+      //   // editedItem.photo
+      //   this.avatar = URL.createObjectURL(this.imageUpload);
+      //   // Do something with the file, for example upload to a server
+      // } catch (error) {
+      //   console.error(error);
+      //   // this.avatar = null;
+      // }
     },
 
     checkPassword() {
@@ -548,19 +561,33 @@ export default {
         }
 
         await this.$refs.form.validate();
-        const formData = new FormData();
-        formData.append("image", this.imageUpload);
-        formData.append("user_firstname", this.name + " " + this.firstname);
-        formData.append("user_lastname", this.user_lastname);
-        formData.append("user_id", this.user_id);
-        formData.append("user_position", this.user_position);
-        formData.append("user_department", this.user_department);
-        formData.append("user_email", this.user_email);
-        formData.append("user_password", this.user_password);
-        formData.append("user_status", this.user_status);
-        formData.append("user_role", this.user_role);
+        // const formData = new FormData();
+        // formData.append("image", this.imageUpload);
+        // formData.append("user_firstname", this.name + " " + this.firstname);
+        // formData.append("user_lastname", this.user_lastname);
+        // formData.append("user_id", this.user_id);
+        // formData.append("user_position", this.user_position);
+        // formData.append("user_department", this.user_department);
+        // formData.append("user_email", this.user_email);
+        // formData.append("user_password", this.user_password);
+        // formData.append("user_status", this.user_status);
+        // formData.append("user_role", this.user_role);
+
+        const formdatas = {
+          user_firstname:this.name + " " + this.firstname,
+          user_lastname: this.user_lastname,
+          user_id: this.user_id,
+          user_position: this.user_position,
+          user_department: this.user_department,
+          user_email: this.user_email,
+          user_password: this.user_password,
+          user_status: this.user_status,
+          user_role: this.user_role,
+          user_pic: this.base64,
+        };
+
         await this.$axios
-          .put("/users/updateUsers/" + this.id + "/image", formData)
+          .put(`/users/updateUsers/${this.id}`, formdatas)
           .then((response) => {
             // console.log(response);
             // alert("Update success");
