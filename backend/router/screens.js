@@ -262,36 +262,9 @@ router.get("/getOne/:id", async (req, res) => {
 //* DELETE screen+image by ID
 router.delete("/delete/:id", (req, res) => {
   const id = req.params.id;
-
-  // get image
-  const sql = `SELECT screen_pic FROM screens WHERE id =${id}`;
+  
+  const sql = `SELECT * FROM screens WHERE id = ${id}`;
   connection.query(sql, (err, results, fields) => {
-    if (err) {
-      console.log(err);
-      res
-        .status(500)
-        .send(`Error retrieving image path from database: ${error}`);
-      return;
-    }
-    if (results.length === 0) {
-      console.log(`Image with ID ${id} not found in database.`);
-      res.status(404).send(`Image with ID ${id} not found in database.`);
-      return;
-    }
-
-    const imagePath = "../frontend/static/screenImages/" + results[0].screen_pic;
-
-    if (results[0].screen_pic !== "DefaultScreen.jpg") {
-      fs.unlink(imagePath, (err) => {
-        if (err) {
-          console.log(`Error deleting image file: ${err}`);
-          res.status(500).send(`Error deleting image file: ${err}`);
-          return;
-        }
-        console.log(`Image file ${imagePath} deleted successfully.`);
-      });
-    }
-
     const deleteSql = `DELETE FROM screens WHERE id = ${id}`;
     try {
       connection.query(deleteSql, (err, results, fields) => {
@@ -332,33 +305,32 @@ router.delete("/deleteScreen/:system_id", (req, res) => {
     }
 
     // get image
-    const sql = `SELECT screen_pic FROM screens WHERE system_id = ${system_id}`;
-    connection.query(sql, (err, results, fields) => {
-      if (err) {
-        console.log(err);
-        res
-          .status(500)
-          .send(`Error retrieving image path from database: ${err}`);
-        return;
-      }
-      if (results.length === 0) {
-        console.log(`Image with ID ${id} not found in database.`);
-        res.status(404).send(`Image with ID ${id} not found in database.`);
-        return;
-      }
+    // const sql = `SELECT screen_pic FROM screens WHERE system_id = ${system_id}`;
+      // if (err) {
+      //   console.log(err);
+      //   res
+      //     .status(500)
+      //     .send(`Error retrieving image path from database: ${err}`);
+      //   return;
+      // }
+      // if (results.length === 0) {
+      //   console.log(`Image with ID ${id} not found in database.`);
+      //   res.status(404).send(`Image with ID ${id} not found in database.`);
+      //   return;
+      // }
 
-      const imagePath = "../frontend/static/screenImages/" + results[0].screen_pic;
+      // const imagePath = "../frontend/static/screenImages/" + results[0].screen_pic;
 
-      if (results[0].screen_pic !== "DefaultScreen.jpg") {
-        fs.unlink(imagePath, (err) => {
-          if (err) {
-            console.log(`Error deleting image file: ${err}`);
-            res.status(500).send(`Error deleting image file: ${err}`);
-            return;
-          }
-          console.log(`Image file ${imagePath} deleted successfully.`);
-        });
-      }
+      // if (results[0].screen_pic !== "DefaultScreen.jpg") {
+      //   fs.unlink(imagePath, (err) => {
+      //     if (err) {
+      //       console.log(`Error deleting image file: ${err}`);
+      //       res.status(500).send(`Error deleting image file: ${err}`);
+      //       return;
+      //     }
+      //     console.log(`Image file ${imagePath} deleted successfully.`);
+      //   });
+      // }
 
       const deleteSql = `DELETE FROM screens WHERE system_id = ${system_id}`;
       try {
@@ -378,7 +350,7 @@ router.delete("/deleteScreen/:system_id", (req, res) => {
         console.log(err);
         return res.status(500).send();
       }
-    });
+
   });
 });
 
