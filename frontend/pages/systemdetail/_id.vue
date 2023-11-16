@@ -108,10 +108,10 @@
                                 class="center mt-0"
                                 color="black"
                                 size="30px"
-                                v-if="!photo"
+                                v-if="!base64"
                                 >mdi-cloud-upload-outline</v-icon
                               >
-                              <img v-if="photo" :src="photo" />
+                              <img v-if="base64" :src="base64" />
                             </label>
                           </div>
                         </form>
@@ -1175,6 +1175,7 @@ export default {
         },
       ],
       tableColor: "#ffff",
+      base64: "",
     };
   },
   created() {
@@ -1354,12 +1355,22 @@ export default {
     uploadFile() {
       const input2 = this.$refs.fileInput;
       this.imageFileUpload = input2.files[0];
-      try {
-        this.photo = URL.createObjectURL(this.imageFileUpload);
-      } catch (error) {
-        console.error(error);
-        this.photo = null;
+
+      const selectedFile = this.imageFileUpload;
+      if (selectedFile) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          this.base64 = event.target.result;
+          console.log(this.base64);
+        };
+        reader.readAsDataURL(selectedFile);
       }
+      // try {
+      //   this.photo = URL.createObjectURL(this.imageFileUpload);
+      // } catch (error) {
+      //   console.error(error);
+      //   this.photo = null;
+      // }
     },
     back() {
       this.$router.push("/manageProject");
@@ -1583,26 +1594,36 @@ export default {
         // const dateEnd = this.newscreen_dateEnd;
         const id_screen = this.screenID;
         console.log(datestart, dateEnd);
-        const formData = new FormData();
-        formData.append("image", this.imageFileUpload);
-        formData.append("system_id", this.id);
-        formData.append("project_id", this.projectID);
-        formData.append("screen_id", this.screenID);
-        formData.append("screen_name", this.screenname);
-        formData.append("screen_developer", "");
-        formData.append("screen_implementer", "");
-        formData.append("screen_status", this.status);
-        formData.append("screen_level", this.level);
-        formData.append("screen_start", datestart);
-        formData.append("screen_end", dateEnd);
-        formData.append("screen_manday", this.manday);
-        formData.append("screen_type", this.screentype);
-
-        await this.$axios.post("/screens/createScreen", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
+        // const formData = new FormData();
+        // formData.append("image", this.base64);
+        // formData.append("system_id", this.id);
+        // formData.append("project_id", this.projectID);
+        // formData.append("screen_id", this.screenID);
+        // formData.append("screen_name", this.screenname);
+        // formData.append("screen_developer", "");
+        // formData.append("screen_implementer", "");
+        // formData.append("screen_status", this.status);
+        // formData.append("screen_level", this.level);
+        // formData.append("screen_start", datestart);
+        // formData.append("screen_end", dateEnd);
+        // formData.append("screen_manday", this.manday);
+        // formData.append("screen_type", this.screentype);
+        const formData = {
+          screen_pic: this.base64,
+          system_id: this.id,
+          project_id: this.projectID,
+          screen_id: this.screenID,
+          screen_name: this.screenname,
+          screen_developer: "", // ค่านี้เป็นค่าว่างตามแบบที่ 1
+          screen_implementer: "", // ค่านี้เป็นค่าว่างตามแบบที่ 1
+          screen_status: this.status,
+          screen_level: this.level,
+          screen_start: datestart,
+          screen_end: dateEnd,
+          screen_manday: this.manday,
+          screen_type: this.screentype,
+        };
+        await this.$axios.post("/screens/createScreen", formData);
       } catch (error) {
         console.error(error);
         alert("Error submitting form");

@@ -62,15 +62,15 @@
                 ></v-progress-circular>
               </div>
               <v-img
-                v-else-if="selectedImage"
-                :src="selectedImage"
+                v-else-if="base64"
+                :src="base64"
                 max-height="300px"
                 aspect-ratio="1"
                 contain
               ></v-img>
               <v-img
                 v-else-if="screensID"
-                :src="getImageUrl(screensID.screen_pic)"
+                :src="screensID.screen_pic"
                 max-hight="300px"
                 aspect-ratio="1"
                 contain
@@ -669,6 +669,7 @@ export default {
       dialogSuccess: false,
       dialogDeleteSuccess: false,
       dialogScreenHaveIssue: false,
+      base64: "",
     };
   },
   created() {
@@ -816,20 +817,36 @@ export default {
       await this.deleteScreen();
     },
     async updateScreen() {
-      const formData = new FormData();
-      formData.append("image", this.imageChange);
-      formData.append("system_id", this.screensID.system_id);
-      formData.append("project_id", this.screensID.project_id);
-      formData.append("screen_id", this.screensID.screen_id);
-      formData.append("screen_name", this.screenname);
-      formData.append("screen_developer", this.screensID.screen_developer);
-      formData.append("screen_implementer", this.screensID.screen_implementer);
-      formData.append("screen_status", this.screensID.screen_status);
-      formData.append("screen_level", this.screensID.screen_level);
-      formData.append("screen_type", this.screensID.screen_type);
-      formData.append("screen_start", this.screensID.screen_start);
-      formData.append("screen_end", this.screensID.screen_end);
-      formData.append("screen_manday", this.screensID.screen_manday);
+      const image = this.base64 ? this.base64 : this.screensID.screen_pic
+      // const formData = new FormData();
+      // formData.append("screen_pic", image);
+      // formData.append("system_id", this.screensID.system_id);
+      // formData.append("project_id", this.screensID.project_id);
+      // formData.append("screen_id", this.screensID.screen_id);
+      // formData.append("screen_name", this.screenname);
+      // formData.append("screen_developer", this.screensID.screen_developer);
+      // formData.append("screen_implementer", this.screensID.screen_implementer);
+      // formData.append("screen_status", this.screensID.screen_status);
+      // formData.append("screen_level", this.screensID.screen_level);
+      // formData.append("screen_type", this.screensID.screen_type);
+      // formData.append("screen_start", this.screensID.screen_start);
+      // formData.append("screen_end", this.screensID.screen_end);
+      // formData.append("screen_manday", this.screensID.screen_manday);
+      const formData = {
+  screen_pic: image,
+  system_id: this.screensID.system_id,
+  project_id: this.screensID.project_id,
+  screen_id: this.screensID.screen_id,
+  screen_name: this.screenname,
+  screen_developer: this.screensID.screen_developer,
+  screen_implementer: this.screensID.screen_implementer,
+  screen_status: this.screensID.screen_status,
+  screen_level: this.screensID.screen_level,
+  screen_type: this.screensID.screen_type,
+  screen_start: this.screensID.screen_start,
+  screen_end: this.screensID.screen_end,
+  screen_manday: this.screensID.screen_manday,
+};
 
       await this.$axios
         .put("/screens/updateScreen/" + this.id + "/image", formData)
@@ -898,10 +915,31 @@ export default {
       input.addEventListener("change", (event) => {
         // Get the selected file เอาไว้ Post
         this.imageChange = event.target.files[0];
+        console.log(this.imageChange);
+        if (this.imageChange) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          this.base64 = event.target.result;
+          console.log(this.base64);
+        };
+        reader.readAsDataURL(this.imageChange);
+      }
         // เอาไว้โชว์
         this.selectedImage = URL.createObjectURL(this.imageChange);
         // console.log(this.imageChange);
       });
+      // const input2 = this.$refs.fileInput;
+      // const imageFileUpload = input.files[0];
+      // console.log(imageFileUpload);
+      // const selectedFile = imageFileUpload;
+      // if (selectedFile) {
+      //   const reader = new FileReader();
+      //   reader.onload = (event) => {
+      //     this.base64 = event.target.result;
+      //     console.log(this.base64);
+      //   };
+      //   reader.readAsDataURL(selectedFile);
+      // }
       input.click();
     },
     async deleteScreen() {

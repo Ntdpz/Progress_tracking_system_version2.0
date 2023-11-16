@@ -245,6 +245,21 @@
                 <v-row>
                   <p class="pa-2">Attachments</p>
                 </v-row>
+                <v-row>
+                  <p class="pa-2">{{ pdf }}</p>
+                  <!-- <a :href="pdf" download="pdf">ดาวน์โหลดไฟล์ PDF</a> -->
+                  <!-- <a :href="`/issues/getpdf/${id}`">ดาวน์โหลดไฟล์ PDF</a> -->
+                  <!-- <a href="#" target="_blank" @click="downloadPDF">ดาวน์โหลดไฟล์ PDF</a> -->
+                  <v-btn @click="downloadPDF">ดาวน์โหลดไฟล์ </v-btn>
+                  <div>
+                    <embed
+                      :src="pdf"
+                      type="application/pdf"
+                      width="100%"
+                      height="600"
+                    />
+                  </div>
+                </v-row>
               </v-col>
             </v-row>
           </v-col>
@@ -717,6 +732,7 @@ export default {
       userSendWork: null,
       //history btn
       history: false,
+      pdf: "",
       //validate
       rules: [(value) => !!value || "Required."],
       dialogSuccess: false,
@@ -749,8 +765,23 @@ export default {
         .substr(0, 10),
     };
   },
+  created() {
+    console.log(" pdf id :", this.id);
+    this.getpdfs();
+  },
   async mounted() {
     await this.getDefault();
+    this.getpdfs();
+    console.log(" pdf id :", this.id);
+    //   const response = await this.$axios.get(`/issues/getpdf/${this.Id}`);
+    //    if (response.status === 200) {
+    //   this.pdf = response.data;
+    // } else {
+    //   this.pdf = "Failed to load PDF document.";
+    //   }
+
+    // const blob = new Blob([this.IssueFilename], { type: "application/pdf" });
+    // this.pdf = URL.createObjectURL(blob);
   },
   // computed: {
   //   isIssueInProcess() {
@@ -768,6 +799,24 @@ export default {
     },
   },
   methods: {
+    async getpdfs() {
+      const response = await this.$axios.get(`/issues/getpdf/${this.id}`);
+      if (response.status === 200) {
+        this.pdf = response.data;
+      } else {
+        this.pdf = "Failed to load PDF document.";
+      }
+    },
+      async downloadPDF() {
+    const response = await this.$axios.get(`/issues/getpdf/${this.id}`);
+    if (response.status === 200) {
+      const url = "http://localhost:7777/issues/getpdf/" + this.id;
+      window.open(url, '_blank');
+    } else {
+      alert("ไม่มี PDF ไฟล์ในฐานข้อมูล");
+    }
+  },
+
     getUserScreen(selectedUserID) {
       this.userSendWork = selectedUserID;
     },

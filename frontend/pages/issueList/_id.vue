@@ -2391,6 +2391,17 @@ export default {
         console.error(err);
       }
     },
+    async getpdf() {
+        const response = await this.$axios.get(`/issues/getpdf/${this.issue.id}`);
+     if (response.status === 200) {
+       const pdf = response.data;
+       console.log(pdf);
+  } else {
+       // this.pdf = "Failed to load PDF document.";
+       console.log("PDF err or No have");
+    }
+    },
+     
     showIssueCreateDialog(systemName, systemId, systemids, systemShortname) {
       this.infoCreate.systemName = systemName;
       this.infoCreate.systemId = systemId;

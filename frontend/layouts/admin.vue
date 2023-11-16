@@ -138,7 +138,7 @@
               <v-col cols="2">
                 <v-avatar size="40">
                   <img
-                    src="https://cdn.vuetifyjs.com/images/john.jpg"
+                    :src="user_pic"
                     alt="User Avatar"
                   />
                 </v-avatar>
@@ -255,6 +255,7 @@ export default {
       right: true,
       rightDrawer: false,
       title: "Note Management",
+      user_pic:"",
     };
   },
   async mounted() {
@@ -352,6 +353,7 @@ export default {
         .get("/users/getOne/" + this.$auth.user.id)
         .then((res) => {
           this.user_role = res.data[0].user_role;
+          this.user_pic = res.data[0].user_pic;
           // console.log(this.user_role, "user position");
         });
     },
