@@ -23,8 +23,10 @@
                           font-size: 30px;
                           text-align: center;
                           font-family: sans-serif;
+                          align-self: center;
+                          justify-self: center;
                         "
-                        >Problem Note Management</v-toolbar-title
+                        >PINGAR</v-toolbar-title
                       >
                     </v-toolbar>
                     <v-card-text>

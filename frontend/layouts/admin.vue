@@ -5,12 +5,11 @@
         <v-list-item-content>
           <v-list-item-title class="text-h6">
             <v-layout align-center justify-center>
-              <v-icon class="mr-2" color="primary"> mdi-domain </v-icon>
               <v-img
-                lazy-src="/logo.png"
-                max-height="250"
-                max-width="250"
-                src="/logo.png"
+                lazy-src="/pingar-high-resolution-logo-transparent.png"
+                max-height="150"
+                max-width="100"
+                src="/pingar-high-resolution-logo-transparent.png"
               ></v-img>
             </v-layout>
           </v-list-item-title>
@@ -183,12 +182,13 @@
         class="mb-3"
       />
       <v-toolbar-title class="mb-3">
-        <v-img
-          lazy-src="/logo.png"
+        <!-- <v-img
+          lazy-src="/pingar-high-resolution-logo-transparent.png"
           max-height="250"
           max-width="250"
-          src="/logo.png"
-        ></v-img>
+          src="/pingar-high-resolution-logo-transparent.png"
+        ></v-img> -->
+        <h4>PINGAR</h4>
       </v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn icon class="mb-3" color="error" @click="logout">
