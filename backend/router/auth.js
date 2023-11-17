@@ -23,29 +23,6 @@ app.use(
   })
 );
 
-// router.post("/api/login", (req, res) => {
-//   const { username, password } = req.body;
-
-//   const query = `SELECT * FROM users WHERE user_id = '${username}' AND user_password = '${password}'`;
-//   db.query(query, (err, results) => {
-//     if (err) {
-//       console.error(err);
-//       res.status(500).json({ message: "An error occurred" });
-//     } else if (results.length === 0) {
-//       res.status(401).json({ message: "Invalid username or password" });
-//     } else {
-
-//       req.session.userId = results[0].id;
-
-//       const user = {
-//         id: results[0].id,
-//         username: results[0].username,
-//       };
-//       res.status(200).json({ message: "Login successful", user });
-//     }
-//   });
-// });
-
 // Login route
 router.post("/api/login", (req, res) => {
   const { user_id, user_password } = req.body;
@@ -79,28 +56,6 @@ router.post("/api/login", (req, res) => {
   );
 });
 
-// router.get("/api/me", (req, res) => {
-//   if (req.session && req.session.userId) {
-//     const query = `SELECT * FROM users WHERE id = ${req.session.userId}`;
-//     db.query(query, (err, results) => {
-//       if (err) {
-//         console.error(err);
-//         res.status(500).json({ message: "An error occurred" });
-//       } else if (results.length === 0) {
-//         res.status(401).json({ message: "Unauthorized" });
-//       } else {
-//         const user = {
-//           id: results[0].id,
-//           username: results[0].username,
-//         };
-
-//         res.status(200).json({ user });
-//       }
-//     });
-//   } else {
-//     res.status(401).json({ message: "Unauthorized" });
-//   }
-// });
 
 router.get("/api/me", (req, res) => {
   const token = req.headers.authorization.split(" ")[1];
@@ -114,7 +69,7 @@ router.get("/api/me", (req, res) => {
   try {
     const decoded = jwt.verify(token, "secret_key");
     db.query(
-      "SELECT id, user_firstname, user_role FROM users WHERE id = ?",
+      "SELECT id, user_firstname, user_position, user_role FROM users WHERE id = ?",
       [decoded.id],
       (error, results) => {
         if (error) {

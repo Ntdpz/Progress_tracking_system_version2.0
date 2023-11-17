@@ -252,9 +252,6 @@ router.get("/getpdf/:id", (req, res) => {
   });
 });
 
-
-
-
 //* Update issue by dev แก้ตรงนี้ File
 router.put("/updateIssueDev/:id", upload.single("file"), (req, res) => {
   const id = req.params.id;
@@ -670,6 +667,51 @@ router.get("/getLength/:system_id", async (req, res) => {
     connection.query(
       "SELECT COUNT(*) AS length FROM issues WHERE system_id = ?",
       [system_id],
+      (err, results, fields) => {
+        if (err) {
+          console.log(err);
+          return res.status(400).send();
+        }
+        res.status(200).json(results);
+      }
+    );
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send();
+  }
+});
+
+router.get("/getOwnIssue/:user_assign_id", async (req, res) => {
+  const user_assign_id = req.params.user_assign_id;
+  try {
+    connection.query(
+      `SELECT issue_name, issue_type, issue_priority, issue_status_developer,issue_status_implement,issue_end
+    FROM issues
+    WHERE user_assign_id = ?
+      AND issue_status_developer != 'แก้ไขเรียบร้อย'`,
+      [user_assign_id],
+      (err, results, fields) => {
+        if (err) {
+          console.log(err);
+          return res.status(400).send();
+        }
+        res.status(200).json(results);
+      }
+    );
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send();
+  }
+});
+
+router.get("/getOwnIssueQC/:user_qc_id", async (req, res) => {
+  const user_qc_id = req.params.user_qc_id;
+  try {
+    connection.query(
+      `SELECT issue_name, issue_type, issue_priority, issue_status_developer, issue_status_implement, issue_end 
+      FROM issues WHERE user_qc_id = ? AND issue_status_developer = 'แก้ไขเรียบร้อย' 
+      AND (issue_status_implement IS NULL OR issue_status_implement != 'ตรวจสอบผ่าน');`,
+      [user_qc_id],
       (err, results, fields) => {
         if (err) {
           console.log(err);
