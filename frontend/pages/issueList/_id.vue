@@ -359,6 +359,14 @@
               </v-tab>
             </v-tabs>
           </v-tabs-items>
+          <v-tabs-items v-model="tab_issue">
+            <v-tab-item>
+              <h1>h1</h1>
+            </v-tab-item>
+            <v-tab-item>
+              <h1>h2</h1>
+            </v-tab-item>
+          </v-tabs-items>
           <v-tabs-items v-model="tab">
             <v-tab-item>
               <!-- *cardAll -->
