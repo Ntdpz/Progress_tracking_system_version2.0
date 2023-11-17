@@ -948,13 +948,12 @@
       <v-row class="mb-2 ml-7">
         <div class="text-left mt-4">
           <v-menu offset-y>
-            <template v-slot:activator="{ on, attrs }">
-              <!-- -- style="border: none; font-weight: bold; font-size: 22px" -- -->
+            <!-- <template v-slot:activator="{ on, attrs }">
               <v-btn outlined color="black" dark v-bind="attrs" v-on="on">
                 {{ type_show }}
                 <v-icon size="22px" right>mdi-menu-down</v-icon>
               </v-btn>
-            </template>
+            </template> -->
             <v-list>
               <v-list-item
                 v-for="(item, index) in Type_shows"
@@ -966,6 +965,18 @@
             </v-list>
           </v-menu>
         </div>
+       <v-spacer></v-spacer>
+          <v-card class="card ml-5 mt-4 mr-10" style="height: 40px; border-radius: 60px; width: 40%;">
+      <v-card-text class="pa-0">
+        <v-text-field
+          v-model="search"
+          prepend-inner-icon="mdi-magnify"
+          rounded
+          color="primary"
+          placeholder="search"
+        ></v-text-field>
+      </v-card-text>
+    </v-card>
       </v-row>
 
       <v-container v-if="type_show == 'การ์ด'">
@@ -1021,7 +1032,7 @@
       <v-container v-if="type_show == 'ตาราง'">
         <v-data-table
           :headers="headers"
-          :items="AllScreens"
+          :items="filteredScreens"
           sort-by="calories"
           class="v-data-table elevation-1 ma-4"
           style="text-align: center; background-color: #ffff"
@@ -1176,8 +1187,17 @@ export default {
       ],
       tableColor: "#ffff",
       base64: "",
+      search: '',
     };
   },
+  computed: {
+  filteredScreens() {
+    return this.AllScreens.filter(item =>
+      item.screen_name.toLowerCase().includes(this.search.toLowerCase()) ||
+      item.screen_id.toString().toLowerCase().includes(this.search.toLowerCase())
+    );
+  },
+},
   created() {
     this.getUser();
     this.getAllDefault();
@@ -1700,5 +1720,9 @@ input[type="text"] {
 .row-odd {
   background-color: rgba(255, 255, 255, 0.788);
   color: black;
+}
+
+.card >>> .v-input {
+  padding-top: 0% !important;
 }
 </style>

@@ -1,6 +1,40 @@
 <template>
   <div class="body">
-    <searchbar title="จัดการโครงการ" />
+    <!-- <searchbar title="จัดการโครงการ" /> -->
+    <v-row class="mb-3">
+    <v-text-title
+      class="center ml-4 mr-4 mt-3 mb-1"
+      style="font-weight: bold; font-size: 20px"
+    >
+      จัดการโครงการ
+    </v-text-title>
+    <v-divider
+      class="mt-3 mb-1"
+      inset
+      vertical
+      style="background-color: black"
+    ></v-divider>
+    <v-card class="card ml-5 mt-2" style="height: 40px; border-radius: 60px">
+      <v-card-text class="pa-0">
+        <v-text-field
+          v-if="userrole === 'Admin' || userposition === 'Implementer'"
+          v-model="searchKeyword"
+          prepend-inner-icon="mdi-magnify"
+          rounded
+          color="primary"
+          placeholder="search"
+        ></v-text-field>
+        <v-text-field
+          v-else-if="userrole !== 'Admin' && userposition !== 'Implementer'"
+          v-model="searchKeywordDev"
+          prepend-inner-icon="mdi-magnify"
+          rounded
+          color="primary"
+          placeholder="search"
+        ></v-text-field>
+      </v-card-text>
+    </v-card>
+  </v-row>
 
     <v-divider></v-divider>
     <v-row class="mt-4 ml-1 mb-2" no-gutters>
@@ -313,7 +347,7 @@
     <!-- Admin -->
     <div v-if="userrole === 'Admin' || userposition === 'Implementer'">
       <v-expansion-panels
-        v-for="(project, index) in projectListAdmin"
+        v-for="(project, index) in filteredProjects"
         :key="index"
         class="mb-5"
         :items="projectList"
@@ -610,7 +644,7 @@
     <!-- Develop -->
     <div v-else-if="userrole !== 'Admin' && userposition !== 'Implementer'">
       <v-expansion-panels
-        v-for="(project, index) in projectList"
+        v-for="(project, index) in filteredProjectsDev"
         :key="index"
         class="mb-5"
         :items="projectList"
@@ -814,7 +848,23 @@ export default {
       projectListAdmin: [],
       loading: false,
       rules: [(value) => !!value || "*กรุณาใส่ข้อมูลให้ถูกต้อง*"],
+      searchKeyword: '',
+      searchKeywordDev: '',
     };
+  },
+  computed: {
+    filteredProjects() {
+      // กรองข้อมูลโปรเจคที่ตรงกับคำค้นหา
+      return this.projectListAdmin.filter(project => {
+        return project.project_name.toLowerCase().includes(this.searchKeyword.toLowerCase());
+      });
+    },
+    filteredProjectsDev() {
+      // กรองข้อมูลโปรเจคที่ตรงกับคำค้นหา
+      return this.projectList.filter(project => {
+        return project.project_name.toLowerCase().includes(this.searchKeywordDev.toLowerCase());
+      });
+    },
   },
   async created() {
     await this.getUser();
@@ -1363,5 +1413,9 @@ export default {
 .row-odd {
   background-color: rgba(255, 255, 255, 0.788);
   color: black;
+}
+
+.card >>> .v-input {
+  padding-top: 0% !important;
 }
 </style>
