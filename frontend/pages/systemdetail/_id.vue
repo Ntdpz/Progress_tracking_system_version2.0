@@ -142,7 +142,7 @@
 
                       <v-col class="col-12" sm="8" md="8">
                         <v-text-field
-                          :rules="rules"
+                          :rules="nameRules"
                           style="text-align-last: left"
                           v-model="screenID"
                           hide-details="auto"
@@ -328,6 +328,7 @@
                         <v-select
                           style="text-align-last: center"
                           v-model="level"
+                          :rules="nameRules"
                           :items="selectlevel"
                           hide-details="auto"
                           dense
@@ -357,6 +358,7 @@
                         <v-select
                           style="text-align-last: center"
                           v-model="screentype"
+                          :rules="nameRules"
                           :items="SelectScreenType"
                           hide-details="auto"
                           dense
@@ -409,6 +411,7 @@
                               readonly
                               v-bind="attrs"
                               v-on="on"
+                              :rules="nameRules"
                             ></v-text-field>
                           </template>
                           <v-date-picker
@@ -458,6 +461,7 @@
                               readonly
                               v-bind="attrs"
                               v-on="on"
+                              :rules="nameRules"
                             ></v-text-field>
                           </template>
                           <v-date-picker
@@ -504,7 +508,7 @@
                       </v-col>
                       <v-col class="col-10" sm="6" md="6">
                         <v-text-field
-                          :rules="rules"
+                          :rules="nameRules"
                           v-model="manday"
                           style="text-align-last: left"
                           hide-details="auto"
@@ -1197,6 +1201,12 @@ export default {
       item.screen_id.toString().toLowerCase().includes(this.search.toLowerCase())
     );
   },
+  nameRules() {
+      return [
+        v => !!v || 'Screen Name is required',
+        // เพิ่มเงื่อนไข validate อื่น ๆ ที่คุณต้องการ
+      ];
+    },
 },
   created() {
     this.getUser();
@@ -1338,19 +1348,20 @@ export default {
       return;
     },
     async CreateAllScreen() {
-      try {
+
         if (
-          this.screenID == "" ||
-          this.screenname == "" ||
-          this.user_id == [] ||
-          this.status == "" ||
-          this.level == null ||
-          this.manday == null ||
-          this.screentype == null
+          // this.screenID == "" ||
+          // this.screenname == "" ||
+          // this.level == "" ||
+          // this.manday == null ||
+          // this.screentype == "" ||
+          // this.newscreen_dateStart == null ||
+          // this.newscreen_dateEnd == null
+          this.$refs.form.validate()
         ) {
-          this.dialogFail = true;
-        } else {
-          // this.calculateManDay();
+          // this.dialogFail = true;
+          // console.log(this.screenID + "-" + this.screenname + "-" + this.user_id + "-" + "-" + this.level + "-" + this.manday + "-" + this.screentype
+          // +"-"+this.newscreen_dateStart+"-"+this.newscreen_dateEnd);
           await this.createScreen();
           await this.getNewScreenAndAddUserScreen();
           await this.addUser_Screen(this.screen_idd);
@@ -1358,11 +1369,17 @@ export default {
 
           this.ClearText();
           this.dialog_newscreen = false;
+        } else {
+          // this.calculateManDay();
+          // await this.createScreen();
+          // await this.getNewScreenAndAddUserScreen();
+          // await this.addUser_Screen(this.screen_idd);
+          // this.dialogSuccess = true;
+
+          // this.ClearText();
+          // this.dialog_newscreen = false;
         }
-      } catch (error) {
-        console.log(error);
-        alert(error);
-      }
+
     },
     resetday() {
       this.today = new Date();
