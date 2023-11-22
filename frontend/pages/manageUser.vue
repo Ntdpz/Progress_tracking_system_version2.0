@@ -1402,7 +1402,7 @@ export default {
       await this.$axios.get("/users/getAll").then((data) => {
         this.data = data.data;
         this.splitImage(this.data, this.imageALL);
-        console.log(this.data, this.imageALL);
+        // console.log(this.data, this.imageALL);
       });
     },
     async getPosition_Developer() {
@@ -1476,6 +1476,7 @@ export default {
         this.editedItem.user_firstname = nameParts[0];
       }
       this.dialog_manage = true;
+      console.log(this.imageManage);
     },
 
     async createUser2() {
@@ -1606,7 +1607,7 @@ export default {
         this.editedItem.user_status.trim() == "" ||
         this.editedItem.user_role.trim() == ""
       ) {
-        await this.$refs.formUpdate.validate();
+        // await this.$refs.formUpdate.validate();
         alert("Please fill in all required fields.");
         return;
       }
@@ -1623,7 +1624,7 @@ export default {
           user_password: this.editedItem.user_password,
           user_status: this.editedItem.user_status,
           user_role: this.editedItem.user_role,
-          user_pic: this.base64,
+          user_pic: this.base64 ? this.base64 : this.imageManage,
         };
         await this.$axios
           .put(`/users/updateUsers/${this.editedItem.id}`, formdatas)
