@@ -1898,14 +1898,47 @@ export default {
           value: "issue_id",
           class: "blue-grey darken-4 white--text",
         },
-        { text: "ชื่อปัญหา", value: "issue_name" },
-        { text: "ประเภทปัญหา", value: "issue_type" },
-        { text: "วันกำหนดส่ง", value: "formattedDateEnd" },
-        { text: "สถานะ", value: "issue_status" },
-        { text: "ความสำคัญของปัญหา", value: "issue_priority" },
-        { text: "ผู้รับผิดชอบ", value: "issue_assign" },
-        { text: "ผู้รับตรวจสอบ", value: "issue_qc" },
-        { text: "จัดการ", value: "actions", sortable: false },
+        {
+          text: "ชื่อปัญหา",
+          value: "issue_name",
+          class: "blue-grey darken-4 white--text",
+        },
+        {
+          text: "ประเภทปัญหา",
+          value: "issue_type",
+          class: "blue-grey darken-4 white--text",
+        },
+        {
+          text: "วันกำหนดส่ง",
+          value: "formattedDateEnd",
+          class: "blue-grey darken-4 white--text",
+        },
+        {
+          text: "สถานะ",
+          value: "issue_status",
+          class: "blue-grey darken-4 white--text",
+        },
+        {
+          text: "ความสำคัญของปัญหา",
+          value: "issue_priority",
+          class: "blue-grey darken-4 white--text",
+        },
+        {
+          text: "ผู้รับผิดชอบ",
+          value: "issue_assign",
+          class: "blue-grey darken-4 white--text",
+        },
+        {
+          text: "ผู้รับตรวจสอบ",
+          value: "issue_qc",
+          class: "blue-grey darken-4 white--text",
+        },
+        {
+          text: "จัดการ",
+          value: "actions",
+          sortable: false,
+          class: "blue-grey darken-4 white--text",
+        },
       ],
       issue: [],
       issueDev: [],
@@ -1969,13 +2002,15 @@ export default {
 
   methods: {
     async getUser() {
-      await this.$axios.get("/users/getOne/" + this.$auth.user.id).then((res) => {
-        this.user_id = res.data[0].user_id;
-        this.user_firstname = res.data[0].user_firstname;
-        this.user_lastname = res.data[0].user_lastname;
-        this.user_position = res.data[0].user_position;
-        this.user_role = res.data[0].user_role;
-      });
+      await this.$axios
+        .get("/users/getOne/" + this.$auth.user.id)
+        .then((res) => {
+          this.user_id = res.data[0].user_id;
+          this.user_firstname = res.data[0].user_firstname;
+          this.user_lastname = res.data[0].user_lastname;
+          this.user_position = res.data[0].user_position;
+          this.user_role = res.data[0].user_role;
+        });
     },
     async getProjectDev() {
       await this.$axios.get("/projects/getOne/" + this.id).then((res) => {
@@ -2400,16 +2435,16 @@ export default {
       }
     },
     async getpdf() {
-        const response = await this.$axios.get(`/issues/getpdf/${this.issue.id}`);
-     if (response.status === 200) {
-       const pdf = response.data;
-       console.log(pdf);
-  } else {
-       // this.pdf = "Failed to load PDF document.";
-       console.log("PDF err or No have");
-    }
+      const response = await this.$axios.get(`/issues/getpdf/${this.issue.id}`);
+      if (response.status === 200) {
+        const pdf = response.data;
+        console.log(pdf);
+      } else {
+        // this.pdf = "Failed to load PDF document.";
+        console.log("PDF err or No have");
+      }
     },
-     
+
     showIssueCreateDialog(systemName, systemId, systemids, systemShortname) {
       this.infoCreate.systemName = systemName;
       this.infoCreate.systemId = systemId;

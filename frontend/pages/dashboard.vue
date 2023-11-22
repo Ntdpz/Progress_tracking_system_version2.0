@@ -1,92 +1,58 @@
 <template>
   <div class="">
-    <v-row class="header" no-gutters>
-      <v-col cols="1" class="pa-0 ml-5" style="text-align: center">
-        <v-icon size="40px" color="primary">mdi-view-dashboard</v-icon></v-col
+    <div>
+      <!-- <p>{{ systems }}</p> -->
+      <v-select
+        v-model="selectedOption"
+        :items="
+          projects.map((project) => ({
+            text: project.project_name,
+            value: project.id,
+          }))
+        "
+        label="โปรดเลือกโครงการที่ต้องการ"
+        dense
+        outlined
+        @change="handleProjectChange"
+      ></v-select>
+      <div
+        v-for="(project, index) in projects"
+        :key="project.id"
+        v-if="selectedOption === project.id"
       >
-      <v-col cols="10" style="align-self: center" class="pa-0">
-        <h2>แดชบอร์ด</h2></v-col
-      >
-    </v-row>
-    <v-col class="d-flex" cols="12" sm="6">
-      <v-select :items="items" dense outlined v-model="e1"></v-select>
-    </v-col>
-    <v-row>
-      <v-col cols="12" md="4">
-        <v-card
-          :loading="loading"
-          class="my-12"
-          max-width="400"
-          v-for="(screen, index) in screendetaile"
-          :key="index"
+        <h1>{{ project.project_name }} : {{ project.project_id }}</h1>
+        <!-- You can customize the content for each option here -->
+      </div>
+      <div v-for="(system, index) in systems" :key="system.id">
+        <h1>{{ system.system_id }} : {{ system.system_nameTH }}</h1>
+        <div
+          class="pa-5"
+          v-if="system.pni != undefined || system.pnc != undefined"
         >
-          <template slot="progress">
-            <v-progress-linear
-              color="primary"
-              height="10"
-              indeterminate
-            ></v-progress-linear>
-          </template>
-
-          <v-card-title>{{ screen.screen_name }}</v-card-title>
-          <v-card-text>
-            <v-row align="center" class="mx-0">
-              <v-col>
-                <v-row>
-                  <v-col><p>จำนวน PNI ทั้งหมด :</p></v-col>
-                  <v-col
-                    ><p>{{ amount_PNI }}</p></v-col
-                  ></v-row
-                >
-                <v-row>
-                  <v-col class="pt-0 pb-0"><p>สถานะรอแก้ไขทั้งหมด :</p></v-col>
-                  <v-col class="pt-0 pb-0"><p>10</p></v-col>
-                </v-row>
-                <v-row>
-                  <v-col class="pt-0 pb-0"
-                    ><p>สถานะกำลังแก้ไขทั้งหมด :</p></v-col
-                  >
-                  <v-col class="pt-0 pb-0"><p>10</p></v-col>
-                </v-row>
-                <v-row>
-                  <v-col class="pt-0 pb-0"
-                    ><p>สถานะแก้ไขเรียบร้อยทั้งหมด :</p></v-col
-                  >
-                  <v-col class="pt-0 pb-0"><p>10</p></v-col>
-                </v-row>
-
-                <v-row
-                  ><v-col><p>จำนวน PNC ทั้งหมด :</p></v-col>
-                  <v-col><p>20</p></v-col>
-                </v-row>
-                <v-row>
-                  <v-col class="pt-0 pb-0"><p>สถานะรอแก้ไขทั้งหมด :</p></v-col>
-                  <v-col class="pt-0 pb-0"><p>10</p></v-col>
-                </v-row>
-                <v-row>
-                  <v-col class="pt-0 pb-0"
-                    ><p>สถานะกำลังแก้ไขทั้งหมด :</p></v-col
-                  >
-                  <v-col class="pt-0 pb-0"><p>10</p></v-col>
-                </v-row>
-                <v-row>
-                  <v-col class="pt-0 pb-0"
-                    ><p>สถานะแก้ไขเรียบร้อยทั้งหมด :</p></v-col
-                  >
-                  <v-col class="pt-0 pb-0"><p>10</p></v-col>
-                </v-row>
-              </v-col>
-            </v-row>
-          </v-card-text>
-
-          <v-divider class="mx-4"></v-divider>
-
-          <v-card-actions>
-            <v-btn color="primary" text @click="reserve"> Reserve </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-col>
-    </v-row>
+          <v-row>
+            <v-col>
+              <v-card class="pa-5 mx-auto" max-width="500">
+                <h3>PNI</h3>
+                <Doughnut :data="chartData(system)" /> </v-card
+            ></v-col>
+            <v-col>
+              <v-card>
+                <v-data-table
+                  :headers="headers"
+                  :items="system.amountissues"
+                  :items-per-page="5"
+                  class="elevation-1"
+                ></v-data-table> </v-card
+            ></v-col>
+          </v-row>
+        </div>
+        <div class="pa-5" v-else>
+          <v-card class="pa-5 mt-4" max-width="500">
+            <h3>Not have issues</h3>
+          </v-card>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -96,30 +62,111 @@ export default {
   name: "DashboardHeader",
   data() {
     return {
-      items: ["Foo", "Bar", "Fizz", "Buzz"],
-      e1: "Foo",
-      screendetaile: [
-        {
-          screen_name: "Card 1",
-          amount_PNI: "10",
-          amount_PNI_waiting: "10",
-          amount_PNI_editing: "10",
-          amount_PNI_complete: "10",
-          amount_PNC: "10",
-          amount_PNC_waiting: "10",
-          amount_PNC_editing: "10",
-          amount_PNC_complete: "10",
-        },
+      selectedOption: 1,
+      options: [
+        { text: "Table 1", value: 1 },
+        { text: "Table 2", value: 2 },
       ],
-      loading: false,
-      selection: 1,
+      projects: [],
+      systems: [],
+      amountissues: [],
+      PNI: "",
+      PNC: "",
+      headers: [
+        {
+          text: "Type",
+          align: "start",
+          sortable: false,
+          value: "issue_type",
+        },
+        { text: "status", value: "issue_status" },
+        { text: "amount", value: "issue_count" },
+      ],
     };
   },
+  created() {
+    this.getProjects();
+    console.log("Selected Project ID:", this.selectedOption);
+    this.handleProjectChange();
+  },
+  computed: {
+    chartData() {
+      return (system) => {
+        return {
+          labels: ["PNI", "PNC"],
+          datasets: [
+            {
+              label: "ปัญหาทั้งหมดในระบบ",
+              data: [system.pni, system.pnc], // Reference system.pni and system.pnc
+              backgroundColor: ["rgb(255, 99, 132)", "rgb(54, 162, 235)"],
+              hoverOffset: 4,
+            },
+          ],
+        };
+      };
+    },
+  },
   methods: {
-    reserve() {
-      this.loading = true;
+    async getProjects() {
+      await this.$axios.get("/projects/getAll").then((res) => {
+        this.projects = res.data;
 
-      setTimeout(() => (this.loading = false), 2000);
+        // this.selectedOption =
+        //   this.projects.length > 0 ? this.projects[0].id : null;
+      });
+    },
+    async handleProjectChange() {
+      console.log("Selected Project ID:", this.selectedOption);
+      await this.$axios
+        .get("/systems/getAll?project_id=" + this.selectedOption)
+        .then((res) => {
+          this.systems = res.data;
+        });
+
+      const systemIds = this.systems.map((system) => system.id);
+
+      for (const systemId of systemIds) {
+        try {
+          const sumResponse = await this.$axios.get(
+            "/issues/getSum/" + systemId
+          );
+          const pnc = sumResponse.data[0]?.issue_count;
+          const pni = sumResponse.data[1]?.issue_count;
+
+          const issueSumResponse = await this.$axios.get(
+            "/issues/getIssueSum/" + systemId
+          );
+          const amountissues = issueSumResponse.data;
+
+          const systemIndex = this.systems.findIndex(
+            (system) => system.id === systemId
+          );
+
+          if (systemIndex !== -1) {
+            // Update the system in this.systems
+            this.$set(this.systems, systemIndex, {
+              ...this.systems[systemIndex],
+              pnc,
+              pni,
+              amountissues,
+            });
+          } else {
+            // Add a new system to this.systems
+            this.systems.push({
+              id: systemId,
+              pnc,
+              pni,
+              amountissues,
+            });
+          }
+        } catch (error) {
+          console.error(
+            "Error fetching data for systemId " + systemId + ":",
+            error
+          );
+        }
+      }
+      console.log("final", this.systems);
     },
   },
 };
@@ -128,11 +175,5 @@ export default {
 <style scoped>
 * {
   font-family: "Lato", sans-serif;
-}
-.v-card--reveal {
-  bottom: 0;
-  opacity: 1 !important;
-  position: absolute;
-  width: 100%;
 }
 </style>

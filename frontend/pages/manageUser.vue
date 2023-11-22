@@ -1223,7 +1223,7 @@
                           />
                           <dialog-fail
                             :dialog.sync="dialogfail"
-                            :title="ผู้ใช้รายนี้มีรายการปัญหาที่ต้องจัดการก่อน"
+                            :title="ไม่สามารถลบผู้ใช้งานได้"
                           />
                         </v-card>
                       </v-form>

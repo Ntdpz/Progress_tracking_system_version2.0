@@ -726,4 +726,50 @@ router.get("/getOwnIssueQC/:user_qc_id", async (req, res) => {
   }
 });
 
+router.get("/getSum/:system_id", async (req, res) => {
+  const system_id = req.params.system_id;
+  try {
+    connection.query(
+      `SELECT system_id, issue_type, COUNT(*) AS issue_count
+      FROM issues
+      WHERE system_id = ? AND (issue_type = 'PNI' OR issue_type = 'PNC')
+      GROUP BY system_id, issue_type;`,
+      [system_id],
+      (err, results, fields) => {
+        if (err) {
+          console.log(err);
+          return res.status(400).send();
+        }
+        res.status(200).json(results);
+      }
+    );
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send();
+  }
+});
+
+router.get("/getIssueSum/:system_id", async (req, res) => {
+  const system_id = req.params.system_id;
+  try {
+    connection.query(
+      `SELECT issue_type,issue_status, COUNT(*) AS issue_count
+      FROM issues
+      WHERE system_id = ? AND (issue_type = 'PNI' OR issue_type = 'PNC') AND (issue_status = 'รอแก้ไข' OR issue_status = 'กำลังแก้ไข' OR issue_status = 'แก้ไขเรียบร้อย' OR issue_status = 'ตรวจสอบผ่าน' OR issue_status = 'ตรวจสอบไม่ผ่าน')
+      GROUP BY system_id, issue_type, issue_status;`,
+      [system_id],
+      (err, results, fields) => {
+        if (err) {
+          console.log(err);
+          return res.status(400).send();
+        }
+        res.status(200).json(results);
+      }
+    );
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send();
+  }
+});
+
 module.exports = router;
