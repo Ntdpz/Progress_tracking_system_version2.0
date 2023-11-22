@@ -1,22 +1,30 @@
 <template>
   <div class="body">
-    <v-row>
-      <v-col>
-        <searchbar
-          :search="search"
-          title="จัดการผู้ใช้งานระบบ"
-          @input="performSearch"
-        />
-        <v-spacer></v-spacer>
-        <!-- <v-text-field
-        v-model="search"
-        append-icon="mdi-magnify"
-        label="Search"
-        single-line
-        hide-details
-        @input="performSearch"
-      ></v-text-field> -->
-      </v-col>
+    <v-row class="mb-3">
+      <v-text-title
+        class="center ml-4 mr-4 mt-3 mb-1"
+        style="font-weight: bold; font-size: 20px"
+      >
+        จัดการผู้ใช้งานระบบ
+      </v-text-title>
+      <v-divider
+        class="mt-3 mb-1"
+        inset
+        vertical
+        style="background-color: black"
+      ></v-divider>
+      <!-- <v-card class="card ml-5 mt-2" style="height: 40px; border-radius: 60px">
+        <v-card-text class="pa-0">
+          <v-text-field
+            v-model="searchKeyword"
+            prepend-inner-icon="mdi-magnify"
+            rounded
+            color="primary"
+            placeholder="search"
+          ></v-text-field>
+        </v-card-text>
+      </v-card> -->
+
       <v-col>
         <v-btn
           v-if="check_role == 'Admin'"
@@ -934,7 +942,7 @@
                                   class="center mt-7"
                                   color="black"
                                   size="30px"
-                                  v-if="!imageManage"
+                                  v-if="imageManage == null && base64 == ''"
                                   >mdi-cloud-upload-outline</v-icon
                                 >
                                 <img
@@ -1402,7 +1410,7 @@ export default {
       await this.$axios.get("/users/getAll").then((data) => {
         this.data = data.data;
         this.splitImage(this.data, this.imageALL);
-        console.log(this.data, this.imageALL);
+        // console.log(this.data, this.imageALL);
       });
     },
     async getPosition_Developer() {
@@ -1476,6 +1484,7 @@ export default {
         this.editedItem.user_firstname = nameParts[0];
       }
       this.dialog_manage = true;
+      console.log(this.imageManage);
     },
 
     async createUser2() {
@@ -1492,7 +1501,7 @@ export default {
         this.role.trim() == ""
       ) {
         await this.$refs.formCreate.validate();
-        alert("Please fill in all required fields.");
+        // alert("Please fill in all required fields.");
         return;
       }
 
@@ -1607,7 +1616,7 @@ export default {
         this.editedItem.user_role.trim() == ""
       ) {
         await this.$refs.formUpdate.validate();
-        alert("Please fill in all required fields.");
+        // alert("Please fill in all required fields.");
         return;
       }
       try {
@@ -1623,7 +1632,7 @@ export default {
           user_password: this.editedItem.user_password,
           user_status: this.editedItem.user_status,
           user_role: this.editedItem.user_role,
-          user_pic: this.base64,
+          user_pic: this.base64 ? this.base64 : this.imageManage,
         };
         await this.$axios
           .put(`/users/updateUsers/${this.editedItem.id}`, formdatas)
@@ -1682,26 +1691,25 @@ export default {
         console.log("2");
         await this.deleteUserProject();
         console.log("3");
-        await this.$axios
-          .delete("/users/deleteUser/" + this.editedItem.id)
-          .then((response) => {
-            // alert("delete user");
-            this.dialogDeleteSuccess = true;
-            this.getUser();
-            this.getAll();
-            this.getPosition_Developer();
-            this.getPosition_Implementer();
-            this.getPosition_ProgramManagement();
-            this.getPosition_SystemAnalyst();
-            this.getPosition_ReportDeveloper();
-            this.getAllDefault();
-            this.dialog_manage = false;
-          })
-          .catch((err) => {
-            console.log(err);
-            alert(err);
-          });
+        await this.deleteUserLast();
+        console.log("4");
+        // this.initialize();
       }
+    },
+
+    async deleteUserLast() {
+      try {
+        const response = await this.$axios.delete(
+          "/users/deleteUser/" + this.editedItem.id);
+        if (response.status === 200 || response.status === 404) {
+          this.dialog_manage = false;
+          this.initialize();
+          this.dialogDeleteSuccess = true;
+        }
+      } catch (error) {
+        alert(error + "Error");
+      }
+      
     },
 
     async deleteUser_screens() {
@@ -1710,7 +1718,9 @@ export default {
           "/user_screens/deleteUserID/" + this.editedItem.id
         );
         // console.log("delete success");
-        if (response.status === 200 || response.status === 404) {
+        if (response.status === 200) {
+          this.initialize();
+
         }
       } catch (err) {
         if (err.response && err.response.status === 404) {
@@ -1869,5 +1879,9 @@ input[type="text"] {
 ::v-deep .v-data-table-header span {
   color: white;
   font-size: 14px;
+}
+
+.card >>> .v-input {
+  padding-top: 0% !important;
 }
 </style>

@@ -599,51 +599,26 @@
         </v-dialog>
       </template>
       <template>
-        <v-dialog
-          v-model="rejectSuccess"
-          persistent
-          max-width="400px"
-          max-height="100%"
-        >
-          <v-card width="100%" max-height="100%">
-            <v-row>
-              <v-row class="ma-0 pa-0" style="place-content: center">
+        <v-dialog v-model="rejectSuccess" persistent max-width="400px" max-height="100%" class="">
+        <v-card width="100%" max-height="100%">
+            <v-row class="ma-0 pa-0" style="place-content: center;">
                 <v-card-title>
-                  <v-icon size="100px" color="success"
-                    >mdi-check-circle-outline</v-icon
-                  >
+                    <v-icon size="100px" color="success">mdi-check-circle-outline</v-icon>
                 </v-card-title>
-              </v-row>
-              <v-row class="ma-0 pa-0" style="place-content: center">
-                <v-card-title class="text-h4"> ลบเสร็จเรียบร้อย </v-card-title>
-              </v-row>
-              <v-card-actions style="place-content: center">
+            </v-row>
+            <v-row class="ma-0 pa-0" style="place-content: center;">
+                <v-card-title class="text-h4">
+                    ลบเรียบร้อยแล้ว
+                </v-card-title>
+            </v-row>
+            <v-card-actions style="place-content: center;">
                 <!-- <v-spacer></v-spacer> -->
-                <v-btn
-                  color="success"
-                  dark
-                  @click="(rejectSuccess = false), handleClose()"
-                  rounded
-                ></v-btn>
-              </v-card-actions>
-            </v-row>
-            <v-row class="ma-0 pa-0" style="place-content: center">
-              <v-card-title class="text-h5">
-                อัปเดตเสร็จเรียบร้อย
-              </v-card-title>
-            </v-row>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn
-                color="primary"
-                dark
-                @click="(dialogSuccess = false), handleClose()"
-              >
-                Ok
-              </v-btn>
+                <v-btn color="success" dark @click="rejectSuccess=false" rounded>
+                    Ok
+                </v-btn>
             </v-card-actions>
-          </v-card>
-        </v-dialog>
+        </v-card>
+    </v-dialog>
       </template>
     </v-dialog>
   </row>

@@ -329,7 +329,7 @@
             :NoAssginCheck="selected.no_assign"
             @button-clicked="getIssue()"
           />
-          <v-tabs-items v-model="tab" style="width: 100%">
+          <!-- <v-tabs-items v-model="tab" style="width: 100%">
             <v-tabs
               fixed-tabs
               v-model="tab_issue"
@@ -338,8 +338,8 @@
               show-arrows
               color="#454545"
               class="mt-5 mb-3"
-            >
-              <v-tab
+            > -->
+              <!-- <v-tab
                 :style="tab_assign ? 'background-color:#454545;' : null"
                 @click="(tab_assign = true), (tab_unassign = false)"
               >
@@ -347,7 +347,7 @@
                   ปัญหาที่มีคนรับผิดชอบ
                 </h3>
 
-                <!-- ถึงตรงนี้ -->
+                ถึงตรงนี้
               </v-tab>
               <v-tab
                 :style="tab_unassign ? 'background-color:#454545;' : null"
@@ -356,17 +356,17 @@
                 <h3 :style="tab_unassign ? 'color:#ffff;' : 'color:#000;'">
                   ปัญหาที่ไม่มีคนรับผิดชอบ
                 </h3>
-              </v-tab>
-            </v-tabs>
-          </v-tabs-items>
-          <v-tabs-items v-model="tab_issue">
+              </v-tab> -->
+            <!-- </v-tabs>
+          </v-tabs-items> -->
+          <!-- <v-tabs-items v-model="tab_issue">
             <v-tab-item>
               <h1>h1</h1>
             </v-tab-item>
             <v-tab-item>
               <h1>h2</h1>
             </v-tab-item>
-          </v-tabs-items>
+          </v-tabs-items> -->
           <v-tabs-items v-model="tab">
             <v-tab-item>
               <!-- *cardAll -->
@@ -531,7 +531,7 @@
               </v-data-table>
 
               <!-- *Table 2 unassignedIssues-->
-              <!-- <v-data-table
+              <v-data-table
                 :headers="headers"
                 :items="system.unassignedIssues"
                 :sort-by="['created_at']"
@@ -687,7 +687,7 @@
                     </td>
                   </tr>
                 </template>
-              </v-data-table> -->
+              </v-data-table>
             </v-tab-item>
             <v-tab-item>
               <!-- *card PNI -->

@@ -308,62 +308,21 @@ router.put("/update/:id", async (req, res) => {
   }
 });
 
-//*delete user + image by ID
+//*delete user + image 
 router.delete("/deleteUser/:id", (req, res) => {
   const id = req.params.id;
-
-  // Get the image path from the database
-  const sql = `SELECT user_pic FROM users WHERE id = ${id}`;
-  connection.query(sql, (error, results, fields) => {
-    if (error) {
-      console.log(`Error retrieving image path from database: ${error}`);
-      res.status(500).send(`Error retrieving image path from database: ${error}`);
-      return;
-    }
-
-    if (results.length === 0) {
-      console.log(`Image with ID ${id} not found in database.`);
-      res.status(404).send(`Image with ID ${id} not found in database.`);
-      return;
-    }
-
-    const imagePath = "../frontend/static/uploads/" + results[0].user_pic;
-
-    // Check if the image name is not equal to "DefaultAvatar.jpg"
-    if (results[0].user_pic !== "DefaultAvatar.jpg") {
-    // Delete image file from server
-      fs.unlink(imagePath, (err) => {
-        if (err) {
-          console.log(`Error deleting image file: ${err}`);
-          res.status(500).send(`Error deleting image file: ${err}`);
-          return;
-        }
-        console.log(`Image file ${imagePath} deleted successfully.`);
-      });
-    }
-
-    // Delete database entry
     const deleteSql = `DELETE FROM users WHERE id = ${id}`;
     connection.query(deleteSql, (error, results2, fields) => {
       if (error) {
-        console.log(`Error deleting image record from database: ${error}`);
-        res.status(500).send(`Error deleting image record from database: ${error}`);
+        res.status(500).send(`Error deleting user database: ${error}`);
         return;
       }
-      if (res.statusCode === 200 && results[0].user_pic !== "DefaultAvatar.jpg") {
-          fs.unlink(imagePath, (err) => {
-            if (err) {
-              console.log(`Error deleting image file: ${err}`);
-              res.status(500).send(`Error deleting image file: ${err}`);
-              return;
-            }
-            console.log(`Image file ${imagePath} deleted successfully.`);
-          });
-      }
+      if (results2.affectedRows === 0) {
+          return res.status(404).json({ message: "No user with that id!" });
+        }
+      res.status(200).json({ message: "user_id deleted successfully!" });
       console.log(`Database entry with id ${id} deleted successfully.`);
-      res.status(200).send(`Image with ID ${id} deleted successfully.`);
     });
-  });
 });
 
 //* DELETE user by ID
