@@ -1,5 +1,5 @@
 {
-"editor.fontFamily":  "JetBrains Mono, Consolas, 'Courier New', monospace",
+"editor.fontFamily":  "Menlo, Monaco, 'Courier New', monospace",
 "editor.fontSize":  12,
 "editor.fontWeight":  "300",
 "editor.lineHeight":  20,
@@ -8,7 +8,7 @@
 "editor.wordWrap":  "on",
 "editor.formatOnPaste":  true,
 "editor.cursorBlinking": "smooth",
-"editor.codeLensFontFamily": "JetBrains Mono, Consolas, 'Courier New', monospace",
+"editor.codeLensFontFamily": "Menlo, Monaco, 'Courier New', monospace",
 "editor.inlayHints.fontFamily": "Consolas, 'Courier New', monospace",
 "debug.console.fontFamily": "JetBrains Mono, Consolas, 'Courier New', monospace",
 "debug.console.fontSize": 12,
