@@ -25,14 +25,13 @@
       </div>
       <div v-for="(system, index) in systems" :key="system.id">
         <h1>{{ system.system_id }} : {{ system.system_nameTH }}</h1>
-        <div
-          class="pa-5"
-          v-if="system.pni != undefined || system.pnc != undefined"
-        >
+        <div class="pa-5" v-if="system.pni != 0 || system.pnc != 0">
           <v-row>
             <v-col>
               <v-card class="pa-5 mx-auto" max-width="500">
-                <h3>PNI</h3>
+                <h3>ปัญหาทั้งหมด</h3>
+                <h3>PNI {{ system.pni }}</h3>
+                <h3>PNC {{ system.pnc }}</h3>
                 <Doughnut :data="chartData(system)" /> </v-card
             ></v-col>
             <v-col>
@@ -86,7 +85,7 @@ export default {
   },
   created() {
     this.getProjects();
-    console.log("Selected Project ID:", this.selectedOption);
+    // console.log("Selected Project ID:", this.selectedOption);
     this.handleProjectChange();
   },
   computed: {
@@ -116,7 +115,7 @@ export default {
       });
     },
     async handleProjectChange() {
-      console.log("Selected Project ID:", this.selectedOption);
+      // console.log("Selected Project ID:", this.selectedOption);
       await this.$axios
         .get("/systems/getAll?project_id=" + this.selectedOption)
         .then((res) => {
@@ -130,8 +129,25 @@ export default {
           const sumResponse = await this.$axios.get(
             "/issues/getSum/" + systemId
           );
-          const pnc = sumResponse.data[0]?.issue_count;
-          const pni = sumResponse.data[1]?.issue_count;
+          // console.log("sumResponse", sumResponse);
+          let pnc = ""; // Change const to let
+          let pni = ""; // Change const to let
+          if (sumResponse.data.length < 2) {
+            if (sumResponse.data[0]?.issue_type == "PNI") {
+              // console.log("hello PNI", sumResponse.data[0]?.issue_count);
+              pnc = 0;
+              pni = sumResponse.data[0]?.issue_count;
+            } else if (sumResponse.data[0]?.issue_type == "PNC") {
+              // console.log("hello PNC");
+              pnc = sumResponse.data[0]?.issue_count;
+              pni = 0;
+            }
+          } else {
+            pnc = sumResponse.data[0]?.issue_count;
+            pni = sumResponse.data[1]?.issue_count;
+          }
+          // console.log("pnc", pnc);
+          // console.log("pni", pni);
 
           const issueSumResponse = await this.$axios.get(
             "/issues/getIssueSum/" + systemId
@@ -166,7 +182,8 @@ export default {
           );
         }
       }
-      console.log("final", this.systems);
+
+      // console.log("final", this.systems);
     },
   },
 };
