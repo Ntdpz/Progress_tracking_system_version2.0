@@ -1,11 +1,20 @@
 const mysql = require("mysql");
 
 const connection = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "notemanagement_db",
+  connectionLimit: 10, // จำนวน connection สูงสุดที่ pool สามารถจัดการได้
+  host: '0.0.0.0',     // ที่อยู่ IP หรือชื่อโฮสต์ของ MySQL Server
+  user: 'root',         // ชื่อผู้ใช้ MySQL
+  password: '',         // รหัสผ่าน MySQL
+  database: 'progresstracking_db', // ชื่อฐานข้อมูลที่ใช้
 });
+
+// const db = mysql.createPool({
+//   connectionLimit: 10, // จำนวน connection สูงสุดที่ pool สามารถจัดการได้
+//   host: '0.0.0.0',     // ที่อยู่ IP หรือชื่อโฮสต์ของ MySQL Server
+//   user: 'root',         // ชื่อผู้ใช้ MySQL
+//   password: '',         // รหัสผ่าน MySQL
+//   database: 'graduation_project', // ชื่อฐานข้อมูลที่ใช้
+// });
 
 // const connection = mysql.createConnection({
 //   host: "se.mfu.ac.th",
