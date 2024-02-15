@@ -95,7 +95,7 @@
                     class="mb-0 pb-0 hidden-sm-and-up"
                     style="place-self: center"
                   >
-                    <h4 class="">"Screen Code</h4>
+                    <h4 class="">Screen Code</h4>
                   </v-col>
                 </v-row>
                 <v-row>
@@ -105,7 +105,7 @@
                     md="4"
                     style="place-self: center"
                   >
-                    <h4 class="">"Screen Code</h4>
+                    <h4 class="">Screen Code</h4>
                   </v-col>
 
                   <v-col class="col-12" sm="8" md="8">
@@ -401,7 +401,7 @@
                           :value="
                             screensID.screen_start != undefined ? dateStart : ''
                           "
-                          label="วันเริ่ม"
+                          label="Start Date"
                           prepend-icon="mdi mdi-calendar-clock-outline"
                           readonly
                           v-bind="attrs"
