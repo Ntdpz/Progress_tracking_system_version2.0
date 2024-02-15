@@ -21,4 +21,5 @@
 "chat.editor.fontSize": 12,
 "markdown.preview.fontFamily": "Consolas, 'Courier New', monospace",
 "markdown.preview.fontSize": 12,
+"nuxt.isNuxtApp": false,
 }
