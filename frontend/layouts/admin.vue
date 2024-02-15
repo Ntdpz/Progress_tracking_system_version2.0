@@ -188,7 +188,7 @@
           max-width="250"
           src="/pingar-high-resolution-logo-transparent.png"
         ></v-img> -->
-        <h4>PINGAR</h4>
+        <h4>Progress Tracking</h4>
       </v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn icon class="mb-3" color="error" @click="logout">
