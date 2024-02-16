@@ -35,27 +35,53 @@ function generateId() {
 }
 
 // * POST FROM screens
-router.post("/createScreen", (req, res) => {
-  const data = req.body;
+router.post("/createScreen", async (req, res) => {
+  const {
+    screen_id,
+    screen_name,
+    screen_status,
+    screen_level,
+    screen_manday,
+    system_id,
+    screen_progress,
+    screen_plan_start,
+    screen_plan_end,
+    screen_pic
+  } = req.body;
 
-  // const screen_pic = req.file ? req.file.filename : defaultImage;
-  const id = generateId();
-  const sql = `INSERT INTO screens SET ?`;
+  try {
+    const query =
+      'INSERT INTO screens (screen_id, screen_name, screen_status, screen_level, screen_manday, system_id, screen_progress, screen_plan_start, screen_plan_end, screen_pic) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
-    connection.query(
-      sql,[data,id],
-          (err, result) => {
-      if (err) {
-        console.error(err);
-        res.sendStatus(500);
-      } else {
-        console.log(`Inserted ${result.affectedRows} row(s)`);
-        res.sendStatus(200);
-      }
-    }
-    );
+    await new Promise((resolve, reject) => {
+      connection.query(
+        query,
+        [
+          screen_id,
+          screen_name,
+          screen_status,
+          screen_level,
+          screen_manday,
+          system_id,
+          screen_progress,
+          screen_plan_start,
+          screen_plan_end,
+          screen_pic
+        ],
+        (err, result) => {
+          if (err) reject(err);
+          resolve(result);
+        }
+      );
+    });
 
+    res.sendStatus(200);
+  } catch (error) {
+    console.error('Error creating screen:', error);
+    res.sendStatus(500);
+  }
 });
+
 
 // router.put("/updateScreen/:id/image", upload.single("image"), (req, res) => {
 //   const id = req.params.id;
