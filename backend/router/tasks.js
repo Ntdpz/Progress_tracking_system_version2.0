@@ -19,10 +19,11 @@ router.use(async (req, res, next) => {
 router.post('/createTasks', async (req, res) => {
     try {
         const {
+            id,
             task_id,
             task_name,
             task_status,
-            task_manday, // เพิ่ม task_manday กลับเข้าไปในรายการ parameter
+            task_manday,
             screen_id,
             project_id,
             system_id,
@@ -33,15 +34,14 @@ router.post('/createTasks', async (req, res) => {
             task_actual_end,
         } = req.body;
 
-        // Perform validation if needed
-
         const query =
-            'INSERT INTO Tasks (task_id, task_name, task_status, task_manday, screen_id, project_id, system_id, task_progress, task_plan_start, task_plan_end, task_actual_start, task_actual_end) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+            'INSERT INTO Tasks (id, task_id, task_name, task_status, task_manday, screen_id, project_id, system_id, task_progress, task_plan_start, task_plan_end, task_actual_start, task_actual_end) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
         await new Promise((resolve, reject) => {
-            db.query(
+            connection.query(
                 query,
                 [
+                    id,
                     task_id,
                     task_name,
                     task_status,
@@ -68,7 +68,6 @@ router.post('/createTasks', async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
-
 
 
 // Route สำหรับดึงข้อมูล Task ทั้งหมด
@@ -103,7 +102,7 @@ router.get('/getOne/:id', async (req, res) => {
         const query = 'SELECT * FROM Tasks WHERE id = ?'; // เปลี่ยน task_id เป็น id
 
         const task = await new Promise((resolve, reject) => {
-            db.query(query, [id], (err, results) => { // เปลี่ยน task_id เป็น id
+            connection.query(query, [id], (err, results) => { // เปลี่ยน task_id เป็น id
                 if (err) reject(err);
                 resolve(results);
             });
@@ -129,7 +128,7 @@ router.get('/getOne/:id', async (req, res) => {
 
 
 // Route สำหรับอัปเดตข้อมูล Task
-router.put('/tasks/:task_id', async (req, res) => {
+router.put('/createTasks/:task_id', async (req, res) => {
     try {
         const {
             task_name,
@@ -170,7 +169,7 @@ router.put('/tasks/:task_id', async (req, res) => {
         const query = 'UPDATE Tasks SET ? WHERE task_id = ?';
 
         await new Promise((resolve, reject) => {
-            db.query(query, [updatedTaskFields, task_id], (err, result) => {
+            connection.query(query, [updatedTaskFields, task_id], (err, result) => {
                 if (err) reject(err);
                 resolve(result);
             });
@@ -191,7 +190,7 @@ router.delete('/tasks/:task_id', async (req, res) => {
         const query = 'DELETE FROM Tasks WHERE task_id = ?';
 
         await new Promise((resolve, reject) => {
-            db.query(query, [task_id], (err, result) => {
+            connection.query(query, [task_id], (err, result) => {
                 if (err) reject(err);
                 resolve(result);
             });
