@@ -154,14 +154,32 @@ router.post("/createScreen", async (req, res) => {
   }
 });
 
-router.put("/updateScreen/:id/image", (req, res) => {
+router.put("/updateScreen/:id", (req, res) => {
   const id = req.params.id;
-  const data = req.body;
-  // const screen_pic = req.file ? req.file.filename : null;
+  const {
+    screen_id,
+    screen_name,
+    screen_status,
+    screen_level,
+    system_id,
+    screen_pic,
+    project_id
+  } = req.body;
+
+  const updatedScreen = {
+    screen_id,
+    screen_name,
+    screen_status,
+    screen_level,
+    system_id,
+    screen_pic,
+    project_id
+  };
+
   try {
     connection.query(
       `UPDATE screens SET ? WHERE id = ?`,
-      [data, id],
+      [updatedScreen, id],
       (err, results, fields) => {
         if (err) {
           console.log(err);
@@ -175,6 +193,7 @@ router.put("/updateScreen/:id/image", (req, res) => {
     return res.status(500).send();
   }
 });
+
 
 //* DELETE screen+image by ID
 router.delete("/delete/:id", async (req, res) => {
