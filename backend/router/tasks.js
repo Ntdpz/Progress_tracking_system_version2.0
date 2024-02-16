@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { db } = require('../modules/db');
+const connection = require("../db");
 const moment = require('moment');
 
 
@@ -16,14 +16,16 @@ router.use(async (req, res, next) => {
 });
 
 // Route สำหรับสร้าง Task
-router.post('/tasks', async (req, res) => {
+router.post('/createTasks', async (req, res) => {
     try {
         const {
             task_id,
             task_name,
             task_status,
-            // Remove task_manday from here
+            task_manday, // เพิ่ม task_manday กลับเข้าไปในรายการ parameter
             screen_id,
+            project_id,
+            system_id,
             task_progress,
             task_plan_start,
             task_plan_end,
@@ -31,16 +33,10 @@ router.post('/tasks', async (req, res) => {
             task_actual_end,
         } = req.body;
 
-        // Calculate task_manday based on task_plan_start and task_plan_end
-        const taskPlanStart = new Date(task_plan_start);
-        const taskPlanEnd = new Date(task_plan_end);
-        const timeDiff = Math.abs(taskPlanEnd.getTime() - taskPlanStart.getTime());
-        const daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
-
         // Perform validation if needed
 
         const query =
-            'INSERT INTO Tasks (task_id, task_name, task_status, task_manday, screen_id, task_progress, task_plan_start, task_plan_end, task_actual_start, task_actual_end) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+            'INSERT INTO Tasks (task_id, task_name, task_status, task_manday, screen_id, project_id, system_id, task_progress, task_plan_start, task_plan_end, task_actual_start, task_actual_end) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
         await new Promise((resolve, reject) => {
             db.query(
@@ -49,9 +45,10 @@ router.post('/tasks', async (req, res) => {
                     task_id,
                     task_name,
                     task_status,
-                    // Assign calculated value to task_manday
-                    daysDiff,
+                    task_manday,
                     screen_id,
+                    project_id,
+                    system_id,
                     task_progress,
                     task_plan_start,
                     task_plan_end,
@@ -73,13 +70,14 @@ router.post('/tasks', async (req, res) => {
 });
 
 
+
 // Route สำหรับดึงข้อมูล Task ทั้งหมด
-router.get('/tasks', async (req, res) => {
+router.get('/getAll', async (req, res) => {
     try {
         const query = 'SELECT * FROM Tasks';
 
         const results = await new Promise((resolve, reject) => {
-            db.query(query, (err, results) => {
+            connection.query(query, (err, results) => {
                 if (err) reject(err);
                 resolve(results.map(task => ({
                     ...task,
@@ -98,14 +96,14 @@ router.get('/tasks', async (req, res) => {
     }
 });
 
-router.get('/tasks/:task_id', async (req, res) => {
+router.get('/getOne/:id', async (req, res) => {
     try {
-        const { task_id } = req.params;
+        const { id } = req.params; // เปลี่ยน task_id เป็น id
 
-        const query = 'SELECT * FROM Tasks WHERE task_id = ?';
+        const query = 'SELECT * FROM Tasks WHERE id = ?'; // เปลี่ยน task_id เป็น id
 
         const task = await new Promise((resolve, reject) => {
-            db.query(query, [task_id], (err, results) => {
+            db.query(query, [id], (err, results) => { // เปลี่ยน task_id เป็น id
                 if (err) reject(err);
                 resolve(results);
             });
@@ -128,6 +126,7 @@ router.get('/tasks/:task_id', async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
+
 
 // Route สำหรับอัปเดตข้อมูล Task
 router.put('/tasks/:task_id', async (req, res) => {
