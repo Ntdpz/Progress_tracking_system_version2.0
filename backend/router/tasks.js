@@ -26,20 +26,19 @@ router.post('/createTasks', async (req, res) => {
         const {
             task_id,
             task_name,
+            tasks_detail,
             task_status,
-            task_manday,
             screen_id,
             project_id,
             system_id,
-            task_progress,
             task_plan_start,
             task_plan_end,
-            task_actual_start,
-            task_actual_end,
         } = req.body;
-        const id = generateId();
+
+        const id = generateId(); // หากใช้ฟังก์ชัน generateId() สำหรับสร้าง ID
+
         const query =
-            'INSERT INTO Tasks (id, task_id, task_name, task_status, task_manday, screen_id, project_id, system_id, task_progress, task_plan_start, task_plan_end, task_actual_start, task_actual_end) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+            'INSERT INTO Tasks (id, task_id, task_name, tasks_detail, task_status, screen_id, project_id, system_id, task_plan_start, task_plan_end) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
         await new Promise((resolve, reject) => {
             connection.query(
@@ -48,16 +47,13 @@ router.post('/createTasks', async (req, res) => {
                     id,
                     task_id,
                     task_name,
+                    tasks_detail,
                     task_status,
-                    task_manday,
                     screen_id,
                     project_id,
                     system_id,
-                    task_progress,
                     task_plan_start,
                     task_plan_end,
-                    task_actual_start,
-                    task_actual_end,
                 ],
                 (err, result) => {
                     if (err) reject(err);
@@ -73,8 +69,6 @@ router.post('/createTasks', async (req, res) => {
     }
 });
 
-
-// Route สำหรับดึงข้อมูล Task ทั้งหมด
 router.get('/getAll', async (req, res) => {
     try {
         const query = 'SELECT * FROM Tasks';
@@ -87,7 +81,8 @@ router.get('/getAll', async (req, res) => {
                     task_plan_start: moment(task.task_plan_start).format('YYYY-MM-DD'),
                     task_plan_end: moment(task.task_plan_end).format('YYYY-MM-DD'),
                     task_actual_start: moment(task.task_actual_start).format('YYYY-MM-DD HH:mm:ss'),
-                    task_actual_end: moment(task.task_actual_end).format('YYYY-MM-DD HH:mm:ss')
+                    task_actual_end: moment(task.task_actual_end).format('YYYY-MM-DD HH:mm:ss'),
+                    task_manday: moment.duration(moment(task.task_plan_end).diff(moment(task.task_plan_start))).asDays()
                 })));
             });
         });
@@ -101,12 +96,12 @@ router.get('/getAll', async (req, res) => {
 
 router.get('/getOne/:id', async (req, res) => {
     try {
-        const { id } = req.params; // เปลี่ยน task_id เป็น id
+        const { id } = req.params;
 
-        const query = 'SELECT * FROM Tasks WHERE id = ?'; // เปลี่ยน task_id เป็น id
+        const query = 'SELECT * FROM Tasks WHERE id = ?';
 
         const task = await new Promise((resolve, reject) => {
-            connection.query(query, [id], (err, results) => { // เปลี่ยน task_id เป็น id
+            connection.query(query, [id], (err, results) => {
                 if (err) reject(err);
                 resolve(results);
             });
@@ -131,13 +126,14 @@ router.get('/getOne/:id', async (req, res) => {
 });
 
 
+
 // Route สำหรับอัปเดตข้อมูล Task
 router.put('/updateTasks/:id', async (req, res) => {
     try {
         const {
             task_name,
             task_status,
-            task_manday,
+            tasks_detail,
             task_progress,
             task_plan_start,
             task_plan_end,
@@ -159,12 +155,35 @@ router.put('/updateTasks/:id', async (req, res) => {
             updatedTaskFields.task_status = task_status;
         }
 
-        // Check and add task_manday if provided
-        if (task_manday !== undefined) {
-            updatedTaskFields.task_manday = task_manday;
+        // Check and add tasks_detail if provided
+        if (tasks_detail !== undefined) {
+            updatedTaskFields.tasks_detail = tasks_detail;
         }
 
-        // Check and add other fields if needed
+        // Check and add task_progress if provided
+        if (task_progress !== undefined) {
+            updatedTaskFields.task_progress = task_progress;
+        }
+
+        // Check and add task_plan_start if provided
+        if (task_plan_start !== undefined) {
+            updatedTaskFields.task_plan_start = task_plan_start;
+        }
+
+        // Check and add task_plan_end if provided
+        if (task_plan_end !== undefined) {
+            updatedTaskFields.task_plan_end = task_plan_end;
+        }
+
+        // Check and add task_actual_start if provided
+        if (task_actual_start !== undefined) {
+            updatedTaskFields.task_actual_start = task_actual_start;
+        }
+
+        // Check and add task_actual_end if provided
+        if (task_actual_end !== undefined) {
+            updatedTaskFields.task_actual_end = task_actual_end;
+        }
 
         if (Object.keys(updatedTaskFields).length === 0) {
             return res.status(400).json({ error: 'No fields to update' });
@@ -187,15 +206,16 @@ router.put('/updateTasks/:id', async (req, res) => {
 });
 
 
-// Route สำหรับลบ Task
-router.delete('/tasks/:task_id', async (req, res) => {
-    try {
-        const { task_id } = req.params;
 
-        const query = 'DELETE FROM Tasks WHERE task_id = ?';
+// Route สำหรับลบ Task
+router.delete('/delete/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const query = 'DELETE FROM Tasks WHERE id = ?';
 
         await new Promise((resolve, reject) => {
-            connection.query(query, [task_id], (err, result) => {
+            connection.query(query, [id], (err, result) => {
                 if (err) reject(err);
                 resolve(result);
             });
@@ -207,5 +227,6 @@ router.delete('/tasks/:task_id', async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
+
 
 module.exports = router;
