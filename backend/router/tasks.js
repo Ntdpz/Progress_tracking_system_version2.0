@@ -3,7 +3,12 @@ const router = express.Router();
 const connection = require("../db");
 const moment = require('moment');
 
-
+function generateId() {
+    const maxId = 999999999;
+    const minId = 100000000;
+    const id = Math.floor(Math.random() * (maxId - minId + 1)) + minId;
+    return id;
+}
 // Middleware สำหรับการเชื่อมต่อกับฐานข้อมูล
 router.use(async (req, res, next) => {
     try {
@@ -19,7 +24,6 @@ router.use(async (req, res, next) => {
 router.post('/createTasks', async (req, res) => {
     try {
         const {
-            id,
             task_id,
             task_name,
             task_status,
@@ -33,7 +37,7 @@ router.post('/createTasks', async (req, res) => {
             task_actual_start,
             task_actual_end,
         } = req.body;
-
+        const id = generateId();
         const query =
             'INSERT INTO Tasks (id, task_id, task_name, task_status, task_manday, screen_id, project_id, system_id, task_progress, task_plan_start, task_plan_end, task_actual_start, task_actual_end) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
@@ -128,7 +132,7 @@ router.get('/getOne/:id', async (req, res) => {
 
 
 // Route สำหรับอัปเดตข้อมูล Task
-router.put('/createTasks/:task_id', async (req, res) => {
+router.put('/updateTasks/:id', async (req, res) => {
     try {
         const {
             task_name,
@@ -141,7 +145,7 @@ router.put('/createTasks/:task_id', async (req, res) => {
             task_actual_end,
         } = req.body;
 
-        const { task_id } = req.params;
+        const { id } = req.params; // แก้ตรงนี้ให้ใช้ id แทน task_id
 
         const updatedTaskFields = {};
 
@@ -166,10 +170,10 @@ router.put('/createTasks/:task_id', async (req, res) => {
             return res.status(400).json({ error: 'No fields to update' });
         }
 
-        const query = 'UPDATE Tasks SET ? WHERE task_id = ?';
+        const query = 'UPDATE Tasks SET ? WHERE id = ?'; // แก้ SQL query ให้ใช้ id แทน task_id
 
         await new Promise((resolve, reject) => {
-            connection.query(query, [updatedTaskFields, task_id], (err, result) => {
+            connection.query(query, [updatedTaskFields, id], (err, result) => {
                 if (err) reject(err);
                 resolve(result);
             });
@@ -181,6 +185,7 @@ router.put('/createTasks/:task_id', async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
+
 
 // Route สำหรับลบ Task
 router.delete('/tasks/:task_id', async (req, res) => {
