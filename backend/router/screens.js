@@ -1,17 +1,29 @@
+// เรียกใช้โมดูล express และสร้าง router
 const express = require("express");
 const router = express.Router();
+
+// เรียกใช้โมดูลเชื่อมต่อฐานข้อมูล
 const connection = require("../db");
+
+// เรียกใช้โมดูล multer สำหรับการอัปโหลดไฟล์
 const multer = require("multer");
+
+// เรียกใช้โมดูล fs และ path สำหรับการจัดการไฟล์
 const fs = require("fs");
 const path = require("path");
+
+// เรียกใช้โมดูล uuid และ crypto สำหรับการสร้าง UUID และการเข้ารหัส
 const uuid = require("uuid");
 const crypto = require("crypto");
 
+// กำหนดการเก็บรักษาไฟล์ด้วย multer.diskStorage
 const storage = multer.diskStorage({
   destination(req, file, cb) {
+    // กำหนดโฟลเดอร์ปลายทางสำหรับการบันทึกไฟล์
     cb(null, "../frontend/static/screenImages/");
   },
   filename(req, file, cb) {
+    // กำหนดชื่อไฟล์ใหม่โดยใช้ UUID และ timestamp
     const originalname = file.originalname;
     const filename =
       uuid.v4() +
@@ -23,10 +35,14 @@ const storage = multer.diskStorage({
   },
 });
 
+// กำหนดการอัปโหลดด้วย multer
 const upload = multer({ storage });
+
+// กำหนดชื่อไฟล์รูปภาพเริ่มต้น
 const defaultName = "../frontend/static/screenImages/DefaultScreen.jpg";
 const defaultImage = defaultName.substring(defaultName.lastIndexOf("/") + 1);
 
+// ฟังก์ชันสำหรับสร้าง ID แบบสุ่ม
 function generateId() {
   const maxId = 999999999;
   const minId = 100000000;
@@ -34,24 +50,24 @@ function generateId() {
   return id;
 }
 
-// * POST FROM screens
+
 router.post("/createScreen", async (req, res) => {
   const {
     screen_id,
     screen_name,
     screen_status,
     screen_level,
-    screen_manday,
+    screen_pic,
     system_id,
     screen_progress,
     screen_plan_start,
     screen_plan_end,
-    screen_pic
+    project_id // เพิ่ม project_id เข้ามา
   } = req.body;
 
   try {
     const query =
-      'INSERT INTO screens (screen_id, screen_name, screen_status, screen_level, screen_manday, system_id, screen_progress, screen_plan_start, screen_plan_end, screen_pic) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+      'INSERT INTO screens (screen_id, screen_name, screen_status, screen_level, screen_pic, system_id, screen_progress, screen_plan_start, screen_plan_end, project_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'; // เพิ่ม project_id ใน query
 
     await new Promise((resolve, reject) => {
       connection.query(
@@ -61,12 +77,12 @@ router.post("/createScreen", async (req, res) => {
           screen_name,
           screen_status,
           screen_level,
-          screen_manday,
+          screen_pic,
           system_id,
           screen_progress,
           screen_plan_start,
           screen_plan_end,
-          screen_pic
+          project_id // เพิ่ม project_id ใน array ของ values
         ],
         (err, result) => {
           if (err) reject(err);
@@ -81,121 +97,6 @@ router.post("/createScreen", async (req, res) => {
     res.sendStatus(500);
   }
 });
-
-
-// router.put("/updateScreen/:id/image", upload.single("image"), (req, res) => {
-//   const id = req.params.id;
-//   const {
-//     system_id,
-//     project_id,
-//     screen_id,
-//     screen_name,
-//     screen_developer,
-//     screen_implementer,
-//     screen_status,
-//     screen_level,
-//     screen_start,
-//     screen_end,
-//     screen_manday,
-//   } = req.body;
-//   const screen_pic = req.file ? req.file.filename : null;
-//   try {
-//     let sql;
-//     let values;
-//     let deletePath = null;
-
-//     if (screen_pic) {
-//       connection.query(
-//         `SELECT screen_pic FROM screens WHERE id = ?`,
-//         [id],
-//         (err, results, fields) => {
-//           if (err) {
-//             console.log(err);
-//             return res.status(400).send(err);
-//           }
-//           if (results[0].screen.pic === "DefaultScreen.jpg") {
-//             console.log("Save");
-//           } else if (results[0].screen_pic != "DefaultScreen.jpg" && results[0].screen_pic) {
-//             deletePath = "../frontend/static/screenImages/" + results[0].screen_pic;
-//             fs.unlink(deletePath, (err) => {
-//               if (err) {
-//                 console.error(err);
-//                 return;
-//               }
-//               console.log("Old profile picture deleted" + results[0].screen_pic)
-//             });
-//           }
-
-//           sql = `UPDATE screens SET
-//           system_id = ?,
-//           project_id = ?,
-//           screen_id = ?,
-//           screen_name = ?,
-//           screen_developer = ?,
-//           screen_implementer = ?,
-//           screen_status = ?,
-//           screen_level = ?,
-//           screen_start = ?,
-//           screen_end = ?,
-//           screen_manday, = ?
-//           screen_pic = ?
-//           WHERE id = ?`;
-//           values = [
-//             system_id,
-//             project_id,
-//             screen_id,
-//             screen_name,
-//             screen_developer,
-//             screen_implementer,
-//             screen_status,
-//             screen_level,
-//             screen_start,
-//             screen_end,
-//             screen_manday,
-//             screen_pic,
-//             id,
-//           ];
-//           connection.query(sql, values, (err, results, fields) => {
-//             if (err) {
-//               console.log(err);
-//               return res.status(400).send(err);
-//             }
-//             res.status(200).json({ message: "User update successfully!" });
-//           });
-//         }
-//       );
-//     } else {
-//       connection.query(
-//         "UPDATE screens SET system_id = ?, project_id = ?, screen_id = ?, screen_name = ?, screen_developer = ?, screen_implementer = ?, screen_status = ?, screen_level = ?, screen_start = ?, screen_end = ?, screen_manday = ? WHERE id = ?",
-//         [
-//           system_id,
-//           project_id,
-//           screen_id,
-//           screen_name,
-//           screen_developer,
-//           screen_implementer,
-//           screen_status,
-//           screen_level,
-//           screen_start,
-//           screen_end,
-//           screen_manday,
-//           id,
-//         ],
-//         (err, results, fields) => {
-//           if (err) {
-//             console.log(err);
-//             return res.status(400).send();
-//           }
-//           res.status(200).json({ message: "Screen updated successfully!" });
-//         }
-//       );
-//     }
-
-//   } catch (err) {
-//     console.log(err);
-//     return res.status(500).send();
-//   }
-// });
 
 router.put("/updateScreen/:id/image", (req, res) => {
   const id = req.params.id;
