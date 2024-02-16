@@ -50,85 +50,6 @@ function generateId() {
   return id;
 }
 
-
-router.post("/createScreen", async (req, res) => {
-  const {
-    screen_id,
-    screen_name,
-    screen_status,
-    screen_level,
-    screen_pic,
-    system_id,
-    screen_progress,
-    screen_plan_start,
-    screen_plan_end,
-    project_id // เพิ่ม project_id เข้ามา
-  } = req.body;
-
-  try {
-    const query =
-      'INSERT INTO screens (screen_id, screen_name, screen_status, screen_level, screen_pic, system_id, screen_progress, screen_plan_start, screen_plan_end, project_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'; // เพิ่ม project_id ใน query
-
-    await new Promise((resolve, reject) => {
-      connection.query(
-        query,
-        [
-          screen_id,
-          screen_name,
-          screen_status,
-          screen_level,
-          screen_pic,
-          system_id,
-          screen_progress,
-          screen_plan_start,
-          screen_plan_end,
-          project_id // เพิ่ม project_id ใน array ของ values
-        ],
-        (err, result) => {
-          if (err) reject(err);
-          resolve(result);
-        }
-      );
-    });
-
-    res.sendStatus(200);
-  } catch (error) {
-    console.error('Error creating screen:', error);
-    res.sendStatus(500);
-  }
-});
-
-router.put("/updateScreen/:id/image", (req, res) => {
-  const id = req.params.id;
-  const data = req.body;
-  // const screen_pic = req.file ? req.file.filename : null;
-  try {
-connection.query(
-  `UPDATE screens SET ? WHERE id = ?`,
-  [data, id],
-  (err, results, fields) => {
-    if (err) {
-      console.log(err);
-      return res.status(400).send();
-    }
-    res.status(200).json({ message: "Screen updated successfully!" });
-  }
-);
-  } catch (err) {
-    console.log(err);
-    return res.status(500).send();
-  }
-});
-
-router.get("/test", async (req, res) => {
-  try {
-    return "Hello";
-  } catch (err) {
-    console.log(err);
-    return res.status(500).send();
-  }
-});
-
 // * GET All FROM screens
 router.get("/getAll", async (req, res) => {
   try {
@@ -186,169 +107,102 @@ router.get("/getOne/:id", async (req, res) => {
   }
 });
 
-//* DELETE screen+image by ID
-router.delete("/delete/:id", (req, res) => {
+router.post("/createScreen", async (req, res) => {
+  const {
+    screen_id,
+    screen_name,
+    screen_status,
+    screen_level,
+    screen_pic,
+    system_id,
+    screen_progress,
+    screen_plan_start,
+    screen_plan_end,
+    project_id // เพิ่ม project_id เข้ามา
+  } = req.body;
+
+  try {
+    const query =
+      'INSERT INTO screens (screen_id, screen_name, screen_status, screen_level, screen_pic, system_id, screen_progress, screen_plan_start, screen_plan_end, project_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'; // เพิ่ม project_id ใน query
+
+    await new Promise((resolve, reject) => {
+      connection.query(
+        query,
+        [
+          screen_id,
+          screen_name,
+          screen_status,
+          screen_level,
+          screen_pic,
+          system_id,
+          screen_progress,
+          screen_plan_start,
+          screen_plan_end,
+          project_id // เพิ่ม project_id ใน array ของ values
+        ],
+        (err, result) => {
+          if (err) reject(err);
+          resolve(result);
+        }
+      );
+    });
+
+    res.sendStatus(200);
+  } catch (error) {
+    console.error('Error creating screen:', error);
+    res.sendStatus(500);
+  }
+});
+
+router.put("/updateScreen/:id/image", (req, res) => {
   const id = req.params.id;
-  
-  const sql = `SELECT * FROM screens WHERE id = ${id}`;
-  connection.query(sql, (err, results, fields) => {
-    const deleteSql = `DELETE FROM screens WHERE id = ${id}`;
-    try {
-      connection.query(deleteSql, (err, results, fields) => {
+  const data = req.body;
+  // const screen_pic = req.file ? req.file.filename : null;
+  try {
+    connection.query(
+      `UPDATE screens SET ? WHERE id = ?`,
+      [data, id],
+      (err, results, fields) => {
         if (err) {
           console.log(err);
           return res.status(400).send();
         }
-        if (results.affectedRows === 0) {
-          return res.status(404).json({ message: "No screen with that id!" });
-        }
-        return res
-          .status(200)
-          .json({ message: "Screen deleted successfully!" });
-      });
-    } catch (err) {
-      console.log(err);
-      return res.status(500).send();
-    }
-  });
+        res.status(200).json({ message: "Screen updated successfully!" });
+      }
+    );
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send();
+  }
 });
 
-//* DELETE screen+image by system_id
-router.delete("/deleteScreen/:system_id", (req, res) => {
-  const system_id = req.params.system_id;
+//* DELETE screen+image by ID
+router.delete("/delete/:id", async (req, res) => {
+  const id = req.params.id;
 
-  // check if system_id exists
-  const checkSql = `SELECT * FROM screens WHERE system_id = ${system_id}`;
-  connection.query(checkSql, (err, results, fields) => {
-    if (err) {
-      console.log(err);
-      return res
-        .status(500)
-        .send(`Error checking for system_id in database: ${err}`);
-    }
-    if (results.length === 0) {
-      console.log(`System with ID ${system_id} not found in database.`);
-      return res.status(404).json({ message: "No system with that id!" });
+  try {
+    // Check if the screen exists
+    const selectSql = `SELECT * FROM screens WHERE id = ?`;
+    const [screen] = await connection.query(selectSql, [id]);
+
+    if (screen.length === 0) {
+      return res.status(404).json({ message: "No screen with that id!" });
     }
 
-    // get image
-    // const sql = `SELECT screen_pic FROM screens WHERE system_id = ${system_id}`;
-      // if (err) {
-      //   console.log(err);
-      //   res
-      //     .status(500)
-      //     .send(`Error retrieving image path from database: ${err}`);
-      //   return;
-      // }
-      // if (results.length === 0) {
-      //   console.log(`Image with ID ${id} not found in database.`);
-      //   res.status(404).send(`Image with ID ${id} not found in database.`);
-      //   return;
-      // }
+    // Delete the screen and related tasks
+    const deleteScreenSql = `DELETE FROM screens WHERE id = ?`;
+    const deleteTasksSql = `DELETE FROM tasks WHERE screen_id = ?`;
 
-      // const imagePath = "../frontend/static/screenImages/" + results[0].screen_pic;
+    await connection.query(deleteScreenSql, [id]);
+    await connection.query(deleteTasksSql, [screen[0].screen_id]);
 
-      // if (results[0].screen_pic !== "DefaultScreen.jpg") {
-      //   fs.unlink(imagePath, (err) => {
-      //     if (err) {
-      //       console.log(`Error deleting image file: ${err}`);
-      //       res.status(500).send(`Error deleting image file: ${err}`);
-      //       return;
-      //     }
-      //     console.log(`Image file ${imagePath} deleted successfully.`);
-      //   });
-      // }
-
-      const deleteSql = `DELETE FROM screens WHERE system_id = ${system_id}`;
-      try {
-        connection.query(deleteSql, (err, results, fields) => {
-          if (err) {
-            console.log(err);
-            return res.status(400).send();
-          }
-          if (results.affectedRows === 0) {
-            return res.status(404).json({ message: "No screen with that id!" });
-          }
-          return res
-            .status(200)
-            .json({ message: "Screen deleted successfully!" });
-        });
-      } catch (err) {
-        console.log(err);
-        return res.status(500).send();
-      }
-
-  });
+    return res.status(200).json({ message: "Screen and related tasks deleted successfully!" });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).send();
+  }
 });
 
-//* DELETE screen+image by project_id
-router.delete("/deleteScreenProjectId/:project_id", (req, res) => {
-  const project_id = req.params.project_id;
-
-  // check if project_id exists
-  const checkSql = `SELECT * FROM screens WHERE project_id = ${project_id}`;
-  connection.query(checkSql, (err, results, fields) => {
-    if (err) {
-      console.log(err);
-      return res
-        .status(500)
-        .send(`Error checking for project_id in database: ${err}`);
-    }
-    if (results.length === 0) {
-      console.log(`System with ID ${project_id} not found in database.`);
-      return res.status(404).json({ message: "No system with that id!" });
-    }
-
-    // get image
-    const sql = `SELECT screen_pic FROM screens WHERE project_id = ${project_id}`;
-    connection.query(sql, (err, results, fields) => {
-      if (err) {
-        console.log(err);
-        res
-          .status(500)
-          .send(`Error retrieving image path from database: ${err}`);
-        return;
-      }
-      if (results.length === 0) {
-        console.log(`Image with ID ${id} not found in database.`);
-        res.status(404).send(`Image with ID ${id} not found in database.`);
-        return;
-      }
-
-      const imagePath = "../frontend/static/screenImages/" + results[0].screen_pic;
-
-      if (results[0].screen_pic !== "DefaultScreen.jpg") {
-        fs.unlink(imagePath, (err) => {
-          if (err) {
-            console.log(`Error deleting image file: ${err}`);
-            res.status(500).send(`Error deleting image file: ${err}`);
-            return;
-          }
-          console.log(`Image file ${imagePath} deleted successfully.`);
-        });
-      }
-
-      const deleteSql = `DELETE FROM screens WHERE project_id = ${project_id}`;
-      try {
-        connection.query(deleteSql, (err, results, fields) => {
-          if (err) {
-            console.log(err);
-            return res.status(400).send();
-          }
-          if (results.affectedRows === 0) {
-            return res.status(404).json({ message: "No screen with that id!" });
-          }
-          return res
-            .status(200)
-            .json({ message: "Screen deleted successfully!" });
-        });
-      } catch (err) {
-        console.log(err);
-        return res.status(500).send();
-      }
-    });
-  });
-});
 
 router.post("/addUserScreen", async (req, res) => {
   const { user_id, screen_ids } = req.body;
