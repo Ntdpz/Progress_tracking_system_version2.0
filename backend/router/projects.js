@@ -57,33 +57,27 @@ router.get("/getOne/:id", async (req, res) => {
 router.post("/createProject", async (req, res) => {
   const {
     project_id,
-    project_name,
-    project_shortname,
-    project_agency,
-    project_start,
-    project_end,
+    project_name_TH,
+    project_name_ENG,
   } = req.body;
-  const id = generateId();
+
+  const id = generateId(); // สร้าง ID โดยใช้ฟังก์ชัน generateId()
+
   try {
     connection.query(
-      "INSERT INTO projects(id,project_id, project_name, project_shortname ,project_agency, project_start, project_end) VALUES(?,?, ?, ? ,? ,?,?)",
+      "INSERT INTO projects (id, project_id, project_name_TH, project_name_ENG) VALUES (?, ?, ?, ?)",
       [
         id,
         project_id,
-        project_name,
-        project_shortname,
-        project_agency,
-        project_start,
-        project_end,
+        project_name_TH,
+        project_name_ENG,
       ],
       (err, results, fields) => {
         if (err) {
           console.log("Error while inserting a project into the database", err);
           return res.status(400).send();
         }
-        return res
-          .status(201)
-          .json({ message: "New project successfully created!" });
+        return res.status(201).json({ message: "New project successfully created!" });
       }
     );
   } catch (err) {
@@ -96,22 +90,17 @@ router.put("/updateProject/:id", async (req, res) => {
   const id = req.params.id;
   const {
     project_id,
-    project_name,
-    project_shortname,
-    project_agency,
-    project_start,
-    project_end,
+    project_name_TH,
+    project_name_ENG,
   } = req.body;
+
   try {
     connection.query(
-      "UPDATE projects SET project_id = ?, project_name = ?, project_shortname = ?, project_agency = ?, project_start = ?, project_end = ? WHERE id = ?",
+      "UPDATE projects SET project_id = ?, project_name_TH = ?, project_name_ENG = ? WHERE id = ?",
       [
         project_id,
-        project_name,
-        project_shortname,
-        project_agency,
-        project_start,
-        project_end,
+        project_name_TH,
+        project_name_ENG,
         id,
       ],
       (err, results, fields) => {
@@ -128,25 +117,80 @@ router.put("/updateProject/:id", async (req, res) => {
   }
 });
 
+
 //* DELETE user by ID
 router.delete("/delete/:id", async (req, res) => {
   const id = req.params.id;
 
   try {
+    // ลบข้อมูลที่เกี่ยวข้องในตาราง history_issues
     connection.query(
-      "DELETE FROM projects WHERE id = ?",
+      "DELETE FROM history_issues WHERE project_id = ?",
       [id],
       (err, results, fields) => {
         if (err) {
           console.log(err);
-          return res.status(400).send();
+          return res.status(500).send();
         }
-        if (results.affectedRows === 0) {
-          return res.status(404).json({ message: "No project with that id!" });
-        }
-        return res
-          .status(200)
-          .json({ message: "Project deleted successfully!" });
+        // ลบข้อมูลที่เกี่ยวข้องในตาราง issues
+        connection.query(
+          "DELETE FROM issues WHERE project_id = ?",
+          [id],
+          (err, results, fields) => {
+            if (err) {
+              console.log(err);
+              return res.status(500).send();
+            }
+            // ลบข้อมูลที่เกี่ยวข้องในตาราง screens
+            connection.query(
+              "DELETE FROM screens WHERE project_id = ?",
+              [id],
+              (err, results, fields) => {
+                if (err) {
+                  console.log(err);
+                  return res.status(500).send();
+                }
+                // ลบข้อมูลที่เกี่ยวข้องในตาราง systems
+                connection.query(
+                  "DELETE FROM systems WHERE project_id = ?",
+                  [id],
+                  (err, results, fields) => {
+                    if (err) {
+                      console.log(err);
+                      return res.status(500).send();
+                    }
+                    // ลบข้อมูลที่เกี่ยวข้องในตาราง user_projects
+                    connection.query(
+                      "DELETE FROM user_projects WHERE project_id = ?",
+                      [id],
+                      (err, results, fields) => {
+                        if (err) {
+                          console.log(err);
+                          return res.status(500).send();
+                        }
+                        // เมื่อลบข้อมูลที่เกี่ยวข้องในตารางทุกตารางเรียบร้อยแล้ว ลบโครงการที่มี id ตรงกันในตารางโครงการ
+                        connection.query(
+                          "DELETE FROM projects WHERE id = ?",
+                          [id],
+                          (err, results, fields) => {
+                            if (err) {
+                              console.log(err);
+                              return res.status(500).send();
+                            }
+                            if (results.affectedRows === 0) {
+                              return res.status(404).json({ message: "No project with that id!" });
+                            }
+                            return res.status(200).json({ message: "Project deleted successfully!" });
+                          }
+                        );
+                      }
+                    );
+                  }
+                );
+              }
+            );
+          }
+        );
       }
     );
   } catch (err) {
@@ -154,6 +198,9 @@ router.delete("/delete/:id", async (req, res) => {
     return res.status(500).send();
   }
 });
+
+
+
 
 router.post("/addUserProject", async (req, res) => {
   const { user_id, project_ids } = req.body;
@@ -164,14 +211,6 @@ router.post("/addUserProject", async (req, res) => {
         console.log("Error: project_ids is not an array");
         return;
       }
-
-      // http://localhost:7777/projects/addUserProject
-      //   {
-      //     "user_id": 15, //user_id
-      //     "project_ids": [1] //project_id in array
-      // }
-
-      // Map over the project IDs and insert a new row into the user_projects table for each one
       project_ids.map((project_id) => {
         connection.query(
           "INSERT INTO user_projects (user_id, project_id) VALUES (?, ?)",
