@@ -51,6 +51,7 @@ function generateId() {
 }
 
 // * GET All FROM screens
+// * GET All FROM screens
 router.get("/getAll", async (req, res) => {
   try {
     const systemIDFilter = req.query.system_id;
@@ -73,12 +74,28 @@ router.get("/getAll", async (req, res) => {
       queryParams.push(screen_project_system_Filter);
     }
 
-    connection.query(query, queryParams, (err, results, fields) => {
+    connection.query(query, queryParams, async (err, results, fields) => {
       if (err) {
         console.log(err);
         return res.status(400).send();
       }
-      res.status(200).json(results);
+      // Fetch tasks for each screen
+      const screensWithTasks = await Promise.all(
+        results.map(async (screen) => {
+          const tasksQuery = 'SELECT * FROM Tasks WHERE screen_id = ?';
+          const tasks = await new Promise((resolve, reject) => {
+            connection.query(tasksQuery, [screen.id], (err, tasks) => {
+              if (err) reject(err);
+              resolve(tasks);
+            });
+          });
+          // Calculate screen_progress based on task_progress
+          const totalTaskProgress = tasks.reduce((total, task) => total + task.task_progress, 0);
+          screen.screen_progress = tasks.length > 0 ? totalTaskProgress / tasks.length : null;
+          return screen;
+        })
+      );
+      res.status(200).json(screensWithTasks);
     });
   } catch (err) {
     console.log(err);
@@ -86,7 +103,7 @@ router.get("/getAll", async (req, res) => {
   }
 });
 
-//* GET one by id
+// * GET one by id
 router.get("/getOne/:id", async (req, res) => {
   const id = req.params.id;
   try {
@@ -106,6 +123,7 @@ router.get("/getOne/:id", async (req, res) => {
     return res.status(500).send();
   }
 });
+
 
 router.post("/createScreen", async (req, res) => {
   const {
