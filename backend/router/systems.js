@@ -13,20 +13,25 @@ function generateId() {
   const id = Math.floor(Math.random() * (maxId - minId + 1)) + minId;
   return id;
 }
-
 // * GET All FROM systems
 router.get("/getAll", async (req, res) => {
   try {
     const systemIdFilter = req.query.system_id;
     const projectFilter = req.query.project_id;
     let query = `
-      SELECT Systems.*, 
+      SELECT Systems.id, 
+             Systems.project_id,
+             Systems.system_id,
+             Systems.system_nameTH,
+             Systems.system_nameEN,
+             Systems.system_shortname,
              COUNT(Screens.screen_id) AS screen_count, 
              AVG(Screens.screen_progress) AS system_progress, 
-             MIN(Screens.screen_plan_start) AS system_plan_start, 
-             MAX(Screens.screen_plan_end) AS system_plan_end 
+             DATE(MIN(Screens.screen_plan_start)) AS system_plan_start,
+             DATE(MAX(Screens.screen_plan_end)) AS system_plan_end,
+             DATEDIFF(MAX(Screens.screen_plan_end), MIN(Screens.screen_plan_start)) AS system_manday
       FROM Systems 
-      LEFT JOIN Screens ON Systems.system_id = Screens.system_id 
+      LEFT JOIN Screens ON Systems.id = Screens.system_id 
     `;
     const queryParams = [];
 
@@ -34,17 +39,22 @@ router.get("/getAll", async (req, res) => {
       query += " WHERE Systems.project_id = ?";
       queryParams.push(projectFilter);
     } else if (systemIdFilter) {
-      query += " WHERE Systems.system_id = ?";
+      query += " WHERE Systems.id = ?";
       queryParams.push(systemIdFilter);
     }
 
-    query += " GROUP BY Systems.system_id";
+    query += " GROUP BY Systems.id";
 
     connection.query(query, queryParams, (err, results, fields) => {
       if (err) {
         console.log(err);
         return res.status(400).send();
       }
+      // Format system_plan_start and system_plan_end to contain only date
+      results.forEach(system => {
+        system.system_plan_start = new Date(system.system_plan_start).toISOString().split('T')[0];
+        system.system_plan_end = new Date(system.system_plan_end).toISOString().split('T')[0];
+      });
       res.status(200).json(results);
     });
   } catch (err) {
@@ -53,8 +63,7 @@ router.get("/getAll", async (req, res) => {
   }
 });
 
-
-//* GET one by id
+// * GET one by id
 router.get("/getOne/:id", async (req, res) => {
   const id = req.params.id;
   try {
@@ -74,7 +83,6 @@ router.get("/getOne/:id", async (req, res) => {
     return res.status(500).send();
   }
 });
-
 
 // * POST FROM systems
 router.post("/createSystem", async (req, res) => {
@@ -166,9 +174,6 @@ router.put("/updateSystem/:id", async (req, res) => {
   }
 });
 
-
-//* DELETE system by ID
-
 router.delete("/delete/:id", async (req, res) => {
   const id = req.params.id;
 
@@ -222,8 +227,6 @@ router.delete("/delete/:id", async (req, res) => {
     return res.status(500).send();
   }
 });
-
-
 // //* DELETE system by project_id
 // router.delete("/deleteProjectId/:project_id", async (req, res) => {
 //   const project_id = req.params.project_id;
