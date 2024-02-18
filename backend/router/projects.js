@@ -132,8 +132,6 @@ async function updateProject(project) {
     throw error;
   }
 }
-
-
 // * POST FROM projects
 router.post("/createProject", async (req, res) => {
   const {
@@ -176,12 +174,31 @@ router.put("/updateProject/:id", async (req, res) => {
   } = req.body;
 
   try {
+    // ดึงข้อมูลโปรเจคก่อนหน้าที่มีการแก้ไข
+    const previousProjectData = await new Promise((resolve, reject) => {
+      connection.query(
+        "SELECT * FROM projects WHERE id = ?",
+        [id],
+        (err, results, fields) => {
+          if (err) reject(err);
+          resolve(results[0]);
+        }
+      );
+    });
+
+    // ตรวจสอบว่ามีการส่งข้อมูลการแก้ไขไหม
+    if (!project_id && !project_name_TH && !project_name_ENG) {
+      // ถ้าไม่มีข้อมูลการแก้ไข ส่งข้อมูลเดิมกลับไปยังฐานข้อมูล
+      return res.status(200).json(previousProjectData);
+    }
+
+    // มีการส่งข้อมูลการแก้ไข
     connection.query(
       "UPDATE projects SET project_id = ?, project_name_TH = ?, project_name_ENG = ? WHERE id = ?",
       [
-        project_id,
-        project_name_TH,
-        project_name_ENG,
+        project_id || req.body.project_id || previousProjectData.project_id, // ถ้าไม่มีการส่ง project_id ให้ใช้ค่าเดิม
+        project_name_TH || req.body.project_name_TH || previousProjectData.project_name_TH, // ถ้าไม่มีการส่ง project_name_TH ให้ใช้ค่าเดิม
+        project_name_ENG || req.body.project_name_ENG || previousProjectData.project_name_ENG, // ถ้าไม่มีการส่ง project_name_ENG ให้ใช้ค่าเดิม
         id,
       ],
       (err, results, fields) => {
@@ -197,7 +214,6 @@ router.put("/updateProject/:id", async (req, res) => {
     return res.status(500).send();
   }
 });
-
 
 //* DELETE user by ID
 router.delete("/delete/:id", async (req, res) => {
@@ -279,9 +295,6 @@ router.delete("/delete/:id", async (req, res) => {
     return res.status(500).send();
   }
 });
-
-
-
 
 router.post("/addUserProject", async (req, res) => {
   const { user_id, project_ids } = req.body;
