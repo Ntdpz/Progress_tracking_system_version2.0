@@ -110,27 +110,26 @@ router.get("/getAll", async (req, res) => {
   }
 });
 
-
-// Function to update screen data in the database
 async function updateScreen(screen) {
   try {
     const updateQuery = `
-      UPDATE systems 
+      UPDATE screens 
       SET 
-        system_manday = ?,
-        system_progress = ?,
-        system_plan_start = ?, 
-        system_plan_end = ?
+        screen_progress = ?,
+        screen_plan_start = ?, 
+        screen_plan_end = ?,
+        task_count = ?
       WHERE id = ?
     `;
 
     const queryParams = [
-      screen.system_manday,
-      screen.system_progress,
-      screen.system_plan_start,
-      screen.system_plan_end,
+      screen.screen_progress,
+      screen.screen_plan_start,
+      screen.screen_plan_end,
+      screen.task_count,
       screen.id
     ];
+
     await new Promise((resolve, reject) => {
       connection.query(updateQuery, queryParams, (err, result) => {
         if (err) reject(err);
@@ -141,6 +140,52 @@ async function updateScreen(screen) {
     throw error;
   }
 }
+
+router.get("/getOne/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // สร้างคำสั่ง SQL เพื่อดึงข้อมูลของรายการเดียวโดยระบุ id
+    let query = `
+      SELECT
+        Screens.*,
+        AVG(tasks.task_progress) AS screen_progress,
+        DATE(MIN(Screens.screen_plan_start)) AS screen_plan_start,
+        DATE(MAX(Screens.screen_plan_end)) AS screen_plan_end,
+        DATEDIFF(MAX(tasks.task_plan_end), MIN(tasks.task_plan_start)) AS screen_manday
+      FROM
+        Screens
+      LEFT JOIN tasks ON Screens.id = tasks.screen_id
+    `;
+
+    // ตรวจสอบว่ามีการระบุ id หรือไม่ หากมีให้กรองด้วย id
+    if (id) {
+      query += " WHERE Screens.id = ?";
+    }
+
+    query += " GROUP BY Screens.id";
+
+    // ดำเนินการคิวรีด้วยพารามิเตอร์ id ที่ให้ไว้
+    connection.query(query, [id], async (err, results, fields) => {
+      if (err) {
+        console.log(err);
+        return res.status(400).send();
+      }
+
+      // จัดรูปแบบวันเวลาของ screen_plan_start และ screen_plan_end เพื่อลบข้อมูลเวลาทิ้ง
+      results.forEach((screen) => {
+        screen.screen_plan_start = screen.screen_plan_start.toISOString().split("T")[0];
+        screen.screen_plan_end = screen.screen_plan_end.toISOString().split("T")[0];
+      });
+
+      res.status(200).json(results);
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send();
+  }
+});
+
 
 
 router.post("/createScreen", async (req, res) => {
