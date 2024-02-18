@@ -109,6 +109,10 @@ router.get("/getAll", async (req, res) => {
 
           // Calculate task_count
           screen.task_count = tasks.length;
+
+          // Update screen data in the database
+          await updateScreen(screen);
+
           return screen;
         })
       );
@@ -119,6 +123,39 @@ router.get("/getAll", async (req, res) => {
     return res.status(500).send();
   }
 });
+
+// Function to update screen data in the database
+async function updateScreen(screen) {
+  try {
+    const updateQuery = `
+      UPDATE screens 
+      SET 
+        screen_progress = ?, 
+        task_count = ?, 
+        screen_plan_start = ?, 
+        screen_plan_end = ?, 
+        screen_manday = ?
+      WHERE id = ?
+    `;
+    const queryParams = [
+      screen.screen_progress,
+      screen.task_count,
+      screen.screen_plan_start,
+      screen.screen_plan_end,
+      screen.screen_manday,
+      screen.id
+    ];
+    await new Promise((resolve, reject) => {
+      connection.query(updateQuery, queryParams, (err, result) => {
+        if (err) reject(err);
+        resolve(result);
+      });
+    });
+  } catch (error) {
+    throw error;
+  }
+}
+
 
 // API for fetching one screen by id
 router.get("/getOne/:id", async (req, res) => {
@@ -165,6 +202,9 @@ router.get("/getOne/:id", async (req, res) => {
         // Calculate screen_progress
         const totalTaskProgress = tasks.reduce((total, task) => total + task.task_progress, 0);
         screen.screen_progress = tasks.length > 0 ? totalTaskProgress / tasks.length : null;
+
+        // Update screen data in the database
+        await updateScreen(screen);
 
         res.status(200).json(screen);
       }
