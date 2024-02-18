@@ -74,20 +74,27 @@ router.get('/getAll', async (req, res) => {
         const query = 'SELECT * FROM Tasks';
 
         const results = await new Promise((resolve, reject) => {
-            connection.query(query, (err, results) => {
+            connection.query(query, async (err, tasks) => {
                 if (err) reject(err);
-                resolve(results.map(task => ({
-                    ...task,
-                    task_plan_start: moment(task.task_plan_start).format('YYYY-MM-DD'),
-                    task_plan_end: moment(task.task_plan_end).format('YYYY-MM-DD'),
-                    task_actual_start: moment(task.task_actual_start).format('YYYY-MM-DD HH:mm:ss'),
-                    task_actual_end: moment(task.task_actual_end).format('YYYY-MM-DD HH:mm:ss'),
-                    task_manday: moment.duration(moment(task.task_plan_end).diff(moment(task.task_plan_start))).asDays()
-                })));
+                const formattedTasks = await Promise.all(tasks.map(async (task) => {
+                    const task_manday = moment.duration(moment(task.task_plan_end).diff(moment(task.task_plan_start))).asDays();
+                    if (task.task_manday !== task_manday) {
+                        // Update task_manday in the database
+                        await updateTaskManday(task.id, task_manday);
+                        // Update task object with new task_manday
+                        return {
+                            ...task,
+                            task_manday: task_manday
+                        };
+                    } else {
+                        return task;
+                    }
+                }));
+                resolve(formattedTasks);
             });
         });
 
-        res.json(results);
+        res.json(formatDates(results));
     } catch (error) {
         console.error('Error fetching tasks:', error);
         res.status(500).send('Internal Server Error');
@@ -101,29 +108,62 @@ router.get('/getOne/:id', async (req, res) => {
         const query = 'SELECT * FROM Tasks WHERE id = ?';
 
         const task = await new Promise((resolve, reject) => {
-            connection.query(query, [id], (err, results) => {
+            connection.query(query, [id], async (err, results) => {
                 if (err) reject(err);
-                resolve(results);
+                if (results.length === 0) {
+                    res.status(404).json({ error: 'Task not found' });
+                } else {
+                    const formattedTask = {
+                        ...results[0],
+                        task_plan_start: moment(results[0].task_plan_start).format('YYYY-MM-DD'),
+                        task_plan_end: moment(results[0].task_plan_end).format('YYYY-MM-DD[Z]'),
+                        task_actual_start: moment(results[0].task_actual_start).format('YYYY-MM-DD'),
+                        task_actual_end: moment(results[0].task_actual_end).format('YYYY-MM-DD')
+                    };
+                    resolve(formattedTask);
+                }
             });
         });
 
-        if (task.length === 0) {
-            res.status(404).json({ error: 'Task not found' });
-        } else {
-            // Format task_plan_start and task_plan_end
-            task[0].task_plan_start = moment(task[0].task_plan_start).format('YYYY-MM-DD');
-            task[0].task_plan_end = moment(task[0].task_plan_end).format('YYYY-MM-DD');
-            // Format task_actual_start and task_actual_end
-            task[0].task_actual_start = moment(task[0].task_actual_start).format('YYYY-MM-DD HH:mm:ss');
-            task[0].task_actual_end = moment(task[0].task_actual_end).format('YYYY-MM-DD HH:mm:ss');
-
-            res.json(task[0]);
-        }
+        res.json(formatDates([task]));
     } catch (error) {
         console.error('Error fetching task by ID:', error);
         res.status(500).send('Internal Server Error');
     }
 });
+
+async function updateTaskManday(taskId, taskManday) {
+    const updateQuery = 'UPDATE Tasks SET task_manday = ? WHERE id = ?';
+    connection.query(updateQuery, [taskManday, taskId], (err, result) => {
+        if (err) {
+            console.error('Error updating task manday:', err);
+            throw err;
+        }
+        console.log('Task manday updated successfully:', result);
+    });
+}
+
+function formatDates(tasks) {
+    return tasks.map(task => ({
+        ...task,
+        task_plan_start: moment(task.task_plan_start).format('YYYY-MM-DD'),
+        task_plan_end: moment(task.task_plan_end).format('YYYY-MM-DD[Z]'),
+        task_actual_start: moment(task.task_actual_start).format('YYYY-MM-DD'),
+        task_actual_end: moment(task.task_actual_end).format('YYYY-MM-DD')
+    }));
+}
+
+async function updateTaskManday(taskId, taskManday) {
+    const updateQuery = 'UPDATE Tasks SET task_manday = ? WHERE id = ?';
+    connection.query(updateQuery, [taskManday, taskId], (err, result) => {
+        if (err) {
+            console.error('Error updating task manday:', err);
+            throw err;
+        }
+        console.log('Task manday updated successfully:', result);
+    });
+}
+
 
 // Route สำหรับอัปเดตข้อมูล Task
 router.put('/updateTasks/:id', async (req, res) => {
