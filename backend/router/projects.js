@@ -13,17 +13,39 @@ function generateId() {
 router.get("/getAll", async (req, res) => {
   try {
     const projectIdFilter = req.query.project_id;
-    let query = "SELECT * FROM projects";
+    let query = `
+      SELECT 
+        projects.*,
+        COUNT(DISTINCT Systems.id) AS system_count,
+        AVG(Systems.system_progress) AS project_progress,
+        DATE_FORMAT(MIN(Systems.system_plan_start), '%Y-%m-%d') AS project_plan_start,
+        DATE_FORMAT(MAX(Systems.system_plan_end), '%Y-%m-%d') AS project_plan_end,
+        DATEDIFF(MAX(Systems.system_plan_end), MIN(Systems.system_plan_start)) AS project_manday
+      FROM 
+        projects 
+      LEFT JOIN Systems ON projects.id = Systems.project_id`;
+
     const queryParams = [];
+
     if (projectIdFilter) {
-      query += " WHERE project_id = ?";
+      query += " WHERE projects.id = ?";
       queryParams.push(projectIdFilter);
     }
-    connection.query(query, queryParams, (err, results, fields) => {
+
+    query += " GROUP BY projects.id";
+
+    connection.query(query, queryParams, async (err, results, fields) => {
       if (err) {
         console.log(err);
         return res.status(500).send();
       }
+
+      // Update project data in the database
+      results.forEach(async (project) => {
+        const updatedProject = await updateProject(project);
+        Object.assign(project, updatedProject);
+      });
+
       res.status(200).json(results);
     });
   } catch (err) {
@@ -37,14 +59,33 @@ router.get("/getOne/:id", async (req, res) => {
   const id = req.params.id;
   try {
     connection.query(
-      "SELECT * FROM projects WHERE id = ?",
+      `
+      SELECT 
+        projects.*,
+        COUNT(DISTINCT Systems.id) AS system_count,
+        AVG(Systems.system_progress) AS project_progress,
+        DATE_FORMAT(MIN(Systems.system_plan_start), '%Y-%m-%d') AS project_plan_start,
+        DATE_FORMAT(MAX(Systems.system_plan_end), '%Y-%m-%d') AS project_plan_end,
+        DATEDIFF(MAX(Systems.system_plan_end), MIN(Systems.system_plan_start)) AS project_manday
+      FROM 
+        projects 
+      LEFT JOIN Systems ON projects.id = Systems.project_id
+      WHERE projects.id = ?
+      GROUP BY projects.id
+      `,
       [id],
-      (err, results, fields) => {
+      async (err, results, fields) => {
         if (err) {
           console.log(err);
           return res.status(400).send();
         }
-        res.status(200).json(results);
+        if (results.length === 0) {
+          res.status(404).json({ error: 'Project not found' });
+        } else {
+          // Update project data in the database
+          const updatedProject = await updateProject(results[0]);
+          res.status(200).json(updatedProject);
+        }
       }
     );
   } catch (err) {
@@ -52,6 +93,46 @@ router.get("/getOne/:id", async (req, res) => {
     return res.status(500).send();
   }
 });
+
+async function updateProject(project) {
+  try {
+    // Query to update project data
+    const updateQuery = `
+      UPDATE projects 
+      SET 
+        project_progress = ?,
+        system_count = ?,
+        project_plan_start = ?,
+        project_plan_end = ?,
+        project_manday = ?
+      WHERE id = ?
+    `;
+
+    // Calculate new values for project fields
+    const project_progress = project.project_progress;
+    const system_count = project.system_count;
+    const project_plan_start = project.project_plan_start;
+    const project_plan_end = project.project_plan_end;
+    const project_manday = project.project_manday;
+
+    // Execute the update query
+    await new Promise((resolve, reject) => {
+      connection.query(
+        updateQuery,
+        [project_progress, system_count, project_plan_start, project_plan_end, project_manday, project.id],
+        (err, result) => {
+          if (err) reject(err);
+          resolve(project);
+        }
+      );
+    });
+
+    return project;
+  } catch (error) {
+    throw error;
+  }
+}
+
 
 // * POST FROM projects
 router.post("/createProject", async (req, res) => {
