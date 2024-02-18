@@ -125,8 +125,6 @@ router.get('/getOne/:id', async (req, res) => {
     }
 });
 
-
-
 // Route สำหรับอัปเดตข้อมูล Task
 router.put('/updateTasks/:id', async (req, res) => {
     try {
@@ -141,7 +139,7 @@ router.put('/updateTasks/:id', async (req, res) => {
             task_actual_end,
         } = req.body;
 
-        const { id } = req.params; // แก้ตรงนี้ให้ใช้ id แทน task_id
+        const { id } = req.params;
 
         const updatedTaskFields = {};
 
@@ -189,7 +187,7 @@ router.put('/updateTasks/:id', async (req, res) => {
             return res.status(400).json({ error: 'No fields to update' });
         }
 
-        const query = 'UPDATE Tasks SET ? WHERE id = ?'; // แก้ SQL query ให้ใช้ id แทน task_id
+        const query = 'UPDATE Tasks SET ? WHERE id = ?';
 
         await new Promise((resolve, reject) => {
             connection.query(query, [updatedTaskFields, id], (err, result) => {
@@ -204,8 +202,6 @@ router.put('/updateTasks/:id', async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
-
-
 
 // Route สำหรับลบ Task
 router.delete('/delete/:id', async (req, res) => {
