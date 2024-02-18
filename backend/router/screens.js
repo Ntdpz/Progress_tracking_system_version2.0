@@ -51,15 +51,24 @@ function generateId() {
   const id = Math.floor(Math.random() * (maxId - minId + 1)) + minId;
   return id;
 }
-
-// API for fetching all screens with additional information
 router.get("/getAll", async (req, res) => {
   try {
     const systemIDFilter = req.query.system_id;
     const idFilter = req.query.id;
     const screenIDFilter = req.query.screen_id;
     const screen_project_system_Filter = req.query.screen_id;
-    let query = "SELECT * FROM screens";
+    let query = `
+      SELECT
+        Screens.*,
+        AVG(tasks.task_progress) AS screen_progress,
+        DATE(MIN(Screens.screen_plan_start)) AS screen_plan_start,
+        DATE(MAX(Screens.screen_plan_end)) AS screen_plan_end,
+        DATEDIFF(MAX(tasks.task_plan_end), MIN(tasks.task_plan_start)) AS screen_manday
+      FROM
+        Screens
+      LEFT JOIN tasks ON Screens.id = tasks.screen_id
+    `;
+
     const queryParams = [];
     if (systemIDFilter) {
       query += " WHERE system_id = ?";
@@ -75,74 +84,51 @@ router.get("/getAll", async (req, res) => {
       queryParams.push(screen_project_system_Filter);
     }
 
+    query += " GROUP BY Screens.id";
+
     connection.query(query, queryParams, async (err, results, fields) => {
       if (err) {
         console.log(err);
         return res.status(400).send();
       }
-      // Fetch tasks for each screen
       const screensWithTasks = await Promise.all(
         results.map(async (screen) => {
-          const tasksQuery = 'SELECT * FROM Tasks WHERE screen_id = ?';
-          const tasks = await new Promise((resolve, reject) => {
-            connection.query(tasksQuery, [screen.id], (err, tasks) => {
-              if (err) reject(err);
-              resolve(tasks);
-            });
-          });
-          // Calculate screen_progress based on task_progress
-          const totalTaskProgress = tasks.reduce((total, task) => total + task.task_progress, 0);
-          screen.screen_progress = tasks.length > 0 ? totalTaskProgress / tasks.length : null;
-
-          // Calculate screen_plan_start and screen_plan_end based on tasks
-          const screenPlanStart = tasks.reduce((earliest, task) => (!earliest || task.task_plan_start < earliest ? task.task_plan_start : earliest), null);
-          const screenPlanEnd = tasks.reduce((latest, task) => (!latest || task.task_plan_end > latest ? task.task_plan_end : latest), null);
-          screen.screen_plan_start = screenPlanStart ? moment(screenPlanStart).format('YYYY-MM-DD') : null;
-          screen.screen_plan_end = screenPlanEnd ? moment(screenPlanEnd).format('YYYY-MM-DD') : null;
-
-          // Calculate screen_manday based on screen_plan_start and screen_plan_end
-          const screenManday = tasks.reduce((total, task) => {
-            const taskDuration = moment(task.task_plan_end).diff(moment(task.task_plan_start), 'days');
-            return total + taskDuration;
-          }, 0);
-          screen.screen_manday = screenManday;
-
-          // Calculate task_count
-          screen.task_count = tasks.length;
-
           // Update screen data in the database
           await updateScreen(screen);
-
+          // Format screen_plan_start and screen_plan_end to remove time
+          screen.screen_plan_start = screen.screen_plan_start.toISOString().split('T')[0];
+          screen.screen_plan_end = screen.screen_plan_end.toISOString().split('T')[0];
           return screen;
         })
       );
       res.status(200).json(screensWithTasks);
     });
+
   } catch (err) {
     console.log(err);
     return res.status(500).send();
   }
 });
 
+
 // Function to update screen data in the database
 async function updateScreen(screen) {
   try {
     const updateQuery = `
-      UPDATE screens 
+      UPDATE systems 
       SET 
-        screen_progress = ?, 
-        task_count = ?, 
-        screen_plan_start = ?, 
-        screen_plan_end = ?, 
-        screen_manday = ?
+        system_manday = ?,
+        system_progress = ?,
+        system_plan_start = ?, 
+        system_plan_end = ?
       WHERE id = ?
     `;
+
     const queryParams = [
-      screen.screen_progress,
-      screen.task_count,
-      screen.screen_plan_start,
-      screen.screen_plan_end,
-      screen.screen_manday,
+      screen.system_manday,
+      screen.system_progress,
+      screen.system_plan_start,
+      screen.system_plan_end,
       screen.id
     ];
     await new Promise((resolve, reject) => {
@@ -156,64 +142,6 @@ async function updateScreen(screen) {
   }
 }
 
-
-// API for fetching one screen by id
-router.get("/getOne/:id", async (req, res) => {
-  const id = req.params.id;
-  try {
-    connection.query(
-      "SELECT * FROM screens WHERE id = ?",
-      [id],
-      async (err, results, fields) => {
-        if (err) {
-          console.log(err);
-          return res.status(400).send();
-        }
-        const screen = results[0];
-        if (!screen) {
-          return res.status(404).json({ error: 'Screen not found' });
-        }
-
-        // Fetch tasks for the screen
-        const tasksQuery = 'SELECT * FROM Tasks WHERE screen_id = ?';
-        const tasks = await new Promise((resolve, reject) => {
-          connection.query(tasksQuery, [screen.id], (err, tasks) => {
-            if (err) reject(err);
-            resolve(tasks);
-          });
-        });
-
-        // Calculate screen_plan_start and screen_plan_end based on tasks
-        const screenPlanStart = tasks.reduce((earliest, task) => (!earliest || task.task_plan_start < earliest ? task.task_plan_start : earliest), null);
-        const screenPlanEnd = tasks.reduce((latest, task) => (!latest || task.task_plan_end > latest ? task.task_plan_end : latest), null);
-        screen.screen_plan_start = screenPlanStart ? moment(screenPlanStart).format('YYYY-MM-DD') : null;
-        screen.screen_plan_end = screenPlanEnd ? moment(screenPlanEnd).format('YYYY-MM-DD') : null;
-
-        // Calculate screen_manday based on screen_plan_start and screen_plan_end
-        const screenManday = tasks.reduce((total, task) => {
-          const taskDuration = moment(task.task_plan_end).diff(moment(task.task_plan_start), 'days');
-          return total + taskDuration;
-        }, 0);
-        screen.screen_manday = screenManday;
-
-        // Calculate task_count
-        screen.task_count = tasks.length;
-
-        // Calculate screen_progress
-        const totalTaskProgress = tasks.reduce((total, task) => total + task.task_progress, 0);
-        screen.screen_progress = tasks.length > 0 ? totalTaskProgress / tasks.length : null;
-
-        // Update screen data in the database
-        await updateScreen(screen);
-
-        res.status(200).json(screen);
-      }
-    );
-  } catch (err) {
-    console.log(err);
-    return res.status(500).send();
-  }
-});
 
 router.post("/createScreen", async (req, res) => {
   const {
