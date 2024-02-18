@@ -147,7 +147,7 @@ function formatDates(tasks) {
     return tasks.map(task => ({
         ...task,
         task_plan_start: moment(task.task_plan_start).format('YYYY-MM-DD'),
-        task_plan_end: moment(task.task_plan_end).format('YYYY-MM-DD[Z]'),
+        task_plan_end: moment(task.task_plan_end).format('YYYY-MM-DD'),
         task_actual_start: moment(task.task_actual_start).format('YYYY-MM-DD'),
         task_actual_end: moment(task.task_actual_end).format('YYYY-MM-DD')
     }));
