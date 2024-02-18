@@ -61,8 +61,8 @@ router.get("/getAll", async (req, res) => {
       SELECT
         Screens.*,
         AVG(tasks.task_progress) AS screen_progress,
-        DATE(MIN(Screens.screen_plan_start)) AS screen_plan_start,
-        DATE(MAX(Screens.screen_plan_end)) AS screen_plan_end,
+        DATE(MIN(tasks.task_plan_start)) AS screen_plan_start,
+        DATE(MAX(tasks.task_plan_end)) AS screen_plan_end,
         DATEDIFF(MAX(tasks.task_plan_end), MIN(tasks.task_plan_start)) AS screen_manday
       FROM
         Screens
@@ -94,10 +94,22 @@ router.get("/getAll", async (req, res) => {
       const screensWithTasks = await Promise.all(
         results.map(async (screen) => {
           // Update screen data in the database
+          // Update screen data in the database
           await updateScreen(screen);
+
           // Format screen_plan_start and screen_plan_end to remove time
-          screen.screen_plan_start = screen.screen_plan_start.toISOString().split('T')[0];
-          screen.screen_plan_end = screen.screen_plan_end.toISOString().split('T')[0];
+          screen.screen_plan_start = new Date(screen.screen_plan_start).toISOString().split('T')[0];
+          screen.screen_plan_end = new Date(screen.screen_plan_end).toISOString().split('T')[0];
+
+          // Adjust dates to fix the discrepancy
+          const startDate = new Date(screen.screen_plan_start);
+          startDate.setDate(startDate.getDate() + 1);
+          screen.screen_plan_start = startDate.toISOString().split('T')[0];
+
+          const endDate = new Date(screen.screen_plan_end);
+          endDate.setDate(endDate.getDate() + 1);
+          screen.screen_plan_end = endDate.toISOString().split('T')[0];
+
           return screen;
         })
       );
@@ -109,6 +121,7 @@ router.get("/getAll", async (req, res) => {
     return res.status(500).send();
   }
 });
+
 
 async function updateScreen(screen) {
   try {
