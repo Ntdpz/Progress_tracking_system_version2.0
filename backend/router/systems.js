@@ -26,8 +26,8 @@ router.get("/getAll", async (req, res) => {
              Systems.system_shortname,
              COUNT(Screens.screen_id) AS screen_count, 
              AVG(screens.screen_progress) AS system_progress,
-             DATE(MIN(Screens.screen_plan_start)) AS system_plan_start,
-             DATE(MAX(Screens.screen_plan_end)) AS system_plan_end,
+             DATE_FORMAT(MIN(Screens.screen_plan_start), '%Y-%m-%d') AS system_plan_start,
+             DATE_FORMAT(MAX(Screens.screen_plan_end), '%Y-%m-%d') AS system_plan_end,
              DATEDIFF(MAX(Screens.screen_plan_end), MIN(Screens.screen_plan_start)) AS system_manday
       FROM Systems 
       LEFT JOIN Screens ON Systems.id = Screens.system_id 
@@ -44,15 +44,15 @@ router.get("/getAll", async (req, res) => {
 
     query += " GROUP BY Systems.id";
 
-    connection.query(query, queryParams, (err, results, fields) => {
+    connection.query(query, queryParams, async (err, results, fields) => {
       if (err) {
         console.log(err);
         return res.status(400).send();
       }
       // Format system_plan_start and system_plan_end to contain only date
-      results.forEach(system => {
-        system.system_plan_start = new Date(system.system_plan_start).toISOString().split('T')[0];
-        system.system_plan_end = new Date(system.system_plan_end).toISOString().split('T')[0];
+      results.forEach(async (system) => {
+        const updatedSystem = await updateSystem(system);
+        Object.assign(system, updatedSystem);
       });
       res.status(200).json(results);
     });
@@ -62,6 +62,40 @@ router.get("/getAll", async (req, res) => {
   }
 });
 
+async function updateSystem(system) {
+  try {
+    const updateQuery = `
+      UPDATE systems 
+      SET 
+        screen_count = ?,
+        system_progress = ?,
+        system_plan_start = ?, 
+        system_plan_end = ?,
+        system_manday = ?
+      WHERE id = ?
+    `;
+
+    const updatedSystem = {
+      screen_count: system.screen_count,
+      system_progress: system.system_progress,
+      system_plan_start: new Date(system.system_plan_start).toISOString().split('T')[0],
+      system_plan_end: new Date(system.system_plan_end).toISOString().split('T')[0],
+      system_manday: system.system_manday,
+      id: system.id
+    };
+
+    await new Promise((resolve, reject) => {
+      connection.query(updateQuery, [updatedSystem.screen_count, updatedSystem.system_progress, updatedSystem.system_plan_start, updatedSystem.system_plan_end, updatedSystem.system_manday, updatedSystem.id], (err, result) => {
+        if (err) reject(err);
+        resolve(updatedSystem);
+      });
+    });
+
+    return updatedSystem;
+  } catch (error) {
+    throw error;
+  }
+}
 
 // * GET one by id
 router.get("/getOne/:id", async (req, res) => {
