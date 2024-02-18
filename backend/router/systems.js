@@ -13,7 +13,6 @@ function generateId() {
   const id = Math.floor(Math.random() * (maxId - minId + 1)) + minId;
   return id;
 }
-// * GET All FROM systems
 router.get("/getAll", async (req, res) => {
   try {
     const systemIdFilter = req.query.system_id;
@@ -26,7 +25,7 @@ router.get("/getAll", async (req, res) => {
              Systems.system_nameEN,
              Systems.system_shortname,
              COUNT(Screens.screen_id) AS screen_count, 
-             AVG(Screens.screen_progress) AS system_progress, 
+             AVG(screens.screen_progress) AS system_progress,
              DATE(MIN(Screens.screen_plan_start)) AS system_plan_start,
              DATE(MAX(Screens.screen_plan_end)) AS system_plan_end,
              DATEDIFF(MAX(Screens.screen_plan_end), MIN(Screens.screen_plan_start)) AS system_manday
@@ -62,6 +61,7 @@ router.get("/getAll", async (req, res) => {
     return res.status(500).send();
   }
 });
+
 
 // * GET one by id
 router.get("/getOne/:id", async (req, res) => {
