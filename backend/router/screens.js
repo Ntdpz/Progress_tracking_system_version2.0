@@ -1,6 +1,8 @@
 // เรียกใช้โมดูล express และสร้าง router
 const express = require("express");
 const router = express.Router();
+const moment = require('moment');
+
 
 // เรียกใช้โมดูลเชื่อมต่อฐานข้อมูล
 const connection = require("../db");
@@ -50,8 +52,7 @@ function generateId() {
   return id;
 }
 
-// * GET All FROM screens
-// * GET All FROM screens
+// API for fetching all screens with additional information
 router.get("/getAll", async (req, res) => {
   try {
     const systemIDFilter = req.query.system_id;
@@ -92,6 +93,22 @@ router.get("/getAll", async (req, res) => {
           // Calculate screen_progress based on task_progress
           const totalTaskProgress = tasks.reduce((total, task) => total + task.task_progress, 0);
           screen.screen_progress = tasks.length > 0 ? totalTaskProgress / tasks.length : null;
+
+          // Calculate screen_plan_start and screen_plan_end based on tasks
+          const screenPlanStart = tasks.reduce((earliest, task) => (!earliest || task.task_plan_start < earliest ? task.task_plan_start : earliest), null);
+          const screenPlanEnd = tasks.reduce((latest, task) => (!latest || task.task_plan_end > latest ? task.task_plan_end : latest), null);
+          screen.screen_plan_start = screenPlanStart ? moment(screenPlanStart).format('YYYY-MM-DD') : null;
+          screen.screen_plan_end = screenPlanEnd ? moment(screenPlanEnd).format('YYYY-MM-DD') : null;
+
+          // Calculate screen_manday based on screen_plan_start and screen_plan_end
+          const screenManday = tasks.reduce((total, task) => {
+            const taskDuration = moment(task.task_plan_end).diff(moment(task.task_plan_start), 'days');
+            return total + taskDuration;
+          }, 0);
+          screen.screen_manday = screenManday;
+
+          // Calculate task_count
+          screen.task_count = tasks.length;
           return screen;
         })
       );
@@ -103,19 +120,53 @@ router.get("/getAll", async (req, res) => {
   }
 });
 
-// * GET one by id
+// API for fetching one screen by id
 router.get("/getOne/:id", async (req, res) => {
   const id = req.params.id;
   try {
     connection.query(
       "SELECT * FROM screens WHERE id = ?",
       [id],
-      (err, results, fields) => {
+      async (err, results, fields) => {
         if (err) {
           console.log(err);
           return res.status(400).send();
         }
-        res.status(200).json(results);
+        const screen = results[0];
+        if (!screen) {
+          return res.status(404).json({ error: 'Screen not found' });
+        }
+
+        // Fetch tasks for the screen
+        const tasksQuery = 'SELECT * FROM Tasks WHERE screen_id = ?';
+        const tasks = await new Promise((resolve, reject) => {
+          connection.query(tasksQuery, [screen.id], (err, tasks) => {
+            if (err) reject(err);
+            resolve(tasks);
+          });
+        });
+
+        // Calculate screen_plan_start and screen_plan_end based on tasks
+        const screenPlanStart = tasks.reduce((earliest, task) => (!earliest || task.task_plan_start < earliest ? task.task_plan_start : earliest), null);
+        const screenPlanEnd = tasks.reduce((latest, task) => (!latest || task.task_plan_end > latest ? task.task_plan_end : latest), null);
+        screen.screen_plan_start = screenPlanStart ? moment(screenPlanStart).format('YYYY-MM-DD') : null;
+        screen.screen_plan_end = screenPlanEnd ? moment(screenPlanEnd).format('YYYY-MM-DD') : null;
+
+        // Calculate screen_manday based on screen_plan_start and screen_plan_end
+        const screenManday = tasks.reduce((total, task) => {
+          const taskDuration = moment(task.task_plan_end).diff(moment(task.task_plan_start), 'days');
+          return total + taskDuration;
+        }, 0);
+        screen.screen_manday = screenManday;
+
+        // Calculate task_count
+        screen.task_count = tasks.length;
+
+        // Calculate screen_progress
+        const totalTaskProgress = tasks.reduce((total, task) => total + task.task_progress, 0);
+        screen.screen_progress = tasks.length > 0 ? totalTaskProgress / tasks.length : null;
+
+        res.status(200).json(screen);
       }
     );
   } catch (err) {
@@ -123,7 +174,6 @@ router.get("/getOne/:id", async (req, res) => {
     return res.status(500).send();
   }
 });
-
 
 router.post("/createScreen", async (req, res) => {
   const {
