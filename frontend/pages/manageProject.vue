@@ -1,81 +1,65 @@
 <template>
   <div class="body">
-    <!-- <searchbar title="จัดการโครงการ" /> -->
-    <v-row class="mb-3">
-    <v-text-title
-      class="center ml-4 mr-4 mt-3 mb-1"
-      style="font-weight: bold; font-size: 20px"
-    >
-      จัดการโครงการ
-    </v-text-title>
-    <v-divider
-      class="mt-3 mb-1"
-      inset
-      vertical
-      style="background-color: black"
-    ></v-divider>
-    <v-card class="card ml-5 mt-2" style="height: 40px; border-radius: 60px">
-      <v-card-text class="pa-0">
-        <v-text-field
-          v-if="userrole === 'Admin' || userposition === 'Implementer'"
-          v-model="searchKeyword"
-          prepend-inner-icon="mdi-magnify"
-          rounded
+  <v-row class="mb-3">
+      <!-- Add Project button -->
+      <v-col cols="12" sm="6" md="6" lg="6">
+        <v-btn
+          class="new-btn ma-2 text-left"
           color="primary"
-          placeholder="search"
-        ></v-text-field>
-        <v-text-field
-          v-else-if="userrole !== 'Admin' && userposition !== 'Implementer'"
-          v-model="searchKeywordDev"
-          prepend-inner-icon="mdi-magnify"
-          rounded
-          color="primary"
-          placeholder="search"
-        ></v-text-field>
-      </v-card-text>
-    </v-card>
-  </v-row>
+          dark
+          block
+          large
+          @click="openDialog('create')"
+        >
+          <span class="mdi mdi-plus-circle-outline icon"></span>
+          <h4 class="text">&nbsp;&nbsp; สร้างโครงการใหม่</h4>
+        </v-btn>
+      </v-col>
+      <v-divider class="divider"></v-divider>
+      <v-card class="card">
+        <v-card-text class="pa-0">
+          <v-text-field
+            v-if="isAdminOrImplementer"
+            v-model="searchKeyword"
+            prepend-inner-icon="mdi-magnify"
+            rounded
+            color="primary"
+            placeholder="search"
+          ></v-text-field>
+          <v-text-field
+            v-else
+            v-model="searchKeywordDev"
+            prepend-inner-icon="mdi-magnify"
+            rounded
+            color="primary"
+            placeholder="search"
+          ></v-text-field>
+        </v-card-text>
+      </v-card>
+    </v-row>
 
     <v-divider></v-divider>
     <v-row class="mt-4 ml-1 mb-2" no-gutters>
       <v-col cols="3">
-        <h4>โครงการ</h4>
+        <h4>Project ID</h4>
         <p style="color: #b6b5b5; font-size: 16px" class="">
           มี {{ this.projectList.length }} โครงการ
         </p>
       </v-col>
 
       <v-col cols="2">
-        <h4>รหัสโครงการ</h4>
+        <h4>Project name</h4>
       </v-col>
       <v-col cols="2">
-        <h4 style="margin-left: -7%">เริ่มโครงการ</h4>
+        <h4 style="margin-left: -7%">Estimate due date</h4>
       </v-col>
       <v-col cols="2">
-        <h4 style="margin-left: -16%">จบโครงการ</h4>
-      </v-col>
-      <v-col cols="3">
-        <h4 style="margin-left: -16%">หน่วยงาน</h4>
+        <h4 style="margin-left: -16%">Project progress</h4>
       </v-col>
       <v-col cols="1"></v-col>
       <!-- <v-col cols="1"></v-col> -->
     </v-row>
-
-    <v-btn
-      v-if="userposition != 'Developer' || userrole == 'Admin'"
-      class="new-btn ma-2 text-left"
-      color="primary"
-      dark
-      block
-      large
-      @click="openDialog('create')"
-    >
-      <span
-        class="mdi mdi-plus-circle-outline"
-        style="font-size: 25px; color: white"
-      ></span>
-      <h4 style="color: white">&nbsp;&nbsp; สร้างโครงการใหม่</h4>
-    </v-btn>
+    <v-divider></v-divider>
     <v-dialog v-model="dialog" max-width="500px" :retain-focus="false">
       <v-card>
         <v-card-title class="pt-3" style="background-color: #5c3efe">
@@ -1418,4 +1402,4 @@ export default {
 .card >>> .v-input {
   padding-top: 0% !important;
 }
-</style>
+</style> 
