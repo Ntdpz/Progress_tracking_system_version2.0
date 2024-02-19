@@ -32,7 +32,7 @@
             </v-col>
      </v-row>
 <!-- Personnel -->
-    <div>
+    <div class="personnel">
         <!-- Add personnel -->
          <v-row>
             <v-col  cols="4">
@@ -95,10 +95,10 @@
     </div>
       <!-- confirm and cancel buttons -->
     <v-row>
-        <v-col cols="4" sm="6" md="4">
+        <v-col cols="6" sm="6" md="4">
             <v-btn color="primary" @click="submitForm">Confirm</v-btn>
         </v-col>
-        <v-col cols="4" sm="6" md="4">
+        <v-col cols="6" sm="6" md="4">
             <v-btn color="error" @click="submitForm">Cancel</v-btn>
         </v-col>
     </v-row>
@@ -168,4 +168,16 @@ export default {
 
 <style scoped>
 /* Add your custom styles here */
+.center {
+    text-align: center;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 10px;
+}
+.personnel {
+    margin-top: 20px;
+    margin-bottom: 20px;
+   margin-left: 20px;
+   margin-right: 20px;
+}
 </style>
