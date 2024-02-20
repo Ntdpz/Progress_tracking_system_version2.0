@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const connection = require("../db");
 
+// Function to generate a random ID
 function generateId() {
   const maxId = 999999999;
   const minId = 100000000;
@@ -101,7 +102,8 @@ router.get("/getOne/:id", async (req, res) => {
     return res.status(500).send();
   }
 });
-// Define your route for fetching deleted projects
+
+// Route to fetch deleted projects
 router.get('/getHistoryProject', async (req, res) => {
   try {
     // Query to fetch projects that are marked as deleted
@@ -126,9 +128,9 @@ router.get('/getHistoryProject', async (req, res) => {
 });
 
 
+// Function to update project data
 async function updateProject(project) {
   try {
-    // Query to update project data
     const updateQuery = `
       UPDATE projects 
       SET 
@@ -140,14 +142,12 @@ async function updateProject(project) {
       WHERE id = ?
     `;
 
-    // Calculate new values for project fields
     const project_progress = project.project_progress;
     const system_count = project.system_count;
     const project_plan_start = project.project_plan_start;
     const project_plan_end = project.project_plan_end;
     const project_manday = project.project_manday;
 
-    // Execute the update query
     await new Promise((resolve, reject) => {
       connection.query(
         updateQuery,
@@ -164,7 +164,8 @@ async function updateProject(project) {
     throw error;
   }
 }
-// * POST FROM projects
+
+// Route to create a new project
 router.post("/createProject", async (req, res) => {
   const {
     project_id,
@@ -172,7 +173,7 @@ router.post("/createProject", async (req, res) => {
     project_name_ENG,
   } = req.body;
 
-  const id = generateId(); // สร้าง ID โดยใช้ฟังก์ชัน generateId()
+  const id = generateId(); // Generate ID using generateId() function
 
   try {
     connection.query(
@@ -197,6 +198,7 @@ router.post("/createProject", async (req, res) => {
   }
 });
 
+// Route to update project
 router.put("/updateProject/:id", async (req, res) => {
   const id = req.params.id;
   const {
@@ -206,7 +208,6 @@ router.put("/updateProject/:id", async (req, res) => {
   } = req.body;
 
   try {
-    // ดึงข้อมูลโปรเจคก่อนหน้าที่มีการแก้ไข
     const previousProjectData = await new Promise((resolve, reject) => {
       connection.query(
         "SELECT * FROM projects WHERE id = ?",
@@ -218,19 +219,16 @@ router.put("/updateProject/:id", async (req, res) => {
       );
     });
 
-    // ตรวจสอบว่ามีการส่งข้อมูลการแก้ไขไหม
     if (!project_id && !project_name_TH && !project_name_ENG) {
-      // ถ้าไม่มีข้อมูลการแก้ไข ส่งข้อมูลเดิมกลับไปยังฐานข้อมูล
       return res.status(200).json(previousProjectData);
     }
 
-    // มีการส่งข้อมูลการแก้ไข
     connection.query(
       "UPDATE projects SET project_id = ?, project_name_TH = ?, project_name_ENG = ? WHERE id = ?",
       [
-        project_id || req.body.project_id || previousProjectData.project_id, // ถ้าไม่มีการส่ง project_id ให้ใช้ค่าเดิม
-        project_name_TH || req.body.project_name_TH || previousProjectData.project_name_TH, // ถ้าไม่มีการส่ง project_name_TH ให้ใช้ค่าเดิม
-        project_name_ENG || req.body.project_name_ENG || previousProjectData.project_name_ENG, // ถ้าไม่มีการส่ง project_name_ENG ให้ใช้ค่าเดิม
+        project_id || req.body.project_id || previousProjectData.project_id,
+        project_name_TH || req.body.project_name_TH || previousProjectData.project_name_TH,
+        project_name_ENG || req.body.project_name_ENG || previousProjectData.project_name_ENG,
         id,
       ],
       (err, results, fields) => {
@@ -247,12 +245,11 @@ router.put("/updateProject/:id", async (req, res) => {
   }
 });
 
-// DELETE project by ID
+// Route to soft delete a project
 router.delete("/delete/:id", async (req, res) => {
   const id = req.params.id;
 
   try {
-    // Soft delete the project by setting is_deleted flag to true
     connection.query(
       "UPDATE projects SET is_deleted = true WHERE id = ?",
       [id],
@@ -272,6 +269,8 @@ router.delete("/delete/:id", async (req, res) => {
     return res.status(500).send();
   }
 });
+
+// Route to delete project along with related data
 router.delete("/deleteHistoryProject/:id", async (req, res) => {
   const id = req.params.id;
 
@@ -342,10 +341,7 @@ router.delete("/deleteHistoryProject/:id", async (req, res) => {
   }
 });
 
-
-
-
-
+// Route to add user-project mappings
 router.post("/addUserProject", async (req, res) => {
   const { user_id, project_ids } = req.body;
   try {
