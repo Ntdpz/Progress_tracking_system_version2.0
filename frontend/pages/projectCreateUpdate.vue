@@ -1,15 +1,16 @@
 <template>
   <div class="center">
-    <h1>Create/Edit Project</h1>
+    <h1 style="margin-bottom: 30px;">Create/Edit Project</h1>
    <v-form @submit.prevent="submitForm">
     
     <!-- Project ID -->
-   <v-row>
-            <v-col cols="4" sm="6" md="4">
+   <v-row >
+            <v-col cols="6" sm="6" md="6">
               <h2>Project ID</h2>
             </v-col>
-            <v-col cols="8" sm="6" md="4">
+            <v-col cols="6" sm="6" md="6">
                   <v-text-field
+                    style="max-width: 350px;"
                     v-model="projectID"
                     label="Project ID"
                     required
@@ -19,11 +20,12 @@
     </v-row> 
     <!-- Project Name -->
     <v-row>
-        <v-col cols="4" sm="6" md="4">
+        <v-col cols="6" sm="6" md="6">
           <h2>Project Name</h2>
         </v-col>
-        <v-col cols="8" sm="6" md="4">
+        <v-col cols="6" sm="6" md="6">
               <v-text-field
+               style="max-width: 350px;"
                 v-model="projectName"
                 label="Project Name"
                 required
@@ -35,16 +37,21 @@
     <div class="personnel">
         <v-card>
             <v-card-title>
-         <v-btn>Add Personnel</v-btn>
+              <v-row style="padding-top: 20px;">
+              <v-text-field
+              v-model="search"
+              prepend-inner-icon="mdi-magnify"
+              label="Search"
+              rounded
+              outlined
+      
+              style="padding-left: 20px;"
+            ></v-text-field>
           <v-spacer></v-spacer>
-          <v-text-field
-            v-model="search"
-            append-icon="mdi-magnify"
-            label="Search"
-            single-line
-            hide-details
-          ></v-text-field>
+          <v-btn style="margin-right: 20px;">Add Personnel</v-btn>
+          </v-row>
         </v-card-title>
+ 
          <!-- Personnel table -->
          <v-data-table   
             :headers="headers"
@@ -65,14 +72,11 @@
     </div>
       <!-- confirm and cancel buttons -->
     <v-row>
-        <v-col cols="6" sm="6" md="4">
-            <v-btn color="primary" @click="submitForm">Confirm</v-btn>
-        </v-col>
-        <v-col cols="6" sm="6" md="4">
-            <v-btn color="error" @click="submitForm">Cancel</v-btn>
-        </v-col>
-    </v-row>
-
+    <v-col class="text-center">
+      <v-btn color="primary" @click="submitForm" style="margin-right:30px ;">Confirm</v-btn>
+      <v-btn color="error" @click="submitForm" style="margin-left: 30px;">Cancel</v-btn>
+    </v-col>
+  </v-row>
     </v-form>
   </div>
 </template>
@@ -147,7 +151,7 @@ export default {
 .personnel {
     margin-top: 20px;
     margin-bottom: 20px;
-   margin-left: 20px;
-   margin-right: 20px;
+    padding-left: 30px;
+    padding-right: 30px;
 }
 </style>
