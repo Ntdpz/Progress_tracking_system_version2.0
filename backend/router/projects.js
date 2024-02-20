@@ -215,79 +215,24 @@ router.put("/updateProject/:id", async (req, res) => {
   }
 });
 
-//* DELETE user by ID
+// DELETE project by ID
 router.delete("/delete/:id", async (req, res) => {
   const id = req.params.id;
 
   try {
-    // ลบข้อมูลที่เกี่ยวข้องในตาราง history_issues
+    // Soft delete the project by setting is_deleted flag to true
     connection.query(
-      "DELETE FROM history_issues WHERE project_id = ?",
+      "UPDATE projects SET is_deleted = true WHERE id = ?",
       [id],
       (err, results, fields) => {
         if (err) {
           console.log(err);
           return res.status(500).send();
         }
-        // ลบข้อมูลที่เกี่ยวข้องในตาราง issues
-        connection.query(
-          "DELETE FROM issues WHERE project_id = ?",
-          [id],
-          (err, results, fields) => {
-            if (err) {
-              console.log(err);
-              return res.status(500).send();
-            }
-            // ลบข้อมูลที่เกี่ยวข้องในตาราง screens
-            connection.query(
-              "DELETE FROM screens WHERE project_id = ?",
-              [id],
-              (err, results, fields) => {
-                if (err) {
-                  console.log(err);
-                  return res.status(500).send();
-                }
-                // ลบข้อมูลที่เกี่ยวข้องในตาราง systems
-                connection.query(
-                  "DELETE FROM systems WHERE project_id = ?",
-                  [id],
-                  (err, results, fields) => {
-                    if (err) {
-                      console.log(err);
-                      return res.status(500).send();
-                    }
-                    // ลบข้อมูลที่เกี่ยวข้องในตาราง user_projects
-                    connection.query(
-                      "DELETE FROM user_projects WHERE project_id = ?",
-                      [id],
-                      (err, results, fields) => {
-                        if (err) {
-                          console.log(err);
-                          return res.status(500).send();
-                        }
-                        // เมื่อลบข้อมูลที่เกี่ยวข้องในตารางทุกตารางเรียบร้อยแล้ว ลบโครงการที่มี id ตรงกันในตารางโครงการ
-                        connection.query(
-                          "DELETE FROM projects WHERE id = ?",
-                          [id],
-                          (err, results, fields) => {
-                            if (err) {
-                              console.log(err);
-                              return res.status(500).send();
-                            }
-                            if (results.affectedRows === 0) {
-                              return res.status(404).json({ message: "No project with that id!" });
-                            }
-                            return res.status(200).json({ message: "Project deleted successfully!" });
-                          }
-                        );
-                      }
-                    );
-                  }
-                );
-              }
-            );
-          }
-        );
+        if (results.affectedRows === 0) {
+          return res.status(404).json({ message: "No project with that id!" });
+        }
+        return res.status(200).json({ message: "Project deleted successfully!" });
       }
     );
   } catch (err) {
@@ -295,6 +240,7 @@ router.delete("/delete/:id", async (req, res) => {
     return res.status(500).send();
   }
 });
+
 
 router.post("/addUserProject", async (req, res) => {
   const { user_id, project_ids } = req.body;
