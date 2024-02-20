@@ -36,11 +36,13 @@ router.get("/getAll", async (req, res) => {
     const queryParams = [];
 
     if (projectFilter) {
-      query += " WHERE Systems.project_id = ?";
+      query += " WHERE Systems.project_id = ? AND Systems.is_deleted = false"; // เพิ่มเงื่อนไข is_deleted = false
       queryParams.push(projectFilter);
     } else if (systemIdFilter) {
-      query += " WHERE Systems.id = ?";
+      query += " WHERE Systems.id = ? AND Systems.is_deleted = false"; // เพิ่มเงื่อนไข is_deleted = false
       queryParams.push(systemIdFilter);
+    } else {
+      query += " WHERE Systems.is_deleted = false"; // เพิ่มเงื่อนไข is_deleted = false
     }
 
     query += " GROUP BY Systems.id";
@@ -62,6 +64,7 @@ router.get("/getAll", async (req, res) => {
     return res.status(500).send();
   }
 });
+
 router.get("/getAllHistorySystem", async (req, res) => {
   try {
     let query = `
