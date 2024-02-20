@@ -127,7 +127,6 @@ router.get('/getHistoryProject', async (req, res) => {
   }
 });
 
-
 // Function to update project data
 async function updateProject(project) {
   try {

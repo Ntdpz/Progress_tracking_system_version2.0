@@ -208,60 +208,30 @@ router.put("/updateSystem/:id", async (req, res) => {
   }
 });
 
+// Route to soft delete a system
 router.delete("/delete/:id", async (req, res) => {
   const id = req.params.id;
 
   try {
-    const deleteSystemPromise = new Promise((resolve, reject) => {
-      connection.query(
-        "DELETE FROM systems WHERE id = ?",
-        [id],
-        (err, results, fields) => {
-          if (err) reject(err);
-          resolve(results);
+    connection.query(
+      "UPDATE systems SET is_deleted = true WHERE id = ?",
+      [id],
+      (err, results, fields) => {
+        if (err) {
+          console.log(err);
+          return res.status(500).send();
         }
-      );
-    });
-
-    const deleteScreensPromise = new Promise((resolve, reject) => {
-      connection.query(
-        "DELETE FROM screens WHERE system_id = ?",
-        [id],
-        (err, results, fields) => {
-          if (err) reject(err);
-          resolve(results);
+        if (results.affectedRows === 0) {
+          return res.status(404).json({ message: "No system with that id!" });
         }
-      );
-    });
-
-    const deleteTasksPromise = new Promise((resolve, reject) => {
-      connection.query(
-        "DELETE FROM tasks WHERE systems_id = ?",
-        [id],
-        (err, results, fields) => {
-          if (err) reject(err);
-          resolve(results);
-        }
-      );
-    });
-
-    const [systemResult, screensResult, tasksResult] = await Promise.all([
-      deleteSystemPromise,
-      deleteScreensPromise,
-      deleteTasksPromise,
-    ]);
-
-    if (systemResult.affectedRows === 0) {
-      return res.status(404).json({ message: "No system with that id!" });
-    }
-
-    return res.status(200).json({ message: "System deleted successfully!" });
+        return res.status(200).json({ message: "System deleted successfully!" });
+      }
+    );
   } catch (err) {
     console.log(err);
     return res.status(500).send();
   }
 });
-// //* DELETE system by project_id
 // router.delete("/deleteProjectId/:project_id", async (req, res) => {
 //   const project_id = req.params.project_id;
 
