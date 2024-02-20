@@ -24,6 +24,7 @@ router.get("/getAll", async (req, res) => {
              Systems.system_nameTH,
              Systems.system_nameEN,
              Systems.system_shortname,
+             Systems.is_deleted, /* เพิ่มฟิลด์ is_deleted */
              COUNT(Screens.screen_id) AS screen_count, 
              AVG(screens.screen_progress) AS system_progress,
              DATE_FORMAT(MIN(Screens.screen_plan_start), '%Y-%m-%d') AS system_plan_start,
@@ -96,7 +97,6 @@ async function updateSystem(system) {
     throw error;
   }
 }
-
 // * GET one by id
 router.get("/getOne/:id", async (req, res) => {
   const id = req.params.id;
