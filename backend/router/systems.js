@@ -104,7 +104,6 @@ router.get("/getAllHistorySystem", async (req, res) => {
   }
 });
 
-
 async function updateSystem(system) {
   try {
     const updateQuery = `
@@ -151,7 +150,14 @@ router.get("/getOne/:id", async (req, res) => {
           console.log(err);
           return res.status(400).send();
         }
-        res.status(200).json(results);
+        if (results.length === 0) {
+          return res.status(404).json({ message: "System not found!" });
+        }
+        const system = results[0];
+        if (system.is_deleted === 1) {
+          return res.status(200).json({ message: "This system has been deleted." });
+        }
+        res.status(200).json(system);
       }
     );
   } catch (err) {
@@ -159,6 +165,7 @@ router.get("/getOne/:id", async (req, res) => {
     return res.status(500).send();
   }
 });
+
 
 // * POST FROM systems
 router.post("/createSystem", async (req, res) => {
