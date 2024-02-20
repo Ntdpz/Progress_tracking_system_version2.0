@@ -330,41 +330,54 @@
 
     <!-- Admin -->
     <div v-if="userrole === 'Admin' || userposition === 'Implementer'">
-  <v-row class="project-row" align="stretch" justify="start">
-    <v-col cols="6" sm="6" md="6" lg="6" v-for="(project, index) in filteredProjects" :key="index">
-      <!-- Card content -->
-      <v-card class="project-card" style="width: 800px; height: 250px;">
-        <v-card-title style="background-color: #735bff">
-          <h3 class="white--text">{{ project.project_name }}</h3>
-          <p class="mt-1 white--text" style="font-size: 15px">
-            <span style="margin-left: 20px;"></span>
-            {{ getSystemCount(project) }} System
-          </p>
-        </v-card-title>
-        <!-- Card details -->
-        <v-card-text>
-          <v-row no-gutters>
-            <v-col cols="3">
-              <strong>Project ID:</strong><br>{{ project.project_id }}
-            </v-col>
-            <v-col cols="2">
-              <strong>Date Start:</strong><br>{{ project.showdatestart }}
-            </v-col>
-            <v-col cols="2">
-              <strong>Date End:</strong><br>{{ project.showdateend }}
-            </v-col>
-            <v-col cols="2">
-              <strong>Agency:</strong><br>{{ project.project_agency }}
-            </v-col>
-            <v-col cols="1" class="text-right">
-              <v-btn color="primary" icon @click="openDialog('edit', projectList[index])">
-                <v-icon class="pa-0" size="25" color="black">mdi mdi-square-edit-outline</v-icon>
-              </v-btn>
-            </v-col>
-          </v-row>
-        </v-card-text>
-         <v-divider></v-divider>
-        <!-- Table -->
+      <v-row class="project-row" align="stretch" justify="start">
+        <v-col
+          cols="6"
+          sm="6"
+          md="6"
+          lg="6"
+          v-for="(project, index) in filteredProjects"
+          :key="index"
+        >
+          <!-- Card content -->
+          <v-card class="project-card" style="width: 800px; height: 250px">
+            <v-card-title style="background-color: #735bff">
+              <h3 class="white--text">{{ project.project_name }}</h3>
+              <p class="mt-1 white--text" style="font-size: 15px">
+                <span style="margin-left: 20px"></span>
+                {{ getSystemCount(project) }} System
+              </p>
+            </v-card-title>
+            <!-- Card details -->
+            <v-card-text>
+              <v-row no-gutters>
+                <v-col cols="3">
+                  <strong>Project ID:</strong><br />{{ project.project_id }}
+                </v-col>
+                <v-col cols="2">
+                  <strong>Date Start:</strong><br />{{ project.showdatestart }}
+                </v-col>
+                <v-col cols="2">
+                  <strong>Date End:</strong><br />{{ project.showdateend }}
+                </v-col>
+                <v-col cols="2">
+                  <strong>Agency:</strong><br />{{ project.project_agency }}
+                </v-col>
+                <v-col cols="1" class="text-right">
+                  <v-btn
+                    color="primary"
+                    icon
+                    @click="openDialog('edit', projectList[index])"
+                  >
+                    <v-icon class="pa-0" size="25" color="black"
+                      >mdi mdi-square-edit-outline</v-icon
+                    >
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </v-card-text>
+            <v-divider></v-divider>
+            <!-- Table -->
          <!-- <v-card-text>
           <v-data-table
             :headers="headers"
@@ -386,48 +399,64 @@
             </template>
           </v-data-table>
         </v-card-text>  -->
-      </v-card>
-    </v-col>
-  </v-row>
-</div>
+            <!-- Button to view system details -->
+            <v-card-actions>
+          <v-btn
+            color="primary"
+            @click="$router.push(`/systemdetail/${project.systems[0].id}`)"
+          >
+            View System Detail
+          </v-btn>
+        </v-card-actions>
+          </v-card>
+        </v-col>
+      </v-row>
+    </div>
 
     <!-- Develop -->
     <div v-else-if="userrole !== 'Admin' && userposition !== 'Implementer'">
       <v-row class="project-row" align="stretch" justify="start">
-    <v-col cols="6" sm="6" md="6" lg="6" v-for="(project, index) in filteredProjects" :key="index">
-      <!-- Card content -->
-      <v-card class="project-card" style="width: 800px; height: 250px;">
-        <v-card-title style="background-color: #735bff">
-          <h3 class="white--text">{{ project.project_name }}</h3>
-          <p class="mt-1 white--text" style="font-size: 15px">
-            <span style="margin-left: 20px;"></span>
-            {{ getSystemCount(project) }} System
-          </p>
-        </v-card-title>
-        <!-- Card details -->
-        <v-card-text>
-          <v-row no-gutters>
-            <v-col cols="3">
-              <strong>Project ID:</strong><br>{{ project.project_id }}
-            </v-col>
-            <v-col cols="2">
-              <strong>Date Start:</strong><br>{{ project.showdatestart }}
-            </v-col>
-            <v-col cols="2">
-              <strong>Date End:</strong><br>{{ project.showdateend }}
-            </v-col>
-            <v-col cols="2">
-              <strong>Agency:</strong><br>{{ project.project_agency }}
-            </v-col>
-            <!-- <v-col cols="1" class="text-right">
+        <v-col
+          cols="6"
+          sm="6"
+          md="6"
+          lg="6"
+          v-for="(project, index) in filteredProjects"
+          :key="index"
+        >
+          <!-- Card content -->
+          <v-card class="project-card" style="width: 800px; height: 250px">
+            <v-card-title style="background-color: #735bff">
+              <h3 class="white--text">{{ project.project_name }}</h3>
+              <p class="mt-1 white--text" style="font-size: 15px">
+                <span style="margin-left: 20px"></span>
+                {{ getSystemCount(project) }} System
+              </p>
+            </v-card-title>
+            <!-- Card details -->
+            <v-card-text>
+              <v-row no-gutters>
+                <v-col cols="3">
+                  <strong>Project ID:</strong><br />{{ project.project_id }}
+                </v-col>
+                <v-col cols="2">
+                  <strong>Date Start:</strong><br />{{ project.showdatestart }}
+                </v-col>
+                <v-col cols="2">
+                  <strong>Date End:</strong><br />{{ project.showdateend }}
+                </v-col>
+                <v-col cols="2">
+                  <strong>Agency:</strong><br />{{ project.project_agency }}
+                </v-col>
+                <!-- <v-col cols="1" class="text-right">
               <v-btn color="primary" icon @click="openDialog('edit', projectList[index])">
                 <v-icon class="pa-0" size="25" color="black">mdi mdi-square-edit-outline</v-icon>
               </v-btn>
             </v-col> -->
-          </v-row>
-        </v-card-text>
-         <v-divider></v-divider>
-        <!-- developer -->
+              </v-row>
+            </v-card-text>
+            <v-divider></v-divider>
+            <!-- developer -->
             <!-- <v-data-table
               :headers="headers"
               :items="project.systems"
@@ -459,10 +488,10 @@
                 </tr>
               </template>
             </v-data-table> -->
-      </v-card>
-    </v-col>
-  </v-row>
-</div>
+          </v-card>
+        </v-col>
+      </v-row>
+    </div>
 
     <div v-else-if="loading === true" style="text-align: center">
       <v-progress-circular
@@ -647,6 +676,10 @@ export default {
     this.getSystemsOwner();
   },
   methods: {
+
+   redirectToSystemDetail(systemId) {
+       this.$router.push(`/systemdetail/${projectId}/${systemId}`);
+  },
     initialize() {
       this.projectList = [];
       this.projectListAdmin = [];
@@ -1172,6 +1205,5 @@ export default {
 }
 
 .project-card {
-  
 }
 </style>
