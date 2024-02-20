@@ -101,6 +101,29 @@ router.get("/getOne/:id", async (req, res) => {
     return res.status(500).send();
   }
 });
+// Define your route for fetching deleted projects
+router.get('/getHistoryProject', async (req, res) => {
+  try {
+    // Query to fetch projects that are marked as deleted
+    const query = `
+      SELECT *
+      FROM projects
+      WHERE is_deleted = 1
+    `;
+
+    // Execute the query
+    connection.query(query, (err, results, fields) => {
+      if (err) {
+        console.log(err);
+        return res.status(500).send();
+      }
+      res.status(200).json(results);
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send();
+  }
+});
 
 
 async function updateProject(project) {
