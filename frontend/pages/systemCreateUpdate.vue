@@ -16,10 +16,10 @@
             <!-- Project Name -->
             <v-row>
                 <v-col cols="4" sm="6" md="4" class="text-right">
-                    <h2>Project Name</h2>
+                    <h2>System Name</h2>
                 </v-col>
                 <v-col cols="8" sm="6" md="4">
-                    <v-text-field v-model="projectName" label="Project Name" required outlined></v-text-field>
+                    <v-text-field v-model="projectName" label="System Name" required outlined></v-text-field>
                 </v-col>
             </v-row>
             <!-- Personnel -->
