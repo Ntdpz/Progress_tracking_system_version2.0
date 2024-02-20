@@ -19,55 +19,6 @@
           <h2>Project Name</h2>
         </v-col>
         <v-col cols="8" sm="6" md="4">
-<<<<<<< HEAD
-          <v-text-field v-model="projectName" label="Project Name" required outlined></v-text-field>
-        </v-col>
-      </v-row>
-
-      <!-- Personnel -->
-      <div class="personnel">
-        <v-row>
-          <v-col cols="4" class="text-right">
-            <h2>Personnel</h2>
-          </v-col>
-          <v-col cols="4" class="text-right">
-            <v-btn @click="openAddPersonnelDialog">
-              <v-icon left>mdi-plus</v-icon>
-              Add personnel
-            </v-btn>
-          </v-col>
-        </v-row>
-
-        <!-- Personnel table -->
-        <v-data-table :headers="headers" :items="personnel" item-key="id" class="elevation-1" max-width="800">
-          <v-toolbar flat />
-          <v-toolbar-title>My CRUD</v-toolbar-title>
-          <v-divider class="mx-4" inset vertical></v-divider>
-          <v-spacer></v-spacer>
-          <v-dialog v-model="dialog" max-width="500px">
-            <v-card>
-              <v-card-title class="headline">
-                Add Personnel
-              </v-card-title>
-              <v-card-text>
-                <v-text-field v-model="newPerson.name" label="Name" required></v-text-field>
-                <v-text-field v-model="newPerson.role" label="Role" required></v-text-field>
-              </v-card-text>
-              <v-card-actions>
-                <v-btn @click="cancelAddPersonnel" color="error">Cancel</v-btn>
-                <v-btn @click="saveNewPersonnel" color="primary">Save</v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-          <template v-slot:item.actions="{ item }">
-            <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>
-          </template>
-        </v-data-table>
-      </div>
-
-      <!-- Confirm and cancel buttons -->
-      <v-row class="justify-center">
-=======
               <v-text-field
                 v-model="projectName"
                 label="Project Name"
@@ -110,7 +61,6 @@
     </div>
       <!-- confirm and cancel buttons -->
     <v-row>
->>>>>>> origin/ruck
         <v-col cols="6" sm="6" md="4">
           <v-btn color="primary" @click="submitForm">Confirm</v-btn>
         </v-col>
