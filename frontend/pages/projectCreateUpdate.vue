@@ -26,9 +26,8 @@
       <div class="personnel">
         <v-card>
           <v-card-title>
-            <v-text-field v-model="search" append-icon="mdi-magnify" label="Search" single-line
-              hide-details></v-text-field>
-              <v-spacer></v-spacer>
+            <v-text-field v-model="search" label="Search" single-line hide-details outlined prepend-inner-icon="mdi-magnify" rounded></v-text-field>
+            <v-spacer></v-spacer>
             <v-btn>Add Personnel</v-btn>
           </v-card-title>
           <!-- Personnel table -->
@@ -38,12 +37,11 @@
                 mdi-delete
               </v-icon>
             </template>
-
           </v-data-table>
         </v-card>
       </div>
       <!-- confirm and cancel buttons -->
-      <v-row>
+      <v-row class="d-flex justify-center mt-6">
         <v-col cols="6" sm="6" md="4">
           <v-btn color="primary" @click="submitForm">Confirm</v-btn>
         </v-col>
@@ -51,7 +49,6 @@
           <v-btn color="error" @click="submitForm">Cancel</v-btn>
         </v-col>
       </v-row>
-
     </v-form>
   </div>
 </template>
@@ -142,7 +139,6 @@ export default {
 h1,
 v-form {
   margin-bottom: 30px;
-  /* ปรับค่าตามที่คุณต้องการ */
 }
 
 .center {
