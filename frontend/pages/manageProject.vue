@@ -331,9 +331,9 @@
     <!-- Admin -->
     <div v-if="userrole === 'Admin' || userposition === 'Implementer'">
   <v-row class="project-row" align="stretch" justify="start">
-    <v-col cols="12" sm="6" md="4" lg="3" v-for="(project, index) in filteredProjects" :key="index">
+    <v-col cols="6" sm="6" md="6" lg="6" v-for="(project, index) in filteredProjects" :key="index">
       <!-- Card content -->
-      <v-card class="project-card" style="width: 300px; height: 350px;">
+      <v-card class="project-card" style="width: 800px; height: 250px;">
         <v-card-title style="background-color: #735bff">
           <h3 class="white--text">{{ project.project_name }}</h3>
           <p class="mt-1 white--text" style="font-size: 15px">
@@ -363,9 +363,9 @@
             </v-col>
           </v-row>
         </v-card-text>
-        <!-- <v-divider></v-divider> -->
+         <v-divider></v-divider>
         <!-- Table -->
-        <!-- <v-card-text>
+         <!-- <v-card-text>
           <v-data-table
             :headers="headers"
             :items="project.systems"
@@ -385,7 +385,7 @@
               </tr>
             </template>
           </v-data-table>
-        </v-card-text> -->
+        </v-card-text>  -->
       </v-card>
     </v-col>
   </v-row>
@@ -393,58 +393,47 @@
 
     <!-- Develop -->
     <div v-else-if="userrole !== 'Admin' && userposition !== 'Implementer'">
-      <v-expansion-panels
-        v-for="(project, index) in filteredProjectsDev"
-        :key="index"
-        class="mb-5"
-        :items="projectList"
-      >
-        <v-expansion-panel>
-          <v-expansion-panel-header
-            disable-icon-rotate
-            style="background-color: #5c3efe"
-          >
-            <v-row no-gutters>
-              <v-col cols="3">
-                <h3 style="color: white">{{ project.project_name }}</h3>
-                <p class="mt-1" style="color: white; font-size: 15px">
-                  มี {{ getSystemCount(project) }} ระบบ
-                </p>
-              </v-col>
-              <v-col cols="2">
-                <h4 style="color: white">{{ project.project_id }}</h4>
-              </v-col>
-              <v-col cols="2">
-                <h4 style="color: white">{{ project.showdatestart }}</h4>
-              </v-col>
-              <v-col cols="2">
-                <h4 style="color: white">{{ project.showdateend }}</h4>
-              </v-col>
-              <v-col cols="2">
-                <h4 style="color: white">{{ project.project_agency }}</h4>
-              </v-col>
-              <v-col cols="1">
-                <!-- <v-btn
-                  color="primary"
-                  icon
-                  @click="openDialog('edit', projectList[index])"
-                >
-                  <v-icon class="pa-0" size="25" color="white"
-                    >mdi mdi-square-edit-outline</v-icon
-                  >
-                </v-btn> -->
-              </v-col>
-            </v-row>
-          </v-expansion-panel-header>
-          <v-expansion-panel-content>
-            <!-- developer -->
-            <v-data-table
+      <v-row class="project-row" align="stretch" justify="start">
+    <v-col cols="6" sm="6" md="6" lg="6" v-for="(project, index) in filteredProjects" :key="index">
+      <!-- Card content -->
+      <v-card class="project-card" style="width: 800px; height: 250px;">
+        <v-card-title style="background-color: #735bff">
+          <h3 class="white--text">{{ project.project_name }}</h3>
+          <p class="mt-1 white--text" style="font-size: 15px">
+            <span style="margin-left: 20px;"></span>
+            {{ getSystemCount(project) }} System
+          </p>
+        </v-card-title>
+        <!-- Card details -->
+        <v-card-text>
+          <v-row no-gutters>
+            <v-col cols="3">
+              <strong>Project ID:</strong><br>{{ project.project_id }}
+            </v-col>
+            <v-col cols="2">
+              <strong>Date Start:</strong><br>{{ project.showdatestart }}
+            </v-col>
+            <v-col cols="2">
+              <strong>Date End:</strong><br>{{ project.showdateend }}
+            </v-col>
+            <v-col cols="2">
+              <strong>Agency:</strong><br>{{ project.project_agency }}
+            </v-col>
+            <!-- <v-col cols="1" class="text-right">
+              <v-btn color="primary" icon @click="openDialog('edit', projectList[index])">
+                <v-icon class="pa-0" size="25" color="black">mdi mdi-square-edit-outline</v-icon>
+              </v-btn>
+            </v-col> -->
+          </v-row>
+        </v-card-text>
+         <v-divider></v-divider>
+        <!-- developer -->
+            <!-- <v-data-table
               :headers="headers"
               :items="project.systems"
               sort-by="calories"
               class="v-data-table elevation-1 mb-2 mt-5"
             >
-              <!-- <template v-slot:top> </template> -->
               <template v-slot:item="{ item, index }">
                 <tr>
                   <td>
@@ -469,11 +458,12 @@
                   </td>
                 </tr>
               </template>
-            </v-data-table>
-          </v-expansion-panel-content>
-        </v-expansion-panel>
-      </v-expansion-panels>
-    </div>
+            </v-data-table> -->
+      </v-card>
+    </v-col>
+  </v-row>
+</div>
+
     <div v-else-if="loading === true" style="text-align: center">
       <v-progress-circular
         :size="70"
@@ -1182,7 +1172,6 @@ export default {
 }
 
 .project-card {
-  flex: 1 0 300px; /* Adjust the width as needed */
-  margin: 5px; /* Adjust the margin as needed */
+  
 }
 </style>
