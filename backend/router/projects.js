@@ -9,7 +9,7 @@ function generateId() {
   return id;
 }
 
-// * GET All FROM projects
+//* GET All FROM projects
 router.get("/getAll", async (req, res) => {
   try {
     const projectIdFilter = req.query.project_id;
@@ -40,13 +40,16 @@ router.get("/getAll", async (req, res) => {
         return res.status(500).send();
       }
 
+      // Filter out deleted projects
+      const filteredResults = results.filter(project => !project.is_deleted);
+
       // Update project data in the database
-      results.forEach(async (project) => {
+      for (const project of filteredResults) {
         const updatedProject = await updateProject(project);
         Object.assign(project, updatedProject);
-      });
+      }
 
-      res.status(200).json(results);
+      res.status(200).json(filteredResults);
     });
   } catch (err) {
     console.log(err);
@@ -82,9 +85,14 @@ router.get("/getOne/:id", async (req, res) => {
         if (results.length === 0) {
           res.status(404).json({ error: 'Project not found' });
         } else {
-          // Update project data in the database
-          const updatedProject = await updateProject(results[0]);
-          res.status(200).json(updatedProject);
+          // Check if project is deleted
+          if (results[0].is_deleted) {
+            res.status(404).json({ error: 'Project not found' });
+          } else {
+            // Update project data in the database
+            const updatedProject = await updateProject(results[0]);
+            res.status(200).json(updatedProject);
+          }
         }
       }
     );
@@ -93,6 +101,7 @@ router.get("/getOne/:id", async (req, res) => {
     return res.status(500).send();
   }
 });
+
 
 async function updateProject(project) {
   try {
