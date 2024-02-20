@@ -33,54 +33,24 @@
      </v-row>
 <!-- Personnel -->
     <div class="personnel">
-        <!-- Add personnel -->
-         <v-row>
-            <v-col  cols="4">
-               <h2>Personnel</h2>
-            </v-col>
-            <!-- Add personnel button -->
-            <v-col  cols="4">
-                   <v-btn>
-                        <v-icon left>
-                        mdi-plus
-                        </v-icon>
-                    Add personnel
-                </v-btn>
-            </v-col>
-         </v-row>
+        <v-card>
+            <v-card-title>
+         <v-btn>Add Personnel</v-btn>
+          <v-spacer></v-spacer>
+          <v-text-field
+            v-model="search"
+            append-icon="mdi-magnify"
+            label="Search"
+            single-line
+            hide-details
+          ></v-text-field>
+        </v-card-title>
          <!-- Personnel table -->
          <v-data-table   
             :headers="headers"
             :items="personnel"
             item-key="name"
             class="elevation-1">
-            
-          <v-toolbar
-            flat
-          />
-            <v-toolbar-title>My CRUD</v-toolbar-title>
-            <v-divider
-              class="mx-4"
-              inset
-              vertical
-            ></v-divider>
-            <v-spacer></v-spacer>
-            <v-dialog
-              v-model="dialog"
-              max-width="500px"
-            />
-            
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn
-                  color="primary"
-                  dark
-                  class="mb-2"
-                  v-bind="attrs"
-                  v-on="on"
-                >
-                  New Item
-                </v-btn>
-              </template>
               <template v-slot:item.actions="{ item }">
           <v-icon
             small
@@ -91,7 +61,7 @@
         </template>
            
         </v-data-table>
-
+    </v-card>
     </div>
       <!-- confirm and cancel buttons -->
     <v-row>
