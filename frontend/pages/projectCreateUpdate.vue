@@ -19,6 +19,7 @@
           <h2>Project Name</h2>
         </v-col>
         <v-col cols="8" sm="6" md="4">
+<<<<<<< HEAD
           <v-text-field v-model="projectName" label="Project Name" required outlined></v-text-field>
         </v-col>
       </v-row>
@@ -66,6 +67,50 @@
 
       <!-- Confirm and cancel buttons -->
       <v-row class="justify-center">
+=======
+              <v-text-field
+                v-model="projectName"
+                label="Project Name"
+                required
+                outlined
+              ></v-text-field>
+            </v-col>
+     </v-row>
+<!-- Personnel -->
+    <div class="personnel">
+        <v-card>
+            <v-card-title>
+         <v-btn>Add Personnel</v-btn>
+          <v-spacer></v-spacer>
+          <v-text-field
+            v-model="search"
+            append-icon="mdi-magnify"
+            label="Search"
+            single-line
+            hide-details
+          ></v-text-field>
+        </v-card-title>
+         <!-- Personnel table -->
+         <v-data-table   
+            :headers="headers"
+            :items="personnel"
+            item-key="name"
+            class="elevation-1">
+              <template v-slot:item.actions="{ item }">
+          <v-icon
+            small
+            @click="deleteItem(item)"
+          >
+            mdi-delete
+          </v-icon>
+        </template>
+           
+        </v-data-table>
+    </v-card>
+    </div>
+      <!-- confirm and cancel buttons -->
+    <v-row>
+>>>>>>> origin/ruck
         <v-col cols="6" sm="6" md="4">
           <v-btn color="primary" @click="submitForm">Confirm</v-btn>
         </v-col>
