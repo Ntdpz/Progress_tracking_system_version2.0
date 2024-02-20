@@ -289,13 +289,11 @@ router.delete("/deleteHistoryProject/:id", async (req, res) => {
           return res.status(500).send();
         }
 
-        // Now, delete screens and systems related to the project_id
+        // Now, delete screens related to the project_id
         connection.query(
           `
-          DELETE screens, systems
-          FROM screens
-          INNER JOIN systems ON screens.project_id = systems.project_id
-          WHERE screens.project_id = ?
+          DELETE FROM screens
+          WHERE project_id = ?
           `,
           [id],
           async (err, results, fields) => {
@@ -304,19 +302,34 @@ router.delete("/deleteHistoryProject/:id", async (req, res) => {
               return res.status(500).send();
             }
 
-            // Now, delete the project itself
+            // Now, delete systems related to the project_id
             connection.query(
               `
-              DELETE FROM projects
-              WHERE id = ?
+              DELETE FROM systems
+              WHERE project_id = ?
               `,
               [id],
-              (err, results, fields) => {
+              async (err, results, fields) => {
                 if (err) {
                   console.log(err);
                   return res.status(500).send();
                 }
-                return res.status(200).json({ message: "Project and related data deleted successfully!" });
+
+                // Now, delete the project itself
+                connection.query(
+                  `
+                  DELETE FROM projects
+                  WHERE id = ?
+                  `,
+                  [id],
+                  (err, results, fields) => {
+                    if (err) {
+                      console.log(err);
+                      return res.status(500).send();
+                    }
+                    return res.status(200).json({ message: "Project and related data deleted successfully!" });
+                  }
+                );
               }
             );
           }
@@ -328,6 +341,7 @@ router.delete("/deleteHistoryProject/:id", async (req, res) => {
     return res.status(500).send();
   }
 });
+
 
 
 
