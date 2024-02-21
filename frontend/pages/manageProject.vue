@@ -330,295 +330,311 @@
 
     <!-- Admin -->
     <div v-if="userrole === 'Admin' || userposition === 'Implementer'">
+       <v-expansion-panels class="max-w-800">
+      
       <v-row class="project-row" align="stretch" justify="start">
-        <v-col
-          cols="6"
-          sm="6"
-          md="6"
-          lg="6"
-          v-for="(project, index) in filteredProjects"
-          :key="index"
-        >t
-          <!-- Card content -->
-           <v-card class="project-card" style="width: 800px; height: 250px">
-            <v-card-title style="background-color: #735bff">
-              <h3 class="white--text">{{ project.project_name }}</h3>
-              <p class="mt-1 white--text" style="font-size: 15px">
-                <span style="margin-left: 20px"></span>
-                {{ getSystemCount(project) }} System
-              </p>
-            </v-card-title>
-            <!-- Card details -->
-            <v-card-text>
-              <v-row no-gutters>
-                <v-col cols="3">
-                  <strong>Project ID:</strong><br />{{ project.project_id }}
-                </v-col>
-                <v-col cols="2">
-                  <strong>Date Start:</strong><br />{{ project.showdatestart }}
-                </v-col>
-                <v-col cols="2">
-                  <strong>Date End:</strong><br />{{ project.showdateend }}
-                </v-col>
-                <v-col cols="2">
-                  <strong>Agency:</strong><br />{{ project.project_agency }}
-                </v-col>
-                <v-col cols="1" class="text-right">
-                  <v-btn
-                    color="primary"
-                    icon
-                    @click="openDialog('edit', projectList[index])"
-                  >
-                    <v-icon class="pa-0" size="25" color="black"
-                      >mdi mdi-square-edit-outline</v-icon
-                    >
-                  </v-btn>
-                </v-col>
-              </v-row>
-            </v-card-text>
-            <v-row justify="center" class="ml-5 mr-5 mt-0">
-              <!-- *dialog -->
-              <v-dialog
-                v-model="dialogSubsystem"
-                persistent
-                max-width="600px"
-                class=""
-              >
-                <template v-slot:activator="{ on, attrs }">
-                  <v-btn
-                    class="new-btn ma-4 text-left"
-                    color="primary"
-                    dark
-                    v-bind="attrs"
-                    v-on="on"
-                    block
-                    large
-                    @click="dialogSystem(projectList[index])"
-                  >
-                    <span
-                      class="mdi mdi-plus-circle-outline"
-                      style="font-size: 25px; color: white"
-                    ></span>
-                    <h4 style="color: white">&nbsp;&nbsp; สร้างระบบใหม่</h4>
-                  </v-btn>
-                </template>
-                <v-card>
-                  <v-card-title style="background-color: #5c3efe; color: white">
-                    <v-col cols="12">
-                      <v-row>
-                        <h5>สร้างระบบใหม่</h5>
-                      </v-row>
-                    </v-col>
-                  </v-card-title>
-                  <v-form ref="myForm" @submit.prevent="CreateAllSystem">
-                    <v-card-text>
-                      <v-container>
-                        <v-row>
-                          <v-col class="pb-0 pt-0" cols="12">
-                            <p>สร้างโครงการจากรหัสโครงการ</p>
-                            <v-text-field
-                              :rules="rules"
-                              label="รหัสโครงการ"
-                              placeholder="รหัสโครงการ"
-                              outlined
-                              dense
-                              disabled
-                              v-model="editedItem.project_id"
-                              required
-                            ></v-text-field>
-                          </v-col>
-                          <v-col class="pb-0 pt-0" cols="12">
-                            <v-text-field
-                              :rules="rules"
-                              label="รหัสของระบบ"
-                              placeholder="รหัสของระบบ"
-                              outlined
-                              dense
-                              v-model="system.system_id"
-                              required
-                            ></v-text-field>
-                          </v-col>
-                          <v-col class="pb-0 pt-0" cols="12">
-                            <v-text-field
-                              :rules="rules"
-                              label="ชื่อระบบ (ภาษาไทย)"
-                              placeholder="ชื่อระบบ (ภาษาไทย)"
-                              outlined
-                              dense
-                              v-model="system.system_nameTH"
-                              required
-                            ></v-text-field>
-                          </v-col>
-                          <v-col class="pb-0 pt-0" cols="12">
-                            <v-text-field
-                              :rules="rules"
-                              label="ชื่อระบบ (ภาษาอังกฤษ)"
-                              placeholder="ชื่อระบบ (ภาษาอังกฤษ)"
-                              outlined
-                              dense
-                              v-model="system.system_nameEN"
-                              required
-                            ></v-text-field>
-                          </v-col>
-                          <v-col class="pb-0 pt-0" cols="12">
-                            <v-text-field
-                              :rules="rules"
-                              label="ชื่อย่อของระบบ"
-                              placeholder="ชื่อย่อของระบบ"
-                              outlined
-                              dense
-                              v-model="system.system_shortname"
-                              required
-                            ></v-text-field>
-                          </v-col>
-                          <v-col class="pb-0 pt-0" cols="12">
-                            <v-select
-                              :rules="rules"
-                              required
-                              label="เลือก System Analyst"
-                              v-model="choose_user_id"
-                              :items="data_position_Sa"
-                              item-text="user_firstname"
-                              item-value="id"
-                              outlined
-                              dense
-                              chips
-                              multiple
-                              :menu-props="{ closeOnClick: true }"
-                            >
-                              <template v-slot:item="{ item }">
-                                {{ item.user_firstname }}
-                                {{ item.user_lastname }}
-                              </template>
-                              <template #selection="{ item }">
-                                <v-chip
-                                  class="ma-1"
-                                  outlined
-                                  color="primary"
-                                  dark
-                                >
-                                  {{ item.user_firstname }}
-                                  {{ item.user_lastname }}
-                                </v-chip>
-                              </template>
-                            </v-select>
-                          </v-col>
-                          <v-col class="pb-0 pt-0" cols="12">
-                            <v-select
-                              :rules="rules"
-                              required
-                              label="เลือก Developer"
-                              v-model="choose_user_id"
-                              :items="data_position_Developer"
-                              item-text="user_firstname"
-                              item-value="id"
-                              outlined
-                              dense
-                              chips
-                              multiple
-                            >
-                              <template v-slot:item="{ item }">
-                                {{ item.user_firstname }}
-                                {{ item.user_lastname }}
-                              </template>
-                              <template #selection="{ item }">
-                                <v-chip
-                                  class="ma-1"
-                                  outlined
-                                  color="primary"
-                                  dark
-                                >
-                                  {{ item.user_firstname }}
-                                  {{ item.user_lastname }}
-                                </v-chip>
-                              </template>
-                            </v-select>
-                          </v-col>
-                          <v-col class="pb-0 pt-0" cols="12">
-                            <v-select
-                              :rules="rules"
-                              required
-                              label="เลือก Implementer"
-                              style="text-align-last: left"
-                              v-model="choose_user_id"
-                              :items="data_position_Implementer"
-                              item-text="user_firstname"
-                              item-value="id"
-                              outlined
-                              dense
-                              chips
-                              multiple
-                            >
-                              <template v-slot:item="{ item }">
-                                {{ item.user_firstname }}
-                                {{ item.user_lastname }}
-                              </template>
-                              <template #selection="{ item }">
-                                <v-chip
-                                  class="ma-1"
-                                  outlined
-                                  color="primary"
-                                  dark
-                                >
-                                  {{ item.user_firstname }}
-                                  {{ item.user_lastname }}
-                                </v-chip>
-                              </template>
-                            </v-select>
-                          </v-col>
-                        </v-row>
-                      </v-container>
-                    </v-card-text>
+        <v-col v-for="(project, index) in filteredProjects" :key="index" cols="12" sm="6" md="6" lg="6">
+            <!-- Card content -->
+            <v-card class="project-card" style="max-width: 900px;">
+              <v-card-title style="background-color: #5c3efe">
+                <h3 class="white--text">{{ project.project_name }}</h3>
+                <p class="mt-1 white--text" style="font-size: 15px">
+                  <span style="margin-left: 20px"></span>
+                  {{ getSystemCount(project) }} System
+                </p>
+              </v-card-title>
 
-                    <v-card-actions>
-                      <v-spacer></v-spacer>
-                      <v-btn
-                        color="primary"
-                        text
-                        @click="(dialogSubsystem = false), ClearSubsystem()"
-                      >
-                        ยกเลิก
-                      </v-btn>
-                      <v-btn color="primary" dark type="submit">
-                        สร้างระบบ
-                      </v-btn>
-                    </v-card-actions>
-                  </v-form>
-                </v-card>
-              </v-dialog>
-            </v-row>
-            
-            <!-- Table -->
-         <v-card-text>
-        <v-data-table
-          :headers="headers"
-          :items="project.systems"
-          sort-by="calories"
-          class="v-data-table elevation-1 mb-2 mt-5"
-        >
-          <template v-slot:item="{ item, index }">
-            <tr>
-              <td>{{ item.system_nameTH }}</td>
-              <td>{{ item.system_id }}</td>
-              <td>{{ item.system_shortname }}</td>
-              <td>
-                <v-btn
-                  color="primary"
-                  style="color: white; border-radius: 20px"
-                  small
-                  :to="`/systemdetail/${item.id}`"
-                >
-                  จัดการ
-                </v-btn>
-              </td>
-            </tr>
-          </template>
-        </v-data-table>
-      </v-card-text>
-            
-          </v-card>
-        </v-col>
-      </v-row>
+              <v-expansion-panel>
+            <v-expansion-panel-header :style="{ backgroundColor: '#f5f5f5', boxShadow: '2px 2px 5px rgba(0, 0, 0, 0.3)' }"> 
+              <!-- Card details -->
+                  <v-card-text style="background-color: primary:">
+                    <v-row no-gutters>
+                      <v-col cols="3">
+                        <strong>Project ID:</strong><br />{{
+                          project.project_id
+                        }}
+                      </v-col>
+                      <v-col cols="2">
+                        <strong>Date Start:</strong><br />{{
+                          project.showdatestart
+                        }}
+                      </v-col>
+                      <v-col cols="2">
+                        <strong>Date End:</strong><br />{{
+                          project.showdateend
+                        }}
+                      </v-col>
+                      <v-col cols="2">
+                        <strong>Agency:</strong><br />{{
+                          project.project_agency
+                        }}
+                      </v-col>
+                      <v-col cols="1" class="text-right">
+                        <v-btn
+                          color="primary"
+                          icon
+                          @click="openDialog('edit', projectList[index])"
+                        >
+                          <v-icon class="pa-0" size="25" color="black"
+                            >mdi mdi-square-edit-outline</v-icon
+                          >
+                        </v-btn>
+                      </v-col>
+                    </v-row>
+                  </v-card-text>
+                </v-expansion-panel-header>
+
+                <v-expansion-panel-content>
+                  
+                    <!-- *dialog -->
+                    <v-dialog
+                      v-model="dialogSubsystem"
+                      persistent
+                      max-width="600px"
+                      class=""
+                    >
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-btn
+                          class="new-btn ma-4 text-left"
+                          color="primary"
+                          dark
+                          v-bind="attrs"
+                          v-on="on"
+                          block
+                          large
+                          @click="dialogSystem(projectList[index])"
+                        >
+                          <span
+                            class="mdi mdi-plus-circle-outline"
+                            style="font-size: 25px; color: white"
+                          ></span>
+                          <h4 style="color: white">
+                            &nbsp;&nbsp; สร้างระบบใหม่
+                          </h4>
+                        </v-btn>
+                      </template>
+                      <v-card>
+                        <v-card-title
+                          style="background-color: #5c3efe; color: white"
+                        >
+                          <v-col cols="12">
+                            <v-row>
+                              <h5>สร้างระบบใหม่</h5>
+                            </v-row>
+                          </v-col>
+                        </v-card-title>
+                        <v-form ref="myForm" @submit.prevent="CreateAllSystem">
+                          <v-card-text>
+                            <v-container>
+                              <v-row>
+                                <v-col class="pb-0 pt-0" cols="12">
+                                  <p>สร้างโครงการจากรหัสโครงการ</p>
+                                  <v-text-field
+                                    :rules="rules"
+                                    label="รหัสโครงการ"
+                                    placeholder="รหัสโครงการ"
+                                    outlined
+                                    dense
+                                    disabled
+                                    v-model="editedItem.project_id"
+                                    required
+                                  ></v-text-field>
+                                </v-col>
+                                <v-col class="pb-0 pt-0" cols="12">
+                                  <v-text-field
+                                    :rules="rules"
+                                    label="รหัสของระบบ"
+                                    placeholder="รหัสของระบบ"
+                                    outlined
+                                    dense
+                                    v-model="system.system_id"
+                                    required
+                                  ></v-text-field>
+                                </v-col>
+                                <v-col class="pb-0 pt-0" cols="12">
+                                  <v-text-field
+                                    :rules="rules"
+                                    label="ชื่อระบบ (ภาษาไทย)"
+                                    placeholder="ชื่อระบบ (ภาษาไทย)"
+                                    outlined
+                                    dense
+                                    v-model="system.system_nameTH"
+                                    required
+                                  ></v-text-field>
+                                </v-col>
+                                <v-col class="pb-0 pt-0" cols="12">
+                                  <v-text-field
+                                    :rules="rules"
+                                    label="ชื่อระบบ (ภาษาอังกฤษ)"
+                                    placeholder="ชื่อระบบ (ภาษาอังกฤษ)"
+                                    outlined
+                                    dense
+                                    v-model="system.system_nameEN"
+                                    required
+                                  ></v-text-field>
+                                </v-col>
+                                <v-col class="pb-0 pt-0" cols="12">
+                                  <v-text-field
+                                    :rules="rules"
+                                    label="ชื่อย่อของระบบ"
+                                    placeholder="ชื่อย่อของระบบ"
+                                    outlined
+                                    dense
+                                    v-model="system.system_shortname"
+                                    required
+                                  ></v-text-field>
+                                </v-col>
+                                <v-col class="pb-0 pt-0" cols="12">
+                                  <v-select
+                                    :rules="rules"
+                                    required
+                                    label="เลือก System Analyst"
+                                    v-model="choose_user_id"
+                                    :items="data_position_Sa"
+                                    item-text="user_firstname"
+                                    item-value="id"
+                                    outlined
+                                    dense
+                                    chips
+                                    multiple
+                                    :menu-props="{ closeOnClick: true }"
+                                  >
+                                    <template v-slot:item="{ item }">
+                                      {{ item.user_firstname }}
+                                      {{ item.user_lastname }}
+                                    </template>
+                                    <template #selection="{ item }">
+                                      <v-chip
+                                        class="ma-1"
+                                        outlined
+                                        color="primary"
+                                        dark
+                                      >
+                                        {{ item.user_firstname }}
+                                        {{ item.user_lastname }}
+                                      </v-chip>
+                                    </template>
+                                  </v-select>
+                                </v-col>
+                                <v-col class="pb-0 pt-0" cols="12">
+                                  <v-select
+                                    :rules="rules"
+                                    required
+                                    label="เลือก Developer"
+                                    v-model="choose_user_id"
+                                    :items="data_position_Developer"
+                                    item-text="user_firstname"
+                                    item-value="id"
+                                    outlined
+                                    dense
+                                    chips
+                                    multiple
+                                  >
+                                    <template v-slot:item="{ item }">
+                                      {{ item.user_firstname }}
+                                      {{ item.user_lastname }}
+                                    </template>
+                                    <template #selection="{ item }">
+                                      <v-chip
+                                        class="ma-1"
+                                        outlined
+                                        color="primary"
+                                        dark
+                                      >
+                                        {{ item.user_firstname }}
+                                        {{ item.user_lastname }}
+                                      </v-chip>
+                                    </template>
+                                  </v-select>
+                                </v-col>
+                                <v-col class="pb-0 pt-0" cols="12">
+                                  <v-select
+                                    :rules="rules"
+                                    required
+                                    label="เลือก Implementer"
+                                    style="text-align-last: left"
+                                    v-model="choose_user_id"
+                                    :items="data_position_Implementer"
+                                    item-text="user_firstname"
+                                    item-value="id"
+                                    outlined
+                                    dense
+                                    chips
+                                    multiple
+                                  >
+                                    <template v-slot:item="{ item }">
+                                      {{ item.user_firstname }}
+                                      {{ item.user_lastname }}
+                                    </template>
+                                    <template #selection="{ item }">
+                                      <v-chip
+                                        class="ma-1"
+                                        outlined
+                                        color="primary"
+                                        dark
+                                      >
+                                        {{ item.user_firstname }}
+                                        {{ item.user_lastname }}
+                                      </v-chip>
+                                    </template>
+                                  </v-select>
+                                </v-col>
+                              </v-row>
+                            </v-container>
+                          </v-card-text>
+
+                          <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn
+                              color="primary"
+                              text
+                              @click="
+                                (dialogSubsystem = false), ClearSubsystem()
+                              "
+                            >
+                              ยกเลิก
+                            </v-btn>
+                            <v-btn color="primary" dark type="submit">
+                              สร้างระบบ
+                            </v-btn>
+                          </v-card-actions>
+                        </v-form>
+                      </v-card>
+                    </v-dialog>
+                  
+
+                  <!-- Table -->
+                  <v-data-table
+                    :headers="headers"
+                    :items="project.systems"
+                    sort-by="calories"
+                    class="v-data-table elevation-1 mb-2 mt-5"
+                  >
+                    <template v-slot:item="{ item, index }">
+                      <tr>
+                        <td>{{ item.system_nameTH }}</td>
+                        <td>{{ item.system_id }}</td>
+                        <td>{{ item.system_shortname }}</td>
+                        <td>
+                          <v-btn
+                            color="primary"
+                            style="color: white; border-radius: 20px"
+                            small
+                            :to="`/systemdetail/${item.id}`"
+                          >
+                            จัดการ
+                          </v-btn>
+                        </td>
+                      </tr>
+                    </template>
+                  </v-data-table>
+                </v-expansion-panel-content>
+                </v-expansion-panel>
+            </v-card>
+          </v-col>
+        </v-row>
+       
+      </v-expansion-panels>
     </div>
 
     <!-- Develop -->
@@ -884,10 +900,9 @@ export default {
     this.getSystemsOwner();
   },
   methods: {
-
-   redirectToSystemDetail(systemId) {
-       this.$router.push(`/systemdetail/${projectId}/${systemId}`);
-  },
+    redirectToSystemDetail(systemId) {
+      this.$router.push(`/systemdetail/${projectId}/${systemId}`);
+    },
     initialize() {
       this.projectList = [];
       this.projectListAdmin = [];
@@ -1405,13 +1420,6 @@ export default {
 .card >>> .v-input {
   padding-top: 0% !important;
 }
-.project-row {
-  display: flex;
-  flex-wrap: wrap;
-  margin-left: -10px; /* Adjust as needed */
-  margin-right: -10px; /* Adjust as needed */
-}
 
-.project-card {
-}
+
 </style>
