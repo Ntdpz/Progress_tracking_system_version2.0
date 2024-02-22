@@ -1,380 +1,163 @@
-const express = require("express");
-const router = express.Router();
-const connection = require("../db"); // Import the connection object
-const multer = require("multer");
-const fs = require("fs");
-const path = require("path");
-const uuid = require("uuid");
+const express = require("express"); // เรียกใช้งาน Express.js
+const router = express.Router(); // สร้าง Router ของ Express.js
+const connection = require("../db"); // Import object ที่เชื่อมต่อกับฐานข้อมูล
+const multer = require("multer"); // เรียกใช้งาน multer สำหรับการอัปโหลดไฟล์
+const fs = require("fs"); // เรียกใช้งาน fs เพื่อจัดการไฟล์ระบบไฟล์
+const path = require("path"); // เรียกใช้งาน path เพื่อจัดการเส้นทางไฟล์
+const uuid = require("uuid"); // เรียกใช้งาน uuid เพื่อสร้าง UUID
 
-const storage = multer.diskStorage({
+const storage = multer.diskStorage({ // กำหนดการจัดเก็บไฟล์ที่อัปโหลดด้วย multer
   destination(req, file, cb) {
-    cb(null, "../frontend/static/uploads/");
+    cb(null, "../frontend/static/uploads/"); // กำหนดตำแหน่งที่จะบันทึกไฟล์
   },
   filename(req, file, cb) {
-    const originalname = file.originalname;
+    const originalname = file.originalname; // รับชื่อไฟล์เดิม
     const filename =
-      uuid.v4() +
+      uuid.v4() + // สร้าง UUID เพื่อป้องกันชื่อไฟล์ซ้ำ
       "-" +
       Date.now() +
       "-" +
-      originalname.substring(originalname.lastIndexOf("/") + 1);
-    cb(null, filename);
+      originalname.substring(originalname.lastIndexOf("/") + 1); // สร้างชื่อไฟล์ใหม่
+    cb(null, filename); // ส่งชื่อไฟล์ใหม่กลับ
   },
 });
 
-const upload = multer({ storage });
-const defaultName = "../frontend/static/uploads/DefaultAvatar.jpg";
-const defaultImage = defaultName.substring(defaultName.lastIndexOf("/") + 1);
+const upload = multer({ storage }); // กำหนดการอัปโหลดไฟล์ด้วย multer
+const defaultName = "../frontend/static/uploads/DefaultAvatar.jpg"; // กำหนดเส้นทางไฟล์ภาพโปรไฟล์เริ่มต้น
+const defaultImage = defaultName.substring(defaultName.lastIndexOf("/") + 1); // ดึงชื่อไฟล์ภาพโปรไฟล์เริ่มต้น
 
-function generateId() {
+function generateId() { // ฟังก์ชันสำหรับสร้าง ID แบบสุ่ม
   const maxId = 999999999;
   const minId = 100000000;
   const id = Math.floor(Math.random() * (maxId - minId + 1)) + minId;
   return id;
 }
-
 // * post user + image
-router.post("/createUser", (req, res) => {
-  const data = req.body;
+router.post("/createUser", (req, res) => { // เพิ่มข้อมูลผู้ใช้
+  const data = req.body; // รับข้อมูลจาก body ของ request
 
-  // const user_pic = req.file
-  //   ? req.file.filename
-  //   : defaultImage;
+  const id = generateId(); // สร้าง ID โดยใช้ฟังก์ชัน generateId()
 
-  const id = generateId();
-
-  // if (!req.file) {
-  //   const targetPath = path.join("../frontend/static/uploads/", user_pic);
-  //   fs.copyFileSync("../frontend/defaultimage/Avatar.jpg", targetPath);
-  // }
-
-  const sql = `INSERT INTO users SET ?`;
+  const sql = `INSERT INTO users SET ?`; // สร้างคำสั่ง SQL สำหรับการเพิ่มข้อมูลในตาราง users
   connection.query(
-    sql,[data,id],
-    (err, result) => {
-      if (err) {
-        console.error(err);
-        res.sendStatus(500);
+    sql, [data, id], // ส่งคำสั่ง SQL และข้อมูลที่ต้องการเพิ่มไปยังฐานข้อมูล
+    (err, result) => { // รับผลลัพธ์จากการส่งคำสั่ง SQL
+      if (err) { // หากเกิดข้อผิดพลาด
+        console.error(err); // แสดงข้อผิดพลาดใน console
+        res.sendStatus(500); // ส่งรหัสสถานะ 500 (Internal Server Error) กลับไปยัง client
       } else {
-        console.log(`Inserted ${result.affectedRows} row(s)`);
-        res.sendStatus(200);
+        console.log(`Inserted ${result.affectedRows} row(s)`); // แสดงข้อความบอกจำนวนแถวที่ถูกเพิ่มใน console
+        res.sendStatus(200); // ส่งรหัสสถานะ 200 (OK) กลับไปยัง client
       }
     }
   );
 });
-
-// * Edit user + image
-// PUT update user information and profile picture
-router.put("/updateUsers/:id", (req, res) => {
-  const id = req.params.id;
-  const data = req.body;
-  // const user_pic = req.file ? req.file.filename : null;
+router.put("/updateUsers/:id", (req, res) => { // อัปเดตข้อมูลผู้ใช้
+  const id = req.params.id; // รับค่า ID จากพารามิเตอร์ใน URL
+  const data = req.body; // รับข้อมูลที่ต้องการอัปเดตจาก body ของ request
 
   try {
     let sql;
     let values;
-    // let deletePath = null;
-          sql = `UPDATE users SET ? WHERE id = ?`;
-          values = [
-            data, id,
-          ];
-          connection.query(sql, values, (err, results, fields) => {
-            if (err) {
-              console.log(err);
-              return res.status(400).send(err);
-            }
-            res.status(200).json({ message: "User updated successfully!" });
-          });
-        }catch (err) {
-    console.log(err);
-    return res.status(500).send(err);
+    sql = `UPDATE users SET ? WHERE id = ?`; // สร้างคำสั่ง SQL สำหรับการอัปเดตข้อมูลในตาราง users
+    values = [
+      data, id,
+    ];
+    connection.query(sql, values, (err, results, fields) => { // ส่งคำสั่ง SQL ไปยังฐานข้อมูลและรับผลลัพธ์
+      if (err) { // หากเกิดข้อผิดพลาด
+        console.log(err); // แสดงข้อผิดพลาดใน console
+        return res.status(400).send(err); // ส่งรหัสสถานะ 400 (Bad Request) พร้อมกับข้อความข้อผิดพลาดกลับไปยัง client
+      }
+      res.status(200).json({ message: "User updated successfully!" }); // ส่งข้อความแสดงว่าอัปเดตผู้ใช้เรียบร้อยแล้วกลับไปยัง client พร้อมกำหนดสถานะการตอบกลับเป็น 200 (OK)
+    });
+  } catch (err) { // หากเกิดข้อผิดพลาดระหว่างการประมวลผล
+    console.log(err); // แสดงข้อผิดพลาดใน console
+    return res.status(500).send(err); // ส่งรหัสสถานะ 500 (Internal Server Error) พร้อมกับข้อความข้อผิดพลาดกลับไปยัง client
   }
 });
-
-//*delete images
-// Route to handle DELETE requests to /api/images/:id
-router.delete("/api/images/:id", (req, res) => {
-  const id = req.params.id;
-  const deletePath = null
-  // Get the image path from the database
-  const sql = `SELECT imagePath FROM mytable WHERE id = ${id}`;
-  connection.query(sql, (error, results, fields) => {
-    if (error) {
-      console.log(`Error retrieving image path from database: ${error}`);
-      res
-        .status(500)
-        .send(`Error retrieving image path from database: ${error}`);
-      return;
+router.get("/getAll", async (req, res) => { // รับข้อมูลทั้งหมด
+  try {
+    const positionFilter = req.query.user_position; // รับค่าจากพารามิเตอร์ user_position
+    const idFilter = req.query.user_id; // รับค่าจากพารามิเตอร์ user_id
+    let query = "SELECT * FROM users"; // สร้างคำสั่ง SQL สำหรับการเลือกข้อมูลทั้งหมดจากตาราง users
+    const queryParams = [];
+    if (positionFilter) { // ถ้ามีการกรองตามตำแหน่งผู้ใช้
+      query += " WHERE user_position = ?"; // เพิ่มเงื่อนไข WHERE เข้าไปในคำสั่ง SQL
+      queryParams.push(positionFilter); // เพิ่มค่าตัวแปร positionFilter เข้าไปใน queryParams
+    } else if (idFilter) { // ถ้ามีการกรองตาม ID ผู้ใช้
+      query += " WHERE user_id = ?"; // เพิ่มเงื่อนไข WHERE เข้าไปในคำสั่ง SQL
+      queryParams.push(idFilter); // เพิ่มค่าตัวแปร idFilter เข้าไปใน queryParams
     }
-
-    if (results.length === 0) {
-      console.log(`Image with ID ${id} not found in database.`);
-      res.status(404).send(`Image with ID ${id} not found in database.`);
-      return;
-    }
-
-    const imagePath = results[0].imagePath;
-    if (imagePath === "DefaultAvatar.jpg") {
-      console.log("it is save!");
-    }
-    else if (imagePath != "DefaultAvatar.jpg") {
-      deletePath = "../frontend/static/uploads/" + imagePath;
-      fs.unlink(deletePath, (err) => {
-        if (err) {
-          console.log(`Error deleting image file: ${err}`);
-          res.status(500).send(`Error deleting image file: ${err}`);
-          return;
-        }
-        console.log(`Image file ${deletePath} deleted successfully.`);
-
-
-      });
-    }
-    // Delete database entry
-    const deleteSql = `DELETE FROM mytable WHERE id = ${id}`;
-    connection.query(deleteSql, (error, results, fields) => {
-      if (error) {
-        console.log(`Error deleting image record from database: ${error}`);
-        res
-          .status(500)
-          .send(`Error deleting image record from database: ${error}`);
-        return;
+    connection.query(query, queryParams, (err, results, fields) => { // ส่งคำสั่ง SQL ไปยังฐานข้อมูลและรับผลลัพธ์
+      if (err) { // หากเกิดข้อผิดพลาดในการดึงข้อมูล
+        console.log(err);
+        return res.status(400).send(); // ส่งรหัสสถานะ 400 (Bad Request) กลับไปยัง client
       }
-      console.log(`Database entry with id ${id} deleted successfully.`);
-      res.status(200).send(`Image with ID ${id} deleted successfully.`);
+      res.status(200).json(results); // ส่งผลลัพธ์กลับไปยัง client พร้อมกำหนดสถานะการตอบกลับเป็น 200 (OK)
     });
-    // Delete image file from server
-    // fs.unlink(imagePath, (err) => {
-    //   if (err) {
-    //     console.log(`Error deleting image file: ${err}`);
-    //     res.status(500).send(`Error deleting image file: ${err}`);
-    //     return;
-    //   }
-    //   console.log(`Image file ${imagePath} deleted successfully.`);
-
-
-    //   const deleteSql = `DELETE FROM mytable WHERE id = ${id}`;
-    //   connection.query(deleteSql, (error, results, fields) => {
-    //     if (error) {
-    //       console.log(`Error deleting image record from database: ${error}`);
-    //       res
-    //         .status(500)
-    //         .send(`Error deleting image record from database: ${error}`);
-    //       return;
-    //     }
-    //     console.log(`Database entry with id ${id} deleted successfully.`);
-    //     res.status(200).send(`Image with ID ${id} deleted successfully.`);
-    //   });
-    // });
+  } catch (err) { // หากเกิดข้อผิดพลาดระหว่างการประมวลผล
+    console.log(err);
+    return res.status(500).send(); // ส่งรหัสสถานะ 500 (Internal Server Error) กลับไปยัง client
+  }
+});
+router.get("/getOne/:id", async (req, res) => { // เรียกดูข้อมูลผู้ใช้จาก ID
+  const id = req.params.id; // รับค่า ID จากพารามิเตอร์ใน URL
+  try {
+    connection.query(
+      "SELECT * FROM users WHERE id = ?", // สร้างคำสั่ง SQL สำหรับการดึงข้อมูลผู้ใช้จาก ID
+      [id], // ส่งค่า ID เพื่อใส่ในส่วนของคำสั่ง SQL
+      (err, results, fields) => { // ส่งคำสั่ง SQL ไปยังฐานข้อมูลและรับผลลัพธ์
+        if (err) { // หากเกิดข้อผิดพลาดในการดึงข้อมูล
+          console.log(err);
+          return res.status(400).send(); // ส่งรหัสสถานะ 400 (Bad Request) กลับไปยัง client
+        }
+        res.status(200).json(results); // ส่งผลลัพธ์กลับไปยัง client พร้อมกำหนดสถานะการตอบกลับเป็น 200 (OK)
+      }
+    );
+  } catch (err) { // หากเกิดข้อผิดพลาดระหว่างการประมวลผล
+    console.log(err);
+    return res.status(500).send(); // ส่งรหัสสถานะ 500 (Internal Server Error) กลับไปยัง client
+  }
+});
+router.delete("/deleteUser/:id", (req, res) => { // ลบข้อมูลผู้ใช้โดยใช้ ID
+  const id = req.params.id; // รับค่า ID จากพารามิเตอร์ใน URL
+  const deleteSql = `DELETE FROM users WHERE id = ${id}`; // สร้างคำสั่ง SQL สำหรับการลบข้อมูลผู้ใช้
+  connection.query(deleteSql, (error, results2, fields) => { // ส่งคำสั่ง SQL ไปยังฐานข้อมูลและรับผลลัพธ์
+    if (error) { // หากเกิดข้อผิดพลาดในการลบข้อมูล
+      res.status(500).send(`Error deleting user database: ${error}`); // ส่งรหัสสถานะ 500 (Internal Server Error) พร้อมกับข้อความแสดงข้อผิดพลาดกลับไปยัง client
+      return;
+    }
+    if (results2.affectedRows === 0) { // หากไม่มีการอัปเดตข้อมูลในฐานข้อมูล
+      return res.status(404).json({ message: "No user with that id!" }); // ส่งรหัสสถานะ 404 (Not Found) พร้อมกับข้อความแสดงว่าไม่พบผู้ใช้ด้วย ID นั้นในฐานข้อมูลกลับไปยัง client
+    }
+    res.status(200).json({ message: "user_id deleted successfully!" }); // ส่งข้อความแสดงว่าลบผู้ใช้สำเร็จแล้วกลับไปยัง client พร้อมกำหนดสถานะการตอบกลับเป็น 200 (OK)
+    console.log(`Database entry with id ${id} deleted successfully.`);
   });
 });
-
-// * GET All FROM users and query user_position
-router.get("/getAll", async (req, res) => {
-  try {
-    const positionFilter = req.query.user_position; // get the value of the 'user_position' query parameter
-    const idFilter = req.query.user_id; // get the value of the 'user_position' query parameter
-    let query = "SELECT * FROM users";
-    const queryParams = [];
-    if (positionFilter) {
-      query += " WHERE user_position = ?";
-      queryParams.push(positionFilter);
-    } else if (idFilter) {
-      query += " WHERE user_id = ?";
-      queryParams.push(idFilter);
-    }
-    connection.query(query, queryParams, (err, results, fields) => {
-      if (err) {
-        console.log(err);
-        return res.status(400).send();
-      }
-      res.status(200).json(results);
-    });
-  } catch (err) {
-    console.log(err);
-    return res.status(500).send();
-  }
-});
-
-//* GET one by id
-router.get("/getOne/:id", async (req, res) => {
-  const id = req.params.id;
-  try {
-    connection.query(
-      "SELECT * FROM users WHERE id = ?",
-      [id],
-      (err, results, fields) => {
-        if (err) {
-          console.log(err);
-          return res.status(400).send();
-        }
-        res.status(200).json(results);
-      }
-    );
-  } catch (err) {
-    console.log(err);
-    return res.status(500).send();
-  }
-});
-
-//* POST user
-router.post("/create", async (req, res) => {
-  const {
-    user_firstname,
-    user_lastname,
-    user_id,
-    user_position,
-    user_department,
-    user_email,
-    user_password,
-    user_status,
-    user_role,
-    user_pic,
-  } = req.body;
-  try {
-    connection.query(
-      "INSERT INTO users(user_firstname, user_lastname, user_id, user_position , user_department , user_email , user_password , user_status ,user_role , user_pic ) VALUES(?, ?, ?, ? , ?, ?, ?, ?, ?, ?)",
-      [
-        user_firstname,
-        user_lastname,
-        user_id,
-        user_position,
-        user_department,
-        user_email,
-        user_password,
-        user_status,
-        user_role,
-        user_pic,
-      ],
-      (err, results, fields) => {
-        if (err) {
-          console.log("Error while inserting a user into the database", err);
-          return res.status(400).send();
-        }
-        return res
-          .status(201)
-          .json({ message: "New user successfully created!" });
-      }
-    );
-  } catch (err) {
-    console.log(err);
-    return res.status(500).send();
-  }
-});
-
-//* PUT update
-router.put("/update/:id", async (req, res) => {
-  const id = req.params.id;
-  const {
-    user_firstname,
-    user_lastname,
-    user_id,
-    user_position,
-    user_department,
-    user_email,
-    user_password,
-    user_status,
-    user_role,
-    user_pic,
-  } = req.body;
+router.post("/login", async (req, res) => { // เข้าสู่ระบบ
+  const { user_id, user_password } = req.body; // รับค่า user_id และ user_password จาก body ของ request
 
   try {
     connection.query(
-      "UPDATE users SET user_firstname = ? , user_lastname = ? , user_id = ? , user_position = ? , user_department = ? ,user_email = ? ,user_password = ? ,user_status = ?,user_role = ?, user_pic = ? WHERE id = ?",
-      [
-        user_firstname,
-        user_lastname,
-        user_id,
-        user_position,
-        user_department,
-        user_email,
-        user_password,
-        user_status,
-        user_role,
-        user_pic,
-        id,
-      ],
-      (err, results, fields) => {
-        if (err) {
-          console.log(err);
-          return res.status(400).send();
-        }
-        res.status(200).json({ message: "User updated successfully!" });
-      }
-    );
-  } catch (err) {
-    console.log(err);
-    return res.status(500).send();
-  }
-});
-
-//*delete user + image 
-router.delete("/deleteUser/:id", (req, res) => {
-  const id = req.params.id;
-    const deleteSql = `DELETE FROM users WHERE id = ${id}`;
-    connection.query(deleteSql, (error, results2, fields) => {
-      if (error) {
-        res.status(500).send(`Error deleting user database: ${error}`);
-        return;
-      }
-      if (results2.affectedRows === 0) {
-          return res.status(404).json({ message: "No user with that id!" });
-        }
-      res.status(200).json({ message: "user_id deleted successfully!" });
-      console.log(`Database entry with id ${id} deleted successfully.`);
-    });
-});
-
-//* DELETE user by ID
-router.delete("/delete/:id", async (req, res) => {
-  const id = req.params.id;
-
-  try {
-    connection.query(
-      "DELETE FROM users WHERE id = ?",
-      [id],
-      (err, results, fields) => {
-        if (err) {
-          console.log(err);
-          return res.status(400).send();
-        }
-        if (results.affectedRows === 0) {
-          return res.status(404).json({ message: "No user with that id!" });
-        }
-        return res.status(200).json({ message: "User deleted successfully!" });
-      }
-    );
-  } catch (err) {
-    console.log(err);
-    return res.status(500).send();
-  }
-});
-
-router.post("/login", async (req, res) => {
-  const { user_id, user_password } = req.body;
-
-  try {
-    connection.query(
-      "SELECT * FROM users WHERE user_id = ? AND user_password = ?",
-      [user_id, user_password],
-      (error, results, fields) => {
-        if (error) {
+      "SELECT * FROM users WHERE user_id = ? AND user_password = ?", // สร้างคำสั่ง SQL สำหรับการเลือกข้อมูลผู้ใช้ที่ตรงกับ user_id และ user_password
+      [user_id, user_password], // ส่งค่า user_id และ user_password เพื่อใส่ในส่วนของคำสั่ง SQL
+      (error, results, fields) => { // ส่งคำสั่ง SQL ไปยังฐานข้อมูลและรับผลลัพธ์
+        if (error) { // หากเกิดข้อผิดพลาดในการค้นหาข้อมูล
           console.error(error);
-          return res.status(500).json({ message: "Server error" });
+          return res.status(500).json({ message: "Server error" }); // ส่งรหัสสถานะ 500 (Internal Server Error) พร้อมกับข้อความแสดงข้อผิดพลาดกลับไปยัง client
         }
 
-        if (results.length > 0) {
-          req.session.authenticated = true;
-          return res.status(200).json({ authenticated: true });
+        if (results.length > 0) { // หากมีผลลัพธ์การค้นหา
+          req.session.authenticated = true; // กำหนด session ให้เป็น authenticated เมื่อเข้าสู่ระบบสำเร็จ
+          return res.status(200).json({ authenticated: true }); // ส่งรหัสสถานะ 200 (OK) พร้อมกับข้อมูลแสดงว่าเข้าสู่ระบบสำเร็จกลับไปยัง client
         }
 
-        return res.status(401).json({ message: "Invalid credentials" });
+        return res.status(401).json({ message: "Invalid credentials" }); // ส่งรหัสสถานะ 401 (Unauthorized) พร้อมกับข้อความแสดงว่าข้อมูลเข้าสู่ระบบไม่ถูกต้องกลับไปยัง client
       }
     );
-  } catch (error) {
+  } catch (error) { // หากเกิดข้อผิดพลาดระหว่างการประมวลผล
     console.error(error);
-    return res.status(500).json({ message: "Server error" });
+    return res.status(500).json({ message: "Server error" }); // ส่งรหัสสถานะ 500 (Internal Server Error) พร้อมกับข้อความแสดงข้อผิดพลาดกลับไปยัง client
   }
 });
-
 module.exports = router;
