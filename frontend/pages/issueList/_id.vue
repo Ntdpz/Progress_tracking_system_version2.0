@@ -2518,6 +2518,13 @@ export default {
         console.error(err);
       }
     },
+    showIssueCreateDialog(systemName, systemId, systemids, systemShortname) {
+      this.infoCreate.systemName = systemName;
+      this.infoCreate.systemId = systemId;
+      this.infoCreate.system_id = systemids;
+      this.infoCreate.systemShortname = systemShortname;
+      this.dialog = true;
+    },
     editProject(item) {
       this.dialog = true;
       this.selected = Object.assign({}, item);
