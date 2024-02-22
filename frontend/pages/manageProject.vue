@@ -2,33 +2,36 @@
   <div class="body">
   <v-row class="mb-3">
       <!-- Add Project button -->
-      <v-col cols="12" sm="6" md="6" lg="6">
+      <v-col cols="6" sm="6" md="6" lg="6">
         <v-btn
           class="new-btn ma-2 text-left"
           color="primary"
           dark
-          block
           large
           @click="openDialog('create')"
         >
           <span class="mdi mdi-plus-circle-outline icon"></span>
-          <h4 class="text">&nbsp;&nbsp; สร้างโครงการใหม่</h4>
+          <h4 class="text">&nbsp;&nbsp; Add Project</h4>
         </v-btn>
+        <p style="color: #b6b5b5; font-size: 16px" class="">
+            Cerrently {{ this.projectList.length }} project
+          </p>
       </v-col>
-      <v-divider class="divider"></v-divider>
+      <!-- Search Bar -->
+      <v-col cols="6" sm="6" md="6" lg="6">
+          <v-text-field
+          style="max-width: 350px;"
+          prepend-inner-icon="mdi-magnify"
+            v-model="search"
+            label="Search"
+            outlined
+          ></v-text-field>
+      </v-col>
       <v-card class="card">
         <v-card-text class="pa-0">
           <v-text-field
             v-if="isAdminOrImplementer"
             v-model="searchKeyword"
-            prepend-inner-icon="mdi-magnify"
-            rounded
-            color="primary"
-            placeholder="search"
-          ></v-text-field>
-          <v-text-field
-            v-else
-            v-model="searchKeywordDev"
             prepend-inner-icon="mdi-magnify"
             rounded
             color="primary"
@@ -42,9 +45,6 @@
     <v-row class="mt-4 ml-1 mb-2" no-gutters>
       <v-col cols="3">
         <h4>Project ID</h4>
-        <p style="color: #b6b5b5; font-size: 16px" class="">
-          มี {{ this.projectList.length }} โครงการ
-        </p>
       </v-col>
 
       <v-col cols="2">
