@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const connection = require("../db");
 
+// Function to generate a random ID
 function generateId() {
   const maxId = 999999999;
   const minId = 100000000;
@@ -9,22 +10,47 @@ function generateId() {
   return id;
 }
 
-// * GET All FROM projects
+//* GET All FROM projects
 router.get("/getAll", async (req, res) => {
   try {
     const projectIdFilter = req.query.project_id;
-    let query = "SELECT * FROM projects";
+    let query = `
+      SELECT 
+        projects.*,
+        COUNT(DISTINCT Systems.id) AS system_count,
+        AVG(Systems.system_progress) AS project_progress,
+        DATE_FORMAT(MIN(Systems.system_plan_start), '%Y-%m-%d') AS project_plan_start,
+        DATE_FORMAT(MAX(Systems.system_plan_end), '%Y-%m-%d') AS project_plan_end,
+        DATEDIFF(MAX(Systems.system_plan_end), MIN(Systems.system_plan_start)) AS project_manday
+      FROM 
+        projects 
+      LEFT JOIN Systems ON projects.id = Systems.project_id`;
+
     const queryParams = [];
+
     if (projectIdFilter) {
-      query += " WHERE project_id = ?";
+      query += " WHERE projects.id = ?";
       queryParams.push(projectIdFilter);
     }
-    connection.query(query, queryParams, (err, results, fields) => {
+
+    query += " GROUP BY projects.id";
+
+    connection.query(query, queryParams, async (err, results, fields) => {
       if (err) {
         console.log(err);
         return res.status(500).send();
       }
-      res.status(200).json(results);
+
+      // Filter out deleted projects
+      const filteredResults = results.filter(project => !project.is_deleted);
+
+      // Update project data in the database
+      for (const project of filteredResults) {
+        const updatedProject = await updateProject(project);
+        Object.assign(project, updatedProject);
+      }
+
+      res.status(200).json(filteredResults);
     });
   } catch (err) {
     console.log(err);
@@ -37,14 +63,38 @@ router.get("/getOne/:id", async (req, res) => {
   const id = req.params.id;
   try {
     connection.query(
-      "SELECT * FROM projects WHERE id = ?",
+      `
+      SELECT 
+        projects.*,
+        COUNT(DISTINCT Systems.id) AS system_count,
+        AVG(Systems.system_progress) AS project_progress,
+        DATE_FORMAT(MIN(Systems.system_plan_start), '%Y-%m-%d') AS project_plan_start,
+        DATE_FORMAT(MAX(Systems.system_plan_end), '%Y-%m-%d') AS project_plan_end,
+        DATEDIFF(MAX(Systems.system_plan_end), MIN(Systems.system_plan_start)) AS project_manday
+      FROM 
+        projects 
+      LEFT JOIN Systems ON projects.id = Systems.project_id
+      WHERE projects.id = ?
+      GROUP BY projects.id
+      `,
       [id],
-      (err, results, fields) => {
+      async (err, results, fields) => {
         if (err) {
           console.log(err);
           return res.status(400).send();
         }
-        res.status(200).json(results);
+        if (results.length === 0) {
+          res.status(404).json({ error: 'Project not found' });
+        } else {
+          // Check if project is deleted
+          if (results[0].is_deleted) {
+            res.status(404).json({ error: 'Project not found' });
+          } else {
+            // Update project data in the database
+            const updatedProject = await updateProject(results[0]);
+            res.status(200).json(updatedProject);
+          }
+        }
       }
     );
   } catch (err) {
@@ -53,37 +103,92 @@ router.get("/getOne/:id", async (req, res) => {
   }
 });
 
-// * POST FROM projects
+// Route to fetch deleted projects
+router.get('/getHistoryProject', async (req, res) => {
+  try {
+    // Query to fetch projects that are marked as deleted
+    const query = `
+      SELECT *
+      FROM projects
+      WHERE is_deleted = 1
+    `;
+
+    // Execute the query
+    connection.query(query, (err, results, fields) => {
+      if (err) {
+        console.log(err);
+        return res.status(500).send();
+      }
+      res.status(200).json(results);
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send();
+  }
+});
+
+// Function to update project data
+async function updateProject(project) {
+  try {
+    const updateQuery = `
+      UPDATE projects 
+      SET 
+        project_progress = ?,
+        system_count = ?,
+        project_plan_start = ?,
+        project_plan_end = ?,
+        project_manday = ?
+      WHERE id = ?
+    `;
+
+    const project_progress = project.project_progress;
+    const system_count = project.system_count;
+    const project_plan_start = project.project_plan_start;
+    const project_plan_end = project.project_plan_end;
+    const project_manday = project.project_manday;
+
+    await new Promise((resolve, reject) => {
+      connection.query(
+        updateQuery,
+        [project_progress, system_count, project_plan_start, project_plan_end, project_manday, project.id],
+        (err, result) => {
+          if (err) reject(err);
+          resolve(project);
+        }
+      );
+    });
+
+    return project;
+  } catch (error) {
+    throw error;
+  }
+}
+
+// Route to create a new project
 router.post("/createProject", async (req, res) => {
   const {
     project_id,
-    project_name,
-    project_shortname,
-    project_agency,
-    project_start,
-    project_end,
+    project_name_TH,
+    project_name_ENG,
   } = req.body;
-  const id = generateId();
+
+  const id = generateId(); // Generate ID using generateId() function
+
   try {
     connection.query(
-      "INSERT INTO projects(id,project_id, project_name, project_shortname ,project_agency, project_start, project_end) VALUES(?,?, ?, ? ,? ,?,?)",
+      "INSERT INTO projects (id, project_id, project_name_TH, project_name_ENG) VALUES (?, ?, ?, ?)",
       [
         id,
         project_id,
-        project_name,
-        project_shortname,
-        project_agency,
-        project_start,
-        project_end,
+        project_name_TH,
+        project_name_ENG,
       ],
       (err, results, fields) => {
         if (err) {
           console.log("Error while inserting a project into the database", err);
           return res.status(400).send();
         }
-        return res
-          .status(201)
-          .json({ message: "New project successfully created!" });
+        return res.status(201).json({ message: "New project successfully created!" });
       }
     );
   } catch (err) {
@@ -92,26 +197,37 @@ router.post("/createProject", async (req, res) => {
   }
 });
 
+// Route to update project
 router.put("/updateProject/:id", async (req, res) => {
   const id = req.params.id;
   const {
     project_id,
-    project_name,
-    project_shortname,
-    project_agency,
-    project_start,
-    project_end,
+    project_name_TH,
+    project_name_ENG,
   } = req.body;
+
   try {
+    const previousProjectData = await new Promise((resolve, reject) => {
+      connection.query(
+        "SELECT * FROM projects WHERE id = ?",
+        [id],
+        (err, results, fields) => {
+          if (err) reject(err);
+          resolve(results[0]);
+        }
+      );
+    });
+
+    if (!project_id && !project_name_TH && !project_name_ENG) {
+      return res.status(200).json(previousProjectData);
+    }
+
     connection.query(
-      "UPDATE projects SET project_id = ?, project_name = ?, project_shortname = ?, project_agency = ?, project_start = ?, project_end = ? WHERE id = ?",
+      "UPDATE projects SET project_id = ?, project_name_TH = ?, project_name_ENG = ? WHERE id = ?",
       [
-        project_id,
-        project_name,
-        project_shortname,
-        project_agency,
-        project_start,
-        project_end,
+        project_id || req.body.project_id || previousProjectData.project_id,
+        project_name_TH || req.body.project_name_TH || previousProjectData.project_name_TH,
+        project_name_ENG || req.body.project_name_ENG || previousProjectData.project_name_ENG,
         id,
       ],
       (err, results, fields) => {
@@ -128,25 +244,23 @@ router.put("/updateProject/:id", async (req, res) => {
   }
 });
 
-//* DELETE user by ID
+// Route to soft delete a project
 router.delete("/delete/:id", async (req, res) => {
   const id = req.params.id;
 
   try {
     connection.query(
-      "DELETE FROM projects WHERE id = ?",
+      "UPDATE projects SET is_deleted = true WHERE id = ?",
       [id],
       (err, results, fields) => {
         if (err) {
           console.log(err);
-          return res.status(400).send();
+          return res.status(500).send();
         }
         if (results.affectedRows === 0) {
           return res.status(404).json({ message: "No project with that id!" });
         }
-        return res
-          .status(200)
-          .json({ message: "Project deleted successfully!" });
+        return res.status(200).json({ message: "Project deleted successfully!" });
       }
     );
   } catch (err) {
@@ -155,6 +269,78 @@ router.delete("/delete/:id", async (req, res) => {
   }
 });
 
+// Route to delete project along with related data
+router.delete("/deleteHistoryProject/:id", async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    // Delete tasks related to screens with the given project_id
+    connection.query(
+      `
+      DELETE FROM tasks
+      WHERE screen_id IN (SELECT id FROM screens WHERE project_id = ?)
+      `,
+      [id],
+      async (err, results, fields) => {
+        if (err) {
+          console.log(err);
+          return res.status(500).send();
+        }
+
+        // Now, delete screens related to the project_id
+        connection.query(
+          `
+          DELETE FROM screens
+          WHERE project_id = ?
+          `,
+          [id],
+          async (err, results, fields) => {
+            if (err) {
+              console.log(err);
+              return res.status(500).send();
+            }
+
+            // Now, delete systems related to the project_id
+            connection.query(
+              `
+              DELETE FROM systems
+              WHERE project_id = ?
+              `,
+              [id],
+              async (err, results, fields) => {
+                if (err) {
+                  console.log(err);
+                  return res.status(500).send();
+                }
+
+                // Now, delete the project itself
+                connection.query(
+                  `
+                  DELETE FROM projects
+                  WHERE id = ?
+                  `,
+                  [id],
+                  (err, results, fields) => {
+                    if (err) {
+                      console.log(err);
+                      return res.status(500).send();
+                    }
+                    return res.status(200).json({ message: "Project and related data deleted successfully!" });
+                  }
+                );
+              }
+            );
+          }
+        );
+      }
+    );
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send();
+  }
+});
+
+// Route to add user-project mappings
 router.post("/addUserProject", async (req, res) => {
   const { user_id, project_ids } = req.body;
   try {
@@ -164,14 +350,6 @@ router.post("/addUserProject", async (req, res) => {
         console.log("Error: project_ids is not an array");
         return;
       }
-
-      // http://localhost:7777/projects/addUserProject
-      //   {
-      //     "user_id": 15, //user_id
-      //     "project_ids": [1] //project_id in array
-      // }
-
-      // Map over the project IDs and insert a new row into the user_projects table for each one
       project_ids.map((project_id) => {
         connection.query(
           "INSERT INTO user_projects (user_id, project_id) VALUES (?, ?)",
