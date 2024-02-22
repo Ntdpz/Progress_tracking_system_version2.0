@@ -1,17 +1,16 @@
 <template>
   <div class="body">
     <!-- *Search bar* -->
-    <Searchbar title="รายการปัญหา " />
+    <!-- <Searchbar title="รายการปัญหา " /> -->
+    <Searchbar :title="'รายการปัญหา'" :search="yourSearchData" />
     <v-divider></v-divider>
     <!-- *Header* -->
     <v-row class="mt-4 ml-2 mb-2">
       <h3>
-        {{ this.project_id }} : {{ this.projectName }} ({{
-          this.project_shortname
-        }})
+        {{ project_id }} : {{ project_name_ENG }} ({{ project_shortname }})
       </h3>
       <p style="color: #b6b5b5; font-size: 16px" class="ml-2">
-        {{ this.systemslength }} ระบบ
+        {{ systemslength }} ระบบ
       </p>
     </v-row>
     <!-- * box -->
@@ -89,25 +88,6 @@
                 ></v-text-field>
               </v-col>
             </v-row>
-            <!-- <v-btn
-              v-if="user_role == 'Admin' || user_position == 'Implementer'"
-              class="new-btn ma-5 text-left"
-              color="primary"
-              dark
-              v-bind="attrs"
-              v-on="on"
-              block
-              :to="`/createissue/${system.id}`"
-            >
-              <span
-                class="mdi mdi-plus-circle-outline"
-                style="font-size: 25px; color: white"
-              ></span>
-              <h3 style="color: white; font-weight: bolder">
-                New สร้างปัญหาใหม่
-              </h3>
-            </v-btn> -->
-
             <!-- *dialog -->
             <dialog-issue
               :dialog.sync="dialog"
@@ -339,7 +319,7 @@
               color="#454545"
               class="mt-5 mb-3"
             > -->
-              <!-- <v-tab
+          <!-- <v-tab
                 :style="tab_assign ? 'background-color:#454545;' : null"
                 @click="(tab_assign = true), (tab_unassign = false)"
               >
@@ -357,7 +337,7 @@
                   ปัญหาที่ไม่มีคนรับผิดชอบ
                 </h3>
               </v-tab> -->
-            <!-- </v-tabs>
+          <!-- </v-tabs>
           </v-tabs-items> -->
           <!-- <v-tabs-items v-model="tab_issue">
             <v-tab-item>
@@ -1816,6 +1796,7 @@ export default {
   },
   data() {
     return {
+      yourSearchData: '' ,
       //auth
       user: this.$auth.user,
       loggedIn: this.$auth.loggedIn,
@@ -1893,50 +1874,64 @@ export default {
       },
       headers: [
         {
-          text: "เลขที่ปัญหา",
+          text: "ID",
           align: "start",
-          value: "issue_id",
+          value: "id",
           class: "blue-grey darken-4 white--text",
         },
         {
-          text: "ชื่อปัญหา",
-          value: "issue_name",
+          text: "Project ID",
+          value: "project_id",
           class: "blue-grey darken-4 white--text",
         },
         {
-          text: "ประเภทปัญหา",
-          value: "issue_type",
+          text: "Project Name (TH)",
+          value: "project_name_TH",
           class: "blue-grey darken-4 white--text",
         },
         {
-          text: "วันกำหนดส่ง",
-          value: "formattedDateEnd",
+          text: "Project Name (ENG)",
+          value: "project_name_ENG",
           class: "blue-grey darken-4 white--text",
         },
         {
-          text: "สถานะ",
-          value: "issue_status",
+          text: "Project Shortname",
+          value: "project_shortname",
           class: "blue-grey darken-4 white--text",
         },
         {
-          text: "ความสำคัญของปัญหา",
-          value: "issue_priority",
+          text: "Agency",
+          value: "project_agency",
           class: "blue-grey darken-4 white--text",
         },
         {
-          text: "ผู้รับผิดชอบ",
-          value: "issue_assign",
+          text: "Progress",
+          value: "project_progress",
           class: "blue-grey darken-4 white--text",
         },
         {
-          text: "ผู้รับตรวจสอบ",
-          value: "issue_qc",
+          text: "Manday",
+          value: "project_manday",
           class: "blue-grey darken-4 white--text",
         },
         {
-          text: "จัดการ",
-          value: "actions",
-          sortable: false,
+          text: "System Count",
+          value: "system_count",
+          class: "blue-grey darken-4 white--text",
+        },
+        {
+          text: "Plan Start",
+          value: "project_plan_start",
+          class: "blue-grey darken-4 white--text",
+        },
+        {
+          text: "Plan End",
+          value: "project_plan_end",
+          class: "blue-grey darken-4 white--text",
+        },
+        {
+          text: "Is Deleted",
+          value: "is_deleted",
           class: "blue-grey darken-4 white--text",
         },
       ],
@@ -2013,65 +2008,154 @@ export default {
         });
     },
     async getProjectDev() {
-      await this.$axios.get("/projects/getOne/" + this.id).then((res) => {
-        this.projectDev = res.data;
-      });
-      // this.systemsDev = this.projectDev[0];
+      try {
+        const response = await this.$axios.get("/projects/getOne/" + this.id);
+        const projectData = response.data;
+
+        // Check if projectData is an object
+        if (projectData && typeof projectData === "object") {
+          // Assuming projectData is an array of projects, take the first one
+          this.projectDev = [projectData]; // Wrap projectData in an array
+        } else {
+          console.error("Error: Invalid project data");
+        }
+      } catch (error) {
+        console.error("Error fetching project data:", error);
+      }
     },
+
     async getSystemsDev() {
-      await this.$axios.get("/systems/getAll").then((res) => {
-        // Loop through each project and assign the associated systems
-        this.projectDev.forEach((projectDev) => {
-          Vue.set(
-            projectDev,
-            "systemsDevs",
-            res.data.filter((system) => system.project_id === projectDev.id)
-          );
-        });
-      });
-      this.systemsDev = this.projectDev[0].systemsDevs;
+      try {
+        const response = await this.$axios.get("/systems/getAll");
+        const systemsData = response.data;
+
+        // Check if systemsData is an array
+        if (Array.isArray(systemsData)) {
+          if (Array.isArray(this.projectDev) && this.projectDev.length > 0) {
+            this.projectDev.forEach((projectDev) => {
+              Vue.set(
+                projectDev,
+                "systemsDevs",
+                systemsData.filter(
+                  (system) => system.project_id === projectDev.id
+                )
+              );
+            });
+
+            // Check if systemsDevs is available in the first projectDev
+            if (
+              this.projectDev[0] &&
+              this.projectDev[0].hasOwnProperty("systemsDevs")
+            ) {
+              this.systemsDev = this.projectDev[0].systemsDevs;
+            } else {
+              console.error(
+                "Error: systemsDevs is not available in the first projectDev"
+              );
+            }
+          } else {
+            console.error("Error: this.projectDev is not an array or empty");
+          }
+        } else {
+          console.error("Error: Invalid systems data");
+        }
+      } catch (error) {
+        console.error("Error fetching systems data:", error);
+      }
     },
+
     async getProjectImple() {
-      await this.$axios.get("/projects/getOne/" + this.id).then((res) => {
-        this.projectImple = res.data;
-      });
-      // this.systemsDev = this.projectDev[0];
+      try {
+        const response = await this.$axios.get("/projects/getOne/" + this.id);
+        const projectData = response.data;
+
+        // Check if projectData is an object
+        if (projectData && typeof projectData === "object") {
+          // Assuming projectData is an array of projects, take the first one
+          this.projectImple = [projectData]; // Wrap projectData in an array
+        } else {
+          console.error("Error: Invalid project data");
+        }
+      } catch (error) {
+        console.error("Error fetching project data:", error);
+      }
     },
     async getSystemsImple() {
-      await this.$axios.get("/systems/getAll").then((res) => {
-        // Loop through each project and assign the associated systems
-        this.projectImple.forEach((projectImple) => {
-          Vue.set(
-            projectImple,
-            "systemsImples",
-            res.data.filter((system) => system.project_id === projectImple.id)
-          );
-        });
-      });
-      this.systemsImple = this.projectImple[0].systemsImples;
+      try {
+        const response = await this.$axios.get("/systems/getAll");
+        const systemsData = response.data;
+
+        // Make sure this.projectImple is an array
+        if (Array.isArray(this.projectImple)) {
+          // Loop through each project and assign the associated systems
+          this.projectImple.forEach((projectImple) => {
+            Vue.set(
+              projectImple,
+              "systemsImples",
+              systemsData.filter(
+                (system) => system.project_id === projectImple.id
+              )
+            );
+          });
+
+          this.systemsImple = this.projectImple[0].systemsImples;
+        } else {
+          console.error("Error: this.projectImple is not an array");
+        }
+      } catch (error) {
+        console.error("Error fetching systems data:", error);
+      }
     },
+
     async getProject() {
-      await this.$axios.get("/projects/getOne/" + this.id).then((res) => {
-        this.project = res.data;
-        this.projectName = this.project[0].project_name;
-        this.project_shortname = this.project[0].project_shortname;
-        this.projectId = this.project[0].id;
-        this.project_id = this.project[0].project_id;
-      });
+      try {
+        const response = await this.$axios.get("/projects/getOne/" + this.id);
+        const projectData = response.data;
+        if (projectData) {
+          // Convert object to array
+          this.project = [projectData];
+          this.projectName = projectData.project_name;
+          this.project_shortname = projectData.project_shortname;
+          this.projectId = projectData.id;
+          this.project_id = projectData.project_id;
+        } else {
+          console.error("No project data found");
+        }
+      } catch (error) {
+        console.error("Error fetching project data:", error);
+      }
     },
+
     async getSystems() {
-      await this.$axios.get("/systems/getAll").then((res) => {
-        // Loop through each project and assign the associated systems
-        this.project.forEach((project) => {
-          Vue.set(
-            project,
-            "systems",
-            res.data.filter((system) => system.project_id === project.id)
-          );
-        });
-      });
-      this.systems = this.project[0].systems;
-      this.systemslength = this.project[0].systems.length;
+      try {
+        const res = await this.$axios.get("/systems/getAll");
+        const systemsData = res.data;
+
+        // Convert systemsData to array if it's an object
+        const dataArray = Array.isArray(systemsData)
+          ? systemsData
+          : [systemsData];
+
+        // Assign systems to each project if project is an array
+        if (Array.isArray(this.project)) {
+          this.project.forEach((project) => {
+            project.systems = dataArray.filter(
+              (system) => system.project_id === project.id
+            );
+          });
+
+          // Set the systems and systems length for the first project
+          if (this.project.length > 0) {
+            this.systems = this.project[0].systems;
+            this.systemsLength = this.project[0].systems.length;
+          }
+        } else {
+          console.error("Project data is not an array:", this.project);
+          // Additional error handling or debugging steps can be added here
+        }
+      } catch (error) {
+        console.error("Error fetching systems:", error);
+      }
     },
 
     async getIssue() {
@@ -2312,7 +2396,6 @@ export default {
             this.issue.filter(
               (issue) =>
                 issue.system_id === system.id &&
-                (issue.issue_assign === "" || issue.issue_assign === null) &&
                 issue.issue_status_implement === "ตรวจสอบผ่าน"
             )
           );
@@ -2324,12 +2407,10 @@ export default {
             "assignedIssues",
             this.issue.filter(
               (issue) =>
-                (issue.system_id === system.id &&
-                  issue.issue_assign != "" &&
-                  issue.issue_assign !== null &&
-                  issue.issue_status_implement !== "ตรวจสอบผ่าน" &&
-                  issue.issue_informer == this.user_firstname) ||
-                issue.issue_qc == this.user_firstname
+                issue.system_id === system.id &&
+                issue.issue_accepting !== "" &&
+                issue.issue_accepting !== null &&
+                issue.issue_status_implement !== "ตรวจสอบผ่าน"
             )
           );
           Vue.set(
@@ -2338,7 +2419,8 @@ export default {
             this.issue.filter(
               (issue) =>
                 issue.system_id === system.id &&
-                (issue.issue_assign != "" || issue.issue_assign === null) &&
+                (issue.issue_accepting === "" ||
+                  issue.issue_accepting === null) &&
                 issue.issue_status_implement !== "ตรวจสอบผ่าน"
             )
           );
@@ -2347,13 +2429,11 @@ export default {
             "assignedIssuesPNI",
             this.issue.filter(
               (issue) =>
-                (issue.system_id === system.id &&
-                  issue.issue_assign != "" &&
-                  issue.issue_assign !== null &&
-                  issue.issue_type === "PNI" &&
-                  issue.issue_status_implement !== "ตรวจสอบผ่าน" &&
-                  issue.issue_informer == this.user_firstname) ||
-                issue.issue_qc == this.user_firstname
+                issue.system_id === system.id &&
+                issue.issue_accepting !== "" &&
+                issue.issue_accepting !== null &&
+                issue.issue_type === "PNI" &&
+                issue.issue_status_implement !== "ตรวจสอบผ่าน"
             )
           );
           Vue.set(
@@ -2362,7 +2442,8 @@ export default {
             this.issue.filter(
               (issue) =>
                 issue.system_id === system.id &&
-                (issue.issue_assign === "" || issue.issue_assign === null) &&
+                (issue.issue_accepting === "" ||
+                  issue.issue_accepting === null) &&
                 issue.issue_type === "PNI" &&
                 issue.issue_status_implement !== "ตรวจสอบผ่าน"
             )
@@ -2372,13 +2453,11 @@ export default {
             "assignedIssuesPNC",
             this.issue.filter(
               (issue) =>
-                (issue.system_id === system.id &&
-                  issue.issue_assign != "" &&
-                  issue.issue_assign !== null &&
-                  issue.issue_type === "PNC" &&
-                  issue.issue_status_implement !== "ตรวจสอบผ่าน" &&
-                  issue.issue_informer == this.user_firstname) ||
-                issue.issue_qc == this.user_firstname
+                issue.system_id === system.id &&
+                issue.issue_accepting !== "" &&
+                issue.issue_accepting !== null &&
+                issue.issue_type === "PNC" &&
+                issue.issue_status_implement !== "ตรวจสอบผ่าน"
             )
           );
           Vue.set(
@@ -2387,7 +2466,8 @@ export default {
             this.issue.filter(
               (issue) =>
                 issue.system_id === system.id &&
-                (issue.issue_assign === "" || issue.issue_assign === null) &&
+                (issue.issue_accepting === "" ||
+                  issue.issue_accepting === null) &&
                 issue.issue_type === "PNC" &&
                 issue.issue_status_implement !== "ตรวจสอบผ่าน"
             )
@@ -2397,13 +2477,11 @@ export default {
             "assignedIssuesNewReq",
             this.issue.filter(
               (issue) =>
-                (issue.system_id === system.id &&
-                  issue.issue_assign != "" &&
-                  issue.issue_assign !== null &&
-                  issue.issue_type === "New Req" &&
-                  issue.issue_status_implement !== "ตรวจสอบผ่าน" &&
-                  issue.issue_informer == this.user_firstname) ||
-                issue.issue_qc == this.user_firstname
+                issue.system_id === system.id &&
+                issue.issue_accepting !== "" &&
+                issue.issue_accepting !== null &&
+                issue.issue_type === "New Req" &&
+                issue.issue_status_implement !== "ตรวจสอบผ่าน"
             )
           );
           Vue.set(
@@ -2412,7 +2490,8 @@ export default {
             this.issue.filter(
               (issue) =>
                 issue.system_id === system.id &&
-                (issue.issue_assign != "" || issue.issue_assign === null) &&
+                (issue.issue_accepting === "" ||
+                  issue.issue_accepting === null) &&
                 issue.issue_type === "New Req" &&
                 issue.issue_status_implement !== "ตรวจสอบผ่าน"
             )
@@ -2422,164 +2501,61 @@ export default {
             "assignedIssuesHistory",
             this.issue.filter(
               (issue) =>
-                (issue.system_id === system.id &&
-                  (issue.issue_assign != "" || issue.issue_assign === null) &&
-                  issue.issue_status_implement === "ตรวจสอบผ่าน" &&
-                  issue.issue_informer == this.user_firstname) ||
-                issue.issue_qc == this.user_firstname
+                issue.system_id === system.id &&
+                issue.issue_status_implement === "ตรวจสอบผ่าน"
             )
           );
         });
-      } catch (err) {
-        console.error(err);
+      } catch (error) {
+        console.log(error);
       }
     },
-    async getpdf() {
-      const response = await this.$axios.get(`/issues/getpdf/${this.issue.id}`);
-      if (response.status === 200) {
-        const pdf = response.data;
-        console.log(pdf);
-      } else {
-        // this.pdf = "Failed to load PDF document.";
-        console.log("PDF err or No have");
-      }
-    },
-
-    showIssueCreateDialog(systemName, systemId, systemids, systemShortname) {
-      this.infoCreate.systemName = systemName;
-      this.infoCreate.systemId = systemId;
-      this.infoCreate.system_id = systemids;
-      this.infoCreate.systemShortname = systemShortname;
+    editProject(item) {
       this.dialog = true;
+      this.selected = Object.assign({}, item);
     },
-    showIssueDetailDialog(
-      issueid,
-      issueId,
-      issueType,
-      issueScreenid,
-      issueStatus,
-      issuePriority,
-      issueFormattedDateEnd,
-      issueName,
-      issueDesSA,
-      issueInformer,
-      issueAssign,
-      issueQc,
-      issueFilename,
-      issueformattedDateAccepting,
-      issueManday,
-      issueformattedDateStart,
-      issueformattedDateExpected,
-      issueComplete,
-      issueDesImplementer,
-      issueDesDev,
-      issueDes,
-      issueCustomer,
-      issueDocId,
-      issueTypeSA,
-      issueCreate,
-      issueDeveloperStatus,
-      issueImplementerStatus,
-      issueRound,
-      issueUserAssignId,
-      issueUserQCId
-    ) {
-      this.selected.userId = this.$auth.user.id;
-      //formattedDateAccepting
-      this.selected.formattedDateAccepting =
-        issueformattedDateAccepting == null ||
-        issueformattedDateAccepting == "Invalid date" ||
-        issueformattedDateAccepting == undefined
-          ? null
-          : issueformattedDateAccepting;
-      //formattedDateStart
-      this.selected.formattedDateStart =
-        issueformattedDateStart == null ||
-        issueformattedDateStart == "Invalid date" ||
-        issueformattedDateStart == undefined
-          ? null
-          : issueformattedDateStart;
-      //formattedDateExpected
-      this.selected.formattedDateExpected =
-        issueformattedDateExpected == null ||
-        issueformattedDateExpected == "Invalid date" ||
-        issueformattedDateExpected == undefined
-          ? null
-          : issueformattedDateExpected;
-      //formattedDateComplete
-      this.selected.issue_complete =
-        issueComplete == null ||
-        issueComplete == "Invalid date" ||
-        issueComplete == undefined
-          ? null
-          : issueComplete;
-      //formattedDateEnd
-      this.selected.formattedDateEnd =
-        issueFormattedDateEnd == null ||
-        issueFormattedDateEnd == "Invalid date" ||
-        issueFormattedDateEnd == undefined
-          ? null
-          : issueFormattedDateEnd;
-
-      this.selected.Id = issueid;
-      this.selected.issue_id = issueId;
-      this.selected.issue_type = issueType;
-      this.selected.screen_id = issueScreenid;
-      this.selected.issue_status = issueStatus;
-      this.selected.issue_priority = issuePriority;
-      this.selected.issue_name = issueName;
-      this.selected.issue_des_sa = issueDesSA;
-      this.selected.issue_informer = issueInformer;
-      this.selected.issue_assign = issueAssign;
-      this.selected.issue_qc = issueQc;
-      this.selected.issue_filename = issueFilename;
-      this.selected.issue_manday = issueManday;
-      this.selected.issue_des_implementer = issueDesImplementer;
-      this.selected.issue_des_dev = issueDesDev;
-      this.selected.issue_des = issueDes;
-      this.selected.issue_customer = issueCustomer;
-      this.selected.issue_doc_id = issueDocId;
-      this.selected.issue_type_sa = issueTypeSA;
-      this.selected.user_assign_id = issueUserAssignId;
-      this.selected.user_qc_id = issueUserQCId;
-      //created at
-      const dateCreate = moment(issueCreate).format("YYYY-MM-DD");
-      this.selected.created_at = dateCreate;
-      //get screen name
-      this.$axios.get("/screens/getOne/" + issueScreenid).then((res) => {
-        const screen = res.data[0].screen_name;
-        this.selected.screenName = screen;
+    updateProject() {
+      const id = this.selected.id;
+      this.$axios.put("/projects/update/" + id, this.selected).then((res) => {
+        this.getProject();
       });
-      this.selected.issue_status_developer = issueDeveloperStatus;
-      if (issueDeveloperStatus === "แก้ไขเรียบร้อย") {
-        this.selected.impleSection = true;
-      } else {
-        this.selected.impleSection = false;
-      }
-      this.selected.issue_status_implement = issueImplementerStatus;
-      this.selected.issue_round = issueRound;
-      this.selected.history = this.history;
-      this.selected.no_assign = this.no_assign;
-      //check role
-      if (this.user_role == "Admin") {
-        this.dialogIssueDetail = true;
-      } else if (
-        this.user_position == "Implementer" &&
-        this.user_role == "User"
-      ) {
-        this.dialogIssueImple = true;
-      } else if (
-        this.user_position == "Developer" &&
-        this.user_role == "User"
-      ) {
-        this.dialogIssueDev = true;
-      }
-      //check role
+      this.dialog = false;
+    },
+    deleteProject(item) {
+      this.$axios
+        .put("/projects/delete/" + item.id, { is_deleted: "Yes" })
+        .then((res) => {
+          this.getProject();
+        });
+    },
+    addIssue() {
+      this.$router.push({
+        path: "/issues/add",
+        query: { project_id: this.id },
+      });
+    },
+    async viewDetail(item) {
+      this.dialogIssueDetail = true;
+      this.selected = Object.assign({}, item);
+    },
+    async viewDetailImple(item) {
+      this.dialogIssueImple = true;
+      this.selected = Object.assign({}, item);
+    },
+    async viewDetailDev(item) {
+      this.dialogIssueDev = true;
+      this.selected = Object.assign({}, item);
+    },
+    async close() {
+      this.dialogIssueDetail = false;
+      this.dialogIssueImple = false;
+      this.dialogIssueDev = false;
     },
   },
 };
 </script>
-  
+
+
 <style scoped>
 * {
   font-family: "Lato", sans-serif;

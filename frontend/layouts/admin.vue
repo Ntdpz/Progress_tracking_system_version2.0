@@ -137,10 +137,7 @@
             <v-row align="center">
               <v-col cols="2">
                 <v-avatar size="40">
-                  <img
-                    :src="user_pic"
-                    alt="User Avatar"
-                  />
+                  <img :src="user_pic" alt="User Avatar" />
                 </v-avatar>
               </v-col>
               <v-col cols="8">
@@ -209,6 +206,7 @@ export default {
   middleware: "auth",
   data() {
     return {
+      project_name_ENG: "",
       //auth
       user: this.$auth.user,
       loggedIn: this.$auth.loggedIn,
@@ -255,7 +253,7 @@ export default {
       right: true,
       rightDrawer: false,
       title: "Note Management",
-      user_pic:"",
+      user_pic: "",
     };
   },
   async mounted() {
