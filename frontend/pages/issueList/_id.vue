@@ -1796,7 +1796,7 @@ export default {
   },
   data() {
     return {
-      yourSearchData: '' ,
+      yourSearchData: "",
       //auth
       user: this.$auth.user,
       loggedIn: this.$auth.loggedIn,
@@ -2396,6 +2396,7 @@ export default {
             this.issue.filter(
               (issue) =>
                 issue.system_id === system.id &&
+                (issue.issue_assign === "" || issue.issue_assign === null) &&
                 issue.issue_status_implement === "ตรวจสอบผ่าน"
             )
           );
@@ -2407,10 +2408,12 @@ export default {
             "assignedIssues",
             this.issue.filter(
               (issue) =>
-                issue.system_id === system.id &&
-                issue.issue_accepting !== "" &&
-                issue.issue_accepting !== null &&
-                issue.issue_status_implement !== "ตรวจสอบผ่าน"
+                (issue.system_id === system.id &&
+                  issue.issue_assign != "" &&
+                  issue.issue_assign !== null &&
+                  issue.issue_status_implement !== "ตรวจสอบผ่าน" &&
+                  issue.issue_informer == this.user_firstname) ||
+                issue.issue_qc == this.user_firstname
             )
           );
           Vue.set(
@@ -2419,8 +2422,7 @@ export default {
             this.issue.filter(
               (issue) =>
                 issue.system_id === system.id &&
-                (issue.issue_accepting === "" ||
-                  issue.issue_accepting === null) &&
+                (issue.issue_assign != "" || issue.issue_assign === null) &&
                 issue.issue_status_implement !== "ตรวจสอบผ่าน"
             )
           );
@@ -2429,11 +2431,13 @@ export default {
             "assignedIssuesPNI",
             this.issue.filter(
               (issue) =>
-                issue.system_id === system.id &&
-                issue.issue_accepting !== "" &&
-                issue.issue_accepting !== null &&
-                issue.issue_type === "PNI" &&
-                issue.issue_status_implement !== "ตรวจสอบผ่าน"
+                (issue.system_id === system.id &&
+                  issue.issue_assign != "" &&
+                  issue.issue_assign !== null &&
+                  issue.issue_type === "PNI" &&
+                  issue.issue_status_implement !== "ตรวจสอบผ่าน" &&
+                  issue.issue_informer == this.user_firstname) ||
+                issue.issue_qc == this.user_firstname
             )
           );
           Vue.set(
@@ -2442,8 +2446,7 @@ export default {
             this.issue.filter(
               (issue) =>
                 issue.system_id === system.id &&
-                (issue.issue_accepting === "" ||
-                  issue.issue_accepting === null) &&
+                (issue.issue_assign === "" || issue.issue_assign === null) &&
                 issue.issue_type === "PNI" &&
                 issue.issue_status_implement !== "ตรวจสอบผ่าน"
             )
@@ -2453,11 +2456,13 @@ export default {
             "assignedIssuesPNC",
             this.issue.filter(
               (issue) =>
-                issue.system_id === system.id &&
-                issue.issue_accepting !== "" &&
-                issue.issue_accepting !== null &&
-                issue.issue_type === "PNC" &&
-                issue.issue_status_implement !== "ตรวจสอบผ่าน"
+                (issue.system_id === system.id &&
+                  issue.issue_assign != "" &&
+                  issue.issue_assign !== null &&
+                  issue.issue_type === "PNC" &&
+                  issue.issue_status_implement !== "ตรวจสอบผ่าน" &&
+                  issue.issue_informer == this.user_firstname) ||
+                issue.issue_qc == this.user_firstname
             )
           );
           Vue.set(
@@ -2466,8 +2471,7 @@ export default {
             this.issue.filter(
               (issue) =>
                 issue.system_id === system.id &&
-                (issue.issue_accepting === "" ||
-                  issue.issue_accepting === null) &&
+                (issue.issue_assign === "" || issue.issue_assign === null) &&
                 issue.issue_type === "PNC" &&
                 issue.issue_status_implement !== "ตรวจสอบผ่าน"
             )
@@ -2477,11 +2481,13 @@ export default {
             "assignedIssuesNewReq",
             this.issue.filter(
               (issue) =>
-                issue.system_id === system.id &&
-                issue.issue_accepting !== "" &&
-                issue.issue_accepting !== null &&
-                issue.issue_type === "New Req" &&
-                issue.issue_status_implement !== "ตรวจสอบผ่าน"
+                (issue.system_id === system.id &&
+                  issue.issue_assign != "" &&
+                  issue.issue_assign !== null &&
+                  issue.issue_type === "New Req" &&
+                  issue.issue_status_implement !== "ตรวจสอบผ่าน" &&
+                  issue.issue_informer == this.user_firstname) ||
+                issue.issue_qc == this.user_firstname
             )
           );
           Vue.set(
@@ -2490,8 +2496,7 @@ export default {
             this.issue.filter(
               (issue) =>
                 issue.system_id === system.id &&
-                (issue.issue_accepting === "" ||
-                  issue.issue_accepting === null) &&
+                (issue.issue_assign != "" || issue.issue_assign === null) &&
                 issue.issue_type === "New Req" &&
                 issue.issue_status_implement !== "ตรวจสอบผ่าน"
             )
@@ -2501,13 +2506,16 @@ export default {
             "assignedIssuesHistory",
             this.issue.filter(
               (issue) =>
-                issue.system_id === system.id &&
-                issue.issue_status_implement === "ตรวจสอบผ่าน"
+                (issue.system_id === system.id &&
+                  (issue.issue_assign != "" || issue.issue_assign === null) &&
+                  issue.issue_status_implement === "ตรวจสอบผ่าน" &&
+                  issue.issue_informer == this.user_firstname) ||
+                issue.issue_qc == this.user_firstname
             )
           );
         });
-      } catch (error) {
-        console.log(error);
+      } catch (err) {
+        console.error(err);
       }
     },
     editProject(item) {
