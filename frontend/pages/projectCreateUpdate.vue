@@ -1,183 +1,77 @@
 <template>
-  <div class="center">
-    <h1>Create/Edit Project</h1>
-   <v-form @submit.prevent="submitForm">
-    
-    <!-- Project ID -->
-   <v-row>
-            <v-col cols="4" sm="6" md="4">
-              <h2>Project ID</h2>
-            </v-col>
-            <v-col cols="8" sm="6" md="4">
-                  <v-text-field
-                    v-model="projectID"
-                    label="Project ID"
-                    required
-                    outlined
-                  ></v-text-field>
-                </v-col>
-    </v-row> 
-    <!-- Project Name -->
-    <v-row>
-        <v-col cols="4" sm="6" md="4">
-          <h2>Project Name</h2>
+  <div>
+    <v-container>
+      <v-row>
+        <v-col cols="12">
+          <h1>Create Project</h1>
         </v-col>
-        <v-col cols="8" sm="6" md="4">
-              <v-text-field
-                v-model="projectName"
-                label="Project Name"
-                required
-                outlined
-              ></v-text-field>
-            </v-col>
-     </v-row>
-<!-- Personnel -->
-    <div class="personnel">
-        <!-- Add personnel -->
-         <v-row>
-            <v-col  cols="4">
-               <h2>Personnel</h2>
-            </v-col>
-            <!-- Add personnel button -->
-            <v-col  cols="4">
-                   <v-btn>
-                        <v-icon left>
-                        mdi-plus
-                        </v-icon>
-                    Add personnel
-                </v-btn>
-            </v-col>
-         </v-row>
-         <!-- Personnel table -->
-         <v-data-table   
-            :headers="headers"
-            :items="personnel"
-            item-key="name"
-            class="elevation-1">
-            
-          <v-toolbar
-            flat
-          />
-            <v-toolbar-title>My CRUD</v-toolbar-title>
-            <v-divider
-              class="mx-4"
-              inset
-              vertical
-            ></v-divider>
-            <v-spacer></v-spacer>
-            <v-dialog
-              v-model="dialog"
-              max-width="500px"
-            />
-            
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn
-                  color="primary"
-                  dark
-                  class="mb-2"
-                  v-bind="attrs"
-                  v-on="on"
-                >
-                  New Item
-                </v-btn>
-              </template>
-              <template v-slot:item.actions="{ item }">
-          <v-icon
-            small
-            @click="deleteItem(item)"
-          >
-            mdi-delete
-          </v-icon>
-        </template>
-           
-        </v-data-table>
-
-    </div>
-      <!-- confirm and cancel buttons -->
-    <v-row>
-        <v-col cols="6" sm="6" md="4">
-            <v-btn color="primary" @click="submitForm">Confirm</v-btn>
+      </v-row>
+      <v-row>
+        <v-col cols="12" sm="6">
+          <v-text-field v-model="project.project_id" label="Project ID"></v-text-field>
         </v-col>
-        <v-col cols="6" sm="6" md="4">
-            <v-btn color="error" @click="submitForm">Cancel</v-btn>
+        <v-col cols="12" sm="6">
+          <v-text-field v-model="project.project_name_ENG" label="Project Name (English)"></v-text-field>
         </v-col>
-    </v-row>
-
-    </v-form>
+      </v-row>
+      <v-row>
+        <v-col cols="12" sm="6">
+          <v-text-field v-model="project.project_name_TH" label="Project Name (Thai)"></v-text-field>
+        </v-col>
+        <v-col cols="12" sm="6">
+          <v-text-field v-model="project.project_shortname" label="Short Name"></v-text-field>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="12" sm="6">
+          <v-text-field v-model="project.project_agency" label="Agency"></v-text-field>
+        </v-col>
+        
+      </v-row>
+      <v-row>
+      </v-row>
+      <v-row>
+        <v-col cols="12" sm="6">
+          <v-date-picker v-model="project.project_plan_start" label="Planned Start"></v-date-picker>
+        </v-col>
+        <v-col cols="12" sm="6">
+          <v-date-picker v-model="project.project_plan_end" label="Planned End"></v-date-picker>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="12">
+          <v-btn color="primary" @click="createProject">Create</v-btn>
+        </v-col>
+      </v-row>
+    </v-container>
   </div>
 </template>
 
 <script>
 export default {
-    data() {
-        return {
-            projectID: "",
-            projectName: "",
-            selected: [],
-            singleSelect: false,
-            headers: [
-                { text: 'ID', value: 'id' },
-                { text: 'Name', value: 'name' },
-                { text: 'Role', value: 'role' },
-                { text: 'Actions', value: 'actions', sortable: false }
-            ],
-            personnel: [
-                { id: 1, name: 'test', role: 'Developer' },
-                { id: 2, name: 'Jane', role: 'Tester' },
-            ],
-        }
-    },
-    methods: {
-        deleteItem(item) {
-            this.personnel = this.personnel.filter(person => person.id !== item.id);
-        },
-        close() {
-            this.dialog = false;
-            setTimeout(() => {
-                this.editedItem = Object.assign({}, this.defaultItem);
-            }, 300);
-        },
-        save() {
-            // Save your data here
-            console.log('Saved:', this.editedItem);
-            this.close();
-        },
-        submitForm() {
-            if (!this.projectID || !this.projectName) {
-                alert('Please fill in all required fields.');
-                return;
-            }
-
-            // Here you can call your API to create or update the project
-            // For example:
-            // this.$http.post('/api/projects', {
-            //   id: this.projectID,
-            //   name: this.projectName,
-            //   personnel: this.personnel,
-            // });
-
-            console.log('Form submitted:', {
-                id: this.projectID,
-                name: this.projectName,
-                personnel: this.personnel,
-            });
-        },
-    },
+  data() {
+    return {
+      project: {
+        project_id: '',
+        project_name_ENG: '',
+        project_name_TH: '',
+        project_shortname: '',
+        project_agency: '',
+        project_progress: null,
+        project_manday: null,
+        system_count: 0,
+        project_plan_start: null,
+        project_plan_end: null,
+        is_deleted: 0
+      }
+    };
+  },
+  methods: {
+    createProject() {
+      // เขียนโค้ดสำหรับส่งข้อมูลโปรเจกต์ไปยัง API หรือบันทึกลงในฐานข้อมูลที่ต้องการ
+      console.log('Creating project:', this.project);
+      // ตรวจสอบข้อมูลและดำเนินการต่อไปตามต้องการ
+    }
+  }
 };
 </script>
-
-<style scoped>
-/* Add your custom styles here */
-.center {
-    text-align: center;
-    padding-left: 20px;
-    padding-right: 20px;
-    padding-top: 10px;
-}
-.personnel {
-    margin-top: 20px;
-    margin-bottom: 20px;
-   margin-left: 20px;
-   margin-right: 20px;
-}
-</style>

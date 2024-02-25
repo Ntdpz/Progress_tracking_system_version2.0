@@ -1,4 +1,3 @@
-
 <template>
   <!-- Dashboard container -->
   <div class="dashboard" style="
@@ -10,14 +9,14 @@
     <!-- Greeting and current date/time -->
     <v-row no-gutters class="mt-4">
       <v-col class="text-left" style="margin-right: 16px">
-        <h1 class="text-01">{{ greeting }}, Bee</h1>
+        <h1 class="text-01">{{ greeting }}, test</h1>
         <p class="text-01">{{ currentDateTime }}</p>
       </v-col>
 
       <!-- Buttons for creating a project and showing all projects -->
       <v-col cols="6" class="text-right">
         <v-btn @click="handleIconClick" color="#9747FF">
-          <router-link to="/project/createProject" style="color: #9747FF">
+          <router-link to="./projectCreateUpdate" style="color: #9747FF">
             <span style="margin: 0; color: #ffffff"> + Create Project</span>
           </router-link>
         </v-btn>
@@ -43,32 +42,29 @@
 
     <!-- Project cards -->
     <v-row>
-      <v-card v-for="project in filteredProjects" :key="project.project_id" class="tracking-work-card mt-6 ml-10"
-        @click="handleTrackingWorkClick(project)">
-        <v-card-title class="project-title">
-          <div>
-            <h2>{{ project.project_id }}</h2>
-            <h2>{{ project.project_name_ENG }}</h2>
-            <h2>{{ project.project_name_TH }}</h2>
-          </div>
-        </v-card-title>
-        <v-card-text>
-          <div class="work-item">
-            <p>{{ project.project_progress }}% Progress</p>
-            <p>Planned Start: {{ project.project_plan_start }}</p>
-            <p>Planned End: {{ project.project_plan_end }}</p>
-          </div>
-
-          <v-card-actions>
-            <!-- Edit and delete buttons -->
-            <v-btn class="mx-1 project-button" @click="editProject(project)">Edit
-            </v-btn>
-            <v-btn class="mx-4 project-button" @click="deleteProject(project)">Delete</v-btn>
-          </v-card-actions>
-        </v-card-text>
-      </v-card>
+      <v-col v-for="project in filteredProjects" :key="project.project_id" cols="12">
+        <v-card class="tracking-work-card mt-6 ml-10" @click="handleTrackingWorkClick(project)">
+          <v-card-title class="project-title">
+            <div>
+              <h2>{{ project.project_id }}</h2>
+              <h2>{{ project.project_name_ENG }}</h2>
+              <h2>{{ project.project_name_TH }}</h2>
+            </div>
+          </v-card-title>
+          <v-card-text>
+            <div class="work-item">
+              <p>{{ project.project_progress }}% Progress</p>
+              <p>Planned Start: {{ project.project_plan_start }}</p>
+              <p>Planned End: {{ project.project_plan_end }}</p>
+            </div>
+            <v-card-actions>
+              <v-btn class="mx-1 project-button" @click="editProject(project)">Edit</v-btn>
+              <v-btn class="mx-4 project-button" @click="deleteProject(project)">Delete</v-btn>
+            </v-card-actions>
+          </v-card-text>
+        </v-card>
+      </v-col>
     </v-row>
-  
 
     <!-- Edit Project Form Dialog -->
     <v-dialog v-model="editDialog" max-width="600">
@@ -93,6 +89,7 @@
 import Swal from "sweetalert2";
 
 export default {
+  layout: "admin",
   name: "ProjectManagement",
   data() {
     return {
@@ -102,6 +99,9 @@ export default {
       editedProject: { project_name_TH: "", project_name_ENG: "" },
       projects: [], // โครงการทั้งหมด
       searchQuery: "",  // Search query
+      user: {
+        firstName: "John" // เพิ่มข้อมูลของผู้ใช้ที่นี่
+      }
     };
   },
   methods: {
