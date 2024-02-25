@@ -1,15 +1,5 @@
 const mysql = require('mysql2');
 
-<<<<<<< HEAD
-// Alwaysdata.com
-// const connection = mysql.createConnection({
-//   connectionLimit: 10, // จำนวน connection สูงสุดที่ pool สามารถจัดการได้
-//   host: 'mysql-seniorprojectprogresstracking.alwaysdata.net',     // ที่อยู่ IP หรือชื่อโฮสต์ของ MySQL Server
-//   user: '347136',         // ชื่อผู้ใช้ MySQL
-//   password: 'Progresstracking1001',         // รหัสผ่าน MySQL
-//   database: 'seniorprojectprogresstracking_term1', // ชื่อฐานข้อมูลที่ใช้
-// });
-=======
 const dbConfig = {
   host: 'db', // ชื่อ container ของ MySQL
   port: 3306,
@@ -25,7 +15,6 @@ const dbConfig = {
 // //   password: 'Progresstracking1001',         // รหัสผ่าน MySQL
 // //   database: 'seniorprojectprogresstracking_term1', // ชื่อฐานข้อมูลที่ใช้
 // // });
->>>>>>> a5eccccd9cd1c7ada824f276c4282305ece52481
 
 
 // //XAMPP
