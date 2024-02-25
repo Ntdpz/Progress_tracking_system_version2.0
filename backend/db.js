@@ -1,15 +1,12 @@
-// const mysql = require("mysql");
+const mysql = require('mysql2');
 
-// // สร้าง connection โดยใช้ Docker Compose
-// const connection = mysql.createConnection({
-//   connectionLimit: 10,
-//   host: 'db', // หรือใส่เป็น localhost ก็ได้
-//   user: 'root',
-//   password: 'root',
-//   database: 'seniorprojectprogresstracking_term1'
-// });
-
-
+const dbConfig = {
+  host: 'db', // ชื่อ container ของ MySQL
+  port: 3306,
+  user: 'root',
+  password: 'root',
+  database: 'seniorprojectprogresstracking_term1', // ชื่อ database ของ MySQL
+};
 // //Alwaysdata.com
 // // const connection = mysql.createConnection({
 // //   connectionLimit: 10, // จำนวน connection สูงสุดที่ pool สามารถจัดการได้
@@ -37,26 +34,6 @@
 // //   database: "notemanagement_db",
 // // });
 
-// connection.connect((err) => {
-//   if (err) {
-//     console.error("Error connecting to database:", err);
-//     return;
-//   }
-//   console.log("Connected to database");
-// });
-
-// module.exports = connection;
-
-
-const mysql = require('mysql2');
-
-const dbConfig = {
-  host: 'db', // ชื่อ container ของ MySQL
-  port: 3306,
-  user: 'root',
-  password: 'root',
-  database: 'seniorprojectprogresstracking_term1', // ชื่อ database ของ MySQL
-};
 
 // เพิ่ม try-catch block เพื่อดักจับ error
 try {
