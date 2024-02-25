@@ -1,7 +1,7 @@
 <template>
   <div class="task-create-container">
     <h2>Create Task</h2>
-    <form @submit.prevent="createTask">
+    
       <div class="form-group">
         <label for="name">Name Task</label>
         <input type="text" id="name" v-model.trim="task.name" required>
@@ -30,9 +30,10 @@
         <label for="role">Role</label>
         <input type="text" id="role" v-model.trim="task.role" required>
       </div>
-      <button type="submit">Create Task</button>
-      <button type="submit">Cancle</button>
-    </form>
+
+      <button @click="submit">Create Task</button>
+      <button @click="goToManageTask">Cancle</button>
+    
   </div>
 </template>
 
@@ -54,7 +55,14 @@ export default {
     createTask() {
       // Implement the logic to create a new task here
       console.log(this.task)
-    }
+    },
+    goToManageTask() {
+    // ทำสิ่งที่ต้องการก่อนเปลี่ยนหน้า
+    // เช่น การส่งคำขอ API, การเข้ารหัสข้อมูล, ฯลฯ
+
+    // เปลี่ยนหน้าไปยังหน้า "manage project"
+    this.$router.push('./manageTask');
+  },
   }
 }
 </script>
