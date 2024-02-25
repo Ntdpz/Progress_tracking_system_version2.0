@@ -37,7 +37,7 @@ router.get("/getAll", async (req, res) => {
 
     connection.query(query, queryParams, async (err, results, fields) => {
       if (err) {
-        console.log(err);
+        console.error(err);
         return res.status(500).send();
       }
 
@@ -53,7 +53,7 @@ router.get("/getAll", async (req, res) => {
       res.status(200).json(filteredResults);
     });
   } catch (err) {
-    console.log(err);
+    console.error(err);
     return res.status(500).send();
   }
 });
@@ -80,25 +80,23 @@ router.get("/getOne/:id", async (req, res) => {
       [id],
       async (err, results, fields) => {
         if (err) {
-          console.log(err);
+          console.error(err);
           return res.status(400).send();
         }
         if (results.length === 0) {
-          res.status(404).json({ error: 'Project not found' });
-        } else {
-          // Check if project is deleted
-          if (results[0].is_deleted) {
-            res.status(404).json({ error: 'Project not found' });
-          } else {
-            // Update project data in the database
-            const updatedProject = await updateProject(results[0]);
-            res.status(200).json(updatedProject);
-          }
+          return res.status(404).json({ error: 'Project not found' });
         }
+        // Check if project is deleted
+        if (results[0].is_deleted) {
+          return res.status(404).json({ error: 'Project not found' });
+        }
+        // Update project data in the database
+        const updatedProject = await updateProject(results[0]);
+        return res.status(200).json(updatedProject);
       }
     );
   } catch (err) {
-    console.log(err);
+    console.error(err);
     return res.status(500).send();
   }
 });
@@ -116,13 +114,13 @@ router.get('/getHistoryProject', async (req, res) => {
     // Execute the query
     connection.query(query, (err, results, fields) => {
       if (err) {
-        console.log(err);
+        console.error(err);
         return res.status(500).send();
       }
-      res.status(200).json(results);
+      return res.status(200).json(results);
     });
   } catch (err) {
-    console.log(err);
+    console.error(err);
     return res.status(500).send();
   }
 });
@@ -141,11 +139,7 @@ async function updateProject(project) {
       WHERE id = ?
     `;
 
-    const project_progress = project.project_progress;
-    const system_count = project.system_count;
-    const project_plan_start = project.project_plan_start;
-    const project_plan_end = project.project_plan_end;
-    const project_manday = project.project_manday;
+    const { project_progress, system_count, project_plan_start, project_plan_end, project_manday } = project;
 
     await new Promise((resolve, reject) => {
       connection.query(
@@ -166,33 +160,24 @@ async function updateProject(project) {
 
 // Route to create a new project
 router.post("/createProject", async (req, res) => {
-  const {
-    project_id,
-    project_name_TH,
-    project_name_ENG,
-  } = req.body;
+  const { project_id, project_name_TH, project_name_ENG } = req.body;
 
   const id = generateId(); // Generate ID using generateId() function
 
   try {
     connection.query(
       "INSERT INTO projects (id, project_id, project_name_TH, project_name_ENG) VALUES (?, ?, ?, ?)",
-      [
-        id,
-        project_id,
-        project_name_TH,
-        project_name_ENG,
-      ],
+      [id, project_id, project_name_TH, project_name_ENG],
       (err, results, fields) => {
         if (err) {
-          console.log("Error while inserting a project into the database", err);
+          console.error("Error while inserting a project into the database", err);
           return res.status(400).send();
         }
         return res.status(201).json({ message: "New project successfully created!" });
       }
     );
   } catch (err) {
-    console.log(err);
+    console.error(err);
     return res.status(500).send();
   }
 });
@@ -200,11 +185,7 @@ router.post("/createProject", async (req, res) => {
 // Route to update project
 router.put("/updateProject/:id", async (req, res) => {
   const id = req.params.id;
-  const {
-    project_id,
-    project_name_TH,
-    project_name_ENG,
-  } = req.body;
+  const { project_id, project_name_TH, project_name_ENG } = req.body;
 
   try {
     const previousProjectData = await new Promise((resolve, reject) => {
@@ -232,14 +213,14 @@ router.put("/updateProject/:id", async (req, res) => {
       ],
       (err, results, fields) => {
         if (err) {
-          console.log(err);
+          console.error(err);
           return res.status(400).send();
         }
-        res.status(200).json({ message: "Project updated successfully!" });
+        return res.status(200).json({ message: "Project updated successfully!" });
       }
     );
   } catch (err) {
-    console.log(err);
+    console.error(err);
     return res.status(500).send();
   }
 });
@@ -254,7 +235,7 @@ router.delete("/delete/:id", async (req, res) => {
       [id],
       (err, results, fields) => {
         if (err) {
-          console.log(err);
+          console.error(err);
           return res.status(500).send();
         }
         if (results.affectedRows === 0) {
@@ -264,7 +245,7 @@ router.delete("/delete/:id", async (req, res) => {
       }
     );
   } catch (err) {
-    console.log(err);
+    console.error(err);
     return res.status(500).send();
   }
 });
@@ -283,7 +264,7 @@ router.delete("/deleteHistoryProject/:id", async (req, res) => {
       [id],
       async (err, results, fields) => {
         if (err) {
-          console.log(err);
+          console.error(err);
           return res.status(500).send();
         }
 
@@ -296,7 +277,7 @@ router.delete("/deleteHistoryProject/:id", async (req, res) => {
           [id],
           async (err, results, fields) => {
             if (err) {
-              console.log(err);
+              console.error(err);
               return res.status(500).send();
             }
 
@@ -309,7 +290,7 @@ router.delete("/deleteHistoryProject/:id", async (req, res) => {
               [id],
               async (err, results, fields) => {
                 if (err) {
-                  console.log(err);
+                  console.error(err);
                   return res.status(500).send();
                 }
 
@@ -322,7 +303,7 @@ router.delete("/deleteHistoryProject/:id", async (req, res) => {
                   [id],
                   (err, results, fields) => {
                     if (err) {
-                      console.log(err);
+                      console.error(err);
                       return res.status(500).send();
                     }
                     return res.status(200).json({ message: "Project and related data deleted successfully!" });
@@ -335,7 +316,7 @@ router.delete("/deleteHistoryProject/:id", async (req, res) => {
       }
     );
   } catch (err) {
-    console.log(err);
+    console.error(err);
     return res.status(500).send();
   }
 });
@@ -347,16 +328,16 @@ router.post("/addUserProject", async (req, res) => {
     const createUserProjects = (user_id, project_ids) => {
       // Check that project_ids is an array
       if (!Array.isArray(project_ids)) {
-        console.log("Error: project_ids is not an array");
+        console.error("Error: project_ids is not an array");
         return;
       }
-      project_ids.map((project_id) => {
+      project_ids.forEach((project_id) => {
         connection.query(
           "INSERT INTO user_projects (user_id, project_id) VALUES (?, ?)",
           [user_id, project_id],
           (error, results, fields) => {
             if (error) {
-              console.log(
+              console.error(
                 `Error while creating user-project mapping for user ${user_id} and project ${project_id}`,
                 error
               );
@@ -368,7 +349,7 @@ router.post("/addUserProject", async (req, res) => {
     createUserProjects(user_id, project_ids);
     return res.status(200).send("User-project mappings created successfully");
   } catch (err) {
-    console.log("Error while creating user-project mappings", err);
+    console.error("Error while creating user-project mappings", err);
     return res.status(500).send();
   }
 });
