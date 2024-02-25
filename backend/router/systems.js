@@ -1,11 +1,11 @@
 // const express = require("express");
 // const router = express.Router();
 const connection = require("../db");
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const path = require('path');
-const { db, connectToDatabase } = require(path.join(__dirname, '../db'));
-const moment = require('moment');
+const path = require("path");
+const { db, connectToDatabase } = require(path.join(__dirname, "../db"));
+const moment = require("moment");
 
 function generateId() {
   const maxId = 999999999;
@@ -120,17 +120,32 @@ async function updateSystem(system) {
     const updatedSystem = {
       screen_count: system.screen_count,
       system_progress: system.system_progress,
-      system_plan_start: new Date(system.system_plan_start).toISOString().split('T')[0],
-      system_plan_end: new Date(system.system_plan_end).toISOString().split('T')[0],
+      system_plan_start: new Date(system.system_plan_start)
+        .toISOString()
+        .split("T")[0],
+      system_plan_end: new Date(system.system_plan_end)
+        .toISOString()
+        .split("T")[0],
       system_manday: system.system_manday,
-      id: system.id
+      id: system.id,
     };
 
     await new Promise((resolve, reject) => {
-      connection.query(updateQuery, [updatedSystem.screen_count, updatedSystem.system_progress, updatedSystem.system_plan_start, updatedSystem.system_plan_end, updatedSystem.system_manday, updatedSystem.id], (err, result) => {
-        if (err) reject(err);
-        resolve(updatedSystem);
-      });
+      connection.query(
+        updateQuery,
+        [
+          updatedSystem.screen_count,
+          updatedSystem.system_progress,
+          updatedSystem.system_plan_start,
+          updatedSystem.system_plan_end,
+          updatedSystem.system_manday,
+          updatedSystem.id,
+        ],
+        (err, result) => {
+          if (err) reject(err);
+          resolve(updatedSystem);
+        }
+      );
     });
 
     return updatedSystem;
@@ -155,7 +170,9 @@ router.get("/getOne/:id", async (req, res) => {
         }
         const system = results[0];
         if (system.is_deleted === 1) {
-          return res.status(200).json({ message: "This system has been deleted." });
+          return res
+            .status(200)
+            .json({ message: "This system has been deleted." });
         }
         res.status(200).json(system);
       }
@@ -165,7 +182,6 @@ router.get("/getOne/:id", async (req, res) => {
     return res.status(500).send();
   }
 });
-
 
 // * POST FROM systems
 router.post("/createSystem", async (req, res) => {
@@ -210,12 +226,8 @@ router.post("/createSystem", async (req, res) => {
 
 router.put("/updateSystem/:id", async (req, res) => {
   const id = req.params.id;
-  const {
-    system_nameTH,
-    system_nameEN,
-    system_shortname,
-    project_id
-  } = req.body;
+  const { system_nameTH, system_nameEN, system_shortname, project_id } =
+    req.body;
 
   const updatedSystemFields = {};
 
@@ -273,7 +285,9 @@ router.delete("/delete/:id", async (req, res) => {
         if (results.affectedRows === 0) {
           return res.status(404).json({ message: "No system with that id!" });
         }
-        return res.status(200).json({ message: "System deleted successfully!" });
+        return res
+          .status(200)
+          .json({ message: "System deleted successfully!" });
       }
     );
   } catch (err) {
@@ -345,7 +359,5 @@ router.post("/addUserSystem", async (req, res) => {
     return res.status(500).send("Internal Server Error");
   }
 });
-
-
 
 module.exports = router;

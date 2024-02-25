@@ -162,25 +162,7 @@ export default {
  clearAndGoToManageProject() {
     this.clearCreateProject(); // Clear form fields
     this.goToManageProject(); // Navigate to manage project page
-  },
-  async created() {
-    await this.getUser();
-    await this.initialize();
-    await this.getProject();
-    await this.getProject2();
-    await this.getSystems();
-    await this.getPosition_Developer();
-    await this.getPosition_Implementer();
-    await this.getPosition_Sa();
-    await this.getSystemOwner();
-    await this.getSystemsOwner();
-    this.dateS = moment().add(543, "years").format("DD-MM-YYYY");
-    this.dateE = moment().add(543, "years").format("DD-MM-YYYY");
-    this.dateStartEdit = moment().add(543, "years").format("DD-MM-YYYY");
-    this.dateEndEdit = moment().add(543, "years").format("DD-MM-YYYY");
-  },
-
-
+  }
   },
 };
 </script>

@@ -8,10 +8,10 @@
               <v-row>
                 <v-col class="main-bg">
                   <v-img
-                    lazy-src="/palm-recognition.png"
+                    lazy-src=""
                     max-height="500"
                     max-width="500"
-                    src="/palm-recognition.png"
+                    src=""
                   ></v-img>
                 </v-col>
                 <v-col style="margin-top: 50px">

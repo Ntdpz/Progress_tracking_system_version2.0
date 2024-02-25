@@ -6,10 +6,10 @@
           <v-list-item-title class="text-h6">
             <v-layout align-center justify-center>
               <v-img
-                lazy-src="/pingar-high-resolution-logo-transparent.png"
+                lazy-src=""
                 max-height="150"
                 max-width="100"
-                src="/pingar-high-resolution-logo-transparent.png"
+                src=""
               ></v-img>
             </v-layout>
           </v-list-item-title>
