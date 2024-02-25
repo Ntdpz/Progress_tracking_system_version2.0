@@ -1,74 +1,5 @@
 
 <template>
-<<<<<<< HEAD
-  <div class="body">
-  <v-row class="mb-3">
-      <!-- Add Project button -->
-      <v-col cols="12" sm="6" md="6" lg="6">
-        <v-btn
-          class="new-btn ma-2 text-left"
-          color="primary"
-          dark
-          block
-          large
-          @click="openDialog('create')"
-        >
-          <span class="mdi mdi-plus-circle-outline icon"></span>
-          <h4 class="text">&nbsp;&nbsp; สร้างโครงการใหม่</h4>
-        </v-btn>
-      </v-col>
-      <v-divider class="divider"></v-divider>
-      <v-card class="card">
-        <v-card-text class="pa-0">
-          <v-text-field
-            v-if="isAdminOrImplementer"
-            v-model="searchKeyword"
-            prepend-inner-icon="mdi-magnify"
-            rounded
-            color="primary"
-            placeholder="search"
-          ></v-text-field>
-          <v-text-field
-            v-else
-            v-model="searchKeywordDev"
-            prepend-inner-icon="mdi-magnify"
-            rounded
-            color="primary"
-            placeholder="search"
-          ></v-text-field>
-        </v-card-text>
-      </v-card>
-    </v-row>
-
-    <v-divider></v-divider>
-    <v-row class="mt-4 ml-1 mb-2" no-gutters>
-      <v-col cols="3">
-        <h4>Project ID</h4>
-        <p style="color: #b6b5b5; font-size: 16px" class="">
-          มี {{ this.projectList.length }} โครงการ
-        </p>
-      </v-col>
-
-      <v-col cols="2">
-        <h4>Project name</h4>
-      </v-col>
-      <v-col cols="2">
-        <h4 style="margin-left: -7%">Estimate due date</h4>
-      </v-col>
-      <v-col cols="2">
-        <h4 style="margin-left: -16%">Project progress</h4>
-      </v-col>
-      <v-col cols="1"></v-col>
-      <!-- <v-col cols="1"></v-col> -->
-    </v-row>
-    <v-divider></v-divider>
-    <v-dialog v-model="dialog" max-width="500px" :retain-focus="false">
-      <v-card>
-        <v-card-title class="pt-3" style="background-color: #5c3efe">
-          <h5 style="color: white">
-            {{ mode === "create" ? "สร้างโครงการใหม่" : "แก้ไขโครงการ" }}
-          </h5>
-=======
   <!-- Dashboard container -->
   <div class="dashboard" style="
       background-color: #ffffff;
@@ -120,7 +51,6 @@
             <h2>{{ project.project_name_ENG }}</h2>
             <h2>{{ project.project_name_TH }}</h2>
           </div>
->>>>>>> 1e27492a35919226ab6d4ec117a809bc074ee67f
         </v-card-title>
         <v-card-text>
           <div class="work-item">
