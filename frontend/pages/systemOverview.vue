@@ -3,11 +3,8 @@
     <!-- Back Button -->
     <button @click="goBack" class="back-button">Back</button>
 
-    <div class="header-container">
-      <h2>Tracking development work</h2>
-      <input type="text" v-model="search" placeholder="Search for system...">
-    </div>
-
+    <h2>Tracking development work</h2>
+    <input type="text" v-model="search" placeholder="Search for system...">
     <table>
       <thead>
         <tr>
@@ -61,17 +58,9 @@ export default {
 
 <style scoped>
 .dashboard {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   width: 100%;
   padding: 20px;
   box-sizing: border-box;
-}
-
-.header-container {
-  display: flex;
-  align-items: center;
 }
 
 table {
@@ -104,11 +93,10 @@ input[type="text"] {
 
 /* Back Button Styles */
 .back-button {
+  margin-right: 10px;
   padding: 8px;
-  background-color: #000;
-  /* Black background */
+  background-color: #007bff;
   color: #fff;
-  /* White text */
   border: none;
   border-radius: 4px;
   cursor: pointer;
