@@ -1,6 +1,6 @@
 <template>
   <div class="center">
-    <h1 class="bold-text">Create/Edit Project</h1>
+    <h1 class="bold-text">Create Project</h1>
     <v-form @submit.prevent="submitForm">
 
       <!-- Project ID -->
