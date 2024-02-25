@@ -12,7 +12,8 @@
         <button class="status-button cancelled">Cancel</button>
       </div>
     </div>
-    <div class="task-details">
+   <v-card>
+    <v-card-text>
       <div class="task-topic">Task Topic</div>
       <div class="task-assignee">
         Person in charge:
@@ -20,11 +21,11 @@
       </div>
       <div class="task-description">
         detaildetaildetaildetalldetaildetaildetalldetaldetailde
-        talldetaiidetalldetallidetaildetaildetaildetalldetaildetal
-        Idetaildetaildetalldetaildetaildetaildetalldetaildetail
+        
       </div>
       <div class="task-start-date">Start working: 12-01-2023</div>
-    </div>
+    </v-card-text>
+  </v-card>
   </div>
 </template>
 
@@ -90,7 +91,7 @@ export default {
   margin-top: 16px;
 }
 
-.task-topic {
+task-topic {
   font-weight: bold;
   margin-bottom: 8px;
 }
@@ -115,4 +116,6 @@ export default {
   font-size: 12px;
   color: #aaa;
 }
+
+
 </style>
