@@ -2,6 +2,8 @@
 node_modules
 /dist
 
+# ข้ามโฟลเดอร์ mysql-data
+mysql-data/
 
 # local env files
 .env.local
