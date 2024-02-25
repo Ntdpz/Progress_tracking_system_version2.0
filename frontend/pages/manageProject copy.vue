@@ -9,7 +9,7 @@
     <!-- Greeting and current date/time -->
     <v-row no-gutters class="mt-4">
       <v-col class="text-left" style="margin-right: 16px">
-        <h1 class="text-01">{{ greeting }}, {{ userfirstname }}</h1>
+        <h1 class="text-01">{{ greeting }}, test</h1>
         <p class="text-01">{{ currentDateTime }}</p>
       </v-col>
 
@@ -25,23 +25,18 @@
         </v-btn>
       </v-col>
     </v-row>
-      
-      <!-- show project -->
-      <p style="color: #b6b5b5; font-size: 16px" class="">
-          มี {{ this.projectList.length }} โครงการ
-        </p>
 
     <!-- Search bar -->
-    <v-row no-gutters> 
+    <v-row no-gutters>
       <v-col cols="12">
-        <input type="text" v-model="t" placeholder="Search..." style="
+        <input type="text" v-model="searchQuery" placeholder="Search..." style="
             margin-bottom: 10px;
             width: 100%;
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
             font-size: 16px;
-          " >
+          " />
       </v-col>
     </v-row>
 
@@ -57,105 +52,13 @@ import Swal from "sweetalert2";
 
 export default {
   layout: "admin",
-  middleware: "auth",
-   data() {
+  name: "ProjectManagement",
+  data() {
     return {
       greeting: "",
       currentDateTime: "",
-     
-       //auth
-            user: this.$auth.user,
-      loggedIn: this.$auth.loggedIn,
-      // new Date().toISOString().substr(0, 10)
-      dateStart: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-        .toISOString()
-        .substr(0, 10),
-      dateEnd: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-        .toISOString()
-        .substr(0, 10),
-      dateS: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-        .toISOString()
-        .substr(0, 10),
-      dateE: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-        .toISOString()
-        .substr(0, 10),
-      menuDateStart: false,
-      menuDateEnd: false,
-      menuDateStartEdit: false,
-      dateStartEdit: new Date(
-        Date.now() - new Date().getTimezoneOffset() * 60000
-      )
-        .toISOString()
-        .substr(0, 10),
-      menuDateEndEdit: false,
-      dateEndEdit: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-        .toISOString()
-        .substr(0, 10),
-      dateStartShow: null,
-      dateEndShow: null,
-      dateStartDataShow: [],
-      dateEndDataShow: [],
-      dialog: false,
-      mode: "create",
-      dialogSubsystem: false,
-      dialogSuccess: false,
-      dialogDeleteSuccess: false,
-      dialogValidate: false,
-      headers: [
-        {
-          text: "ชื่อระบบ",
-          align: "start",
-          sortable: false,
-          value: "name",
-          style: "color: white;",
-        },
-        { text: "รหัสของระบบ", value: "id_system", sortable: false },
-        { text: "ชื่อย่อระบบ", value: "short_name", sortable: false },
-        // { text: "สมาชิก", value: "member" },
-        { text: "จัดการ", value: "actions", sortable: false },
-        // { text: "Actions", value: "actions", sortable: false },
-      ],
-      system: {
-        project_id: "",
-        system_id: "",
-        system_nameTH: "",
-        system_nameEN: "",
-        system_shortname: "",
-        system_analyst: "",
-        system_member: "",
-      },
-      projectList: [],
-      member_select: ["Dev1"],
-      member: "",
-      editedIndex: -1,
-      editedItem: {
-        project_shortname: "",
-        project_name: "",
-        project_id: "",
-        project_agency: "",
-        project_start: "",
-        project_end: "",
-      },
-      data_position_Developer: [],
-      data_position_Implementer: [],
-      data_position_Sa: [],
-      choose_user_id: [],
-      systemId: null,
-      projectIds: null,
-      //
-      userid: "",
-      userfirstname: "",
-      userlastname: "",
-      userposition: "",
-      userrole: "",
-      systemOwner: [],
-      projectOwner: [],
-      projectListAdmin: [],
-      loading: false,
-      rules: [(value) => !!value || "*กรุณาใส่ข้อมูลให้ถูกต้อง*"],
-      searchKeyword: '',
-      searchKeywordDev: '',
-    };  
+      searchQuery: "",  // Search query
+    };
   },
   methods: {
     handleIconClick() {
@@ -206,18 +109,21 @@ export default {
     },
   },
   computed: {
-     filteredProjects() {
-      // กรองข้อมูลโปรเจคที่ตรงกับคำค้นหา
-      return this.projectListAdmin.filter(project => {
-        return project.project_name.toLowerCase().includes(this.searchKeyword.toLowerCase());
-      });
-    },
-    filteredProjectsDev() {
-      // กรองข้อมูลโปรเจคที่ตรงกับคำค้นหา
-      return this.projectList.filter(project => {
-        return project.project_name.toLowerCase().includes(this.searchKeywordDev.toLowerCase());
-      });
-    },
+    // Filtered projects based on search query
+    // filteredProjects() {
+    //   return this.projects.filter(
+    //     (project) =>
+    //       project.project_name_TH
+    //         .toLowerCase()
+    //         .includes(this.searchQuery.toLowerCase()) ||
+    //       project.project_name_ENG
+    //         .toLowerCase()
+    //         .includes(this.searchQuery.toLowerCase()) ||
+    //       project.project_id
+    //         .toLowerCase()
+    //         .includes(this.searchQuery.toLowerCase())
+    //   );
+    // },
   },
 
   mounted() {
