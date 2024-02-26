@@ -165,6 +165,46 @@ router.get("/getOne/:id", async (req, res) => {
     return res.status(500).send();
   }
 });
+router.get("/searchByProjectId/:project_id", async (req, res) => {
+  try {
+    const project_id = req.params.project_id;
+
+    let query = `
+      SELECT Systems.id, 
+             Systems.project_id,
+             Systems.system_id,
+             Systems.system_nameTH,
+             Systems.system_nameEN,
+             Systems.system_shortname,
+             Systems.is_deleted,
+             COUNT(Screens.screen_id) AS screen_count, 
+             AVG(screens.screen_progress) AS system_progress,
+             DATE_FORMAT(MIN(Screens.screen_plan_start), '%Y-%m-%d') AS system_plan_start,
+             DATE_FORMAT(MAX(Screens.screen_plan_end), '%Y-%m-%d') AS system_plan_end,
+             DATEDIFF(MAX(Screens.screen_plan_end), MIN(Screens.screen_plan_start)) AS system_manday
+      FROM Systems 
+      LEFT JOIN Screens ON Systems.id = Screens.system_id 
+      WHERE Systems.project_id = ? AND Systems.is_deleted = false
+      GROUP BY Systems.id
+    `;
+
+    connection.query(query, [project_id], async (err, results, fields) => {
+      if (err) {
+        console.log(err);
+        return res.status(400).send();
+      }
+      // Format system_plan_start and system_plan_end to contain only date
+      results.forEach(async (system) => {
+        const updatedSystem = await updateSystem(system);
+        Object.assign(system, updatedSystem);
+      });
+      res.status(200).json(results);
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send();
+  }
+});
 
 
 // * POST FROM systems
