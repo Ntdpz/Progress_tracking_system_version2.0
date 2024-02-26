@@ -1,14 +1,11 @@
 <template>
   <!-- Dashboard container -->
-  <div
-    class="dashboard"
-    style="
+  <div class="dashboard" style="
       background-color: #ffffff;
       padding: 10px 70px;
       border-radius: 0;
       margin-right: 30px;
-    "
-  >
+    ">
     <!-- Greeting and current date/time -->
     <v-row no-gutters class="mt-4">
       <v-col class="text-left" style="margin-right: 16px">
@@ -23,12 +20,7 @@
             <span style="margin: 0; color: #ffffff"> + Create Project</span>
           </router-link>
         </v-btn>
-        <v-btn
-          class="work-item"
-          color="#9747FF"
-          @click="handleButtonClick"
-          style="padding: 5px; margin-left: 10px"
-        >
+        <v-btn class="work-item" color="#9747FF" @click="handleButtonClick" style="padding: 5px; margin-left: 10px">
           <p style="margin: 0; color: white">All Projects</p>
         </v-btn>
       </v-col>
@@ -37,29 +29,21 @@
     <!-- Search bar -->
     <v-row no-gutters>
       <v-col cols="12">
-        <input
-          type="text"
-          v-model="searchQuery"
-          placeholder="Search..."
-          style="
+        <input type="text" v-model="searchQuery" placeholder="Search..." style="
             margin-bottom: 10px;
             width: 100%;
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
             font-size: 16px;
-          "
-        />
+          " />
       </v-col>
     </v-row>
 
     <!-- Project data table -->
-    <v-data-table
-      :headers="headers"
-      :items="filteredProjects"
-      :search="searchQuery"
-    >
+    <v-data-table :headers="headers" :items="filteredProjects" :search="searchQuery">
       <template v-slot:items="props">
+        <td>{{ props.item.project_code }}</td>
         <td>{{ props.item.project_name_ENG }}</td>
         <td>{{ props.item.project_name_TH }}</td>
         <td>{{ props.item.project_progress }}%</td>
@@ -83,14 +67,8 @@
           <!-- Form to edit project details -->
           <v-form @submit.prevent="saveEditedProject">
             <!-- Include form fields for editing project details -->
-            <v-text-field
-              v-model="editedProject.project_name_TH"
-              label="Project Name (TH)"
-            ></v-text-field>
-            <v-text-field
-              v-model="editedProject.project_name_ENG"
-              label="Project Name (ENG)"
-            ></v-text-field>
+            <v-text-field v-model="editedProject.project_name_TH" label="Project Name (TH)"></v-text-field>
+            <v-text-field v-model="editedProject.project_name_ENG" label="Project Name (ENG)"></v-text-field>
             <!-- Button to save changes -->
             <v-btn type="submit">Save Changes</v-btn>
           </v-form>
@@ -131,6 +109,7 @@ export default {
       projects: [], // โครงการทั้งหมด
       searchQuery: "", // Search query
       headers: [
+        { text: "Project Code", value: "project_code" },
         { text: "Project Name (ENG)", value: "project_name_ENG" },
         { text: "Project Name (TH)", value: "project_name_TH" },
         { text: "Progress (%)", value: "project_progress" },
