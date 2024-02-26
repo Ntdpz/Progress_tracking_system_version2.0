@@ -1,10 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const connection = require('../db');
+const connection = require('../db'); // Import database connection
 const path = require('path');
-const { db, connectToDatabase } = require(path.join(__dirname, '../db'));
-const moment = require('moment');
+const { db, connectToDatabase } = require(path.join(__dirname, '../db')); // Import database utilities
+const moment = require('moment'); // Import moment library for date manipulation
 
+// Function to generate a random ID
 function generateId() {
   const maxId = 999999999;
   const minId = 100000000;
@@ -12,6 +13,7 @@ function generateId() {
   return id;
 }
 
+// Route to get all systems
 router.get('/getAll', async (req, res) => {
   try {
     const systemIdFilter = req.query.system_id;
@@ -23,7 +25,7 @@ router.get('/getAll', async (req, res) => {
              Systems.system_nameTH,
              Systems.system_nameEN,
              Systems.system_shortname,
-             Systems.is_deleted, /* เพิ่มฟิลด์ is_deleted */
+             Systems.is_deleted, /* Include the 'is_deleted' field */
              COUNT(Screens.screen_id) AS screen_count, 
              AVG(screens.screen_progress) AS system_progress,
              DATE_FORMAT(MIN(Screens.screen_plan_start), '%Y-%m-%d') AS system_plan_start,
@@ -36,17 +38,18 @@ router.get('/getAll', async (req, res) => {
     const queryParams = [];
 
     if (projectFilter) {
-      query += ' WHERE Systems.project_id = ? AND Systems.is_deleted = false'; // เพิ่มเงื่อนไข is_deleted = false
+      query += ' WHERE Systems.project_id = ? AND Systems.is_deleted = false'; // Add condition for 'is_deleted = false'
       queryParams.push(projectFilter);
     } else if (systemIdFilter) {
-      query += ' WHERE Systems.id = ? AND Systems.is_deleted = false'; // เพิ่มเงื่อนไข is_deleted = false
+      query += ' WHERE Systems.id = ? AND Systems.is_deleted = false'; // Add condition for 'is_deleted = false'
       queryParams.push(systemIdFilter);
     } else {
-      query += ' WHERE Systems.is_deleted = false'; // เพิ่มเงื่อนไข is_deleted = false
+      query += ' WHERE Systems.is_deleted = false'; // Add condition for 'is_deleted = false'
     }
 
     query += ' GROUP BY Systems.id';
 
+    // Execute the query
     connection.query(query, queryParams, async (err, results, fields) => {
       if (err) {
         console.error(err);
@@ -54,7 +57,7 @@ router.get('/getAll', async (req, res) => {
       }
       // Format system_plan_start and system_plan_end to contain only date
       for (const system of results) {
-        const updatedSystem = await updateSystem(system);
+        const updatedSystem = await updateSystem(system); // Update system data
         Object.assign(system, updatedSystem);
       }
       res.status(200).json(results);
@@ -65,6 +68,7 @@ router.get('/getAll', async (req, res) => {
   }
 });
 
+// Route to get all historical systems
 router.get('/getAllHistorySystem', async (req, res) => {
   try {
     let query = `
@@ -80,13 +84,14 @@ router.get('/getAllHistorySystem', async (req, res) => {
              DATE_FORMAT(MIN(Screens.screen_plan_start), '%Y-%m-%d') AS system_plan_start,
              DATE_FORMAT(MAX(Screens.screen_plan_end), '%Y-%m-%d') AS system_plan_end,
              DATEDIFF(MAX(Screens.screen_plan_end), MIN(Screens.screen_plan_start)) AS system_manday,
-             Systems.is_deleted /* เพิ่มฟิลด์ is_deleted ในส่วน SELECT */
+             Systems.is_deleted /* Include the 'is_deleted' field in the SELECT clause */
       FROM Systems 
       LEFT JOIN Screens ON Systems.id = Screens.system_id 
-      WHERE Systems.is_deleted = 1 /* เพิ่มเงื่อนไขให้แสดงเฉพาะ is_deleted เป็น True */
+      WHERE Systems.is_deleted = 1 /* Filter only deleted systems */
       GROUP BY Systems.id
     `;
 
+    // Execute the query
     connection.query(query, async (err, results, fields) => {
       if (err) {
         console.error(err);
@@ -94,7 +99,7 @@ router.get('/getAllHistorySystem', async (req, res) => {
       }
       // Format system_plan_start and system_plan_end to contain only date
       for (const system of results) {
-        const updatedSystem = await updateSystem(system);
+        const updatedSystem = await updateSystem(system); // Update system data
         Object.assign(system, updatedSystem);
       }
       res.status(200).json(results);
@@ -105,6 +110,7 @@ router.get('/getAllHistorySystem', async (req, res) => {
   }
 });
 
+// Function to update system data
 async function updateSystem(system) {
   try {
     const updateQuery = `
@@ -118,6 +124,7 @@ async function updateSystem(system) {
       WHERE id = ?
     `;
 
+    // Prepare updated system data
     const updatedSystem = {
       screen_count: system.screen_count,
       system_progress: system.system_progress,
@@ -127,6 +134,7 @@ async function updateSystem(system) {
       id: system.id
     };
 
+    // Execute the update query
     await new Promise((resolve, reject) => {
       connection.query(updateQuery, [updatedSystem.screen_count, updatedSystem.system_progress, updatedSystem.system_plan_start, updatedSystem.system_plan_end, updatedSystem.system_manday, updatedSystem.id], (err, result) => {
         if (err) reject(err);
@@ -140,7 +148,7 @@ async function updateSystem(system) {
   }
 }
 
-// * GET one by id
+// Route to get one system by id
 router.get('/getOne/:id', async (req, res) => {
   const id = req.params.id;
   try {
@@ -168,6 +176,7 @@ router.get('/getOne/:id', async (req, res) => {
   }
 });
 
+// Route to search systems by project_id
 router.get('/searchByProjectId/:project_id', async (req, res) => {
   try {
     const { project_id } = req.params;
@@ -191,6 +200,7 @@ router.get('/searchByProjectId/:project_id', async (req, res) => {
       GROUP BY Systems.id
     `;
 
+    // Execute the query
     connection.query(query, [project_id], async (err, results, fields) => {
       if (err) {
         console.error(err);
@@ -198,7 +208,7 @@ router.get('/searchByProjectId/:project_id', async (req, res) => {
       }
       // Format system_plan_start and system_plan_end to contain only date
       for (const system of results) {
-        const updatedSystem = await updateSystem(system);
+        const updatedSystem = await updateSystem(system); // Update system data
         Object.assign(system, updatedSystem);
       }
       res.status(200).json(results);
@@ -209,7 +219,7 @@ router.get('/searchByProjectId/:project_id', async (req, res) => {
   }
 });
 
-// * GET systems by project_id with is_deleted = 1
+// Route to search deleted systems by project_id
 router.get('/searchByProjectId_delete/:project_id', async (req, res) => {
   try {
     const { project_id } = req.params;
@@ -233,6 +243,7 @@ router.get('/searchByProjectId_delete/:project_id', async (req, res) => {
       GROUP BY Systems.id
     `;
 
+    // Execute the query
     connection.query(query, [project_id], async (err, results, fields) => {
       if (err) {
         console.error(err);
@@ -240,7 +251,7 @@ router.get('/searchByProjectId_delete/:project_id', async (req, res) => {
       }
       // Format system_plan_start and system_plan_end to contain only date
       for (const system of results) {
-        const updatedSystem = await updateSystem(system);
+        const updatedSystem = await updateSystem(system); // Update system data
         Object.assign(system, updatedSystem);
       }
       res.status(200).json(results);
@@ -251,8 +262,7 @@ router.get('/searchByProjectId_delete/:project_id', async (req, res) => {
   }
 });
 
-
-// * POST FROM systems
+// Route to create a new system
 router.post('/createSystem', async (req, res) => {
   const {
     project_id,
@@ -293,6 +303,7 @@ router.post('/createSystem', async (req, res) => {
   }
 });
 
+// Route to update system details
 router.put('/updateSystem/:id', async (req, res) => {
   const id = req.params.id;
   const {
@@ -342,7 +353,7 @@ router.put('/updateSystem/:id', async (req, res) => {
   }
 });
 
-// DELETE delete/:id
+// Route to delete a system by id
 router.delete("/delete/:id", async (req, res) => {
   const id = req.params.id;
 
@@ -367,6 +378,7 @@ router.delete("/delete/:id", async (req, res) => {
   }
 });
 
+// Route to delete a system and related data
 router.delete("/deleteHistorySystems/:id", async (req, res) => {
   const id = req.params.id;
 
@@ -444,7 +456,7 @@ router.delete("/deleteHistorySystems/:id", async (req, res) => {
   }
 });
 
-
+// Route to add user to systems
 router.post('/addUserSystem', async (req, res) => {
   const { user_id, system_ids } = req.body;
   try {
