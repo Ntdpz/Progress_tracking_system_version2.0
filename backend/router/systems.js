@@ -28,7 +28,8 @@ router.get('/getAll', async (req, res) => {
              AVG(screens.screen_progress) AS system_progress,
              DATE_FORMAT(MIN(Screens.screen_plan_start), '%Y-%m-%d') AS system_plan_start,
              DATE_FORMAT(MAX(Screens.screen_plan_end), '%Y-%m-%d') AS system_plan_end,
-             DATEDIFF(MAX(Screens.screen_plan_end), MIN(Screens.screen_plan_start)) AS system_manday
+             DATEDIFF(MAX(Screens.screen_plan_end), MIN(Screens.screen_plan_start)) AS system_manday,
+             Systems.is_deleted
       FROM Systems 
       LEFT JOIN Screens ON Systems.id = Screens.system_id 
     `;
@@ -78,7 +79,8 @@ router.get('/getAllHistorySystem', async (req, res) => {
              AVG(screens.screen_progress) AS system_progress,
              DATE_FORMAT(MIN(Screens.screen_plan_start), '%Y-%m-%d') AS system_plan_start,
              DATE_FORMAT(MAX(Screens.screen_plan_end), '%Y-%m-%d') AS system_plan_end,
-             DATEDIFF(MAX(Screens.screen_plan_end), MIN(Screens.screen_plan_start)) AS system_manday
+             DATEDIFF(MAX(Screens.screen_plan_end), MIN(Screens.screen_plan_start)) AS system_manday,
+             Systems.is_deleted /* เพิ่มฟิลด์ is_deleted ในส่วน SELECT */
       FROM Systems 
       LEFT JOIN Screens ON Systems.id = Screens.system_id 
       WHERE Systems.is_deleted = 1 /* เพิ่มเงื่อนไขให้แสดงเฉพาะ is_deleted เป็น True */
@@ -207,7 +209,6 @@ router.get('/searchByProjectId/:project_id', async (req, res) => {
   }
 });
 
-
 // * POST FROM systems
 router.post('/createSystem', async (req, res) => {
   const {
@@ -298,56 +299,67 @@ router.put('/updateSystem/:id', async (req, res) => {
   }
 });
 
-// Route to soft delete a system
-router.delete('/delete/:id', async (req, res) => {
+// DELETE delete/:id
+router.delete("/delete/:id", async (req, res) => {
   const id = req.params.id;
 
   try {
     connection.query(
-      'UPDATE systems SET is_deleted = true WHERE id = ?',
+      "UPDATE systems SET is_deleted = true WHERE id = ?",
       [id],
       (err, results, fields) => {
         if (err) {
-          console.error(err);
+          console.log(err);
           return res.status(500).send();
         }
         if (results.affectedRows === 0) {
-          return res.status(404).json({ message: 'No system with that id!' });
+          return res.status(404).json({ message: "No system with that id!" });
         }
-        return res.status(200).json({ message: 'System deleted successfully!' });
+        return res.status(200).json({ message: "System deleted successfully!" });
       }
     );
   } catch (err) {
-    console.error(err);
+    console.log(err);
     return res.status(500).send();
   }
 });
 
-// router.delete("/deleteProjectId/:project_id", async (req, res) => {
-//   const project_id = req.params.project_id;
+router.delete("/deleteHistorySystems/:id", async (req, res) => {
+  const id = req.params.id;
 
-//   try {
-//     connection.query(
-//       "DELETE FROM systems WHERE project_id = ?",
-//       [project_id],
-//       (err, results, fields) => {
-//         if (err) {
-//           console.error(err);
-//           return res.status(400).send();
-//         }
-//         if (results.affectedRows === 0) {
-//           return res.status(404).json({ message: "No system with that id!" });
-//         }
-//         return res
-//           .status(200)
-//           .json({ message: "System deleted successfully!" });
-//       }
-//     );
-//   } catch (err) {
-//     console.error(err);
-//     return res.status(500).send();
-//   }
-// });
+  try {
+    connection.query(
+      "DELETE Screens FROM Screens JOIN Systems ON Screens.system_id = Systems.id WHERE Systems.id = ?",
+      [id],
+      (err, results, fields) => {
+        if (err) {
+          console.log(err);
+          return res.status(500).send();
+        }
+        // เช็คว่ามีระบบที่ถูกลบหรือไม่
+        if (results.affectedRows === 0) {
+          return res.status(404).json({ message: "No system with that id!" });
+        }
+
+        // ลบระบบที่เกี่ยวข้อง
+        connection.query(
+          "DELETE FROM Systems WHERE id = ?",
+          [id],
+          (err, results, fields) => {
+            if (err) {
+              console.log(err);
+              return res.status(500).send();
+            }
+            return res.status(200).json({ message: "System and associated data deleted successfully!" });
+          }
+        );
+      }
+    );
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send();
+  }
+});
 
 router.post('/addUserSystem', async (req, res) => {
   const { user_id, system_ids } = req.body;
