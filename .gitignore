@@ -1,2 +1,4 @@
-# ข้ามโฟลเดอร์ mysql-data
-mysql-data/
+touch .gitignore
+echo mysql.sock >> .gitignore
+
+mysql.sock
