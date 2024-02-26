@@ -209,6 +209,49 @@ router.get('/searchByProjectId/:project_id', async (req, res) => {
   }
 });
 
+// * GET systems by project_id with is_deleted = 1
+router.get('/searchByProjectId_delete/:project_id', async (req, res) => {
+  try {
+    const { project_id } = req.params;
+
+    let query = `
+      SELECT Systems.id, 
+             Systems.project_id,
+             Systems.system_id,
+             Systems.system_nameTH,
+             Systems.system_nameEN,
+             Systems.system_shortname,
+             Systems.is_deleted,
+             COUNT(Screens.screen_id) AS screen_count, 
+             AVG(screens.screen_progress) AS system_progress,
+             DATE_FORMAT(MIN(Screens.screen_plan_start), '%Y-%m-%d') AS system_plan_start,
+             DATE_FORMAT(MAX(Screens.screen_plan_end), '%Y-%m-%d') AS system_plan_end,
+             DATEDIFF(MAX(Screens.screen_plan_end), MIN(Screens.screen_plan_start)) AS system_manday
+      FROM Systems 
+      LEFT JOIN Screens ON Systems.id = Screens.system_id 
+      WHERE Systems.project_id = ? AND Systems.is_deleted = 1
+      GROUP BY Systems.id
+    `;
+
+    connection.query(query, [project_id], async (err, results, fields) => {
+      if (err) {
+        console.error(err);
+        return res.status(400).send();
+      }
+      // Format system_plan_start and system_plan_end to contain only date
+      for (const system of results) {
+        const updatedSystem = await updateSystem(system);
+        Object.assign(system, updatedSystem);
+      }
+      res.status(200).json(results);
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).send();
+  }
+});
+
+
 // * POST FROM systems
 router.post('/createSystem', async (req, res) => {
   const {
@@ -328,38 +371,79 @@ router.delete("/deleteHistorySystems/:id", async (req, res) => {
   const id = req.params.id;
 
   try {
-    connection.query(
-      "DELETE Screens FROM Screens JOIN Systems ON Screens.system_id = Systems.id WHERE Systems.id = ?",
-      [id],
-      (err, results, fields) => {
-        if (err) {
-          console.log(err);
-          return res.status(500).send();
-        }
-        // เช็คว่ามีระบบที่ถูกลบหรือไม่
-        if (results.affectedRows === 0) {
-          return res.status(404).json({ message: "No system with that id!" });
-        }
-
-        // ลบระบบที่เกี่ยวข้อง
-        connection.query(
-          "DELETE FROM Systems WHERE id = ?",
-          [id],
-          (err, results, fields) => {
-            if (err) {
-              console.log(err);
-              return res.status(500).send();
-            }
-            return res.status(200).json({ message: "System and associated data deleted successfully!" });
-          }
-        );
+    connection.beginTransaction(async (err) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).send();
       }
-    );
+
+      // Delete tasks related to screens with the given system_id
+      connection.query(
+        `
+        DELETE FROM tasks
+        WHERE screen_id IN (SELECT id FROM screens WHERE system_id = ?)
+        `,
+        [id],
+        async (err, results, fields) => {
+          if (err) {
+            console.error(err);
+            connection.rollback(() => {
+              return res.status(500).send();
+            });
+          }
+
+          // Now, delete screens related to the system_id
+          connection.query(
+            `
+            DELETE FROM screens
+            WHERE system_id = ?
+            `,
+            [id],
+            async (err, results, fields) => {
+              if (err) {
+                console.error(err);
+                connection.rollback(() => {
+                  return res.status(500).send();
+                });
+              }
+
+              // Now, delete the system itself
+              connection.query(
+                `
+                DELETE FROM systems
+                WHERE id = ?
+                `,
+                [id],
+                async (err, results, fields) => {
+                  if (err) {
+                    console.error(err);
+                    connection.rollback(() => {
+                      return res.status(500).send();
+                    });
+                  }
+
+                  connection.commit((err) => {
+                    if (err) {
+                      console.error(err);
+                      connection.rollback(() => {
+                        return res.status(500).send();
+                      });
+                    }
+                    return res.status(200).json({ message: "System and related data deleted successfully!" });
+                  });
+                }
+              );
+            }
+          );
+        }
+      );
+    });
   } catch (err) {
-    console.log(err);
+    console.error(err);
     return res.status(500).send();
   }
 });
+
 
 router.post('/addUserSystem', async (req, res) => {
   const { user_id, system_ids } = req.body;
