@@ -7,6 +7,7 @@ WORKDIR /app
 # ติดตั้ง dependencies และโค้ดสำหรับ backend
 COPY package*.json ./
 RUN npm install
+RUN npm install core
 COPY . .
 
 # สั่งรัน Node.js บน port 8000
