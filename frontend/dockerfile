@@ -9,12 +9,19 @@ COPY . .
 
 # ติดตั้ง dependencies และ build โปรเจค
 RUN yarn install \
-        --prefer-offline \
-        --frozen-lockfile \
-        --non-interactive \
-        --production=false
+    --prefer-offline \
+    --frozen-lockfile \
+    --non-interactive \
+    --production=false
 
 RUN yarn build
+
+# Copy package.json and package-lock.json to the container
+COPY package.json package-lock.json ./
+
+# Install dependencies
+RUN npm install
+
 
 # ลบ node_modules เพื่อลดขนาด image
 RUN rm -rf node_modules
