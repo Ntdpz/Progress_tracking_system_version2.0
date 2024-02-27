@@ -197,6 +197,29 @@ router.get("/getOne/:id", async (req, res) => {
     return res.status(500).send();
   }
 });
+router.get("/getAllHistoryScreens", async (req, res) => {
+  try {
+    // Query to retrieve all historical screens (screens with is_deleted = 1)
+    const query = `
+      SELECT *
+      FROM Screens
+      WHERE is_deleted = 1
+    `;
+
+    // Execute the query
+    connection.query(query, async (err, results, fields) => {
+      if (err) {
+        console.log(err);
+        return res.status(400).send();
+      }
+      // Send the retrieved historical screens data in JSON format
+      res.status(200).json(results);
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send();
+  }
+});
 
 router.post("/createScreen", async (req, res) => {
   const {
