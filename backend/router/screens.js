@@ -199,8 +199,6 @@ router.get("/getOne/:id", async (req, res) => {
   }
 });
 
-
-
 router.post("/createScreen", async (req, res) => {
   const {
     screen_id,
@@ -288,8 +286,7 @@ router.put("/updateScreen/:id", (req, res) => {
   }
 });
 
-
-//* DELETE screen+image by ID
+//* DELETE screen by ID
 router.delete("/delete/:id", async (req, res) => {
   const id = req.params.id;
 
@@ -302,14 +299,11 @@ router.delete("/delete/:id", async (req, res) => {
       return res.status(404).json({ message: "No screen with that id!" });
     }
 
-    // Delete the screen and related tasks
-    const deleteScreenSql = `DELETE FROM screens WHERE id = ?`;
-    const deleteTasksSql = `DELETE FROM tasks WHERE screen_id = ?`;
+    // Update is_deleted to true
+    const updateSql = `UPDATE screens SET is_deleted = true WHERE id = ?`;
+    await connection.query(updateSql, [id]);
 
-    await connection.query(deleteScreenSql, [id]);
-    await connection.query(deleteTasksSql, [screen[0].screen_id]);
-
-    return res.status(200).json({ message: "Screen and related tasks deleted successfully!" });
+    return res.status(200).json({ message: "Screen deleted successfully!" });
   } catch (err) {
     console.error(err);
     return res.status(500).send();
