@@ -59,32 +59,30 @@ router.get("/getAll", async (req, res) => {
 
     let query = `
       SELECT
-        Screens.*,
-        AVG(tasks.task_progress) AS screen_progress,
-        DATE(MIN(tasks.task_plan_start)) AS screen_plan_start,
-        DATE(MAX(tasks.task_plan_end)) AS screen_plan_end,
-        DATEDIFF(MAX(tasks.task_plan_end), MIN(tasks.task_plan_start)) AS screen_manday
+          Screens.*,
+          AVG(tasks.task_progress) AS screen_progress,
+          DATE(MIN(tasks.task_plan_start)) AS screen_plan_start,
+          DATE(MAX(tasks.task_plan_end)) AS screen_plan_end,
+          DATEDIFF(MAX(tasks.task_plan_end), MIN(tasks.task_plan_start)) AS screen_manday
       FROM
-        Screens
+          Screens
       LEFT JOIN tasks ON Screens.id = tasks.screen_id
-      WHERE Screens.is_deleted = 0
+      WHERE
+          Screens.is_deleted = 0
     `;
 
     const queryParams = [];
 
     if (systemIDFilter) {
-      query += " WHERE system_id = ?";
+      query += " AND Screens.system_id = ?";
       queryParams.push(systemIDFilter);
     } else if (screenIDFilter) {
-      query += " WHERE screen_id = ?";
+      query += " AND Screens.screen_id = ?";
       queryParams.push(screenIDFilter);
     } else if (projectIDFilter) {
-      query += " WHERE project_id = ?";
+      query += " AND Screens.project_id = ?";
       queryParams.push(projectIDFilter);
     }
-
-    // Filter out deleted screens
-    query += " AND is_deleted = 0";
 
     query += " GROUP BY Screens.id";
 
@@ -120,6 +118,7 @@ router.get("/getAll", async (req, res) => {
     return res.status(500).send();
   }
 });
+
 
 // Function to update screen data
 async function updateScreen(screen) {
@@ -491,21 +490,20 @@ router.put("/updateScreen/:id", (req, res) => {
     return res.status(500).send();
   }
 });
-
 // Route to delete a screen by ID
 router.delete("/delete/:id", async (req, res) => {
   const id = req.params.id;
 
   try {
     const selectSql = `SELECT * FROM screens WHERE id = ?`;
-    const [screen] = await connection.query(selectSql, [id]);
+    const [screen] = await connection.promise().query(selectSql, [id]); // Use connection.promise().query() instead of connection.query()
 
     if (screen.length === 0) {
       return res.status(404).json({ message: "No screen with that id!" });
     }
 
     const updateSql = `UPDATE screens SET is_deleted = true WHERE id = ?`;
-    await connection.query(updateSql, [id]);
+    await connection.promise().query(updateSql, [id]); // Use connection.promise().query() instead of connection.query()
 
     return res.status(200).json({ message: "Screen deleted successfully!" });
   } catch (err) {
@@ -513,6 +511,7 @@ router.delete("/delete/:id", async (req, res) => {
     return res.status(500).send();
   }
 });
+
 
 // Route to delete a screen and its related data by ID
 router.delete("/deleteHistoryScreen/:id", async (req, res) => {
