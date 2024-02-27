@@ -455,6 +455,7 @@ router.put("/updateScreen/:id", (req, res) => {
     project_id
   } = req.body;
 
+  // สร้างอ็อบเจ็กต์เพื่อเก็บข้อมูลที่อัปเดต
   const updatedScreen = {
     screen_id,
     screen_name,
@@ -465,15 +466,43 @@ router.put("/updateScreen/:id", (req, res) => {
   };
 
   try {
+    // ค้นหาข้อมูลระบบที่ต้องการอัปเดตและใช้ค่าเดิมหากไม่ได้รับค่าใหม่
     connection.query(
-      `UPDATE screens SET ? WHERE id = ?`,
-      [updatedScreen, id],
+      `SELECT * FROM screens WHERE id = ?`,
+      [id],
       (err, results, fields) => {
         if (err) {
           console.log(err);
           return res.status(400).send();
         }
-        res.status(200).json({ message: "Screen updated successfully!" });
+
+        if (results.length === 0) {
+          return res.status(404).json({ message: "Screen not found!" });
+        }
+
+        // ใช้ค่าเดิมหากไม่ได้รับค่าใหม่
+        const existingScreen = results[0];
+        const finalScreen = {
+          screen_id: screen_id || existingScreen.screen_id,
+          screen_name: screen_name || existingScreen.screen_name,
+          screen_status: screen_status || existingScreen.screen_status,
+          screen_level: screen_level || existingScreen.screen_level,
+          screen_pic: screen_pic || existingScreen.screen_pic,
+          project_id: project_id || existingScreen.project_id
+        };
+
+        // อัปเดตข้อมูลระบบในฐานข้อมูล
+        connection.query(
+          `UPDATE screens SET ? WHERE id = ?`,
+          [finalScreen, id],
+          (err, results, fields) => {
+            if (err) {
+              console.log(err);
+              return res.status(400).send();
+            }
+            res.status(200).json({ message: "Screen updated successfully!" });
+          }
+        );
       }
     );
   } catch (err) {
@@ -481,6 +510,7 @@ router.put("/updateScreen/:id", (req, res) => {
     return res.status(500).send();
   }
 });
+
 
 
 //* DELETE screen by ID
