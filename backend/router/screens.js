@@ -277,6 +277,124 @@ router.get("/searchByProjectId/:project_id", async (req, res) => {
     return res.status(500).send();
   }
 });
+// GET Deleted Screens by Project ID
+router.get("/searchByProjectId_delete/:project_id", async (req, res) => {
+  try {
+    const { project_id } = req.params;
+
+    // สร้างคำสั่ง SQL เพื่อดึงข้อมูล Screens ที่ถูกลบตาม project_id ที่ระบุ
+    let query = `
+      SELECT
+        Screens.*,
+        AVG(tasks.task_progress) AS screen_progress,
+        DATE(MIN(Screens.screen_plan_start)) AS screen_plan_start,
+        DATE(MAX(Screens.screen_plan_end)) AS screen_plan_end,
+        DATEDIFF(MAX(tasks.task_plan_end), MIN(tasks.task_plan_start)) AS screen_manday
+      FROM
+        Screens
+      LEFT JOIN tasks ON Screens.id = tasks.screen_id
+      WHERE Screens.project_id = ? AND Screens.is_deleted = 1
+      GROUP BY Screens.id
+    `;
+
+    // ดำเนินการคิวรีด้วยพารามิเตอร์ project_id ที่ให้ไว้
+    connection.query(query, [project_id], async (err, results, fields) => {
+      if (err) {
+        console.log(err);
+        return res.status(400).send();
+      }
+
+      // อัปเดตข้อมูลระบบในฐานข้อมูล
+      await Promise.all(results.map(async (screen) => {
+        await updateScreen(screen);
+      }));
+
+      res.status(200).json(results);
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send();
+  }
+});
+
+// GET Screens by System_id
+router.get("/searchBySystemId/:system_id", async (req, res) => {
+  try {
+    const { system_id } = req.params;
+
+    // สร้างคำสั่ง SQL เพื่อดึงข้อมูล Screens ตาม System_id ที่ระบุ
+    let query = `
+      SELECT
+        Screens.*,
+        AVG(tasks.task_progress) AS screen_progress,
+        DATE(MIN(Screens.screen_plan_start)) AS screen_plan_start,
+        DATE(MAX(Screens.screen_plan_end)) AS screen_plan_end,
+        DATEDIFF(MAX(tasks.task_plan_end), MIN(tasks.task_plan_start)) AS screen_manday
+      FROM
+        Screens
+      LEFT JOIN tasks ON Screens.id = tasks.screen_id
+      WHERE Screens.system_id = ? AND Screens.is_deleted = 0
+      GROUP BY Screens.id
+    `;
+
+    // ดำเนินการคิวรีด้วยพารามิเตอร์ system_id ที่ให้ไว้
+    connection.query(query, [system_id], async (err, results, fields) => {
+      if (err) {
+        console.log(err);
+        return res.status(400).send();
+      }
+
+      // อัปเดตข้อมูลระบบในฐานข้อมูล
+      await Promise.all(results.map(async (screen) => {
+        await updateScreen(screen);
+      }));
+
+      res.status(200).json(results);
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send();
+  }
+});
+// GET Deleted Screens by System_id
+router.get("/searchBySystemId_delete/:system_id", async (req, res) => {
+  try {
+    const { system_id } = req.params;
+
+    // สร้างคำสั่ง SQL เพื่อดึงข้อมูล Screens ที่ถูกลบตาม System_id ที่ระบุ
+    let query = `
+      SELECT
+        Screens.*,
+        AVG(tasks.task_progress) AS screen_progress,
+        DATE(MIN(Screens.screen_plan_start)) AS screen_plan_start,
+        DATE(MAX(Screens.screen_plan_end)) AS screen_plan_end,
+        DATEDIFF(MAX(tasks.task_plan_end), MIN(tasks.task_plan_start)) AS screen_manday
+      FROM
+        Screens
+      LEFT JOIN tasks ON Screens.id = tasks.screen_id
+      WHERE Screens.system_id = ? AND Screens.is_deleted = 1
+      GROUP BY Screens.id
+    `;
+
+    // ดำเนินการคิวรีด้วยพารามิเตอร์ system_id ที่ให้ไว้
+    connection.query(query, [system_id], async (err, results, fields) => {
+      if (err) {
+        console.log(err);
+        return res.status(400).send();
+      }
+
+      // อัปเดตข้อมูลระบบในฐานข้อมูล
+      await Promise.all(results.map(async (screen) => {
+        await updateScreen(screen);
+      }));
+
+      res.status(200).json(results);
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send();
+  }
+});
 
 
 router.post("/createScreen", async (req, res) => {
@@ -333,7 +451,6 @@ router.put("/updateScreen/:id", (req, res) => {
     screen_name,
     screen_status,
     screen_level,
-    system_id,
     screen_pic,
     project_id
   } = req.body;
@@ -343,7 +460,6 @@ router.put("/updateScreen/:id", (req, res) => {
     screen_name,
     screen_status,
     screen_level,
-    system_id,
     screen_pic,
     project_id
   };
@@ -365,6 +481,7 @@ router.put("/updateScreen/:id", (req, res) => {
     return res.status(500).send();
   }
 });
+
 
 //* DELETE screen by ID
 router.delete("/delete/:id", async (req, res) => {
