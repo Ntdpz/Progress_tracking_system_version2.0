@@ -170,10 +170,8 @@ router.get("/getOne/:id", async (req, res) => {
       LEFT JOIN tasks ON Screens.id = tasks.screen_id
     `;
 
-    // ตรวจสอบว่ามีการระบุ id หรือไม่ หากมีให้กรองด้วย id
-    if (id) {
-      query += " WHERE Screens.id = ?";
-    }
+    // เพิ่มเงื่อนไข WHERE สำหรับค้นหารายการตาม ID ที่ระบุ
+    query += ` WHERE Screens.id = ? AND Screens.is_deleted = 0`;
 
     query += " GROUP BY Screens.id";
 
@@ -184,11 +182,21 @@ router.get("/getOne/:id", async (req, res) => {
         return res.status(400).send();
       }
 
+      // ตรวจสอบว่ามีข้อมูล screen ที่สอดคล้องกับ ID ที่ระบุหรือไม่
+      if (results.length === 0) {
+        return res.status(404).json({ message: "No screen with that ID!" });
+      }
+
       // จัดรูปแบบวันเวลาของ screen_plan_start และ screen_plan_end เพื่อลบข้อมูลเวลาทิ้ง
       results.forEach((screen) => {
-        screen.screen_plan_start = screen.screen_plan_start.toISOString().split("T")[0];
-        screen.screen_plan_end = screen.screen_plan_end.toISOString().split("T")[0];
+        if (screen.screen_plan_start) {
+          screen.screen_plan_start = new Date(screen.screen_plan_start).toISOString().split("T")[0];
+        }
+        if (screen.screen_plan_end) {
+          screen.screen_plan_end = new Date(screen.screen_plan_end).toISOString().split("T")[0];
+        }
       });
+
 
       res.status(200).json(results);
     });
@@ -197,6 +205,7 @@ router.get("/getOne/:id", async (req, res) => {
     return res.status(500).send();
   }
 });
+
 router.get("/getAllHistoryScreens", async (req, res) => {
   try {
     // Query to retrieve all historical screens (screens with is_deleted = 1)
