@@ -229,6 +229,55 @@ router.get("/getAllHistoryScreens", async (req, res) => {
     return res.status(500).send();
   }
 });
+router.get("/searchByProjectId/:project_id", async (req, res) => {
+  try {
+    const { project_id } = req.params;
+
+    // สร้างคำสั่ง SQL เพื่อดึงข้อมูลของ screens ตาม project_id ที่ระบุ
+    let query = `
+      SELECT
+        Screens.*,
+        AVG(tasks.task_progress) AS screen_progress,
+        DATE(MIN(Screens.screen_plan_start)) AS screen_plan_start,
+        DATE(MAX(Screens.screen_plan_end)) AS screen_plan_end,
+        DATEDIFF(MAX(tasks.task_plan_end), MIN(tasks.task_plan_start)) AS screen_manday
+      FROM
+        Screens
+      LEFT JOIN tasks ON Screens.id = tasks.screen_id
+      WHERE Screens.project_id = ? AND Screens.is_deleted = 0
+      GROUP BY Screens.id
+    `;
+
+    // ดำเนินการคิวรีด้วย project_id ที่ให้ไว้
+    connection.query(query, [project_id], async (err, results, fields) => {
+      if (err) {
+        console.log(err);
+        return res.status(400).send();
+      }
+
+      // อัปเดตข้อมูลระบบในฐานข้อมูล
+      await Promise.all(
+        results.map(async (screen) => {
+          await updateScreen(screen);
+          // จัดรูปแบบวันเวลาของ screen_plan_start และ screen_plan_end เพื่อลบข้อมูลเวลาทิ้ง
+          if (screen.screen_plan_start) {
+            screen.screen_plan_start = new Date(screen.screen_plan_start).toISOString().split("T")[0];
+          }
+          if (screen.screen_plan_end) {
+            screen.screen_plan_end = new Date(screen.screen_plan_end).toISOString().split("T")[0];
+          }
+          return screen;
+        })
+      );
+
+      res.status(200).json(results);
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send();
+  }
+});
+
 
 router.post("/createScreen", async (req, res) => {
   const {
