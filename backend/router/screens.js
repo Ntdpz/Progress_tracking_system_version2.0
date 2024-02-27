@@ -1,33 +1,48 @@
-const express = require('express');
-const router = express.Router();
-const moment = require('moment');
-const connection = require('../db');
-const multer = require('multer');
-const fs = require('fs');
-const path = require('path');
-const uuid = require('uuid');
-const crypto = require('crypto');
+// Importing required modules
+const express = require("express"); // Import Express module
+const router = express.Router(); // Create router
+const moment = require('moment'); // Import Moment module for date manipulation
 
+// Import database connection
+const connection = require("../db");
+
+// Multer for file uploads
+const multer = require("multer");
+
+// File system and path modules for file management
+const fs = require("fs");
+const path = require("path");
+
+// UUID and crypto for generating UUIDs and encryption
+const uuid = require("uuid");
+const crypto = require("crypto");
+
+// Multer disk storage configuration
 const storage = multer.diskStorage({
   destination(req, file, cb) {
-    cb(null, '../frontend/static/screenImages/');
+    cb(null, "../frontend/static/screenImages/"); // Destination folder for file uploads
   },
   filename(req, file, cb) {
+    // Generate new file name using UUID and timestamp
     const originalname = file.originalname;
     const filename =
       uuid.v4() +
-      '-' +
+      "-" +
       Date.now() +
-      '-' +
-      originalname.substring(originalname.lastIndexOf('/') + 1);
+      "-" +
+      originalname.substring(originalname.lastIndexOf("/") + 1);
     cb(null, filename);
   },
 });
 
+// Multer upload configuration
 const upload = multer({ storage });
-const defaultName = '../frontend/static/screenImages/DefaultScreen.jpg';
-const defaultImage = defaultName.substring(defaultName.lastIndexOf('/') + 1);
 
+// Default image name
+const defaultName = "../frontend/static/screenImages/DefaultScreen.jpg";
+const defaultImage = defaultName.substring(defaultName.lastIndexOf("/") + 1);
+
+// Function to generate random ID
 function generateId() {
   const maxId = 999999999;
   const minId = 100000000;
@@ -35,7 +50,8 @@ function generateId() {
   return id;
 }
 
-router.get('/getAll', async (req, res) => {
+// Route to get all screens
+router.get("/getAll", async (req, res) => {
   try {
     const systemIDFilter = req.query.system_id;
     const screenIDFilter = req.query.screen_id;
@@ -57,18 +73,20 @@ router.get('/getAll', async (req, res) => {
     const queryParams = [];
 
     if (systemIDFilter) {
-      query += ' WHERE system_id = ?';
+      query += " WHERE system_id = ?";
       queryParams.push(systemIDFilter);
     } else if (screenIDFilter) {
-      query += ' WHERE screen_id = ?';
+      query += " WHERE screen_id = ?";
       queryParams.push(screenIDFilter);
     } else if (projectIDFilter) {
-      query += ' WHERE project_id = ?';
+      query += " WHERE project_id = ?";
       queryParams.push(projectIDFilter);
     }
 
-    query += ' AND is_deleted = 0';
-    query += ' GROUP BY Screens.id';
+    // Filter out deleted screens
+    query += " AND is_deleted = 0";
+
+    query += " GROUP BY Screens.id";
 
     connection.query(query, queryParams, async (err, results, fields) => {
       if (err) {
@@ -80,6 +98,7 @@ router.get('/getAll', async (req, res) => {
         results.map(async (screen) => {
           await updateScreen(screen);
 
+          // Format dates and fix discrepancy
           screen.screen_plan_start = new Date(screen.screen_plan_start).toISOString().split('T')[0];
           screen.screen_plan_end = new Date(screen.screen_plan_end).toISOString().split('T')[0];
           const startDate = new Date(screen.screen_plan_start);
@@ -102,6 +121,7 @@ router.get('/getAll', async (req, res) => {
   }
 });
 
+// Function to update screen data
 async function updateScreen(screen) {
   try {
     const updateQuery = `
@@ -133,7 +153,8 @@ async function updateScreen(screen) {
   }
 }
 
-router.get('/getOne/:id', async (req, res) => {
+// Route to get one screen by ID
+router.get("/getOne/:id", async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -150,7 +171,8 @@ router.get('/getOne/:id', async (req, res) => {
     `;
 
     query += ` WHERE Screens.id = ? AND Screens.is_deleted = 0`;
-    query += ' GROUP BY Screens.id';
+
+    query += " GROUP BY Screens.id";
 
     connection.query(query, [id], async (err, results, fields) => {
       if (err) {
@@ -159,15 +181,15 @@ router.get('/getOne/:id', async (req, res) => {
       }
 
       if (results.length === 0) {
-        return res.status(404).json({ message: 'No screen with that ID!' });
+        return res.status(404).json({ message: "No screen with that ID!" });
       }
 
       results.forEach((screen) => {
         if (screen.screen_plan_start) {
-          screen.screen_plan_start = new Date(screen.screen_plan_start).toISOString().split('T')[0];
+          screen.screen_plan_start = new Date(screen.screen_plan_start).toISOString().split("T")[0];
         }
         if (screen.screen_plan_end) {
-          screen.screen_plan_end = new Date(screen.screen_plan_end).toISOString().split('T')[0];
+          screen.screen_plan_end = new Date(screen.screen_plan_end).toISOString().split("T")[0];
         }
       });
 
@@ -179,7 +201,8 @@ router.get('/getOne/:id', async (req, res) => {
   }
 });
 
-router.get('/getAllHistoryScreens', async (req, res) => {
+// Route to get all historical screens
+router.get("/getAllHistoryScreens", async (req, res) => {
   try {
     const query = `
       SELECT *
@@ -200,7 +223,8 @@ router.get('/getAllHistoryScreens', async (req, res) => {
   }
 });
 
-router.get('/searchByProjectId/:project_id', async (req, res) => {
+// Route to get screens by project ID
+router.get("/searchByProjectId/:project_id", async (req, res) => {
   try {
     const { project_id } = req.params;
 
@@ -228,10 +252,10 @@ router.get('/searchByProjectId/:project_id', async (req, res) => {
         results.map(async (screen) => {
           await updateScreen(screen);
           if (screen.screen_plan_start) {
-            screen.screen_plan_start = new Date(screen.screen_plan_start).toISOString().split('T')[0];
+            screen.screen_plan_start = new Date(screen.screen_plan_start).toISOString().split("T")[0];
           }
           if (screen.screen_plan_end) {
-            screen.screen_plan_end = new Date(screen.screen_plan_end).toISOString().split('T')[0];
+            screen.screen_plan_end = new Date(screen.screen_plan_end).toISOString().split("T")[0];
           }
           return screen;
         })
@@ -245,13 +269,11 @@ router.get('/searchByProjectId/:project_id', async (req, res) => {
   }
 });
 
-
-// GET Deleted Screens by Project ID
+// Route to get deleted screens by project ID
 router.get("/searchByProjectId_delete/:project_id", async (req, res) => {
   try {
     const { project_id } = req.params;
 
-    // สร้างคำสั่ง SQL เพื่อดึงข้อมูล Screens ที่ถูกลบตาม project_id ที่ระบุ
     let query = `
       SELECT
         Screens.*,
@@ -266,14 +288,12 @@ router.get("/searchByProjectId_delete/:project_id", async (req, res) => {
       GROUP BY Screens.id
     `;
 
-    // ดำเนินการคิวรีด้วยพารามิเตอร์ project_id ที่ให้ไว้
     connection.query(query, [project_id], async (err, results, fields) => {
       if (err) {
         console.log(err);
         return res.status(400).send();
       }
 
-      // อัปเดตข้อมูลระบบในฐานข้อมูล
       await Promise.all(results.map(async (screen) => {
         await updateScreen(screen);
       }));
@@ -286,12 +306,11 @@ router.get("/searchByProjectId_delete/:project_id", async (req, res) => {
   }
 });
 
-// GET Screens by System_id
+// Route to get screens by system ID
 router.get("/searchBySystemId/:system_id", async (req, res) => {
   try {
     const { system_id } = req.params;
 
-    // สร้างคำสั่ง SQL เพื่อดึงข้อมูล Screens ตาม System_id ที่ระบุ
     let query = `
       SELECT
         Screens.*,
@@ -306,14 +325,12 @@ router.get("/searchBySystemId/:system_id", async (req, res) => {
       GROUP BY Screens.id
     `;
 
-    // ดำเนินการคิวรีด้วยพารามิเตอร์ system_id ที่ให้ไว้
     connection.query(query, [system_id], async (err, results, fields) => {
       if (err) {
         console.log(err);
         return res.status(400).send();
       }
 
-      // อัปเดตข้อมูลระบบในฐานข้อมูล
       await Promise.all(results.map(async (screen) => {
         await updateScreen(screen);
       }));
@@ -325,12 +342,12 @@ router.get("/searchBySystemId/:system_id", async (req, res) => {
     return res.status(500).send();
   }
 });
-// GET Deleted Screens by System_id
+
+// Route to get deleted screens by system ID
 router.get("/searchBySystemId_delete/:system_id", async (req, res) => {
   try {
     const { system_id } = req.params;
 
-    // สร้างคำสั่ง SQL เพื่อดึงข้อมูล Screens ที่ถูกลบตาม System_id ที่ระบุ
     let query = `
       SELECT
         Screens.*,
@@ -345,14 +362,12 @@ router.get("/searchBySystemId_delete/:system_id", async (req, res) => {
       GROUP BY Screens.id
     `;
 
-    // ดำเนินการคิวรีด้วยพารามิเตอร์ system_id ที่ให้ไว้
     connection.query(query, [system_id], async (err, results, fields) => {
       if (err) {
         console.log(err);
         return res.status(400).send();
       }
 
-      // อัปเดตข้อมูลระบบในฐานข้อมูล
       await Promise.all(results.map(async (screen) => {
         await updateScreen(screen);
       }));
@@ -365,7 +380,7 @@ router.get("/searchBySystemId_delete/:system_id", async (req, res) => {
   }
 });
 
-
+// Route to create a new screen
 router.post("/createScreen", async (req, res) => {
   const {
     screen_id,
@@ -377,12 +392,12 @@ router.post("/createScreen", async (req, res) => {
     screen_progress,
     screen_plan_start,
     screen_plan_end,
-    project_id // เพิ่ม project_id เข้ามา
+    project_id
   } = req.body;
 
   try {
     const query =
-      'INSERT INTO screens (screen_id, screen_name, screen_status, screen_level, screen_pic, system_id, screen_progress, screen_plan_start, screen_plan_end, project_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'; // เพิ่ม project_id ใน query
+      'INSERT INTO screens (screen_id, screen_name, screen_status, screen_level, screen_pic, system_id, screen_progress, screen_plan_start, screen_plan_end, project_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
     await new Promise((resolve, reject) => {
       connection.query(
@@ -397,7 +412,7 @@ router.post("/createScreen", async (req, res) => {
           screen_progress,
           screen_plan_start,
           screen_plan_end,
-          project_id // เพิ่ม project_id ใน array ของ values
+          project_id
         ],
         (err, result) => {
           if (err) reject(err);
@@ -413,6 +428,7 @@ router.post("/createScreen", async (req, res) => {
   }
 });
 
+// Route to update a screen by ID
 router.put("/updateScreen/:id", (req, res) => {
   const id = req.params.id;
   const {
@@ -424,7 +440,6 @@ router.put("/updateScreen/:id", (req, res) => {
     project_id
   } = req.body;
 
-  // สร้างอ็อบเจ็กต์เพื่อเก็บข้อมูลที่อัปเดต
   const updatedScreen = {
     screen_id,
     screen_name,
@@ -435,7 +450,6 @@ router.put("/updateScreen/:id", (req, res) => {
   };
 
   try {
-    // ค้นหาข้อมูลระบบที่ต้องการอัปเดตและใช้ค่าเดิมหากไม่ได้รับค่าใหม่
     connection.query(
       `SELECT * FROM screens WHERE id = ?`,
       [id],
@@ -449,7 +463,6 @@ router.put("/updateScreen/:id", (req, res) => {
           return res.status(404).json({ message: "Screen not found!" });
         }
 
-        // ใช้ค่าเดิมหากไม่ได้รับค่าใหม่
         const existingScreen = results[0];
         const finalScreen = {
           screen_id: screen_id || existingScreen.screen_id,
@@ -460,7 +473,6 @@ router.put("/updateScreen/:id", (req, res) => {
           project_id: project_id || existingScreen.project_id
         };
 
-        // อัปเดตข้อมูลระบบในฐานข้อมูล
         connection.query(
           `UPDATE screens SET ? WHERE id = ?`,
           [finalScreen, id],
@@ -480,14 +492,11 @@ router.put("/updateScreen/:id", (req, res) => {
   }
 });
 
-
-
-//* DELETE screen by ID
+// Route to delete a screen by ID
 router.delete("/delete/:id", async (req, res) => {
   const id = req.params.id;
 
   try {
-    // Check if the screen exists
     const selectSql = `SELECT * FROM screens WHERE id = ?`;
     const [screen] = await connection.query(selectSql, [id]);
 
@@ -495,7 +504,6 @@ router.delete("/delete/:id", async (req, res) => {
       return res.status(404).json({ message: "No screen with that id!" });
     }
 
-    // Update is_deleted to true
     const updateSql = `UPDATE screens SET is_deleted = true WHERE id = ?`;
     await connection.query(updateSql, [id]);
 
@@ -505,15 +513,15 @@ router.delete("/delete/:id", async (req, res) => {
     return res.status(500).send();
   }
 });
+
+// Route to delete a screen and its related data by ID
 router.delete("/deleteHistoryScreen/:id", async (req, res) => {
   const id = req.params.id;
 
   try {
-    // Delete tasks related to the screen
     const deleteTasksSql = `DELETE FROM tasks WHERE screen_id IN (SELECT id FROM screens WHERE id = ?)`;
     await connection.promise().query(deleteTasksSql, [id]);
 
-    // Delete the screen
     const deleteScreenSql = `DELETE FROM screens WHERE id = ?`;
     await connection.promise().query(deleteScreenSql, [id]);
 
@@ -524,25 +532,16 @@ router.delete("/deleteHistoryScreen/:id", async (req, res) => {
   }
 });
 
-
-
+// Route to add multiple screens to a user
 router.post("/addUserScreen", async (req, res) => {
   const { user_id, screen_ids } = req.body;
   try {
     const createUserScreens = (user_id, screen_ids) => {
-      // Check that screen_ids is an array
       if (!Array.isArray(screen_ids)) {
         console.log("Error: screen_ids is not an array");
         return;
       }
 
-      // http://localhost:7777/systems/addUserScreen
-      //   {
-      //     "user_id": 15,
-      //     "screen_ids": [1]
-      //  }
-
-      // Map over the screen IDs and insert a new row into the user_screens table for each one
       screen_ids.map((screen_id) => {
         connection.query(
           "INSERT INTO user_screens (user_id, screen_id) VALUES (?, ?)",
