@@ -54,9 +54,9 @@ function generateId() {
 router.get("/getAll", async (req, res) => {
   try {
     const systemIDFilter = req.query.system_id;
-    const idFilter = req.query.id;
     const screenIDFilter = req.query.screen_id;
-    const screen_project_system_Filter = req.query.screen_id;
+    const projectIDFilter = req.query.project_id;
+
     let query = `
       SELECT
         Screens.*,
@@ -67,22 +67,24 @@ router.get("/getAll", async (req, res) => {
       FROM
         Screens
       LEFT JOIN tasks ON Screens.id = tasks.screen_id
+      WHERE Screens.is_deleted = 0
     `;
 
     const queryParams = [];
+
     if (systemIDFilter) {
       query += " WHERE system_id = ?";
       queryParams.push(systemIDFilter);
-    } else if (idFilter) {
-      query += " WHERE id = ?";
-      queryParams.push(idFilter);
     } else if (screenIDFilter) {
       query += " WHERE screen_id = ?";
       queryParams.push(screenIDFilter);
-    } else if (screen_project_system_Filter) {
-      query += " WHERE project_id = ? && system_id = ?";
-      queryParams.push(screen_project_system_Filter);
+    } else if (projectIDFilter) {
+      query += " WHERE project_id = ?";
+      queryParams.push(projectIDFilter);
     }
+
+    // Filter out deleted screens
+    query += " AND is_deleted = 0";
 
     query += " GROUP BY Screens.id";
 
@@ -91,21 +93,17 @@ router.get("/getAll", async (req, res) => {
         console.log(err);
         return res.status(400).send();
       }
+
       const screensWithTasks = await Promise.all(
         results.map(async (screen) => {
-          // Update screen data in the database
-          // Update screen data in the database
           await updateScreen(screen);
 
-          // Format screen_plan_start and screen_plan_end to remove time
+          // Format dates and fix discrepancy
           screen.screen_plan_start = new Date(screen.screen_plan_start).toISOString().split('T')[0];
           screen.screen_plan_end = new Date(screen.screen_plan_end).toISOString().split('T')[0];
-
-          // Adjust dates to fix the discrepancy
           const startDate = new Date(screen.screen_plan_start);
           startDate.setDate(startDate.getDate() + 1);
           screen.screen_plan_start = startDate.toISOString().split('T')[0];
-
           const endDate = new Date(screen.screen_plan_end);
           endDate.setDate(endDate.getDate() + 1);
           screen.screen_plan_end = endDate.toISOString().split('T')[0];
@@ -113,6 +111,7 @@ router.get("/getAll", async (req, res) => {
           return screen;
         })
       );
+
       res.status(200).json(screensWithTasks);
     });
 
