@@ -1,57 +1,41 @@
-// เรียกใช้โมดูล express และสร้าง router
-const express = require("express");
+const express = require('express');
 const router = express.Router();
 const moment = require('moment');
+const connection = require('../db');
+const multer = require('multer');
+const fs = require('fs');
+const path = require('path');
+const uuid = require('uuid');
+const crypto = require('crypto');
 
-
-// เรียกใช้โมดูลเชื่อมต่อฐานข้อมูล
-const connection = require("../db");
-
-// เรียกใช้โมดูล multer สำหรับการอัปโหลดไฟล์
-const multer = require("multer");
-
-// เรียกใช้โมดูล fs และ path สำหรับการจัดการไฟล์
-const fs = require("fs");
-const path = require("path");
-
-// เรียกใช้โมดูล uuid และ crypto สำหรับการสร้าง UUID และการเข้ารหัส
-const uuid = require("uuid");
-const crypto = require("crypto");
-
-// กำหนดการเก็บรักษาไฟล์ด้วย multer.diskStorage
 const storage = multer.diskStorage({
   destination(req, file, cb) {
-    // กำหนดโฟลเดอร์ปลายทางสำหรับการบันทึกไฟล์
-    cb(null, "../frontend/static/screenImages/");
+    cb(null, '../frontend/static/screenImages/');
   },
   filename(req, file, cb) {
-    // กำหนดชื่อไฟล์ใหม่โดยใช้ UUID และ timestamp
     const originalname = file.originalname;
     const filename =
       uuid.v4() +
-      "-" +
+      '-' +
       Date.now() +
-      "-" +
-      originalname.substring(originalname.lastIndexOf("/") + 1);
+      '-' +
+      originalname.substring(originalname.lastIndexOf('/') + 1);
     cb(null, filename);
   },
 });
 
-// กำหนดการอัปโหลดด้วย multer
 const upload = multer({ storage });
+const defaultName = '../frontend/static/screenImages/DefaultScreen.jpg';
+const defaultImage = defaultName.substring(defaultName.lastIndexOf('/') + 1);
 
-// กำหนดชื่อไฟล์รูปภาพเริ่มต้น
-const defaultName = "../frontend/static/screenImages/DefaultScreen.jpg";
-const defaultImage = defaultName.substring(defaultName.lastIndexOf("/") + 1);
-
-// ฟังก์ชันสำหรับสร้าง ID แบบสุ่ม
 function generateId() {
   const maxId = 999999999;
   const minId = 100000000;
   const id = Math.floor(Math.random() * (maxId - minId + 1)) + minId;
   return id;
 }
-router.get("/getAll", async (req, res) => {
+
+router.get('/getAll', async (req, res) => {
   try {
     const systemIDFilter = req.query.system_id;
     const screenIDFilter = req.query.screen_id;
@@ -73,20 +57,18 @@ router.get("/getAll", async (req, res) => {
     const queryParams = [];
 
     if (systemIDFilter) {
-      query += " WHERE system_id = ?";
+      query += ' WHERE system_id = ?';
       queryParams.push(systemIDFilter);
     } else if (screenIDFilter) {
-      query += " WHERE screen_id = ?";
+      query += ' WHERE screen_id = ?';
       queryParams.push(screenIDFilter);
     } else if (projectIDFilter) {
-      query += " WHERE project_id = ?";
+      query += ' WHERE project_id = ?';
       queryParams.push(projectIDFilter);
     }
 
-    // Filter out deleted screens
-    query += " AND is_deleted = 0";
-
-    query += " GROUP BY Screens.id";
+    query += ' AND is_deleted = 0';
+    query += ' GROUP BY Screens.id';
 
     connection.query(query, queryParams, async (err, results, fields) => {
       if (err) {
@@ -98,7 +80,6 @@ router.get("/getAll", async (req, res) => {
         results.map(async (screen) => {
           await updateScreen(screen);
 
-          // Format dates and fix discrepancy
           screen.screen_plan_start = new Date(screen.screen_plan_start).toISOString().split('T')[0];
           screen.screen_plan_end = new Date(screen.screen_plan_end).toISOString().split('T')[0];
           const startDate = new Date(screen.screen_plan_start);
@@ -120,7 +101,6 @@ router.get("/getAll", async (req, res) => {
     return res.status(500).send();
   }
 });
-
 
 async function updateScreen(screen) {
   try {
@@ -153,11 +133,10 @@ async function updateScreen(screen) {
   }
 }
 
-router.get("/getOne/:id", async (req, res) => {
+router.get('/getOne/:id', async (req, res) => {
   try {
     const { id } = req.params;
 
-    // สร้างคำสั่ง SQL เพื่อดึงข้อมูลของรายการเดียวโดยระบุ id
     let query = `
       SELECT
         Screens.*,
@@ -170,33 +149,27 @@ router.get("/getOne/:id", async (req, res) => {
       LEFT JOIN tasks ON Screens.id = tasks.screen_id
     `;
 
-    // เพิ่มเงื่อนไข WHERE สำหรับค้นหารายการตาม ID ที่ระบุ
     query += ` WHERE Screens.id = ? AND Screens.is_deleted = 0`;
+    query += ' GROUP BY Screens.id';
 
-    query += " GROUP BY Screens.id";
-
-    // ดำเนินการคิวรีด้วยพารามิเตอร์ id ที่ให้ไว้
     connection.query(query, [id], async (err, results, fields) => {
       if (err) {
         console.log(err);
         return res.status(400).send();
       }
 
-      // ตรวจสอบว่ามีข้อมูล screen ที่สอดคล้องกับ ID ที่ระบุหรือไม่
       if (results.length === 0) {
-        return res.status(404).json({ message: "No screen with that ID!" });
+        return res.status(404).json({ message: 'No screen with that ID!' });
       }
 
-      // จัดรูปแบบวันเวลาของ screen_plan_start และ screen_plan_end เพื่อลบข้อมูลเวลาทิ้ง
       results.forEach((screen) => {
         if (screen.screen_plan_start) {
-          screen.screen_plan_start = new Date(screen.screen_plan_start).toISOString().split("T")[0];
+          screen.screen_plan_start = new Date(screen.screen_plan_start).toISOString().split('T')[0];
         }
         if (screen.screen_plan_end) {
-          screen.screen_plan_end = new Date(screen.screen_plan_end).toISOString().split("T")[0];
+          screen.screen_plan_end = new Date(screen.screen_plan_end).toISOString().split('T')[0];
         }
       });
-
 
       res.status(200).json(results);
     });
@@ -206,22 +179,19 @@ router.get("/getOne/:id", async (req, res) => {
   }
 });
 
-router.get("/getAllHistoryScreens", async (req, res) => {
+router.get('/getAllHistoryScreens', async (req, res) => {
   try {
-    // Query to retrieve all historical screens (screens with is_deleted = 1)
     const query = `
       SELECT *
       FROM Screens
       WHERE is_deleted = 1
     `;
 
-    // Execute the query
     connection.query(query, async (err, results, fields) => {
       if (err) {
         console.log(err);
         return res.status(400).send();
       }
-      // Send the retrieved historical screens data in JSON format
       res.status(200).json(results);
     });
   } catch (err) {
@@ -229,11 +199,11 @@ router.get("/getAllHistoryScreens", async (req, res) => {
     return res.status(500).send();
   }
 });
-router.get("/searchByProjectId/:project_id", async (req, res) => {
+
+router.get('/searchByProjectId/:project_id', async (req, res) => {
   try {
     const { project_id } = req.params;
 
-    // สร้างคำสั่ง SQL เพื่อดึงข้อมูลของ screens ตาม project_id ที่ระบุ
     let query = `
       SELECT
         Screens.*,
@@ -248,23 +218,20 @@ router.get("/searchByProjectId/:project_id", async (req, res) => {
       GROUP BY Screens.id
     `;
 
-    // ดำเนินการคิวรีด้วย project_id ที่ให้ไว้
     connection.query(query, [project_id], async (err, results, fields) => {
       if (err) {
         console.log(err);
         return res.status(400).send();
       }
 
-      // อัปเดตข้อมูลระบบในฐานข้อมูล
       await Promise.all(
         results.map(async (screen) => {
           await updateScreen(screen);
-          // จัดรูปแบบวันเวลาของ screen_plan_start และ screen_plan_end เพื่อลบข้อมูลเวลาทิ้ง
           if (screen.screen_plan_start) {
-            screen.screen_plan_start = new Date(screen.screen_plan_start).toISOString().split("T")[0];
+            screen.screen_plan_start = new Date(screen.screen_plan_start).toISOString().split('T')[0];
           }
           if (screen.screen_plan_end) {
-            screen.screen_plan_end = new Date(screen.screen_plan_end).toISOString().split("T")[0];
+            screen.screen_plan_end = new Date(screen.screen_plan_end).toISOString().split('T')[0];
           }
           return screen;
         })
@@ -277,6 +244,8 @@ router.get("/searchByProjectId/:project_id", async (req, res) => {
     return res.status(500).send();
   }
 });
+
+
 // GET Deleted Screens by Project ID
 router.get("/searchByProjectId_delete/:project_id", async (req, res) => {
   try {
@@ -536,6 +505,25 @@ router.delete("/delete/:id", async (req, res) => {
     return res.status(500).send();
   }
 });
+router.delete("/deleteHistoryScreen/:id", async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    // Delete tasks related to the screen
+    const deleteTasksSql = `DELETE FROM tasks WHERE screen_id IN (SELECT id FROM screens WHERE id = ?)`;
+    await connection.promise().query(deleteTasksSql, [id]);
+
+    // Delete the screen
+    const deleteScreenSql = `DELETE FROM screens WHERE id = ?`;
+    await connection.promise().query(deleteScreenSql, [id]);
+
+    return res.status(200).json({ message: "Screen and related data deleted successfully!" });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).send();
+  }
+});
+
 
 
 router.post("/addUserScreen", async (req, res) => {
