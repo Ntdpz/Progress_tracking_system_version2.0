@@ -102,6 +102,7 @@ import Swal from "sweetalert2";
 
 export default {
   name: "SystemManagement",
+  layout: 'admin',
   data() {
     return {
       detailsDialog: false,
