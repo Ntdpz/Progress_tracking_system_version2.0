@@ -1,15 +1,18 @@
 <template>
   <!-- Dashboard container -->
-  <div class="dashboard" style="
+  <div
+    class="dashboard"
+    style="
       background-color: #ffffff;
       padding: 10px 70px;
       border-radius: 0;
       margin-right: 30px;
-    ">
+    "
+  >
     <!-- Greeting and current date/time -->
     <v-row no-gutters class="mt-4">
       <v-col class="text-left" style="margin-right: 16px">
-        <h1 class="text-01">{{ greeting }}, test</h1>
+        <h1 class="text-01">{{ greeting }}, Bee</h1>
         <p class="text-01">{{ currentDateTime }}</p>
       </v-col>
 
@@ -20,7 +23,12 @@
             <span style="margin: 0; color: #ffffff"> + Create Project</span>
           </router-link>
         </v-btn>
-        <v-btn class="work-item" color="#9747FF" @click="t" style="padding: 5px; margin-left: 10px">
+        <v-btn
+          class="work-item"
+          color="#9747FF"
+          @click="handleButtonClick"
+          style="padding: 5px; margin-left: 10px"
+        >
           <p style="margin: 0; color: white">All Projects</p>
         </v-btn>
       </v-col>
@@ -29,21 +37,29 @@
     <!-- Search bar -->
     <v-row no-gutters>
       <v-col cols="12">
-        <input type="text" v-model="searchQuery" placeholder="Search..." style="
+        <input
+          type="text"
+          v-model="searchQuery"
+          placeholder="Search..."
+          style="
             margin-bottom: 10px;
             width: 100%;
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
             font-size: 16px;
-          " />
+          "
+        />
       </v-col>
-<<<<<<< HEAD
-    </v-row>  
-    
-    <!-- Project Cards --> 
+    </v-row>
+
+    <!-- Project data table -->
+    <v-data-table
+      :headers="headers"
+      :items="filteredProjects"
+      :search="searchQuery"
+    >
       <template v-slot:items="props">
-        <td>{{ props.item.project_code }}</td>
         <td>{{ props.item.project_name_ENG }}</td>
         <td>{{ props.item.project_name_TH }}</td>
         <td>{{ props.item.project_progress }}%</td>
@@ -67,8 +83,14 @@
           <!-- Form to edit project details -->
           <v-form @submit.prevent="saveEditedProject">
             <!-- Include form fields for editing project details -->
-            <v-text-field v-model="editedProject.project_name_TH" label="Project Name (TH)"></v-text-field>
-            <v-text-field v-model="editedProject.project_name_ENG" label="Project Name (ENG)"></v-text-field>
+            <v-text-field
+              v-model="editedProject.project_name_TH"
+              label="Project Name (TH)"
+            ></v-text-field>
+            <v-text-field
+              v-model="editedProject.project_name_ENG"
+              label="Project Name (ENG)"
+            ></v-text-field>
             <!-- Button to save changes -->
             <v-btn type="submit">Save Changes</v-btn>
           </v-form>
@@ -90,16 +112,14 @@
         </v-card-text>
       </v-card>
     </v-dialog>
->>>>>>> 74546ea64bef9c5af6fd4499fed3b54f10dd6348
   </div>
-  
 </template>
+
 <script>
 import Swal from "sweetalert2";
 
 export default {
-  layout: "admin",
-
+  name: "ProjectManagement",
   data() {
     return {
       detailsDialog: false,
@@ -111,7 +131,6 @@ export default {
       projects: [], // โครงการทั้งหมด
       searchQuery: "", // Search query
       headers: [
-        { text: "Project Code", value: "project_code" },
         { text: "Project Name (ENG)", value: "project_name_ENG" },
         { text: "Project Name (TH)", value: "project_name_TH" },
         { text: "Progress (%)", value: "project_progress" },
@@ -303,22 +322,66 @@ export default {
   color: black !important;
 }
 
-.project-card {
-  background-color: #f0f0f0;
-  padding: 60px;
-  margin-bottom: 20px;
-  border-radius: 5px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+.project-manager {
+  color: #3f51b5;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 10px;
 }
 
-.project-card h2 {
-  font-size: 18px;
+.project-code {
+  text-transform: uppercase;
+  font-weight: bold;
+  color: #6c757d;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 10px;
+}
+
+.tracking-work-card {
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(255, 253, 253, 0.1);
+  transition: transform 0.3s ease-in-out;
+  background-color: #9747ff;
+}
+
+.tracking-work-card:hover {
+  transform: translateY(-5px);
+}
+
+.tracking-work-card h2 {
+  color: #ffffff;
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+
+.work-item p {
   margin-bottom: 5px;
 }
 
-.project-card p {
-  font-size: 14px;
-  color: #666;
+.work-item p:last-child {
+  margin-bottom: 0;
+}
+
+.v-card-actions {
+  padding: 10px;
+  justify-content: space-between;
+}
+
+.project-button {
+  color: #9747ff !important;
+  background-color: #ffffff !important;
+  font-weight: bold;
+}
+
+.project-title {
+  display: flex;
+  flex-direction: column;
+}
+
+.project-title h2 {
+  margin-bottom: 5px;
+  /* ปรับขนาดของระยะห่างระหว่างข้อมูล */
 }
 
 .router-link-underline {
