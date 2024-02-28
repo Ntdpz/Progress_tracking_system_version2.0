@@ -1,20 +1,9 @@
-<<<<<<< HEAD
-// const express = require("express");
-// const router = express.Router();
-const connection = require("../db");
-const express = require("express");
-const router = express.Router();
-const path = require("path");
-const { db, connectToDatabase } = require(path.join(__dirname, "../db"));
-const moment = require("moment");
-=======
 const express = require('express');
 const router = express.Router();
 const connection = require('../db'); // Import database connection
 const path = require('path');
 const { db, connectToDatabase } = require(path.join(__dirname, '../db')); // Import database utilities
 const moment = require('moment'); // Import moment library for date manipulation
->>>>>>> 6e2fb54d279f3d30b479007aefb962ce08d58924
 
 // Function to generate a random ID
 function generateId() {
@@ -254,72 +243,11 @@ router.get('/searchByProjectId_delete/:project_id', async (req, res) => {
       GROUP BY Systems.id
     `;
 
-<<<<<<< HEAD
-    const updatedSystem = {
-      screen_count: system.screen_count,
-      system_progress: system.system_progress,
-      system_plan_start: new Date(system.system_plan_start)
-        .toISOString()
-        .split("T")[0],
-      system_plan_end: new Date(system.system_plan_end)
-        .toISOString()
-        .split("T")[0],
-      system_manday: system.system_manday,
-      id: system.id,
-    };
-
-    await new Promise((resolve, reject) => {
-      connection.query(
-        updateQuery,
-        [
-          updatedSystem.screen_count,
-          updatedSystem.system_progress,
-          updatedSystem.system_plan_start,
-          updatedSystem.system_plan_end,
-          updatedSystem.system_manday,
-          updatedSystem.id,
-        ],
-        (err, result) => {
-          if (err) reject(err);
-          resolve(updatedSystem);
-        }
-      );
-    });
-
-    return updatedSystem;
-  } catch (error) {
-    throw error;
-  }
-}
-// * GET one by id
-router.get("/getOne/:id", async (req, res) => {
-  const id = req.params.id;
-  try {
-    connection.query(
-      "SELECT * FROM systems WHERE id = ?",
-      [id],
-      (err, results, fields) => {
-        if (err) {
-          console.log(err);
-          return res.status(400).send();
-        }
-        if (results.length === 0) {
-          return res.status(404).json({ message: "System not found!" });
-        }
-        const system = results[0];
-        if (system.is_deleted === 1) {
-          return res
-            .status(200)
-            .json({ message: "This system has been deleted." });
-        }
-        res.status(200).json(system);
-=======
     // Execute the query
     connection.query(query, [project_id], async (err, results, fields) => {
       if (err) {
         console.error(err);
         return res.status(400).send();
->>>>>>> 6e2fb54d279f3d30b479007aefb962ce08d58924
       }
       // Format system_plan_start and system_plan_end to contain only date
       for (const system of results) {
@@ -334,13 +262,8 @@ router.get("/getOne/:id", async (req, res) => {
   }
 });
 
-<<<<<<< HEAD
-// * POST FROM systems
-router.post("/createSystem", async (req, res) => {
-=======
 // Route to create a new system
 router.post('/createSystem', async (req, res) => {
->>>>>>> 6e2fb54d279f3d30b479007aefb962ce08d58924
   const {
     project_id,
     system_id,

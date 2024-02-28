@@ -84,20 +84,7 @@ router.get("/getOne/:id", async (req, res) => {
           return res.status(400).send();
         }
         if (results.length === 0) {
-<<<<<<< HEAD
-          res.status(404).json({ error: "Project not found" });
-        } else {
-          // Check if project is deleted
-          if (results[0].is_deleted) {
-            res.status(404).json({ error: "Project not found" });
-          } else {
-            // Update project data in the database
-            const updatedProject = await updateProject(results[0]);
-            res.status(200).json(updatedProject);
-          }
-=======
           return res.status(404).json({ error: 'Project not found' });
->>>>>>> 74546ea64bef9c5af6fd4499fed3b54f10dd6348
         }
         // Check if project is deleted
         if (results[0].is_deleted) {
@@ -186,13 +173,8 @@ router.post("/createProject", async (req, res) => {
 
   try {
     connection.query(
-<<<<<<< HEAD
-      "INSERT INTO projects (id, project_id, project_name_TH, project_name_ENG) VALUES (?, ?, ?, ?)",
-      [id, project_id, project_name_TH, project_name_ENG],
-=======
       "INSERT INTO projects (id, project_id, project_name_TH, project_name_ENG, project_shortname, project_agency, project_progress, project_manday, system_count, project_plan_start, project_plan_end, is_deleted) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
       [id, project_id, project_name_TH, project_name_ENG, "", 0, 0, 0, 0, null, null, false],
->>>>>>> 74546ea64bef9c5af6fd4499fed3b54f10dd6348
       (err, results, fields) => {
         if (err) {
           console.error("Error while inserting a project into the database", err);
