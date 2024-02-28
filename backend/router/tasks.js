@@ -243,12 +243,12 @@ router.put('/updateTasks/:id', async (req, res) => {
     }
 });
 
-// Route สำหรับลบ Task
+// DELETE Delete a Tasks by ID
 router.delete('/delete/:id', async (req, res) => {
     try {
         const { id } = req.params;
 
-        const query = 'DELETE FROM Tasks WHERE id = ?';
+        const query = 'UPDATE Tasks SET is_deleted = true WHERE id = ?';
 
         await new Promise((resolve, reject) => {
             connection.query(query, [id], (err, result) => {
@@ -263,6 +263,36 @@ router.delete('/delete/:id', async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
+// DELETE Delete a Tasks and Related Data
+router.delete('/deleteHistoryTasks/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        // Delete tasks related to the task
+        const deleteTasksQuery = 'DELETE FROM Tasks WHERE id = ?';
+        await new Promise((resolve, reject) => {
+            connection.query(deleteTasksQuery, [id], (err, result) => {
+                if (err) reject(err);
+                resolve(result);
+            });
+        });
+
+        // Delete the task itself
+        const deleteTaskQuery = 'UPDATE Tasks SET is_deleted = true WHERE id = ?';
+        await new Promise((resolve, reject) => {
+            connection.query(deleteTaskQuery, [id], (err, result) => {
+                if (err) reject(err);
+                resolve(result);
+            });
+        });
+
+        res.send('Task and related data deleted successfully');
+    } catch (error) {
+        console.error('Error deleting task and related data:', error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
 
 
 module.exports = router;
