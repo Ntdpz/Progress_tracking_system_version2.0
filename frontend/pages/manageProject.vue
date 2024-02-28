@@ -16,11 +16,7 @@
       <!-- Buttons for creating a project and showing all projects -->
       <v-col cols="6" class="text-right">
         <v-btn @click="handleIconClick" color="#9747FF">
-<<<<<<< HEAD
-          <router-link to="./projectCreateUpdate" style="color: #9747FF">
-=======
           <router-link to="/project/createProject" style="color: #9747ff">
->>>>>>> 74546ea64bef9c5af6fd4499fed3b54f10dd6348
             <span style="margin: 0; color: #ffffff"> + Create Project</span>
           </router-link>
         </v-btn>
@@ -46,28 +42,6 @@
     </v-row>  
     
     <!-- Project Cards --> 
-    <v-row>
-      <v-col v-for="(project, index) in projects" :key="index" cols="12" sm="6" md="4" lg="3">
-        <!-- Card direct to manageSystem -->
-        <div>
-          <router-link :to="{ name: 'ProjectDetails', params: { projectId: project.id }}" >
-         <v-card>
-          <h2>{{ project.name }}</h2>
-          <p>{{ project.code }}</p>
-          <p>{{ project.system }}</p>
-          <p>{{ project.description }}</p>
-          <!-- Add more details or actions if needed -->
-          <v-btn color="primary" @click="editProject(project)">Edit</v-btn>
-        </v-card>
-        </router-link>
-      </div>
-      </v-col>
-    </v-row> 
-=======
-    </v-row>
-
-    <!-- Project data table -->
-    <v-data-table :headers="headers" :items="filteredProjects" :search="searchQuery">
       <template v-slot:items="props">
         <td>{{ props.item.project_code }}</td>
         <td>{{ props.item.project_name_ENG }}</td>
@@ -120,7 +94,6 @@
   </div>
   
 </template>
-
 <script>
 import Swal from "sweetalert2";
 
@@ -133,13 +106,6 @@ export default {
       selectedProject: null,
       greeting: "",
       currentDateTime: "",
-<<<<<<< HEAD
-      searchQuery: "",  // Search query
-      projects: [  // Example data for projects
-        { name: "Project A", code:"PJ01",system:"2 System",description: "Description of Project A" },
-        { name: "Project B", code:"PJ02",system:"4 System",description: "Description of Project B" },
-    ]
-=======
       editDialog: false,
       editedProject: { project_name_TH: "", project_name_ENG: "" },
       projects: [], // โครงการทั้งหมด
@@ -153,7 +119,6 @@ export default {
         { text: "Planned End", value: "project_plan_end" },
         { text: "Actions", value: "actions", sortable: false },
       ],
->>>>>>> 74546ea64bef9c5af6fd4499fed3b54f10dd6348
     };
   },
   methods: {
@@ -168,18 +133,6 @@ export default {
       // Add your logic for button click
     },
     editProject(project) {
-<<<<<<< HEAD
-      // Add your logic to handle editing the project
-      console.log("Editing project:", project);
-    },
-   
-    async fetchProjects() {
-      try {
-        const response = await this.$axios.get(
-          ""
-        );
-        this.projects = response.data;
-=======
       this.editedProject = { ...project };
       this.editDialog = true;
     },
@@ -282,7 +235,6 @@ export default {
         }
         const data = await response.json();
         this.projects = data;
->>>>>>> 74546ea64bef9c5af6fd4499fed3b54f10dd6348
       } catch (error) {
         console.error("Error fetching projects:", error);
       }
@@ -319,22 +271,6 @@ export default {
   },
   computed: {
     // Filtered projects based on search query
-<<<<<<< HEAD
-    // filteredProjects() {
-    //   return this.projects.filter(
-    //     (project) =>
-    //       project.project_name_TH
-    //         .toLowerCase()
-    //         .includes(this.searchQuery.toLowerCase()) ||
-    //       project.project_name_ENG
-    //         .toLowerCase()
-    //         .includes(this.searchQuery.toLowerCase()) ||
-    //       project.project_id
-    //         .toLowerCase()
-    //         .includes(this.searchQuery.toLowerCase())
-    //   );
-    // },
-=======
     filteredProjects() {
       return this.projects.filter(
         (project) =>
@@ -352,7 +288,6 @@ export default {
               .includes(this.searchQuery.toLowerCase()))
       );
     },
->>>>>>> 74546ea64bef9c5af6fd4499fed3b54f10dd6348
   },
 
   mounted() {
@@ -395,9 +330,4 @@ export default {
   text-decoration: underline;
   /* นำเส้นใต้กลับมาเมื่อเมาส์ไปวางทับ */
 }
-<<<<<<< HEAD
-
-
-=======
->>>>>>> 74546ea64bef9c5af6fd4499fed3b54f10dd6348
 </style>

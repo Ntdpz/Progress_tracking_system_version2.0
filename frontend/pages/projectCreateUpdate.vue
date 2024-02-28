@@ -1,10 +1,6 @@
 <template>
   <div class="center">
-<<<<<<< HEAD
-    <h1 class="bold-text">Create Project</h1>
-=======
     <h1 class="bold-text">Create/Edit Project</h1>
->>>>>>> 74546ea64bef9c5af6fd4499fed3b54f10dd6348
     <v-form @submit.prevent="submitForm">
 
       <!-- Project ID -->
@@ -50,11 +46,7 @@
           <v-btn color="primary" @click="submitForm">Confirm</v-btn>
         </v-col>
         <v-col cols="6" sm="6" md="4">
-<<<<<<< HEAD
-          <v-btn color="error" @click="clearAndGoToManageProject">Cancel</v-btn>
-=======
           <v-btn color="error" @click="submitForm">Cancel</v-btn>
->>>>>>> 74546ea64bef9c5af6fd4499fed3b54f10dd6348
         </v-col>
       </v-row>
     </v-form>
@@ -134,64 +126,6 @@ export default {
         personnel: this.personnel,
       });
     },
-<<<<<<< HEAD
-    saveProject() {
-      // Logic to save project data
-      console.log('Project saved:', this.editedItem);
-    },
-    clearCreateProject() {
-      // Logic to clear form fields
-      this.editedItem = {
-        project_name: '',
-        project_shortname: '',
-        project_id: '',
-        project_agency: '',
-        project_plan_start: null,
-        project_plan_end: null,
-        formattedDateStart: null,
-        formattedDateEnd: null
-        
-      };
-      this.dateStart = null;
-      this.dateEnd = null;
-      this.dateS = null;
-      this.dateE = null;
-      this.menuDateStart = false;
-      this.menuDateEnd = false;
-      this.menuDateStartEdit = false;
-      this.menuDateEndEdit = false;
-    },
-     goToManageProject() {
-    // ทำสิ่งที่ต้องการก่อนเปลี่ยนหน้า
-    // เช่น การส่งคำขอ API, การเข้ารหัสข้อมูล, ฯลฯ
-
-    // เปลี่ยนหน้าไปยังหน้า "manage project"
-    this.$router.push('./manageProject');
-  },
- clearAndGoToManageProject() {
-    this.clearCreateProject(); // Clear form fields
-    this.goToManageProject(); // Navigate to manage project page
-  },
-  async created() {
-    await this.getUser();
-    await this.initialize();
-    await this.getProject();
-    await this.getProject2();
-    await this.getSystems();
-    await this.getPosition_Developer();
-    await this.getPosition_Implementer();
-    await this.getPosition_Sa();
-    await this.getSystemOwner();
-    await this.getSystemsOwner();
-    this.dateS = moment().add(543, "years").format("DD-MM-YYYY");
-    this.dateE = moment().add(543, "years").format("DD-MM-YYYY");
-    this.dateStartEdit = moment().add(543, "years").format("DD-MM-YYYY");
-    this.dateEndEdit = moment().add(543, "years").format("DD-MM-YYYY");
-  },
-
-
-=======
->>>>>>> 74546ea64bef9c5af6fd4499fed3b54f10dd6348
   },
 };
 </script>
