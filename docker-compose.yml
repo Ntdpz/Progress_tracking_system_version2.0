@@ -2,18 +2,18 @@ version: '3'
 
 services:
   # Frontend Service Configuration
-  # frontend:
-  #   container_name: frontend_container
-  #   build:
-  #     context: ./frontend
-  #     dockerfile: Dockerfile
-  #   ports:
-  #     - "3000:3000"
-  #   volumes:
-  #     - ./frontend:/app
-  #   depends_on:
-  #     - backend
-  #   command: npm run dev
+  frontend:
+    container_name: frontend_container
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+    depends_on:
+      - backend
+    command: npm run dev
 
   # Backend Service Configuration
   backend:
