@@ -1,6 +1,10 @@
 <template>
   <div class="center">
+<<<<<<< HEAD
     <h1 class="bold-text">Create Project</h1>
+=======
+    <h1 class="bold-text">Create/Edit Project</h1>
+>>>>>>> 74546ea64bef9c5af6fd4499fed3b54f10dd6348
     <v-form @submit.prevent="submitForm">
 
       <!-- Project ID -->
@@ -46,7 +50,11 @@
           <v-btn color="primary" @click="submitForm">Confirm</v-btn>
         </v-col>
         <v-col cols="6" sm="6" md="4">
+<<<<<<< HEAD
           <v-btn color="error" @click="clearAndGoToManageProject">Cancel</v-btn>
+=======
+          <v-btn color="error" @click="submitForm">Cancel</v-btn>
+>>>>>>> 74546ea64bef9c5af6fd4499fed3b54f10dd6348
         </v-col>
       </v-row>
     </v-form>
@@ -126,6 +134,7 @@ export default {
         personnel: this.personnel,
       });
     },
+<<<<<<< HEAD
     saveProject() {
       // Logic to save project data
       console.log('Project saved:', this.editedItem);
@@ -181,6 +190,8 @@ export default {
   },
 
 
+=======
+>>>>>>> 74546ea64bef9c5af6fd4499fed3b54f10dd6348
   },
 };
 </script>

@@ -9,20 +9,15 @@ COPY . .
 
 # ติดตั้ง dependencies และ build โปรเจค
 RUN yarn install \
-    --prefer-offline \
-    --frozen-lockfile \
-    --non-interactive \
-    --production=false
+        --prefer-offline \
+        --frozen-lockfile \
+        --non-interactive \
+        --production=false
 
 RUN yarn build
 
-# ลบ node_modules เพื่อลดขนาด image และติดตั้ง dependencies สำหรับ production
-RUN rm -rf node_modules && \
-    NODE_ENV=production yarn install \
-    --prefer-offline \
-    --pure-lockfile \
-    --non-interactive \
-    --production=true
+# ลบ node_modules เพื่อลดขนาด image
+RUN rm -rf node_modules
 
 # เลือกฐานของ image ที่ใช้ในการรันแอปพลิเคชัน
 FROM node:lts
@@ -37,5 +32,11 @@ COPY --from=builder /app .
 ENV HOST 0.0.0.0
 EXPOSE 3000
 
+# ติดตั้ง Nuxt.js
+RUN npm install --global nuxt
+
+# คัดลอกไฟล์ nuxt.config.js
+COPY nuxt.config.js .
+
 # สั่งรัน Nuxt.js บน port 3000
-CMD [ "yarn", "start" ]
+CMD [ "nuxt", "start" ]
