@@ -16,7 +16,7 @@
       <!-- Buttons for creating a project and showing all projects -->
       <v-col cols="6" class="text-right">
         <v-btn @click="handleIconClick" color="#9747FF">
-          <router-link to="/project/createProject" style="color: #9747ff">
+          <router-link to="/projectCreateUpdate" style="color: #9747ff">
             <span style="margin: 0; color: #ffffff"> + Create Project</span>
           </router-link>
         </v-btn>
