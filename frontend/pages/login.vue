@@ -26,7 +26,7 @@
                           align-self: center;
                           justify-self: center;
                         "
-                        >Progress tacking</v-toolbar-title
+                        >Progress tracking</v-toolbar-title
                       >
                     </v-toolbar>
                     <v-card-text>
