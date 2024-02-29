@@ -1,11 +1,3 @@
-# สร้างไฟล์ .gitignore
-touch .gitignore
-
-# เพิ่มรายการที่ไม่ต้องการให้ Git ติดตาม
 echo "mysql-data/" >> .gitignore
 
-# สร้างโฟลเดอร์ mysql-data เพื่อทดสอบ
-mkdir mysql-data
-
-# ทดสอบดูว่า Git ไม่ติดตามโฟลเดอร์ mysql-data
-git status
+mysql-data/
