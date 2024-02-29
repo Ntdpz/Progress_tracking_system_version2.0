@@ -10,7 +10,7 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./frontend:/appW
+      - ./frontend:/app
     depends_on:
       - backend
     command: npm run dev

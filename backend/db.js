@@ -1,4 +1,4 @@
-const mysql = require('mysql');
+const mysql = require('mysql2');
 
 const dbConfig = {
   host: 'db', // ชื่อ container ของ MySQL
