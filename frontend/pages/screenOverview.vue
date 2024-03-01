@@ -20,11 +20,12 @@
             <!-- Buttons for creating a screen and showing all screen -->
             <v-col cols="6" class="text-right">
                 <v-btn @click="handleIconClick" color="#9747FF">
-                    <router-link to="/screen/createScreen" style="color: #9747ff">
+                    <router-link to="/screenCreateUpdate" style="color: #9747ff">
                         <span style="margin: 0; color: #ffffff">Create Screen</span>
                     </router-link>
                 </v-btn>
             </v-col>
+
         </v-row>
 
         <!-- Search bar -->

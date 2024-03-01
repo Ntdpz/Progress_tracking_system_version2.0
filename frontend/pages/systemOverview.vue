@@ -20,7 +20,7 @@
       <!-- Buttons for creating a system and showing all system -->
       <v-col cols="6" class="text-right">
         <v-btn @click="handleIconClick" color="#9747FF">
-          <router-link to="/system/createSystem" style="color: #9747ff">
+          <router-link to="/systemCreateUpdate" style="color: #9747ff">
             <span style="margin: 0; color: #ffffff">Create System</span>
           </router-link>
         </v-btn>
