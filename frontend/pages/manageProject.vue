@@ -1,3 +1,4 @@
+Non
 <template>
   <!-- Dashboard container -->
   <div class="dashboard" style="
@@ -13,14 +14,7 @@
         <p class="text-01">{{ currentDateTime }}</p>
       </v-col>
 
-      <!-- Buttons for creating a project and showing all projects -->
-      <v-col cols="6" class="text-right">
-        <v-btn @click="handleIconClick" color="#9747FF">
-          <router-link to="/projectCreateUpdate" style="color: #9747ff">
-            <span style="margin: 0; color: #ffffff">Create Project</span>
-          </router-link>
-        </v-btn>
-      </v-col>
+
     </v-row>
 
     <!-- Search bar -->
@@ -38,21 +32,24 @@
     </v-row>
 
     <!-- Project data table -->
-    <v-data-table :headers="headers" :items="filteredProjects" :search="searchQuery">
-      <template v-slot:items="props">
-        <td>{{ props.item.project_code }}</td>
-        <td>{{ props.item.project_name_ENG }}</td>
-        <td>{{ props.item.project_name_TH }}</td>
-        <td>{{ props.item.project_progress }}%</td>
-        <td>{{ props.item.project_plan_start }}</td>
-        <td>{{ props.item.project_plan_end }}</td>
-        <td>
-          <!-- Buttons for editing, deleting, and showing project details -->
-          <v-btn @click="editProject(props.item)">Edit</v-btn>
-          <v-btn @click="deleteProject(props.item)">Delete</v-btn>
-          <v-btn @click="showProjectDetails(props.item)">Details</v-btn>
-          <!-- เพิ่มปุ่มสำหรับแสดงรายละเอียด -->
-        </td>
+    <v-data-table :headers="headers" :items="projects" :sort-by="[{ key: 'project_code', order: 'asc' }]">
+      <template v-slot:top>
+        <v-toolbar flat>
+          <v-toolbar-title>Project Management</v-toolbar-title>
+          <v-divider class="mx-4" inset vertical></v-divider>
+          <v-spacer></v-spacer>
+          <v-btn color="primary" dark @click="goToCreateProject">New Project</v-btn>
+        </v-toolbar>
+      </template>
+
+      <template v-slot:item.actions="{ item }">
+        <v-icon class="me-2" size="small" @click="editProject(item)">
+          mdi-pencil
+        </v-icon>
+        <v-icon size="small" @click="deleteProject(item)"> mdi-delete </v-icon>
+      </template>
+      <template v-slot:no-data>
+        <v-btn color="primary" @click="initialize"> Reset </v-btn>
       </template>
     </v-data-table>
 
@@ -64,6 +61,7 @@
           <!-- Form to edit project details -->
           <v-form @submit.prevent="saveEditedProject">
             <!-- Include form fields for editing project details -->
+            <v-text-field v-model="editedProject.project_id" label="Project ID"></v-text-field>
             <v-text-field v-model="editedProject.project_name_TH" label="Project Name (TH)"></v-text-field>
             <v-text-field v-model="editedProject.project_name_ENG" label="Project Name (ENG)"></v-text-field>
             <!-- Button to save changes -->
@@ -72,6 +70,7 @@
         </v-card-text>
       </v-card>
     </v-dialog>
+
 
     <!-- Project Details Dialog -->
     <v-dialog v-model="detailsDialog" max-width="600">
