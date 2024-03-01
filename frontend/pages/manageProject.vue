@@ -1,4 +1,3 @@
-Non
 <template>
   <!-- Dashboard container -->
   <div class="dashboard" style="
@@ -13,8 +12,6 @@ Non
         <h1 class="text-01">{{ greeting }}, Bee</h1>
         <p class="text-01">{{ currentDateTime }}</p>
       </v-col>
-
-
     </v-row>
 
     <!-- Search bar -->
