@@ -21,11 +21,8 @@
       <v-col cols="6" class="text-right">
         <v-btn @click="handleIconClick" color="#9747FF">
           <router-link to="/system/createSystem" style="color: #9747ff">
-            <span style="margin: 0; color: #ffffff"> + Create System</span>
+            <span style="margin: 0; color: #ffffff">Create System</span>
           </router-link>
-        </v-btn>
-        <v-btn class="work-item" color="#9747FF" @click="handleButtonClick" style="padding: 5px; margin-left: 10px">
-          <p style="margin: 0; color: white">All Systems</p>
         </v-btn>
       </v-col>
     </v-row>
