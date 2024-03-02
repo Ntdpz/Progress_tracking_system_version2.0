@@ -63,6 +63,9 @@
         <v-icon size="small" @click="softDeleteProject(item)">
           mdi-delete
         </v-icon>
+        <v-icon size="small" @click="viewProjectDetails(item)">
+          mdi-arrow-down-drop-circle
+        </v-icon>
       </template>
 
       <template v-slot:no-data>
@@ -146,6 +149,13 @@ export default {
     };
   },
   methods: {
+    viewProjectDetails(project) {
+      this.$router.push({
+        path: `/Project/${project.id}`,
+        params: { selectedProject: project },
+      });
+    },
+
     goToHistoryProject() {
       this.$router.push("/Project/HistoryProject");
     },
