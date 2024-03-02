@@ -1,4 +1,3 @@
-touch .gitignore
-echo mysql.sock >> .gitignore
+echo "mysql-data/" >> .gitignore
 
-mysql.sock
+mysql-data/
