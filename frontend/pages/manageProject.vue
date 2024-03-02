@@ -19,7 +19,11 @@
       <!-- Buttons for creating a project  -->
       <v-col cols="6" class="text-right">
         <v-btn @click="handleIconClick" color="#9747FF">
+<<<<<<< HEAD
           <router-link to="./projectCreateUpdate" style="color: #9747ff">
+=======
+          <router-link to="/projectCreateUpdate" style="color: #9747ff">
+>>>>>>> 8bf95189c78adf7c571ddf464a0c379eb156a675
             <span style="margin: 0; color: #ffffff"> + Create Project</span>
           </router-link>
         </v-btn>
