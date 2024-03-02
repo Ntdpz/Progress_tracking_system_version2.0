@@ -216,18 +216,9 @@ router.put("/updateProject/:id", async (req, res) => {
       "UPDATE projects SET project_id = ?, project_name_TH = ?, project_name_ENG = ?, is_deleted = ? WHERE id = ?",
       [
         project_id || req.body.project_id || previousProjectData.project_id,
-<<<<<<< HEAD
-        project_name_TH ||
-          req.body.project_name_TH ||
-          previousProjectData.project_name_TH,
-        project_name_ENG ||
-          req.body.project_name_ENG ||
-          previousProjectData.project_name_ENG,
-=======
         project_name_TH || req.body.project_name_TH || previousProjectData.project_name_TH,
         project_name_ENG || req.body.project_name_ENG || previousProjectData.project_name_ENG,
         is_deleted !== undefined ? is_deleted : previousProjectData.is_deleted,
->>>>>>> 1140e435bfbf3bc4879ccddf3e9b30e7a3ed670f
         id,
       ],
       (err, results, fields) => {
