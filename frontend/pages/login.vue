@@ -26,7 +26,7 @@
                           align-self: center;
                           justify-self: center;
                         "
-                        >PINGAR</v-toolbar-title
+                        >TTTTTTT</v-toolbar-title
                       >
                     </v-toolbar>
                     <v-card-text>

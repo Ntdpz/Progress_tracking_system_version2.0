@@ -46,11 +46,7 @@
           <v-btn color="primary" @click="submitForm">Confirm</v-btn>
         </v-col>
         <v-col cols="6" sm="6" md="4">
-<<<<<<< HEAD
           <v-btn color="error" @click="gomanagePorject">Cancel</v-btn>
-=======
-          <v-btn color="error" @click="gotomanageproject">Cancel</v-btn>
->>>>>>> 8bf95189c78adf7c571ddf464a0c379eb156a675
         </v-col>
       </v-row>
     </v-form>
@@ -130,15 +126,9 @@ export default {
         personnel: this.personnel,
       });
     },
-<<<<<<< HEAD
     gomanagePorject(){
       this.$router.push('/manageProject')
     },
-=======
-    gotomanageproject(){
-      this.$router.push('./manageProject');
-    }
->>>>>>> 8bf95189c78adf7c571ddf464a0c379eb156a675
   },
 };
 </script>
