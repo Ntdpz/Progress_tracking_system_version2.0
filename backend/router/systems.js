@@ -316,7 +316,7 @@ router.post('/createSystem', async (req, res) => {
   const id = generateId();
   try {
     connection.query(
-      'INSERT INTO systems(id, project_id,system_id,system_nameTH,system_nameEN,system_shortname,system_analyst, system_member) VALUES(?, ?, ?, ?, ? ,? ,?,?)',
+      'INSERT INTO systems(id, project_id, system_id, system_nameTH, system_nameEN, system_shortname, system_analyst, system_member) VALUES(?, ?, ?, ?, ?, ?, ?, ?)',
       [
         id,
         project_id,
@@ -329,12 +329,12 @@ router.post('/createSystem', async (req, res) => {
       ],
       (err, results, fields) => {
         if (err) {
-          console.error('Error while inserting a systems into the database', err);
+          console.error('Error while inserting a system into the database', err);
           return res.status(400).send();
         }
         return res
           .status(201)
-          .json({ message: 'New systems successfully created!' });
+          .json({ message: 'New system successfully created!' });
       }
     );
   } catch (err) {
