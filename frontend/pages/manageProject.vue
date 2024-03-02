@@ -15,23 +15,6 @@
         <h1 class="text-01">{{ greeting }}, Bee</h1>
         <p class="text-01">{{ currentDateTime }}</p>
       </v-col>
-
-      <!-- Buttons for creating a project and showing all projects -->
-      <v-col cols="6" class="text-right">
-        <v-btn @click="handleIconClick" color="#9747FF">
-          <router-link to="/project/createProject" style="color: #9747ff">
-            <span style="margin: 0; color: #ffffff"> + Create Project</span>
-          </router-link>
-        </v-btn>
-        <v-btn
-          class="work-item"
-          color="#9747FF"
-          @click="handleButtonClick"
-          style="padding: 5px; margin-left: 10px"
-        >
-          <p style="margin: 0; color: white">All Projects</p>
-        </v-btn>
-      </v-col>
     </v-row>
 
     <!-- Search bar -->
@@ -57,21 +40,33 @@
     <v-data-table
       :headers="headers"
       :items="filteredProjects"
-      :search="searchQuery"
+      :sort-by="[{ key: 'project_id', order: 'asc' }]"
     >
-      <template v-slot:items="props">
-        <td>{{ props.item.project_name_ENG }}</td>
-        <td>{{ props.item.project_name_TH }}</td>
-        <td>{{ props.item.project_progress }}%</td>
-        <td>{{ props.item.project_plan_start }}</td>
-        <td>{{ props.item.project_plan_end }}</td>
-        <td>
-          <!-- Buttons for editing, deleting, and showing project details -->
-          <v-btn @click="editProject(props.item)">Edit</v-btn>
-          <v-btn @click="deleteProject(props.item)">Delete</v-btn>
-          <v-btn @click="showProjectDetails(props.item)">Details</v-btn>
-          <!-- เพิ่มปุ่มสำหรับแสดงรายละเอียด -->
-        </td>
+      <template v-slot:top>
+        <v-toolbar flat>
+          <v-toolbar-title>Project Management</v-toolbar-title>
+          <v-divider class="mx-4" inset vertical></v-divider>
+          <v-spacer></v-spacer>
+          <v-btn color="primary" dark @click="goToCreateProject"
+            >New Project</v-btn
+          >
+          <v-btn color="primary" dark @click="goToHistoryProject"
+            >Show History Project</v-btn
+          >
+        </v-toolbar>
+      </template>
+
+      <template v-slot:item.actions="{ item }">
+        <v-icon class="me-2" size="small" @click="editProject(item)">
+          mdi-pencil
+        </v-icon>
+        <v-icon size="small" @click="softDeleteProject(item)">
+          mdi-delete
+        </v-icon>
+      </template>
+
+      <template v-slot:no-data>
+        <v-btn color="primary" @click="fetchProjects"> Reset </v-btn>
       </template>
     </v-data-table>
 
@@ -83,6 +78,10 @@
           <!-- Form to edit project details -->
           <v-form @submit.prevent="saveEditedProject">
             <!-- Include form fields for editing project details -->
+            <v-text-field
+              v-model="editedProject.project_id"
+              label="Project ID"
+            ></v-text-field>
             <v-text-field
               v-model="editedProject.project_name_TH"
               label="Project Name (TH)"
@@ -120,6 +119,7 @@ import Swal from "sweetalert2";
 
 export default {
   name: "ProjectManagement",
+  layout: "admin",
   data() {
     return {
       detailsDialog: false,
@@ -131,6 +131,7 @@ export default {
       projects: [], // โครงการทั้งหมด
       searchQuery: "", // Search query
       headers: [
+        { text: "Project Code", value: "project_id" },
         { text: "Project Name (ENG)", value: "project_name_ENG" },
         { text: "Project Name (TH)", value: "project_name_TH" },
         { text: "Progress (%)", value: "project_progress" },
@@ -138,34 +139,91 @@ export default {
         { text: "Planned End", value: "project_plan_end" },
         { text: "Actions", value: "actions", sortable: false },
       ],
+      defaultProject: {
+        project_name_TH: "",
+        project_name_ENG: "",
+      },
     };
   },
   methods: {
+    goToHistoryProject() {
+      this.$router.push("/Project/HistoryProject");
+    },
+    async softDeleteProject(project) {
+      try {
+        // แสดงข้อความยืนยันก่อนลบโปรเจกต์
+        const confirmResult = await Swal.fire({
+          title: "Are you sure?",
+          text: "You won't be able to revert this!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, delete it!",
+        });
+
+        if (confirmResult.isConfirmed) {
+          // ลบโปรเจกต์โดยส่งคำขอไปยัง API
+          const response = await fetch(
+            `http://localhost:7777/projects/delete/${project.id}`,
+            {
+              method: "DELETE",
+            }
+          );
+
+          if (!response.ok) {
+            throw new Error("Failed to delete project");
+          }
+
+          console.log("Project deleted successfully");
+
+          // แสดงข้อความแจ้งเตือนเมื่อลบโปรเจกต์สำเร็จ
+          await Swal.fire(
+            "Success",
+            "Project deleted successfully.",
+            "success"
+          );
+
+          // โหลดรายการโปรเจกต์ใหม่
+          this.fetchProjects();
+        }
+      } catch (error) {
+        console.error("Error deleting project:", error);
+
+        // แสดงข้อความแจ้งเตือนเมื่อเกิดข้อผิดพลาดในการลบโปรเจกต์
+        await Swal.fire(
+          "Error",
+          "An error occurred during the project deletion process.",
+          "error"
+        );
+      }
+    },
+    goToCreateProject() {
+      // นำผู้ใช้ไปยังหน้า "Project/create_projects"
+      this.$router.push("/Project/create_projects");
+    },
     showProjectDetails(project) {
       this.selectedProject = project;
       this.detailsDialog = true;
-    },
-    handleIconClick() {
-      // Add your logic for icon click
-    },
-    handleButtonClick() {
-      // Add your logic for button click
     },
     editProject(project) {
       this.editedProject = { ...project };
       this.editDialog = true;
     },
-
     async saveEditedProject() {
       try {
         const response = await fetch(
-          `http://localhost:7777/projects/createProject/${this.editedProject.project_id}`,
+          `http://localhost:7777/projects/updateProject/${this.editedProject.id}`,
           {
             method: "PUT",
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify(this.editedProject),
+            body: JSON.stringify({
+              project_id: this.editedProject.project_id,
+              project_name_TH: this.editedProject.project_name_TH,
+              project_name_ENG: this.editedProject.project_name_ENG,
+            }),
           }
         );
 
@@ -195,57 +253,6 @@ export default {
         });
       }
     },
-
-    async deleteProject(project) {
-      try {
-        // Display a confirmation SweetAlert before proceeding with deletion
-        const confirmResult = await Swal.fire({
-          title: "Are you sure?",
-          text: "You won't be able to revert this!",
-          icon: "warning",
-          showCancelButton: true,
-          confirmButtonColor: "#3085d6",
-          cancelButtonColor: "#d33",
-          confirmButtonText: "Yes, delete it!",
-        });
-
-        if (confirmResult.isConfirmed) {
-          // User confirmed, proceed with deletion
-          const response = await fetch(
-            `http://localhost:7777/projects/delete/${project.project_id}`,
-            {
-              method: "DELETE",
-            }
-          );
-
-          if (!response.ok) {
-            throw new Error("Failed to delete project");
-          }
-
-          console.log("Project deleted successfully");
-
-          // Display Sweet Alert for successful project deletion
-          await Swal.fire(
-            "Success",
-            "Project deleted successfully.",
-            "success"
-          );
-
-          // Fetch updated project list
-          this.fetchProjects();
-        }
-      } catch (error) {
-        console.error("Error deleting project:", error);
-
-        // Display Sweet Alert for error during project deletion
-        await Swal.fire(
-          "Error",
-          "An error occurred during the project deletion process.",
-          "error"
-        );
-      }
-    },
-
     async fetchProjects() {
       try {
         const response = await fetch("http://localhost:7777/projects/getAll");
@@ -258,7 +265,6 @@ export default {
         console.error("Error fetching projects:", error);
       }
     },
-
     updateDateTime() {
       const now = new Date();
       const options = {
@@ -275,7 +281,6 @@ export default {
       this.greeting = this.getGreeting(now);
       this.currentDateTime = now.toLocaleDateString("en-US", options);
     },
-
     getGreeting(date) {
       const hour = date.getHours();
 
@@ -289,26 +294,27 @@ export default {
     },
   },
   computed: {
-    // Filtered projects based on search query
     filteredProjects() {
-      return this.projects.filter(
-        (project) =>
-          (project.project_name_TH &&
-            project.project_name_TH
-              .toLowerCase()
-              .includes(this.searchQuery.toLowerCase())) ||
-          (project.project_name_ENG &&
-            project.project_name_ENG
-              .toLowerCase()
-              .includes(this.searchQuery.toLowerCase())) ||
-          (project.project_id &&
-            project.project_id
-              .toLowerCase()
-              .includes(this.searchQuery.toLowerCase()))
-      );
+      return this.projects
+        .map((project) => ({
+          ...project,
+          project_progress: project.project_progress || 0,
+          project_plan_start: project.project_plan_start || "Not determined",
+          project_plan_end: project.project_plan_end || "Not determined",
+        }))
+        .filter((project) => {
+          const searchText = this.searchQuery.toLowerCase();
+          return (
+            (project.project_id &&
+              project.project_id.toLowerCase().includes(searchText)) ||
+            (project.project_name_ENG &&
+              project.project_name_ENG.toLowerCase().includes(searchText)) ||
+            (project.project_name_TH &&
+              project.project_name_TH.toLowerCase().includes(searchText))
+          );
+        });
     },
   },
-
   mounted() {
     this.updateDateTime();
     this.fetchProjects();
