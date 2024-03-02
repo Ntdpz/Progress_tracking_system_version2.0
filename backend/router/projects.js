@@ -185,7 +185,7 @@ router.post("/createProject", async (req, res) => {
 // Route to update project
 router.put("/updateProject/:id", async (req, res) => {
   const id = req.params.id;
-  const { project_id, project_name_TH, project_name_ENG } = req.body;
+  const { project_id, project_name_TH, project_name_ENG, is_deleted } = req.body;
 
   try {
     const previousProjectData = await new Promise((resolve, reject) => {
@@ -199,16 +199,17 @@ router.put("/updateProject/:id", async (req, res) => {
       );
     });
 
-    if (!project_id && !project_name_TH && !project_name_ENG) {
+    if (!project_id && !project_name_TH && !project_name_ENG && is_deleted === undefined) {
       return res.status(200).json(previousProjectData);
     }
 
     connection.query(
-      "UPDATE projects SET project_id = ?, project_name_TH = ?, project_name_ENG = ? WHERE id = ?",
+      "UPDATE projects SET project_id = ?, project_name_TH = ?, project_name_ENG = ?, is_deleted = ? WHERE id = ?",
       [
         project_id || req.body.project_id || previousProjectData.project_id,
         project_name_TH || req.body.project_name_TH || previousProjectData.project_name_TH,
         project_name_ENG || req.body.project_name_ENG || previousProjectData.project_name_ENG,
+        is_deleted !== undefined ? is_deleted : previousProjectData.is_deleted,
         id,
       ],
       (err, results, fields) => {
@@ -224,6 +225,7 @@ router.put("/updateProject/:id", async (req, res) => {
     return res.status(500).send();
   }
 });
+
 
 // Route to soft delete a project
 router.delete("/delete/:id", async (req, res) => {

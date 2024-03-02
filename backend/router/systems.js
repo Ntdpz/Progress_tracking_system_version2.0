@@ -67,6 +67,46 @@ router.get('/getAll', async (req, res) => {
     return res.status(500).send();
   }
 });
+// Route to get all systems by project_id
+router.get('/getAll/:project_id', async (req, res) => {
+  const projectId = req.params.project_id;
+  try {
+    const query = `
+      SELECT Systems.id, 
+             Systems.project_id,
+             Systems.system_id,
+             Systems.system_nameTH,
+             Systems.system_nameEN,
+             Systems.system_shortname,
+             Systems.is_deleted,
+             COUNT(Screens.screen_id) AS screen_count, 
+             AVG(screens.screen_progress) AS system_progress,
+             DATE_FORMAT(MIN(Screens.screen_plan_start), '%Y-%m-%d') AS system_plan_start,
+             DATE_FORMAT(MAX(Screens.screen_plan_end), '%Y-%m-%d') AS system_plan_end,
+             DATEDIFF(MAX(Screens.screen_plan_end), MIN(Screens.screen_plan_start)) AS system_manday
+      FROM Systems 
+      LEFT JOIN Screens ON Systems.id = Screens.system_id 
+      WHERE Systems.project_id = ? AND Systems.is_deleted = false
+      GROUP BY Systems.id
+    `;
+
+    connection.query(query, [projectId], async (err, results, fields) => {
+      if (err) {
+        console.error(err);
+        return res.status(400).send();
+      }
+      // Format system_plan_start and system_plan_end to contain only date
+      for (const system of results) {
+        const updatedSystem = await updateSystem(system); // Update system data
+        Object.assign(system, updatedSystem);
+      }
+      res.status(200).json(results);
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).send();
+  }
+});
 
 // Route to get all historical systems
 router.get('/getAllHistorySystem', async (req, res) => {
@@ -276,7 +316,7 @@ router.post('/createSystem', async (req, res) => {
   const id = generateId();
   try {
     connection.query(
-      'INSERT INTO systems(id, project_id,system_id,system_nameTH,system_nameEN,system_shortname,system_analyst, system_member) VALUES(?, ?, ?, ?, ? ,? ,?,?)',
+      'INSERT INTO systems(id, project_id, system_id, system_nameTH, system_nameEN, system_shortname, system_analyst, system_member) VALUES(?, ?, ?, ?, ?, ?, ?, ?)',
       [
         id,
         project_id,
@@ -289,12 +329,12 @@ router.post('/createSystem', async (req, res) => {
       ],
       (err, results, fields) => {
         if (err) {
-          console.error('Error while inserting a systems into the database', err);
+          console.error('Error while inserting a system into the database', err);
           return res.status(400).send();
         }
         return res
           .status(201)
-          .json({ message: 'New systems successfully created!' });
+          .json({ message: 'New system successfully created!' });
       }
     );
   } catch (err) {

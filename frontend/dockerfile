@@ -16,13 +16,6 @@ RUN yarn install \
 
 RUN yarn build
 
-# Copy package.json and package-lock.json to the container
-COPY package.json package-lock.json ./
-
-# Install dependencies
-RUN npm install
-
-
 # ลบ node_modules เพื่อลดขนาด image
 RUN rm -rf node_modules
 
@@ -40,10 +33,7 @@ ENV HOST 0.0.0.0
 EXPOSE 3000
 
 # ติดตั้ง Nuxt.js
-RUN npm install --global nuxt
+RUN npm install nuxt
 
-# คัดลอกไฟล์ nuxt.config.js
-COPY nuxt.config.js .
-
-# สั่งรัน Nuxt.js บน port 3000
-CMD [ "nuxt", "start" ]
+# สั่งรัน Nuxt.js บน port 3000 โดยใช้ npm เพื่อรันโดยตรง
+CMD [ "npm ", "run" ,"dev" ]
