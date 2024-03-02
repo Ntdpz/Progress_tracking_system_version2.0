@@ -350,7 +350,8 @@ router.put('/updateSystem/:id', async (req, res) => {
     system_nameTH,
     system_nameEN,
     system_shortname,
-    project_id
+    project_id,
+    is_deleted // เพิ่ม is_deleted เข้ามาในการรับค่า
   } = req.body;
 
   const updatedSystemFields = {};
@@ -369,6 +370,10 @@ router.put('/updateSystem/:id', async (req, res) => {
 
   if (project_id !== undefined) {
     updatedSystemFields.project_id = project_id;
+  }
+
+  if (is_deleted !== undefined) { // เพิ่มเงื่อนไขสำหรับ is_deleted
+    updatedSystemFields.is_deleted = is_deleted;
   }
 
   if (Object.keys(updatedSystemFields).length === 0) {
@@ -392,6 +397,7 @@ router.put('/updateSystem/:id', async (req, res) => {
     return res.status(500).send();
   }
 });
+
 
 // Route to delete a system by id
 router.delete("/delete/:id", async (req, res) => {

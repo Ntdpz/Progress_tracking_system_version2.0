@@ -10,7 +10,7 @@
     >
       <template v-slot:top>
         <v-toolbar flat>
-          <v-toolbar-title>Systems Management</v-toolbar-title>
+          <v-toolbar-title>Systems Management </v-toolbar-title>
           <v-divider class="mx-4" inset vertical></v-divider>
           <v-spacer></v-spacer>
           <v-btn color="primary" dark @click="goToCreateSystem"
@@ -48,9 +48,7 @@
                   v-model="newSystem.system_shortname"
                   label="Short Name"
                 ></v-text-field>
-                <!-- Add more fields as needed -->
-                <!-- You can also add selection fields for system analyst and member -->
-                <!-- Add buttons to submit and cancel -->
+
                 <v-btn
                   type="submit"
                   @click="
@@ -105,66 +103,31 @@
 
         <!-- Show deleted systems history -->
         <v-dialog v-model="showHistoryDialog" max-width="800">
-          <v-card>
-            <v-card-title>Deleted Systems History</v-card-title>
-            <v-card-text>
-              <!-- Show deleted systems history -->
-              <v-container>
-                <v-row v-if="deletedSystems.length > 0">
-                  <v-col
-                    v-for="system in deletedSystems"
-                    :key="system.id"
-                    cols="12"
-                  >
-                    <!-- Display system information -->
-                    <v-card>
-                      <v-card-text>
-                        <div>
-                          <strong>System ID:</strong> {{ system.system_id
-                          }}<br />
-                          <strong>System Name (TH):</strong>
-                          {{ system.system_nameTH }}<br />
-                          <strong>System Name (EN):</strong>
-                          {{ system.system_nameEN }}<br />
-                          <strong>Short Name:</strong>
-                          {{ system.system_shortname }}<br />
-                          <strong>Screen Count:</strong> {{ system.screen_count
-                          }}<br />
-                          <strong>System Progress:</strong>
-                          {{ system.system_progress }}<br />
-                          <strong>System Plan Start:</strong>
-                          {{ system.system_plan_start }}<br />
-                          <strong>System Plan End:</strong>
-                          {{ system.system_plan_end }}<br />
-                          <strong>System Manday:</strong>
-                          {{ system.system_manday }}<br />
-                        </div>
-                        <!-- Add Edit and Delete buttons -->
-                        <v-btn color="primary" @click="editSystem(system)"
-                          >Edit</v-btn
-                        >
-                        <v-btn
-                          color="error"
-                          @click="confirmDeleteSystem(system)"
-                          >Delete</v-btn
-                        >
-                      </v-card-text>
-                    </v-card>
-                  </v-col>
-                </v-row>
-                <v-row v-else>
-                  <v-col cols="12">
-                    <p>No deleted systems found.</p>
-                  </v-col>
-                </v-row>
-              </v-container>
-            </v-card-text>
-            <v-card-actions>
-              <v-btn color="primary" @click="showHistoryDialog = false"
-                >Close</v-btn
-              >
-            </v-card-actions>
-          </v-card>
+          <v-data-table :headers="headers" :items="deletedSystems">
+            <!-- Define headers for the table -->
+            <template v-slot:top>
+              <v-toolbar flat>
+                <v-toolbar-title>Deleted Systems History</v-toolbar-title>
+                <v-divider class="mx-4" inset vertical></v-divider>
+                <v-spacer></v-spacer>
+              </v-toolbar>
+            </template>
+
+            <!-- Define actions for each row -->
+            <template v-slot:item.actions="{ item }">
+              <v-btn color="primary" @click="restoreSystem(item)">
+                Restore
+              </v-btn>
+              <v-btn color="error" @click="confirmDeleteHistorySystem(item)">
+                Delete
+              </v-btn>
+            </template>
+
+            <!-- Define template when no data is available -->
+            <!-- <template v-slot:no-data>
+              <v-btn color="primary" @click="initialize">Reset</v-btn>
+            </template> -->
+          </v-data-table>
         </v-dialog>
       </template>
 
@@ -188,6 +151,7 @@ export default {
   layout: "admin",
   data() {
     return {
+      projectNameENG: "",
       showHistoryDialog: false,
       deletedSystems: [],
       createSystemDialog: false,
@@ -221,6 +185,118 @@ export default {
     };
   },
   methods: {
+    async restoreSystem(item) {
+      try {
+        const confirmResult = await Swal.fire({
+          title: "Are you sure?",
+          text: "You are about to restore this system.",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, restore it!",
+        });
+
+        if (confirmResult.isConfirmed) {
+          const systemId = item.id;
+          const response = await fetch(
+            `http://localhost:7777/systems/updateSystem/${systemId}`,
+            {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                system_nameTH: item.system_nameTH,
+                system_nameEN: item.system_nameEN,
+                system_shortname: item.system_shortname,
+                project_id: item.project_id,
+                is_deleted: 0,
+              }),
+            }
+          );
+
+          if (!response.ok) {
+            throw new Error("Failed to restore system");
+          }
+
+          console.log("System restored successfully");
+
+          await Swal.fire(
+            "Success",
+            "System restored successfully.",
+            "success"
+          );
+
+          // เพิ่มบรรทัดนี้เพื่ออัพเดทตารางอัตโนมัติ
+          this.fetchDeletedSystems();
+        }
+      } catch (error) {
+        console.error("Error restoring system:", error);
+        await Swal.fire(
+          "Error",
+          "An error occurred during the system restoration process.",
+          "error"
+        );
+      }
+    },
+
+    async mounted() {
+      try {
+        const projectId = this.$route.params.id;
+        const response = await fetch(
+          `http://localhost:7777/projects/getOne/${projectId}`
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch project");
+        }
+        const projectData = await response.json();
+        console.log(projectData); // ตรวจสอบข้อมูลที่ได้รับมา
+        this.projectNameENG = projectData.project_name_ENG; // ใส่ชื่อ field ที่ต้องการแสดง
+      } catch (error) {
+        console.error("Error fetching project:", error);
+        // Handle error fetching project
+      }
+    },
+
+    async confirmDeleteHistorySystem(item) {
+      try {
+        const confirmResult = await Swal.fire({
+          title: "Are you sure?",
+          text: "You won't be able to revert this!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, delete it!",
+        });
+        if (confirmResult.isConfirmed) {
+          const systemId = item.id; // Get the ID of the system to delete
+          const response = await fetch(
+            `http://localhost:7777/systems/deleteHistorySystems/${systemId}`,
+            {
+              method: "DELETE",
+            }
+          );
+          if (!response.ok) {
+            throw new Error("Failed to delete system");
+          }
+          await Swal.fire({
+            icon: "success",
+            title: "Success",
+            text: "System and related data deleted successfully",
+          });
+          this.fetchDeletedSystems(); // Refresh the deleted systems data
+        }
+      } catch (error) {
+        console.error("Error confirming delete history system:", error);
+        await Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Failed to delete history system",
+        });
+      }
+    },
     async goToHistorySystems() {
       await this.fetchDeletedSystems();
       this.showHistoryDialog = true;
@@ -242,7 +318,6 @@ export default {
         // Handle error fetching deleted systems
       }
     },
-
     async createSystem() {
       const projectId = this.$route.params.id;
       try {
@@ -262,13 +337,24 @@ export default {
         if (!response.ok) {
           throw new Error("Failed to create system");
         }
-        await Swal.fire({
+        // Clear the newSystem object
+        this.newSystem = {
+          system_id: "",
+          system_nameTH: "",
+          system_nameEN: "",
+          system_shortname: "",
+        };
+        const confirmResult = await Swal.fire({
           icon: "success",
           title: "Success",
           text: "New system created successfully",
+          showConfirmButton: true, // แสดงปุ่ม "OK"
+          allowOutsideClick: false, // ปิดการคลิกภายนอกเพื่อป้องกันการปิดโดยไม่ได้เช็ค
         });
-        this.createSystemDialog = false;
-        this.fetchSystems();
+        if (confirmResult.isConfirmed) {
+          // อัพเดทข้อมูลโดยอัตโนมัติหลังจากสร้างข้อมูลใหม่สำเร็จ
+          this.fetchSystems();
+        }
       } catch (error) {
         console.error("Error creating system:", error);
         await Swal.fire({
@@ -278,6 +364,7 @@ export default {
         });
       }
     },
+
     async updateSystem() {
       try {
         const response = await fetch(
@@ -309,51 +396,7 @@ export default {
         });
       }
     },
-    async deleteSystem(system) {
-      const systemId = system.id;
-      try {
-        const response = await fetch(
-          `http://localhost:7777/systems/delete/${systemId}`,
-          {
-            method: "DELETE",
-          }
-        );
-        if (!response.ok) {
-          throw new Error("Failed to delete system");
-        }
-        await Swal.fire({
-          icon: "success",
-          title: "Success",
-          text: "System deleted successfully",
-        });
-        this.fetchSystems();
-      } catch (error) {
-        console.error("Error deleting system:", error);
-        await Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: "Failed to delete system",
-        });
-      }
-    },
-    async confirmDeleteSystem(system) {
-      try {
-        const confirmResult = await Swal.fire({
-          title: "Are you sure?",
-          text: "You won't be able to revert this!",
-          icon: "warning",
-          showCancelButton: true,
-          confirmButtonColor: "#3085d6",
-          cancelButtonColor: "#d33",
-          confirmButtonText: "Yes, delete it!",
-        });
-        if (confirmResult.isConfirmed) {
-          await this.deleteSystem(system);
-        }
-      } catch (error) {
-        console.error("Error confirming delete system:", error);
-      }
-    },
+
     async fetchSystems() {
       const projectId = this.$route.params.id;
       try {
@@ -383,7 +426,6 @@ export default {
       // Open the edit system dialog
       this.editSystemDialog = true;
     },
-
     async confirmDeleteSystem(system) {
       try {
         const confirmResult = await Swal.fire({
@@ -394,10 +436,18 @@ export default {
           confirmButtonColor: "#3085d6",
           cancelButtonColor: "#d33",
           confirmButtonText: "Yes, delete it!",
+          showClass: {
+            popup: "animate__animated animate__fadeInDown", // กำหนด animation เมื่อแสดง SweetAlert
+          },
+          hideClass: {
+            popup: "animate__animated animate__fadeOutUp", // กำหนด animation เมื่อซ่อน SweetAlert
+          },
         });
         if (confirmResult.isConfirmed) {
           // If user confirms deletion, call deleteSystem method
           await this.deleteSystem(system);
+          // อัพเดทข้อมูลโดยอัตโนมัติหลังจากลบข้อมูล
+          this.fetchSystems();
         }
       } catch (error) {
         console.error("Error confirming delete system:", error);
