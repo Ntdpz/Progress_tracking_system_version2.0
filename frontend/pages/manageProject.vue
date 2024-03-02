@@ -16,21 +16,23 @@
         <p class="text-01">{{ currentDateTime }}</p>
       </v-col>
 
-      <!-- Buttons for creating a project and showing all projects -->
+      <!-- Buttons for creating a project  -->
       <v-col cols="6" class="text-right">
         <v-btn @click="handleIconClick" color="#9747FF">
-          <router-link to="/project/createProject" style="color: #9747ff">
+          <router-link to="./projectCreateUpdate" style="color: #9747ff">
             <span style="margin: 0; color: #ffffff"> + Create Project</span>
           </router-link>
         </v-btn>
-        <v-btn
-          class="work-item"
-          color="#9747FF"
-          @click="handleButtonClick"
-          style="padding: 5px; margin-left: 10px"
-        >
-          <p style="margin: 0; color: white">All Projects</p>
-        </v-btn>
+        <template v-slot:activator="{ props }">
+            <v-btn
+              color="primary"
+              dark
+              class="mb-2"
+              v-bind="props"
+            >
+              New Item
+            </v-btn>
+          </template>
       </v-col>
     </v-row>
 
@@ -55,63 +57,39 @@
 
     <!-- Project data table -->
     <v-data-table
-      :headers="headers"
-      :items="filteredProjects"
-      :search="searchQuery"
+  :headers="headers"
+  :items="filteredProjects"
+  :search="searchQuery"
+>
+  <template v-slot:item.actions="{ item }">
+    <v-icon
+      size="small"
+      class="me-2"
+      @click="editProject(item)"
     >
-      <template v-slot:items="props">
-        <td>{{ props.item.project_name_ENG }}</td>
-        <td>{{ props.item.project_name_TH }}</td>
-        <td>{{ props.item.project_progress }}%</td>
-        <td>{{ props.item.project_plan_start }}</td>
-        <td>{{ props.item.project_plan_end }}</td>
-        <td>
-          <!-- Buttons for editing, deleting, and showing project details -->
-          <v-btn @click="editProject(props.item)">Edit</v-btn>
-          <v-btn @click="deleteProject(props.item)">Delete</v-btn>
-          <v-btn @click="showProjectDetails(props.item)">Details</v-btn>
-          <!-- เพิ่มปุ่มสำหรับแสดงรายละเอียด -->
-        </td>
-      </template>
-    </v-data-table>
+      mdi-pencil
+    </v-icon>
+    <v-icon
+      size="small"
+      @click="deleteProject(item)"
+    >
+      mdi-delete
+    </v-icon>
+  </template>
 
-    <!-- Edit Project Form Dialog -->
-    <v-dialog v-model="editDialog" max-width="600">
-      <v-card>
-        <v-card-title>Edit Project</v-card-title>
-        <v-card-text>
-          <!-- Form to edit project details -->
-          <v-form @submit.prevent="saveEditedProject">
-            <!-- Include form fields for editing project details -->
-            <v-text-field
-              v-model="editedProject.project_name_TH"
-              label="Project Name (TH)"
-            ></v-text-field>
-            <v-text-field
-              v-model="editedProject.project_name_ENG"
-              label="Project Name (ENG)"
-            ></v-text-field>
-            <!-- Button to save changes -->
-            <v-btn type="submit">Save Changes</v-btn>
-          </v-form>
-        </v-card-text>
-      </v-card>
-    </v-dialog>
-
-    <!-- Project Details Dialog -->
-    <v-dialog v-model="detailsDialog" max-width="600">
-      <v-card v-if="selectedProject">
-        <v-card-title>Project Details</v-card-title>
-        <v-card-text>
-          <!-- Include project details here -->
-          <ul>
-            <li>Project Name (TH): {{ selectedProject.project_name_TH }}</li>
-            <li>Project Name (ENG): {{ selectedProject.project_name_ENG }}</li>
-            <!-- Add more details as needed -->
-          </ul>
-        </v-card-text>
-      </v-card>
-    </v-dialog>
+  <template v-slot:item="{ item }">
+    <tr>
+      <td>
+        <!-- Project name -->
+        {{ item.project_name_ENG }}
+      </td>
+      <td>{{ item.project_name_TH }}</td>
+      <td>{{ item.project_progress }}%</td>
+      <td>{{ item.project_plan_start }}</td>
+      <td>{{ item.project_plan_end }}</td>
+    </tr>
+  </template>
+</v-data-table>
   </div>
 </template>
 
@@ -120,6 +98,7 @@ import Swal from "sweetalert2";
 
 export default {
   name: "ProjectManagement",
+  layout: "admin",
   data() {
     return {
       detailsDialog: false,
@@ -136,7 +115,7 @@ export default {
         { text: "Progress (%)", value: "project_progress" },
         { text: "Planned Start", value: "project_plan_start" },
         { text: "Planned End", value: "project_plan_end" },
-        { text: "Actions", value: "actions", sortable: false },
+        { text: "Actions", key: "actions", sortable: false },
       ],
     };
   },
@@ -322,68 +301,6 @@ export default {
   color: black !important;
 }
 
-.project-manager {
-  color: #3f51b5;
-  display: inline-block;
-  vertical-align: middle;
-  margin-right: 10px;
-}
-
-.project-code {
-  text-transform: uppercase;
-  font-weight: bold;
-  color: #6c757d;
-  display: inline-block;
-  vertical-align: middle;
-  margin-right: 10px;
-}
-
-.tracking-work-card {
-  border-radius: 10px;
-  box-shadow: 0 2px 5px rgba(255, 253, 253, 0.1);
-  transition: transform 0.3s ease-in-out;
-  background-color: #9747ff;
-}
-
-.tracking-work-card:hover {
-  transform: translateY(-5px);
-}
-
-.tracking-work-card h2 {
-  color: #ffffff;
-  font-size: 1.5rem;
-  margin-bottom: 10px;
-}
-
-.work-item p {
-  margin-bottom: 5px;
-}
-
-.work-item p:last-child {
-  margin-bottom: 0;
-}
-
-.v-card-actions {
-  padding: 10px;
-  justify-content: space-between;
-}
-
-.project-button {
-  color: #9747ff !important;
-  background-color: #ffffff !important;
-  font-weight: bold;
-}
-
-.project-title {
-  display: flex;
-  flex-direction: column;
-}
-
-.project-title h2 {
-  margin-bottom: 5px;
-  /* ปรับขนาดของระยะห่างระหว่างข้อมูล */
-}
-
 .router-link-underline {
   text-decoration: none;
   /* นำเส้นใต้ออก */
@@ -393,4 +310,5 @@ export default {
   text-decoration: underline;
   /* นำเส้นใต้กลับมาเมื่อเมาส์ไปวางทับ */
 }
+
 </style>

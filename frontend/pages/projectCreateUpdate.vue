@@ -46,7 +46,7 @@
           <v-btn color="primary" @click="submitForm">Confirm</v-btn>
         </v-col>
         <v-col cols="6" sm="6" md="4">
-          <v-btn color="error" @click="submitForm">Cancel</v-btn>
+          <v-btn color="error" @click="gomanagePorject">Cancel</v-btn>
         </v-col>
       </v-row>
     </v-form>
@@ -125,6 +125,9 @@ export default {
         name: this.projectName,
         personnel: this.personnel,
       });
+    },
+    gomanagePorject(){
+      this.$router.push('/manageProject')
     },
   },
 };
