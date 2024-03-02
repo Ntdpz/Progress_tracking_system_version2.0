@@ -64,7 +64,7 @@
           mdi-delete
         </v-icon>
         <v-icon size="small" @click="viewProjectDetails(item)">
-          mdi-arrow-down-drop-circle
+          mdi-details
         </v-icon>
       </template>
 
