@@ -1,6 +1,24 @@
 <template>
   <!-- Systems Data Table container -->
   <div class="systems-data-table">
+    <!-- Search bar -->
+    <v-row no-gutters>
+      <v-col cols="12">
+        <input
+          type="text"
+          v-model="searchQuery"
+          placeholder="Search..."
+          style="
+            margin-bottom: 10px;
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+          "
+        />
+      </v-col>
+    </v-row>
     <!-- Data Table -->
     <v-data-table
       :headers="headers"
@@ -10,7 +28,10 @@
     >
       <template v-slot:top>
         <v-toolbar flat>
-          <v-toolbar-title>Systems Management </v-toolbar-title>
+          <v-toolbar-title
+            >Systems Management - Project :
+            {{ projectNameENG }}</v-toolbar-title
+          >
           <v-divider class="mx-4" inset vertical></v-divider>
           <v-spacer></v-spacer>
           <v-btn color="primary" dark @click="goToCreateSystem"
@@ -31,7 +52,7 @@
             <v-card-title>Create New System</v-card-title>
             <v-card-text>
               <!-- Form to create new system -->
-              <v-form>
+              <v-form @submit.prevent="createSystem">
                 <v-text-field
                   v-model="newSystem.system_id"
                   label="System ID"
@@ -49,14 +70,7 @@
                   label="Short Name"
                 ></v-text-field>
 
-                <v-btn
-                  type="submit"
-                  @click="
-                    createSystemDialog = false;
-                    createSystem();
-                  "
-                  >Create</v-btn
-                >
+                <v-btn type="submit">Create</v-btn>
                 <v-btn @click="createSystemDialog = false">Cancel</v-btn>
               </v-form>
             </v-card-text>
@@ -132,12 +146,13 @@
       </template>
 
       <template v-slot:item.actions="{ item }">
-        <v-icon class="me-2" size="small" @click="openEditDialog(item)"
-          >mdi-pencil</v-icon
+        <v-icon class="me-2" size="20" px @click="openEditDialog(item)"
+          >mdi-pencil-circle</v-icon
         >
-        <v-icon size="small" @click="confirmDeleteSystem(item)"
-          >mdi-delete</v-icon
+        <v-icon size="20" px @click="confirmDeleteSystem(item)"
+          >mdi-delete-empty</v-icon
         >
+        <v-btn @click="goToSystemsDetail(item.id)">Systems Detail</v-btn>
       </template>
     </v-data-table>
   </div>
@@ -185,6 +200,27 @@ export default {
     };
   },
   methods: {
+    async goToSystemsDetail(systemId) {
+      // Navigate to the Systems/_id.vue page with the systemId parameter
+      await this.$router.push({ path: `/systems/${systemId}` });
+    },
+    async fetchProjectNameENG() {
+      try {
+        const projectId = this.$route.params.id;
+        const response = await fetch(
+          `http://localhost:7777/projects/getOne/${projectId}`
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch project");
+        }
+        const projectData = await response.json();
+        console.log(projectData); // ตรวจสอบข้อมูลที่ได้รับมา
+        this.projectNameENG = projectData.project_name_ENG; // ใส่ชื่อ field ที่ต้องการแสดง
+      } catch (error) {
+        console.error("Error fetching project:", error);
+        // Handle error fetching project
+      }
+    },
     async restoreSystem(item) {
       try {
         const confirmResult = await Swal.fire({
@@ -501,6 +537,7 @@ export default {
 
   mounted() {
     this.fetchSystems();
+    this.fetchProjectNameENG();
   },
 };
 </script>
