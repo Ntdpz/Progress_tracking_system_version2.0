@@ -5,16 +5,7 @@
         <v-list-item-content>
           <v-list-item-title class="text-h6">
             <v-layout align-center justify-center>
-<<<<<<< HEAD
               <v-img lazy-src="/mainlogo.png" max-height="150" max-width="100" src="/mainlogo.png"></v-img>
-=======
-              <v-img
-                lazy-src=""
-                max-height="150"
-                max-width="100"
-                src=""
-              ></v-img>
->>>>>>> origin/NON
             </v-layout>
           </v-list-item-title>
         </v-list-item-content>
