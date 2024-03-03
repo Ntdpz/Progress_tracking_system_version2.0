@@ -37,34 +37,16 @@
     </v-row>
 
     <!-- Project data table -->
-<<<<<<< HEAD
-    <v-data-table :headers="headers" :items="projects" :sort-by="[{ key: 'project_code', order: 'asc' }]">
-=======
     <v-data-table
       :headers="headers"
       :items="filteredProjects"
       :sort-by="[{ key: 'project_id', order: 'asc' }]"
     >
->>>>>>> origin/NON
       <template v-slot:top>
         <v-toolbar flat>
           <v-toolbar-title>Project Management</v-toolbar-title>
           <v-divider class="mx-4" inset vertical></v-divider>
           <v-spacer></v-spacer>
-<<<<<<< HEAD
-          <v-btn color="primary" dark @click="goToCreateProject">New Project</v-btn>
-        </v-toolbar>
-      </template>
-
-      <template v-slot:item.actions="{ item }">
-        <v-icon class="me-2" size="small" @click="editProject(item)">
-          mdi-pencil
-        </v-icon>
-        <v-icon size="small" @click="deleteProject(item)"> mdi-delete </v-icon>
-      </template>
-      <template v-slot:no-data>
-        <v-btn color="primary" @click="initialize"> Reset </v-btn>
-=======
           <v-btn color="primary" dark @click="goToCreateProject"
             >New Project</v-btn
           >
@@ -120,7 +102,6 @@
         <v-btn size="30" px @click="viewProjectDetails(item)">
           ProjectDetails
         </v-btn>
->>>>>>> origin/NON
       </template>
     </v-data-table>
 
@@ -132,11 +113,6 @@
           <!-- Form to edit project details -->
           <v-form @submit.prevent="saveEditedProject">
             <!-- Include form fields for editing project details -->
-<<<<<<< HEAD
-            <v-text-field v-model="editedProject.project_id" label="Project ID"></v-text-field>
-            <v-text-field v-model="editedProject.project_name_TH" label="Project Name (TH)"></v-text-field>
-            <v-text-field v-model="editedProject.project_name_ENG" label="Project Name (ENG)"></v-text-field>
-=======
             <v-text-field
               v-model="editedProject.project_id"
               label="Project ID"
@@ -149,7 +125,6 @@
               v-model="editedProject.project_name_ENG"
               label="Project Name (ENG)"
             ></v-text-field>
->>>>>>> origin/NON
             <!-- Button to save changes -->
             <v-btn type="submit">Save Changes</v-btn>
           </v-form>
@@ -199,11 +174,7 @@ import Swal from "sweetalert2";
 
 export default {
   name: "ProjectManagement",
-<<<<<<< HEAD
-  layout: 'admin',
-=======
   layout: "admin",
->>>>>>> origin/NON
   data() {
     return {
       detailsDialog: false,

@@ -26,11 +26,7 @@
                           align-self: center;
                           justify-self: center;
                         "
-<<<<<<< HEAD
-                        >Progress tracking</v-toolbar-title
-=======
-                        >TTTTTTT</v-toolbar-title
->>>>>>> origin/NON
+                        >Progress Tracking</v-toolbar-title
                       >
                     </v-toolbar>
                     <v-card-text>
