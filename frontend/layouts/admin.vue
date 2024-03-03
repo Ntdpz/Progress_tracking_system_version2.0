@@ -5,7 +5,7 @@
         <v-list-item-content>
           <v-list-item-title class="text-h6">
             <v-layout align-center justify-center>
-              <v-img lazy-src="/logomain.jpg" max-height="150" max-width="100" src="/logomain.jpg"></v-img>
+              <v-img lazy-src="/mainlogo.png" max-height="150" max-width="100" src="/mainlogo.png"></v-img>
             </v-layout>
           </v-list-item-title>
         </v-list-item-content>
@@ -34,7 +34,7 @@
           <v-list-item v-for="child in project.projectList" :key="child.title" :to="`/issueList/${child.id}`">
             <v-list-item-content>
               <v-list-item-title><v-icon color="primary" class="mr-2">mdi mdi-format-list-bulleted</v-icon>{{
-      child.project_name }}</v-list-item-title>
+                child.project_name }}</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
         </v-list-group>
@@ -53,7 +53,7 @@
           <v-list-item v-for="child in projectDetails.projectList" :key="child.title" :to="`/issueList/${child[0].id}`">
             <v-list-item-content>
               <v-list-item-title><v-icon color="primary" class="mr-2">mdi mdi-format-list-bulleted</v-icon>{{
-      child[0].project_name }}</v-list-item-title>
+                child[0].project_name }}</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
         </v-list-group>
