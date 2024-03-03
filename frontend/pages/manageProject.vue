@@ -48,29 +48,63 @@
           <v-divider class="mx-4" inset vertical></v-divider>
           <v-spacer></v-spacer>
           <v-btn color="primary" dark @click="goToCreateProject"
-            >New Project</v-btn
+            >New Project</v-btn     
           >
           <v-btn color="primary" dark @click="goToHistoryProject"
             >Show History Project</v-btn
           >
         </v-toolbar>
+        <!-- Create Project Dialog -->
+        <v-dialog
+          v-model="createProjectDialog"
+          max-width="600"
+          ref="createProjectDialog"
+        >
+          <v-card>
+            <v-card-title>Create New Project</v-card-title>
+            <v-card-text>
+              <!-- Form to create new project -->
+              <v-form>
+                  <v-text-field
+                  v-model="newPorject.project_id"
+                  label="Project ID"
+                ></v-text-field>
+                 <v-text-field
+                  v-model="newPorject.project_name_TH"
+                  label="Project Name (TH)"
+                ></v-text-field>
+                <v-text-field
+                  v-model="newPorject.project_name_ENG"
+                  label="Project Name (EN)"
+                ></v-text-field>
+              <v-btn
+                  type="submit"
+                  @click="
+                    createProjectDialog = false;
+                    createProject();
+                  "
+                  >Create</v-btn
+                >
+                <v-btn @click="createProjectDialog = false">Cancel</v-btn>
+              </v-form>
+            </v-card-text>
+          </v-card>
+        </v-dialog>
+
       </template>
 
       <template v-slot:item.actions="{ item }">
-        <v-icon class="me-2" size="small" @click="editProject(item)">
-          mdi-pencil
-        </v-icon>
-        <v-icon size="small" @click="softDeleteProject(item)">
-          mdi-delete
-        </v-icon>
-        <v-icon size="small" @click="viewProjectDetails(item)">
-          mdi-details
-        </v-icon>
+        <v-btn class="me-2" size="small" @click="openEditDialog(item)">
+          Edit
+        </v-btn>
+        <v-btn size="small" @click="softDeleteProject(item)">
+          Delete
+        </v-btn>
+        <v-btn size="small" @click="viewProjectDetails(item)">
+         Detail
+        </v-btn>
       </template>
 
-      <template v-slot:no-data>
-        <v-btn color="primary" @click="fetchProjects"> Reset </v-btn>
-      </template>
     </v-data-table>
 
     <!-- Edit Project Form Dialog -->
@@ -101,18 +135,37 @@
     </v-dialog>
 
     <!-- Project Details Dialog -->
-    <v-dialog v-model="detailsDialog" max-width="600">
-      <v-card v-if="selectedProject">
-        <v-card-title>Project Details</v-card-title>
-        <v-card-text>
-          <!-- Include project details here -->
-          <ul>
-            <li>Project Name (TH): {{ selectedProject.project_name_TH }}</li>
-            <li>Project Name (ENG): {{ selectedProject.project_name_ENG }}</li>
-            <!-- Add more details as needed -->
-          </ul>
-        </v-card-text>
-      </v-card>
+    <v-dialog
+          v-model="editProjectDialog"
+          max-width="600"
+          ref="editProjectDialog"
+        >
+      <v-card>
+            <v-card-title>Edit System</v-card-title>
+            <v-card-text>
+              <!-- Form to edit system -->
+              <v-form @submit.prevent="updateProject">
+                <v-text-field
+                  v-model="editProject.project_id"
+                  label="Project ID"
+                  readonly
+                ></v-text-field>
+                <v-text-field
+                  v-model="editProject.project_name_TH"
+                  label="Project Name (TH)"
+                ></v-text-field>
+                <v-text-field
+                  v-model="editProject.project_name_ENG"
+                  label="Project Name (EN)"
+                ></v-text-field>
+                <!-- Add more fields as needed -->
+                <!-- You can also add selection fields for system analyst and member -->
+                <!-- Add buttons to submit and cancel -->
+                <v-btn type="submit">Update</v-btn>
+                <v-btn @click="editProjectDialog = false">Cancel</v-btn>
+              </v-form>
+            </v-card-text>
+          </v-card>
     </v-dialog>
   </div>
 </template>
@@ -126,6 +179,8 @@ export default {
   data() {
     return {
       detailsDialog: false,
+      createProjectDialog: false,
+      editProjectDialog: false,
       selectedProject: null,
       greeting: "",
       currentDateTime: "",
@@ -133,6 +188,16 @@ export default {
       editedProject: { project_name_TH: "", project_name_ENG: "" },
       projects: [], // โครงการทั้งหมด
       searchQuery: "", // Search query
+      newPorject:{
+        project_id: "",
+        project_name_TH: "",
+        project_name_ENG: "",
+      },
+      editProject:{
+        project_id: "",
+        project_name_TH: "",
+        project_name_ENG: "",
+      },
       headers: [
         { text: "Project Code", value: "project_id" },
         { text: "Project Name (ENG)", value: "project_name_ENG" },
@@ -149,15 +214,87 @@ export default {
     };
   },
   methods: {
+    async createProject (){
+      if (!this.project_id || !this.project_name_TH || !this.project_name_ENG) {
+        alert("Please fill in all required fields.");
+        return;
+      }
+       try {
+        const response = await fetch(
+          "http://localhost:7777/projects/createProject",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              
+              ...this.newPorject,
+            }),
+          }
+        );
+     if (!response.ok) {
+          throw new Error("Failed to create Project");
+        }
+        await Swal.fire({
+          icon: "success",
+          title: "Success",
+          text: "New Project created successfully",
+        });
+        this.createSystemDialog = false;
+        this.fetchSystems();
+      } catch (error) {
+        console.error("Error creating Project:", error);
+        await Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Failed to create Project",
+        });
+      }
+    },
+    async updateProject() {
+      try {
+        const response = await fetch(
+          `http://localhost:7777/projects/updateProject/${this.editedproject_id}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(this.editedProject),
+          }
+        );
+        if (!response.ok) {
+          throw new Error("Failed to update project");
+        }
+        await Swal.fire({
+          icon: "success",
+          title: "Success",
+          text: "Project updated successfully",
+        });
+        this.editProjectDialog = false;
+        this.fetchSystems();
+      } catch (error) {
+        console.error("Error updating project:", error);
+        await Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Failed to update project",
+        });
+      }
+    },
     viewProjectDetails(project) {
       this.$router.push({
         path: `/Project/${project.id}`,
         params: { selectedProject: project },
       });
     },
-
     goToHistoryProject() {
       this.$router.push("/Project/HistoryProject");
+    },
+    openEditDialog(project){
+      this.editProject = {...project}
+      this.editProjectDialog = true
     },
     async softDeleteProject(project) {
       try {
@@ -208,9 +345,9 @@ export default {
         );
       }
     },
-    goToCreateProject() {
-      // นำผู้ใช้ไปยังหน้า "Project/create_projects"
-      this.$router.push("/Project/create_projects");
+    async goToCreateProject() {
+     // Open the create project dialog first
+      this.createProjectDialog = true;
     },
     showProjectDetails(project) {
       this.selectedProject = project;
