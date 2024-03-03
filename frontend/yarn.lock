@@ -6393,7 +6393,7 @@ nth-check@^2.0.1:
   dependencies:
     boolbase "^1.0.0"
 
-nuxt@^2.15.7:
+nuxt@^2.17.3:
   version "2.17.3"
   resolved "https://registry.npmjs.org/nuxt/-/nuxt-2.17.3.tgz"
   integrity sha512-mQUy0J2DYYxHZvgBX8YvrrM8sKUhBqBxcQ0ePjy7cdyTaDAN8QeOLrizINm7NVPMrFGLYurhp5rbX3/qyQcKyg==

@@ -1,11 +1,14 @@
 <template>
   <!-- Dashboard container -->
-  <div class="dashboard" style="
+  <div
+    class="dashboard"
+    style="
       background-color: #ffffff;
       padding: 10px 70px;
       border-radius: 0;
       margin-right: 30px;
-    ">
+    "
+  >
     <!-- Greeting and current date/time -->
     <v-row no-gutters class="mt-4">
       <v-col class="text-left" style="margin-right: 16px">
@@ -17,24 +20,38 @@
     <!-- Search bar -->
     <v-row no-gutters>
       <v-col cols="12">
-        <input type="text" v-model="searchQuery" placeholder="Search..." style="
+        <input
+          type="text"
+          v-model="searchQuery"
+          placeholder="Search..."
+          style="
             margin-bottom: 10px;
             width: 100%;
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
             font-size: 16px;
-          " />
+          "
+        />
       </v-col>
     </v-row>
 
     <!-- Project data table -->
+<<<<<<< HEAD
     <v-data-table :headers="headers" :items="projects" :sort-by="[{ key: 'project_code', order: 'asc' }]">
+=======
+    <v-data-table
+      :headers="headers"
+      :items="filteredProjects"
+      :sort-by="[{ key: 'project_id', order: 'asc' }]"
+    >
+>>>>>>> origin/NON
       <template v-slot:top>
         <v-toolbar flat>
           <v-toolbar-title>Project Management</v-toolbar-title>
           <v-divider class="mx-4" inset vertical></v-divider>
           <v-spacer></v-spacer>
+<<<<<<< HEAD
           <v-btn color="primary" dark @click="goToCreateProject">New Project</v-btn>
         </v-toolbar>
       </template>
@@ -47,6 +64,63 @@
       </template>
       <template v-slot:no-data>
         <v-btn color="primary" @click="initialize"> Reset </v-btn>
+=======
+          <v-btn color="primary" dark @click="goToCreateProject"
+            >New Project</v-btn
+          >
+          <v-btn color="primary" dark @click="goToHistoryProject"
+            >Show History Project</v-btn
+          >
+        </v-toolbar>
+        <!-- Create Project Dialog -->
+        <v-dialog
+          v-model="createProjectDialog"
+          max-width="600"
+          ref="createProjectDialog"
+        >
+          <v-card>
+            <v-card-title>Create New Project</v-card-title>
+            <v-card-text>
+              <!-- Form to create new project -->
+              <v-form>
+                <v-text-field
+                  v-model="newPorject.project_id"
+                  label="Project ID"
+                ></v-text-field>
+                <v-text-field
+                  v-model="newPorject.project_name_TH"
+                  label="Project Name (TH)"
+                ></v-text-field>
+                <v-text-field
+                  v-model="newPorject.project_name_ENG"
+                  label="Project Name (EN)"
+                ></v-text-field>
+                <v-btn
+                  type="submit"
+                  @click="
+                    createProjectDialog = false;
+                    createProject();
+                  "
+                  >Create</v-btn
+                >
+                <v-btn @click="createProjectDialog = false">Cancel</v-btn>
+              </v-form>
+            </v-card-text>
+          </v-card>
+        </v-dialog>
+      </template>
+
+      <template v-slot:item.actions="{ item }">
+        <v-icon class="me-2" size="20" px @click="openEditDialog(item)">
+          mdi-pencil-circle
+        </v-icon>
+        <v-icon size="20" px @click="softDeleteProject(item)">
+          mdi-delete-empty
+        </v-icon>
+        <v-btn size="30" px @click="viewProjectDetails(item)">
+          ProjectDetails
+        </v-btn>
+>>>>>>> origin/NON
       </template>
     </v-data-table>
 
@@ -58,9 +132,24 @@
           <!-- Form to edit project details -->
           <v-form @submit.prevent="saveEditedProject">
             <!-- Include form fields for editing project details -->
+<<<<<<< HEAD
             <v-text-field v-model="editedProject.project_id" label="Project ID"></v-text-field>
             <v-text-field v-model="editedProject.project_name_TH" label="Project Name (TH)"></v-text-field>
             <v-text-field v-model="editedProject.project_name_ENG" label="Project Name (ENG)"></v-text-field>
+=======
+            <v-text-field
+              v-model="editedProject.project_id"
+              label="Project ID"
+            ></v-text-field>
+            <v-text-field
+              v-model="editedProject.project_name_TH"
+              label="Project Name (TH)"
+            ></v-text-field>
+            <v-text-field
+              v-model="editedProject.project_name_ENG"
+              label="Project Name (ENG)"
+            ></v-text-field>
+>>>>>>> origin/NON
             <!-- Button to save changes -->
             <v-btn type="submit">Save Changes</v-btn>
           </v-form>
@@ -70,16 +159,35 @@
 
 
     <!-- Project Details Dialog -->
-    <v-dialog v-model="detailsDialog" max-width="600">
-      <v-card v-if="selectedProject">
-        <v-card-title>Project Details</v-card-title>
+    <v-dialog
+      v-model="editProjectDialog"
+      max-width="600"
+      ref="editProjectDialog"
+    >
+      <v-card>
+        <v-card-title>Edit System</v-card-title>
         <v-card-text>
-          <!-- Include project details here -->
-          <ul>
-            <li>Project Name (TH): {{ selectedProject.project_name_TH }}</li>
-            <li>Project Name (ENG): {{ selectedProject.project_name_ENG }}</li>
-            <!-- Add more details as needed -->
-          </ul>
+          <!-- Form to edit system -->
+          <v-form @submit.prevent="updateProject">
+            <v-text-field
+              v-model="editProject.project_id"
+              label="Project ID"
+              readonly
+            ></v-text-field>
+            <v-text-field
+              v-model="editProject.project_name_TH"
+              label="Project Name (TH)"
+            ></v-text-field>
+            <v-text-field
+              v-model="editProject.project_name_ENG"
+              label="Project Name (EN)"
+            ></v-text-field>
+            <!-- Add more fields as needed -->
+            <!-- You can also add selection fields for system analyst and member -->
+            <!-- Add buttons to submit and cancel -->
+            <v-btn type="submit">Update</v-btn>
+            <v-btn @click="editProjectDialog = false">Cancel</v-btn>
+          </v-form>
         </v-card-text>
       </v-card>
     </v-dialog>
@@ -91,19 +199,35 @@ import Swal from "sweetalert2";
 
 export default {
   name: "ProjectManagement",
+<<<<<<< HEAD
   layout: 'admin',
+=======
+  layout: "admin",
+>>>>>>> origin/NON
   data() {
     return {
       detailsDialog: false,
+      createProjectDialog: false,
+      editProjectDialog: false,
       selectedProject: null,
       greeting: "",
       currentDateTime: "",
       editDialog: false,
       editedProject: { project_name_TH: "", project_name_ENG: "" },
-      projects: [], // โครงการทั้งหมด
-      searchQuery: "", // Search query
+      projects: [],
+      searchQuery: "",
+      newPorject: {
+        project_id: "",
+        project_name_TH: "",
+        project_name_ENG: "",
+      },
+      editProject: {
+        project_id: "",
+        project_name_TH: "",
+        project_name_ENG: "",
+      },
       headers: [
-        { text: "Project Code", value: "project_code" },
+        { text: "Project Code", value: "project_id" },
         { text: "Project Name (ENG)", value: "project_name_ENG" },
         { text: "Project Name (TH)", value: "project_name_TH" },
         { text: "Progress (%)", value: "project_progress" },
@@ -111,114 +235,54 @@ export default {
         { text: "Planned End", value: "project_plan_end" },
         { text: "Actions", value: "actions", sortable: false },
       ],
+      defaultProject: {
+        project_name_TH: "",
+        project_name_ENG: "",
+      },
     };
   },
   methods: {
-    showProjectDetails(project) {
-      this.selectedProject = project;
-      this.detailsDialog = true;
-    },
-    handleIconClick() {
-      // Add your logic for icon click
-    },
-    handleButtonClick() {
-      // Add your logic for button click
-    },
-    editProject(project) {
-      this.editedProject = { ...project };
-      this.editDialog = true;
-    },
-
-    async saveEditedProject() {
+    async createProject() {
+      if (
+        !this.newPorject.project_id ||
+        !this.newPorject.project_name_TH ||
+        !this.newPorject.project_name_ENG
+      ) {
+        alert("Please fill in all required fields.");
+        return;
+      }
       try {
         const response = await fetch(
-          `http://localhost:7777/projects/createProject/${this.editedProject.project_id}`,
+          "http://localhost:7777/projects/createProject",
           {
-            method: "PUT",
+            method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify(this.editedProject),
+            body: JSON.stringify({
+              ...this.newPorject,
+            }),
           }
         );
-
         if (!response.ok) {
-          throw new Error("Failed to update project");
+          throw new Error("Failed to create Project");
         }
-
-        // Handle success
-        console.log("Project updated successfully");
-
-        // Show success message using SweetAlert2
         await Swal.fire({
           icon: "success",
           title: "Success",
-          text: "Project updated successfully",
+          text: "New Project created successfully",
         });
-
-        // Redirect back to the previous page
-        this.$router.go(); // Go back to the previous page
+        this.createProjectDialog = false;
+        this.fetchProjects();
       } catch (error) {
-        console.error("Error updating project:", error);
-        // Handle error
+        console.error("Error creating Project:", error);
         await Swal.fire({
           icon: "error",
           title: "Error",
-          text: "Failed to update project",
+          text: "Failed to create Project",
         });
       }
     },
-
-    async deleteProject(project) {
-      try {
-        // Display a confirmation SweetAlert before proceeding with deletion
-        const confirmResult = await Swal.fire({
-          title: "Are you sure?",
-          text: "You won't be able to revert this!",
-          icon: "warning",
-          showCancelButton: true,
-          confirmButtonColor: "#3085d6",
-          cancelButtonColor: "#d33",
-          confirmButtonText: "Yes, delete it!",
-        });
-
-        if (confirmResult.isConfirmed) {
-          // User confirmed, proceed with deletion
-          const response = await fetch(
-            `http://localhost:7777/projects/delete/${project.project_id}`,
-            {
-              method: "DELETE",
-            }
-          );
-
-          if (!response.ok) {
-            throw new Error("Failed to delete project");
-          }
-
-          console.log("Project deleted successfully");
-
-          // Display Sweet Alert for successful project deletion
-          await Swal.fire(
-            "Success",
-            "Project deleted successfully.",
-            "success"
-          );
-
-          // Fetch updated project list
-          this.fetchProjects();
-        }
-      } catch (error) {
-        console.error("Error deleting project:", error);
-
-        // Display Sweet Alert for error during project deletion
-        await Swal.fire(
-          "Error",
-          "An error occurred during the project deletion process.",
-          "error"
-        );
-      }
-    },
-
     async fetchProjects() {
       try {
         const response = await fetch("http://localhost:7777/projects/getAll");
@@ -231,7 +295,134 @@ export default {
         console.error("Error fetching projects:", error);
       }
     },
+    async updateProject() {
+      try {
+        const response = await fetch(
+          `http://localhost:7777/projects/updateProject/${this.editedProject.project_id}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(this.editedProject),
+          }
+        );
+        if (!response.ok) {
+          throw new Error("Failed to update project");
+        }
+        await Swal.fire({
+          icon: "success",
+          title: "Success",
+          text: "Project updated successfully",
+        });
+        this.editProjectDialog = false;
+        this.fetchProjects();
+      } catch (error) {
+        console.error("Error updating project:", error);
+        await Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Failed to update project",
+        });
+      }
+    },
+    viewProjectDetails(project) {
+      this.$router.push({
+        path: `/Project/${project.id}`,
+        params: { selectedProject: project },
+      });
+    },
+    goToHistoryProject() {
+      this.$router.push("/Project/HistoryProject");
+    },
+    openEditDialog(project) {
+      this.editProject = { ...project };
+      this.editProjectDialog = true;
+    },
+    async softDeleteProject(project) {
+      try {
+        const confirmResult = await Swal.fire({
+          title: "Are you sure?",
+          text: "You won't be able to revert this!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, delete it!",
+        });
 
+        if (confirmResult.isConfirmed) {
+          const response = await fetch(
+            `http://localhost:7777/projects/delete/${project.id}`,
+            {
+              method: "DELETE",
+            }
+          );
+
+          if (!response.ok) {
+            throw new Error("Failed to delete project");
+          }
+
+          console.log("Project deleted successfully");
+
+          await Swal.fire(
+            "Success",
+            "Project deleted successfully.",
+            "success"
+          );
+
+          this.fetchProjects();
+        }
+      } catch (error) {
+        console.error("Error deleting project:", error);
+
+        await Swal.fire(
+          "Error",
+          "An error occurred during the project deletion process.",
+          "error"
+        );
+      }
+    },
+    async goToCreateProject() {
+      this.createProjectDialog = true;
+    },
+    async saveEditedProject() {
+      try {
+        const response = await fetch(
+          `http://localhost:7777/projects/updateProject/${this.editedProject.project_id}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              project_name_TH: this.editedProject.project_name_TH,
+              project_name_ENG: this.editedProject.project_name_ENG,
+            }),
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to update project");
+        }
+
+        await Swal.fire({
+          icon: "success",
+          title: "Success",
+          text: "Project updated successfully",
+        });
+
+        this.$router.go();
+      } catch (error) {
+        console.error("Error updating project:", error);
+
+        await Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Failed to update project",
+        });
+      }
+    },
     updateDateTime() {
       const now = new Date();
       const options = {
@@ -248,7 +439,6 @@ export default {
       this.greeting = this.getGreeting(now);
       this.currentDateTime = now.toLocaleDateString("en-US", options);
     },
-
     getGreeting(date) {
       const hour = date.getHours();
 
@@ -262,26 +452,27 @@ export default {
     },
   },
   computed: {
-    // Filtered projects based on search query
     filteredProjects() {
-      return this.projects.filter(
-        (project) =>
-          (project.project_name_TH &&
-            project.project_name_TH
-              .toLowerCase()
-              .includes(this.searchQuery.toLowerCase())) ||
-          (project.project_name_ENG &&
-            project.project_name_ENG
-              .toLowerCase()
-              .includes(this.searchQuery.toLowerCase())) ||
-          (project.project_id &&
-            project.project_id
-              .toLowerCase()
-              .includes(this.searchQuery.toLowerCase()))
-      );
+      return this.projects
+        .map((project) => ({
+          ...project,
+          project_progress: project.project_progress || 0,
+          project_plan_start: project.project_plan_start || "Not determined",
+          project_plan_end: project.project_plan_end || "Not determined",
+        }))
+        .filter((project) => {
+          const searchText = this.searchQuery.toLowerCase();
+          return (
+            (project.project_id &&
+              project.project_id.toLowerCase().includes(searchText)) ||
+            (project.project_name_ENG &&
+              project.project_name_ENG.toLowerCase().includes(searchText)) ||
+            (project.project_name_TH &&
+              project.project_name_TH.toLowerCase().includes(searchText))
+          );
+        });
     },
   },
-
   mounted() {
     this.updateDateTime();
     this.fetchProjects();
@@ -289,6 +480,7 @@ export default {
   },
 };
 </script>
+
 
 <style scoped>
 .text-01 {

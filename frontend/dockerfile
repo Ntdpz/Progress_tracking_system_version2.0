@@ -9,10 +9,10 @@ COPY . .
 
 # ติดตั้ง dependencies และ build โปรเจค
 RUN yarn install \
-        --prefer-offline \
-        --frozen-lockfile \
-        --non-interactive \
-        --production=false
+    --prefer-offline \
+    --frozen-lockfile \
+    --non-interactive \
+    --production=false
 
 RUN yarn build
 
@@ -33,10 +33,7 @@ ENV HOST 0.0.0.0
 EXPOSE 3000
 
 # ติดตั้ง Nuxt.js
-RUN npm install --global nuxt
+RUN npm install nuxt
 
-# คัดลอกไฟล์ nuxt.config.js
-COPY nuxt.config.js .
-
-# สั่งรัน Nuxt.js บน port 3000
-CMD [ "nuxt", "start" ]
+# สั่งรัน Nuxt.js บน port 3000 โดยใช้ npm เพื่อรันโดยตรง
+CMD [ "npm ", "run" ,"dev" ]
