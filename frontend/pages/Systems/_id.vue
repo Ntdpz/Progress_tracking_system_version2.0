@@ -16,7 +16,7 @@
 
     <!-- Display  system details -->
     <div v-if="systemDetails">
-      <h3> System Details</h3>
+      <h3> System Name</h3>
       <v-data-table :headers="detailsHeaders" :items="[systemDetails]" class="elevation-1">
 
         <template v-slot:items="props">

@@ -1,67 +1,32 @@
 const mysql = require('mysql2');
 
 const dbConfig = {
-  host: 'db', // ชื่อ container ของ MySQL
+  host: 'db',
   port: 3306,
   user: 'root',
   password: 'root',
-  database: 'seniorprojectprogresstracking_term1', // ชื่อ database ของ MySQL
+  database: 'seniorprojectprogresstracking_term1',
+  waitForConnections: true,
+  connectionLimit: 10, // จำนวน connection สูงสุดที่ pool สามารถจัดการได้
+  queueLimit: 0, // 0 หมายถึงไม่จำกัดจำนวน connection ที่รอ
 };
 
+const pool = mysql.createPool(dbConfig);
 
-// //Alwaysdata.com
-// // const connection = mysql.createConnection({
-// //   connectionLimit: 10, // จำนวน connection สูงสุดที่ pool สามารถจัดการได้
-// //   host: 'mysql-seniorprojectprogresstracking.alwaysdata.net',     // ที่อยู่ IP หรือชื่อโฮสต์ของ MySQL Server
-// //   user: '347136',         // ชื่อผู้ใช้ MySQL
-// //   password: 'Progresstracking1001',         // รหัสผ่าน MySQL
-// //   database: 'seniorprojectprogresstracking_term1', // ชื่อฐานข้อมูลที่ใช้
-// // });
+pool.getConnection((err, connection) => {
+  if (err) {
+    console.error("Error getting connection from pool:", err);
+    return;
+  }
 
-
-// //XAMPP
-// const connection = mysql.createConnection({
-//   connectionLimit: 10, // จำนวน connection สูงสุดที่ pool สามารถจัดการได้
-//   host: '0.0.0.0',     // ที่อยู่ IP หรือชื่อโฮสต์ของ MySQL Server
-//   user: 'root',         // ชื่อผู้ใช้ MySQL
-//   password: '',         // รหัสผ่าน MySQL
-//   database: 'seniorprojectprogresstracking_term1', // ชื่อฐานข้อมูลที่ใช้
-// });
-
-// //server SE.LAB
-// // const connection = mysql.createConnection({
-// //   host: "se.mfu.ac.th",
-// //   user: "admidpnm",
-// //   password: "adminpnm2023",
-// //   database: "notemanagement_db",
-// // });
-
-
-// เพิ่ม try-catch block เพื่อดักจับ error
-try {
-  const connection = mysql.createConnection(dbConfig);
-
-  connection.connect((err) => {
-    if (err) {
-      console.error("Error connecting to database:", err);
+  connection.query('SELECT 1 + 1 AS solution', (queryErr, results) => {
+    connection.release(); // คืน connection กลับไปยัง pool
+    if (queryErr) {
+      console.error("Error querying database:", queryErr);
       return;
     }
-    console.log("Connected to database");
+    console.log('The solution is: ', results[0].solution);
   });
+});
 
-  module.exports = connection;
-} catch (err) {
-  // โยน error ออกมาเพื่อให้ระบบจัดการต่อไป
-  throw err;
-}
-
-
-// connection.connect((err) => {
-//   if (err) {
-//     console.error("Error connecting to database:", err);
-//     return;
-//   }
-//   console.log("Connected to database");
-// });
-
-// module.exports = connection;
+module.exports = pool;
