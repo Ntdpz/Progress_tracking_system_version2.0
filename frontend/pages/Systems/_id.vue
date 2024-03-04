@@ -21,6 +21,7 @@
           <v-divider class="mx-4" inset vertical></v-divider>
           <v-spacer></v-spacer>
           <v-btn color="primary" dark @click="goToCreateScreen">New Screen</v-btn>
+          <v-btn color="primary" dark @click="goToHistoryScreen">Show History Screen</v-btn>
           <!-- <v-btn color="primary" dark @click="goToHistoryScreen"
             >Show HistoryScreen</v-btn
           > -->
@@ -112,7 +113,6 @@
 </template>
 
 
-
 <script>
 import Swal from "sweetalert2";
 
@@ -121,6 +121,8 @@ export default {
   layout: "admin",
   data() {
     return {
+      dateStartMenu: false,
+      dateEndMenu: false,
       systemNameENG: "",
       showHistoryDialog: false,
       deletedScreens: [],
@@ -152,22 +154,50 @@ export default {
         { text: "Progress", value: "screen_progress" },
         { text: "Actions", value: "actions", sortable: false },
       ],
+      watch: {
+        // Watch for changes in the selected system ID and fetch details accordingly
+        selectedSystemId: "fetchSystemDetails",
+      },
     };
   },
-  watch: {
-    // Watch for changes in the selected system ID and fetch details accordingly
-    selectedSystemId: "fetchSystemDetails",
-  },
+
   mounted() {
     // Fetch system details on component mount
     this.fetchScreens();
     this.fetchSystemNameENG();
   },
   methods: {
-    async goToScreensDetail(screenId) {
-      // Navigate to the Screen/_id.vue page with the screenId parameter
-      await this.$router.push({ path: `/screens/${screenId}` });
-    },
+    async createScreen() {
+      const systemId = this.$route.params.id;
+      try {
+        console.log('Data to send:', {
+          system_id: systemId,
+          ...this.newScreen,
+        });
+
+        const response = await fetch(
+          `http://localhost:7777/screens/createScreen`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              system_id: systemId,
+              ...this.newScreen,
+            }),
+          }
+        );
+
+        console.log('Response:', response);
+
+        // ... ต่อไป
+      } catch (error) {
+        console.error('Error creating screen', error);
+        // ... ต่อไป
+      }
+    }, 
+
     async fetchSystemNameENG() {
       try {
         const systemId = this.$route.params.id;
@@ -182,9 +212,194 @@ export default {
         this.systemNameENG = systemData.system_nameEN; // ใส่ชื่อ field ที่ต้องการแสดง
       } catch (error) {
         console.error("Error fetching system:", error);
-        // Handle error fetching project
+        // Handle error fetching Screen
       }
     },
+    async goToScreensDetail(screenId) {
+      // Navigate to the Screen/_id.vue page with the screenId parameter
+      await this.$router.push({ path: `/screens/${screenId}` });
+    },
+    async updateScreen() {
+      try {
+        const response = await fetch(
+          `http://localhost:7777/screens/updateScreen/${this.editScreen.screen_id}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(this.editScreen),
+          }
+        );
+        if (!response.ok) {
+          throw new Error("Failed to update screen");
+        }
+        await Swal.fire({
+          icon: "success",
+          title: "Success",
+          text: "Screen updated successfully",
+        });
+        this.editScreenDialog = false;
+        this.fetchScreens();
+      } catch (error) {
+        console.error("Error updating screen:", error);
+        await Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Failed to update screen",
+        });
+      }
+    },
+    goToScreensDetails(screen) {
+      this.$router.push({
+        path: `/Screen/${screen.id}`,
+        params: { selectedScreen: screen },
+      });
+    },
+    async goToHistoryScreen() {
+      this.$router.push("/Screen/HistoryScreen");
+    },
+    openEditDialog(screen) {
+      this.editScreen = { ...screen };
+      this.editScreenDialog = true;
+    },
+    async softDeleteScreen(screen) {
+      try {
+        const confirmResult = await Swal.fire({
+          title: "Are you sure?",
+          text: "You won't be able to revert this!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, delete it!",
+        });
+
+        if (confirmResult.isConfirmed) {
+          const response = await fetch(
+            `http://localhost:7777/screens/delete/${screen.id}`,
+            {
+              method: "DELETE",
+            }
+          );
+
+          if (!response.ok) {
+            throw new Error("Failed to delete screen");
+          }
+
+          console.log("Screen deleted successfully");
+
+          await Swal.fire(
+            "Success",
+            "Screen deleted successfully.",
+            "success"
+          );
+
+          this.fetchScreens();
+        }
+      } catch (error) {
+        console.error("Error deleting screen:", error);
+
+        await Swal.fire(
+          "Error",
+          "An error occurred during the screen deletion process.",
+          "error"
+        );
+      }
+    },
+    async goToCreateScreen() {
+      // Open the create system dialog first
+      this.createScreenDialog = true;
+    },
+    async saveEditedScreen() {
+      try {
+        const response = await fetch(
+          `http://localhost:7777/screens/updateScreen/${this.editedScreen.screen_id}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              screen_name_TH: this.editedScreen.screen_name_TH,
+              screen_name_ENG: this.editedScreen.screen_name_ENG,
+            }),
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to update screen");
+        }
+
+        await Swal.fire({
+          icon: "success",
+          title: "Success",
+          text: "screen updated successfully",
+        });
+
+        this.$router.go();
+      } catch (error) {
+        console.error("Error updating screen:", error);
+
+        await Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Failed to update screen",
+        });
+      }
+    },
+    updateDateTime() {
+      const now = new Date();
+      const options = {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+        second: "numeric",
+        hour12: false,
+      };
+
+      this.greeting = this.getGreeting(now);
+      this.currentDateTime = now.toLocaleDateString("en-US", options);
+    },
+    getGreeting(date) {
+      const hour = date.getHours();
+
+      if (hour >= 0 && hour < 12) {
+        return "Good Morning";
+      } else if (hour >= 12 && hour < 18) {
+        return "Good Afternoon";
+      } else {
+        return "Good Evening";
+      }
+    },
+
+    async fetchSystemDetails() {
+      const systemId = this.$route.params.id;
+
+      try {
+        const response = await fetch(
+          `http://localhost:7777/systems/getOne/${systemId}`
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch system details");
+        }
+
+        const systemData = await response.json();
+
+        // ตรวจสอบว่า project_id ไม่เป็น null และไม่ว่างเปล่า
+        // หากเป็น null หรือว่างเปล่า กำหนดค่าเริ่มต้นเป็นค่าที่ต้องการ
+        this.projectId = systemData.project_id !== null ? systemData.project_id : 'defaultProjectId';
+        // ... ต่อไป
+      } catch (error) {
+        console.error("Error fetching system details:", error);
+        // Handle error fetching system details
+      }
+    },
+
     async restoreScreen(item) {
       try {
         const confirmResult = await Swal.fire({
@@ -200,7 +415,7 @@ export default {
         if (confirmResult.isConfirmed) {
           const screenId = item.id;
           const response = await fetch(
-            `http://localhost:7777/screen/updateScreen/${screenId}`,
+            `http://localhost:7777/screens/updateScreen/${screenId}`,
             {
               method: "PUT",
               headers: {
@@ -236,23 +451,6 @@ export default {
           "An error occurred during the screen restoration process.",
           "error"
         );
-      }
-    },
-    async mounted() {
-      try {
-        const systemId = this.$route.params.id;
-        const response = await fetch(
-          `http://localhost:7777/systems/getOne/${systemId}`
-        );
-        if (!response.ok) {
-          throw new Error("Failed to fetch system");
-        }
-        const systemData = await response.json();
-        console.log(systemData); // ตรวจสอบข้อมูลที่ได้รับมา
-        this.system_nameEN = systemData.system_nameEN; // ใส่ชื่อ field ที่ต้องการแสดง
-      } catch (error) {
-        console.error("Error fetching system:", error);
-        // Handle error fetching system
       }
     },
     async confirmDeleteHistoryScreen(item) {
@@ -293,15 +491,12 @@ export default {
         });
       }
     },
-    async goToHistoryScreen() {
-      await this.fetchDeletedScreens();
-      this.showHistoryDialog = true;
-    },
+
     async fetchDeletedScreens() {
       try {
         const systemId = this.$route.params.id;
         const response = await fetch(
-          `http://localhost:7777/Screens/searchBySystemId_delete/${systemId}`
+          `http://localhost:7777/screens/searchBySystemId_delete/${systemId}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch deleted screens");
@@ -314,85 +509,7 @@ export default {
         // Handle error fetching deleted screen
       }
     },
-    async createScreen() {
-      const systemId = this.$route.params.id;
-      try {
-        const response = await fetch(
-          `http://localhost:7777/screens/createScreen`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              system_id: systemId,
-              ...this.newScreen,
-            }),
-          }
-        );
-        if (!response.ok) {
-          throw new Error("Failed to create screen");
-        }
-        // Clear the newScreen object
-        this.newScreen = {
-          screen_id: "",
-          screen_name: "",
-          screen_manday: "",
-          screen_level: "",
-          screen_plan_start: "",
-          screen_plan_end: "",
-        };
-        const confirmResult = await Swal.fire({
-          icon: "success",
-          title: "Success",
-          text: "New screen created successfully",
-          showConfirmButton: true, // แสดงปุ่ม "OK"
-          allowOutsideClick: false, // ปิดการคลิกภายนอกเพื่อป้องกันการปิดโดยไม่ได้เช็ค
-        });
-        if (confirmResult.isConfirmed) {
-          // อัพเดทข้อมูลโดยอัตโนมัติหลังจากสร้างข้อมูลใหม่สำเร็จ
-          this.fetchScreens();
-        }
-      } catch (error) {
-        console.error("Error creating screen", error);
-        await Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: "Failed to create screen",
-        });
-      }
-    },
-    async updateScreen() {
-      try {
-        const response = await fetch(
-          `http://localhost:7777/screens/updateScreen/${this.editScreen.id}`,
-          {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(this.editScreen),
-          }
-        );
-        if (!response.ok) {
-          throw new Error("Failed to update screen");
-        }
-        await Swal.fire({
-          icon: "success",
-          title: "Success",
-          text: "Screen updated successfully",
-        });
-        this.editScreenDialog = false;
-        this.fetchScreens();
-      } catch (error) {
-        console.error("Error updating screen:", error);
-        await Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: "Failed to update screen",
-        });
-      }
-    },
+
     async fetchScreens() {
       const systemId = this.$route.params.id;
       try {
@@ -408,14 +525,8 @@ export default {
         console.error("Error fetching screens:", error);
       }
     },
-    async goToCreateScreen() {
-      // Open the create system dialog first
-      this.createScreenDialog = true;
-    },
-    openEditDialog(screen) {
-      this.editScreen = { ...screen };
-      this.editScreenDialog = true;
-    },
+
+
     async editScreen(screen) {
       // Set the edited system to the selected system
       this.editedScreen = { ...screen };
@@ -491,35 +602,7 @@ export default {
       });
     },
   },
-  // async fetchSystemDetails() {
-  //   const systemId = this.selectedSystemId || this.$route.params.id;
-  //   try {
-  //     const response = await fetch(
-  //       `http://localhost:7777/systems/getOne/${systemId}`
-  //     );
-  //     if (!response.ok) {
-  //       throw new Error("Failed to fetch system details");
-  //     }
-  //     const systemData = await response.json();
-  //     this.systemDetails = systemData;
-
-  //     // Assuming you have an API endpoint to fetch all systems
-  //     const allSystemsResponse = await fetch(`http://localhost:7777/systems`);
-  //     if (!allSystemsResponse.ok) {
-  //       throw new Error("Failed to fetch systems");
-  //     }
-  //     this.systems = await allSystemsResponse.json();
-  //   } catch (error) {
-  //     console.error("Error fetching system details:", error);
-  //   }
-  // },
-  // selectSystem(systemId) {
-  //   // Triggered when a row is clicked, update the selectedSystemId
-  //   this.$emit("update:selectedSystemId", systemId);
-  // },
 };
 </script>
 
-<style scoped>
-/* Add styles as needed */
-</style>
+<style scoped></style>
