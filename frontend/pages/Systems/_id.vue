@@ -165,6 +165,7 @@ export default {
     // Fetch system details on component mount
     this.fetchScreens();
     this.fetchSystemNameENG();
+    this.fetchSystem();
   },
   methods: {
     async createScreen() {
@@ -197,6 +198,24 @@ export default {
         // ... ต่อไป
       }
     }, 
+
+    async fetchSystem() {
+      try {
+        const systemId = this.$route.params.id;
+        const response = await fetch(
+          `http://localhost:7777/systems/getOne/${systemId}`
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch system");
+        }
+        const systemData = await response.json();
+        console.log(systemData); // ตรวจสอบข้อมูลที่ได้รับมา
+        this.system = systemData.system; // ใส่ชื่อ field ที่ต้องการแสดง
+      } catch (error) {
+        console.error("Error fetching system:", error);
+        // Handle error fetching Screen
+      }
+    },
 
     async fetchSystemNameENG() {
       try {
