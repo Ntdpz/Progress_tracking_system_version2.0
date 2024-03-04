@@ -42,10 +42,10 @@
       </template>
 
       <template v-slot:item.actions="{ item }">
-        <v-icon class="me-2" size="small" @click="restoreProject(item)">
+        <v-icon class="me-2" size= 30px  @click="restoreProject(item)">
           mdi-restore
         </v-icon>
-        <v-icon class="me-2" size="small" @click="deleteProject(item)">
+        <v-icon class="me-2" size=30 px @click="deleteProject(item)">
           mdi-delete
         </v-icon>
       </template>
