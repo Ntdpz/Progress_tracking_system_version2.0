@@ -39,9 +39,9 @@
                 <v-select v-model="newScreen.screen_level" label="Screen Level"
                   :items="['Very Difficult', 'Hard', 'Moderate', 'Easy', 'Simple']"></v-select>
 
-                <!-- File input for avatar -->
-                <v-file-input :rules="rules" accept="image/png, image/jpeg, image/bmp" label="Avatar"
-                  placeholder="Pick an avatar" prepend-icon="mdi-camera" v-model="newScreen.avatar"></v-file-input>
+                <!-- File input for photo -->
+                <v-file-input :rules="rules" accept="image/png, image/jpeg, image/bmp" label="Photo"
+                  placeholder="Pick a photo" prepend-icon="mdi-camera" v-model="newScreen.photo"></v-file-input>
 
                 <v-btn type="submit" @click="createScreenDialog = false; createScreen();">Create</v-btn>
                 <v-btn @click="createScreenDialog = false">Cancel</v-btn>
