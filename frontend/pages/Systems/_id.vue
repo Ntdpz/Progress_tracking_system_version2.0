@@ -194,6 +194,11 @@ export default {
             icon: 'success',
             title: 'Screen Created!',
             text: 'The new screen has been created successfully.',
+            showConfirmButton: true, // Show OK button
+            allowOutsideClick: false, // Prevent closing by clicking outside
+          }).then(() => {
+            // Update the screens table after the user clicks OK
+            this.fetchScreens();
           });
         } else {
           throw new Error('Failed to create screen');
@@ -213,6 +218,8 @@ export default {
         // ... continue
       }
     },
+
+
 
     async fetchSystemNameENG() {
       try {
@@ -234,7 +241,7 @@ export default {
     async goToScreensDetail(screenId) {
       await this.$router.push({ path: `/screens/${screenId}` });
     },
-    
+
     async updateScreen() {
       try {
         const response = await fetch(
