@@ -32,41 +32,23 @@
           <v-card>
             <v-card-title>Create New Screen</v-card-title>
             <v-card-text>
-              <!-- Form to create new screen -->
+              <!-- Form to create a new screen -->
               <v-form>
                 <v-text-field v-model="newScreen.screen_id" label="Screen ID"></v-text-field>
                 <v-text-field v-model="newScreen.screen_name" label="Screen Name"></v-text-field>
-                <v-text-field v-model="newScreen.screen_manday" label="Screen Manday"></v-text-field>
                 <v-select v-model="newScreen.screen_level" label="Screen Level"
                   :items="['Very Difficult', 'Hard', 'Moderate', 'Easy', 'Simple']"></v-select>
-                <v-menu v-model="dateStartMenu" :close-on-content-click="false" :nudge-right="40"
-                  transition="scale-transition" offset-y>
-                  <template v-slot:activator="{ on }">
-                    <v-text-field v-model="newScreen.screen_plan_start" label="Date start" readonly
-                      v-on="on"></v-text-field>
-                  </template>
-                  <v-date-picker v-model="newScreen.screen_plan_start"></v-date-picker>
-                </v-menu>
-                <!-- Use v-date-picker for Date End -->
-                <v-menu v-model="dateEndMenu" :close-on-content-click="false" :nudge-right="40"
-                  transition="scale-transition" offset-y>
 
-                  <template v-slot:activator="{ on }">
-                    <v-text-field v-model="newScreen.screen_plan_end" label="Date End" readonly
-                      v-on="on"></v-text-field>
-                  </template>
-                  <v-date-picker v-model="newScreen.screen_plan_end"></v-date-picker>
-                </v-menu>
-                <v-btn type="submit" @click="
-          createScreenDialog = false;
-        createScreen();
-        ">Create</v-btn>
+                <!-- File input for avatar -->
+                <v-file-input :rules="rules" accept="image/png, image/jpeg, image/bmp" label="Avatar"
+                  placeholder="Pick an avatar" prepend-icon="mdi-camera" v-model="newScreen.avatar"></v-file-input>
+
+                <v-btn type="submit" @click="createScreenDialog = false; createScreen();">Create</v-btn>
                 <v-btn @click="createScreenDialog = false">Cancel</v-btn>
               </v-form>
             </v-card-text>
           </v-card>
         </v-dialog>
-
         <!-- Edit Screen Dialog -->
         <v-dialog v-model="editScreenDialog" max-width="600" ref="editScreenDialog">
           <v-card>
@@ -165,17 +147,36 @@ export default {
     // Fetch system details on component mount
     this.fetchScreens();
     this.fetchSystemNameENG();
-    this.fetchSystem();
   },
   methods: {
     async createScreen() {
       const systemId = this.$route.params.id;
-      try {
-        console.log('Data to send:', {
-          system_id: systemId,
-          ...this.newScreen,
-        });
 
+      try {
+        // Fetch system data to get project_id
+        const systemResponse = await fetch(`http://localhost:7777/systems/getOne/${systemId}`);
+        if (!systemResponse.ok) {
+          throw new Error("Failed to fetch system data");
+        }
+
+        const systemData = await systemResponse.json();
+        const projectId = systemData.project_id;
+
+        // Prepare data to send
+        const requestData = {
+          screen_id: this.newScreen.screen_id,
+          screen_name: this.newScreen.screen_name,
+          screen_status: 'default_status', // Update with your default status
+          screen_level: this.newScreen.screen_level,
+          screen_pic: 'default_pic', // Update with your default pic
+          system_id: systemId,
+          screen_progress: 0, // Update with your default progress
+          screen_plan_start: this.newScreen.screen_plan_start || null, // Use null if empty
+          screen_plan_end: this.newScreen.screen_plan_end || null, // Use null if empty
+          project_id: projectId, // Use the fetched project_id
+        };
+
+        // Make the request to create a new screen
         const response = await fetch(
           `http://localhost:7777/screens/createScreen`,
           {
@@ -183,37 +184,33 @@ export default {
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({
-              system_id: systemId,
-              ...this.newScreen,
-            }),
+            body: JSON.stringify(requestData),
           }
         );
 
-        console.log('Response:', response);
+        // Check if the screen was created successfully
+        if (response.ok) {
+          await Swal.fire({
+            icon: 'success',
+            title: 'Screen Created!',
+            text: 'The new screen has been created successfully.',
+          });
+        } else {
+          throw new Error('Failed to create screen');
+        }
 
-        // ... ต่อไป
+        // ... continue
       } catch (error) {
         console.error('Error creating screen', error);
-        // ... ต่อไป
-      }
-    }, 
 
-    async fetchSystem() {
-      try {
-        const systemId = this.$route.params.id;
-        const response = await fetch(
-          `http://localhost:7777/systems/getOne/${systemId}`
-        );
-        if (!response.ok) {
-          throw new Error("Failed to fetch system");
-        }
-        const systemData = await response.json();
-        console.log(systemData); // ตรวจสอบข้อมูลที่ได้รับมา
-        this.system = systemData.system; // ใส่ชื่อ field ที่ต้องการแสดง
-      } catch (error) {
-        console.error("Error fetching system:", error);
-        // Handle error fetching Screen
+        // Show error message using SweetAlert2
+        await Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Failed to create the screen. Please try again.',
+        });
+
+        // ... continue
       }
     },
 
@@ -235,9 +232,9 @@ export default {
       }
     },
     async goToScreensDetail(screenId) {
-      // Navigate to the Screen/_id.vue page with the screenId parameter
       await this.$router.push({ path: `/screens/${screenId}` });
     },
+    
     async updateScreen() {
       try {
         const response = await fetch(
