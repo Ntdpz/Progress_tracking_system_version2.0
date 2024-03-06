@@ -38,10 +38,13 @@
                 <v-text-field v-model="newScreen.screen_name" label="Screen Name"></v-text-field>
                 <v-select v-model="newScreen.screen_level" label="Screen Level"
                   :items="['Very Difficult', 'Hard', 'Moderate', 'Easy', 'Simple']"></v-select>
+                <!-- File input for photo -->
+                <v-file-input :rules="rules" accept="image/png, image/jpeg, image/bmp" label="Photo"
+                  placeholder="Pick a photo" prepend-icon="mdi-camera" v-model="newScreen.photo"></v-file-input>
 
-                <!-- File input for avatar -->
-                <v-file-input :rules="rules" accept="image/png, image/jpeg, image/bmp" label="Avatar"
-                  placeholder="Pick an avatar" prepend-icon="mdi-camera" v-model="newScreen.avatar"></v-file-input>
+                <!-- แสดงรูปภาพที่ถูกเลือก -->
+                <v-img v-if="newScreen.photo" :src="newScreen.photo" class="mt-4" max-height="200"></v-img>
+
 
                 <v-btn type="submit" @click="createScreenDialog = false; createScreen();">Create</v-btn>
                 <v-btn @click="createScreenDialog = false">Cancel</v-btn>
@@ -103,6 +106,7 @@ export default {
   layout: "admin",
   data() {
     return {
+      base64DataFromDatabase: "YOUR_BASE64_STRING_HERE",
       dateStartMenu: false,
       dateEndMenu: false,
       systemNameENG: "",
@@ -115,6 +119,7 @@ export default {
         screen_name: "",
         screen_manday: "",
         screen_level: "",
+        screen_pic: "",
         screen_plan_start: "",
         screen_plan_end: "",
       },
@@ -131,10 +136,12 @@ export default {
       headers: [
         { text: "Screen ID", value: "screen_id" },
         { text: "Screen Name", value: "screen_name" },
+        { text: "Picture", value: "screen_pic"},
         { text: "Due date", value: "screen_plan_end" },
         { text: "Status", value: "screen_status" },
         { text: "Progress", value: "screen_progress" },
         { text: "Actions", value: "actions", sortable: false },
+        
       ],
       watch: {
         // Watch for changes in the selected system ID and fetch details accordingly
@@ -168,7 +175,7 @@ export default {
           screen_name: this.newScreen.screen_name,
           screen_status: 'default_status', // Update with your default status
           screen_level: this.newScreen.screen_level,
-          screen_pic: 'default_pic', // Update with your default pic
+          screen_pic: await this.base64Encode(this.newScreen.photo),
           system_id: systemId,
           screen_progress: 0, // Update with your default progress
           screen_plan_start: this.newScreen.screen_plan_start || null, // Use null if empty
@@ -218,8 +225,18 @@ export default {
         // ... continue
       }
     },
-
-
+    async base64Encode(file) {
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result.split(',')[1]);
+      });
+    },
+    // Function to decode a base64 string to a data URI
+    base64DecodeToDataURI(base64String) {
+      return `data:image/png;base64,${base64String}`;
+    },
+    
 
     async fetchSystemNameENG() {
       try {
@@ -623,6 +640,9 @@ export default {
           screen.screen_name.toLowerCase().includes(searchText)
         );
       });
+    },
+    decodedImage() {
+      return this.base64DecodeToDataURI(this.base64DataFromDatabase);
     },
   },
 };
