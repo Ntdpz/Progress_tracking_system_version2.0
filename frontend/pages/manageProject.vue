@@ -132,6 +132,7 @@
       </v-card>
     </v-dialog>
 
+
     <!-- Project Details Dialog -->
     <v-dialog
       v-model="editProjectDialog"
