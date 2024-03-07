@@ -4,71 +4,39 @@
     <!-- Search bar -->
     <v-row no-gutters>
       <v-col cols="12">
-        <input
-          type="text"
-          v-model="searchQuery"
-          placeholder="Search..."
-          style="
+        <input type="text" v-model="searchQuery" placeholder="Search..." style="
             margin-bottom: 10px;
             width: 100%;
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
             font-size: 16px;
-          "
-        />
+          " />
       </v-col>
     </v-row>
     <!-- Data Table -->
-    <v-data-table
-      :headers="headers"
-      :items="filteredSystems"
-      :items-per-page="5"
-      class="elevation-1"
-    >
+    <v-data-table :headers="headers" :items="filteredSystems" :items-per-page="5" class="elevation-1">
       <template v-slot:top>
         <v-toolbar flat>
-          <v-toolbar-title
-            >Systems Management - Project :
-            {{ projectNameENG }}</v-toolbar-title
-          >
+          <v-toolbar-title>Systems Management - Project :
+            {{ projectNameENG }}</v-toolbar-title>
           <v-divider class="mx-4" inset vertical></v-divider>
           <v-spacer></v-spacer>
-          <v-btn color="primary" dark @click="goToCreateSystem"
-            >New System</v-btn
-          >
-          <v-btn color="primary" dark @click="goToHistorySystems"
-            >Show HistorySystem</v-btn
-          >
+          <v-btn color="primary" dark @click="goToCreateSystem">New System</v-btn>
+          <v-btn color="primary" dark @click="goToHistorySystems" style="margin-left: 10px;">Show HistorySystem</v-btn>
         </v-toolbar>
 
         <!-- Create System Dialog -->
-        <v-dialog
-          v-model="createSystemDialog"
-          max-width="600"
-          ref="createSystemDialog"
-        >
+        <v-dialog v-model="createSystemDialog" max-width="600" ref="createSystemDialog">
           <v-card>
             <v-card-title>Create New System</v-card-title>
             <v-card-text>
               <!-- Form to create new system -->
               <v-form @submit.prevent="createSystem">
-                <v-text-field
-                  v-model="newSystem.system_id"
-                  label="System ID"
-                ></v-text-field>
-                <v-text-field
-                  v-model="newSystem.system_nameTH"
-                  label="System Name (TH)"
-                ></v-text-field>
-                <v-text-field
-                  v-model="newSystem.system_nameEN"
-                  label="System Name (EN)"
-                ></v-text-field>
-                <v-text-field
-                  v-model="newSystem.system_shortname"
-                  label="Short Name"
-                ></v-text-field>
+                <v-text-field v-model="newSystem.system_id" label="System ID"></v-text-field>
+                <v-text-field v-model="newSystem.system_nameTH" label="System Name (TH)"></v-text-field>
+                <v-text-field v-model="newSystem.system_nameEN" label="System Name (EN)"></v-text-field>
+                <v-text-field v-model="newSystem.system_shortname" label="Short Name"></v-text-field>
 
                 <v-btn type="submit">Create</v-btn>
                 <v-btn @click="createSystemDialog = false">Cancel</v-btn>
@@ -78,33 +46,16 @@
         </v-dialog>
 
         <!-- Edit System Dialog -->
-        <v-dialog
-          v-model="editSystemDialog"
-          max-width="600"
-          ref="editSystemDialog"
-        >
+        <v-dialog v-model="editSystemDialog" max-width="600" ref="editSystemDialog">
           <v-card>
             <v-card-title>Edit System</v-card-title>
             <v-card-text>
               <!-- Form to edit system -->
               <v-form @submit.prevent="updateSystem">
-                <v-text-field
-                  v-model="editedSystem.system_id"
-                  label="System ID"
-                  readonly
-                ></v-text-field>
-                <v-text-field
-                  v-model="editedSystem.system_nameTH"
-                  label="System Name (TH)"
-                ></v-text-field>
-                <v-text-field
-                  v-model="editedSystem.system_nameEN"
-                  label="System Name (EN)"
-                ></v-text-field>
-                <v-text-field
-                  v-model="editedSystem.system_shortname"
-                  label="Short Name"
-                ></v-text-field>
+                <v-text-field v-model="editedSystem.system_id" label="System ID" readonly></v-text-field>
+                <v-text-field v-model="editedSystem.system_nameTH" label="System Name (TH)"></v-text-field>
+                <v-text-field v-model="editedSystem.system_nameEN" label="System Name (EN)"></v-text-field>
+                <v-text-field v-model="editedSystem.system_shortname" label="Short Name"></v-text-field>
                 <!-- Add more fields as needed -->
                 <!-- You can also add selection fields for system analyst and member -->
                 <!-- Add buttons to submit and cancel -->
@@ -146,12 +97,8 @@
       </template>
 
       <template v-slot:item.actions="{ item }">
-        <v-icon class="me-2" size="20" px @click="openEditDialog(item)"
-          >mdi-pencil-circle</v-icon
-        >
-        <v-icon size="20" px @click="confirmDeleteSystem(item)"
-          >mdi-delete-empty</v-icon
-        >
+        <v-icon class="me-2" size="20" px @click="openEditDialog(item)">mdi-pencil-circle</v-icon>
+        <v-icon size="20" px @click="confirmDeleteSystem(item)">mdi-delete-empty</v-icon>
         <v-btn @click="goToSystemsDetail(item.id)">Systems Detail</v-btn>
       </template>
     </v-data-table>

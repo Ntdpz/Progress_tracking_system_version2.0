@@ -21,7 +21,7 @@
           <v-divider class="mx-4" inset vertical></v-divider>
           <v-spacer></v-spacer>
           <v-btn color="primary" dark @click="goToCreateScreen">New Screen</v-btn>
-          <v-btn color="primary" dark @click="goToHistoryScreen">Show History Screen</v-btn>
+          <v-btn color="primary" dark @click="goToHistoryScreen" style="margin-left: 10px;">Show History Screen</v-btn>
           <!-- <v-btn color="primary" dark @click="goToHistoryScreen"
             >Show HistoryScreen</v-btn
           > -->
