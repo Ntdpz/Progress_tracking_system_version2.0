@@ -66,25 +66,68 @@
               <!-- Form to create new project -->
               <v-form>
                 <v-text-field
-                  v-model="newPorject.project_id"
+                  v-model="newProject.project_id"
                   label="Project ID"
                 ></v-text-field>
                 <v-text-field
-                  v-model="newPorject.project_name_TH"
+                  v-model="newProject.project_name_TH"
                   label="Project Name (TH)"
                 ></v-text-field>
                 <v-text-field
-                  v-model="newPorject.project_name_ENG"
+                  v-model="newProject.project_name_ENG"
                   label="Project Name (EN)"
                 ></v-text-field>
+
+                <!-- New fields for SA, DEV, IMP selection -->
+                <v-select
+                  v-model="selectedSA"
+                  :items="teamMembers"
+                  label="Select SA"
+                  multiple
+                >
+                  <template v-slot:prepend-item>
+                    <v-list-item @click="selectAllSA">
+                      <v-list-item-content>Select All</v-list-item-content>
+                    </v-list-item>
+                  </template>
+                </v-select>
+
+                <v-select
+                  v-model="selectedDEV"
+                  :items="teamMembers"
+                  label="Select DEV"
+                  multiple
+                >
+                  <template v-slot:prepend-item>
+                    <v-list-item @click="selectAllDEV">
+                      <v-list-item-content>Select All</v-list-item-content>
+                    </v-list-item>
+                  </template>
+                </v-select>
+
+                <v-select
+                  v-model="selectedIMP"
+                  :items="teamMembers"
+                  label="Select IMP"
+                  multiple
+                >
+                  <template v-slot:prepend-item>
+                    <v-list-item @click="selectAllIMP">
+                      <v-list-item-content>Select All</v-list-item-content>
+                    </v-list-item>
+                  </template>
+                </v-select>
+
+                <!-- Button to submit -->
                 <v-btn
                   type="submit"
                   @click="
                     createProjectDialog = false;
                     createProject();
                   "
-                  >Create</v-btn
                 >
+                  Create
+                </v-btn>
                 <v-btn @click="createProjectDialog = false">Cancel</v-btn>
               </v-form>
             </v-card-text>
@@ -132,7 +175,6 @@
       </v-card>
     </v-dialog>
 
-
     <!-- Project Details Dialog -->
     <v-dialog
       v-model="editProjectDialog"
@@ -177,6 +219,17 @@ export default {
   layout: "admin",
   data() {
     return {
+      newProject: {
+        project_id: "",
+        project_name_TH: "",
+        project_name_ENG: "",
+      },
+      // Define variables to store selected team members
+      selectedSA: [],
+      selectedDEV: [],
+      selectedIMP: [],
+      // Sample team members data
+      teamMembers: ["SA1", "SA2", "DEV1", "DEV2", "IMP1", "IMP2"],
       detailsDialog: false,
       createProjectDialog: false,
       editProjectDialog: false,
@@ -187,11 +240,6 @@ export default {
       editedProject: { project_name_TH: "", project_name_ENG: "" },
       projects: [],
       searchQuery: "",
-      newPorject: {
-        project_id: "",
-        project_name_TH: "",
-        project_name_ENG: "",
-      },
       editProject: {
         project_id: "",
         project_name_TH: "",
@@ -213,6 +261,27 @@ export default {
     };
   },
   methods: {
+    selectAllSA() {
+      if (this.selectedSA.length === this.teamMembers.length) {
+        this.selectedSA = [];
+      } else {
+        this.selectedSA = [...this.teamMembers];
+      }
+    },
+    selectAllDEV() {
+      if (this.selectedDEV.length === this.teamMembers.length) {
+        this.selectedDEV = [];
+      } else {
+        this.selectedDEV = [...this.teamMembers];
+      }
+    },
+    selectAllIMP() {
+      if (this.selectedIMP.length === this.teamMembers.length) {
+        this.selectedIMP = [];
+      } else {
+        this.selectedIMP = [...this.teamMembers];
+      }
+    },
     async createProject() {
       if (
         !this.newPorject.project_id ||
