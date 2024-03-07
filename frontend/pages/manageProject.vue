@@ -54,85 +54,6 @@
             >Show History Project</v-btn
           >
         </v-toolbar>
-        <!-- Create Project Dialog -->
-        <v-dialog
-          v-model="createProjectDialog"
-          max-width="600"
-          ref="createProjectDialog"
-        >
-          <v-card>
-            <v-card-title>Create New Project</v-card-title>
-            <v-card-text>
-              <!-- Form to create new project -->
-              <v-form>
-                <v-text-field
-                  v-model="newProject.project_id"
-                  label="Project ID"
-                ></v-text-field>
-                <v-text-field
-                  v-model="newProject.project_name_TH"
-                  label="Project Name (TH)"
-                ></v-text-field>
-                <v-text-field
-                  v-model="newProject.project_name_ENG"
-                  label="Project Name (EN)"
-                ></v-text-field>
-
-                <!-- New fields for SA, DEV, IMP selection -->
-                <v-select
-                  v-model="selectedSA"
-                  :items="formatTeamMembers(teamMembersSA)"
-                  label="Select SA"
-                  multiple
-                >
-                  <template v-slot:prepend-item>
-                    <v-list-item @click="selectAllSA">
-                      <v-list-item-content>Select All</v-list-item-content>
-                    </v-list-item>
-                  </template>
-                </v-select>
-
-                <v-select
-                  v-model="selectedDEV"
-                  :items="formatTeamMembers(teamMembersDEV)"
-                  label="Select DEV"
-                  multiple
-                >
-                  <template v-slot:prepend-item>
-                    <v-list-item @click="selectAllDEV">
-                      <v-list-item-content>Select All</v-list-item-content>
-                    </v-list-item>
-                  </template>
-                </v-select>
-
-                <v-select
-                  v-model="selectedIMP"
-                  :items="formatTeamMembers(teamMembersIMP)"
-                  label="Select IMP"
-                  multiple
-                >
-                  <template v-slot:prepend-item>
-                    <v-list-item @click="selectAllIMP">
-                      <v-list-item-content>Select All</v-list-item-content>
-                    </v-list-item>
-                  </template>
-                </v-select>
-
-                <!-- Button to submit -->
-                <v-btn
-                  type="submit"
-                  @click="
-                    createProjectDialog = false;
-                    createProject();
-                  "
-                >
-                  Create
-                </v-btn>
-                <v-btn @click="createProjectDialog = false">Cancel</v-btn>
-              </v-form>
-            </v-card-text>
-          </v-card>
-        </v-dialog>
       </template>
 
       <template v-slot:item.actions="{ item }">
@@ -147,7 +68,86 @@
         </v-btn>
       </template>
     </v-data-table>
+    <!-- Create Project Dialog -->
+    <v-dialog
+      v-model="createProjectDialog"
+      max-width="600"
+      ref="createProjectDialog"
+    >
+      <v-card>
+        <v-card-title>Create New Project</v-card-title>
+        <v-card-text>
+          <!-- Form to create new project -->
+          <v-form>
+            <v-text-field
+              v-model="newProject.project_id"
+              label="Project ID"
+            ></v-text-field>
+            <v-text-field
+              v-model="newProject.project_name_TH"
+              label="Project Name (TH)"
+            ></v-text-field>
+            <v-text-field
+              v-model="newProject.project_name_ENG"
+              label="Project Name (EN)"
+            ></v-text-field>
 
+            <!-- New fields for SA, DEV, IMP selection -->
+            <v-select
+              v-model="selectedSA"
+              :items="formatTeamMembers(teamMembersSA)"
+              label="Select SA"
+              multiple
+            >
+              <template v-slot:prepend-item>
+                <v-list-item @click="selectAllSA">
+                  <v-list-item-content>Select All</v-list-item-content>
+                </v-list-item>
+              </template>
+            </v-select>
+            
+            <v-select
+              v-model="selectedDEV"
+              :items="formatTeamMembers(teamMembersDEV)"
+              label="Select DEV"
+              multiple
+            >
+              <template v-slot:prepend-item>
+                <v-list-item @click="selectAllDEV">
+                  <v-list-item-content>Select All</v-list-item-content>
+                </v-list-item>
+              </template>
+            </v-select>
+
+            <v-select
+              v-model="selectedIMP"
+              :items="formatTeamMembers(teamMembersIMP)"
+              label="Select IMP"
+              multiple
+            >
+              <template v-slot:prepend-item>
+                <v-list-item @click="selectAllIMP">
+                  <v-list-item-content>Select All</v-list-item-content>
+                </v-list-item>
+              </template>
+            </v-select>
+
+            <!-- Button to submit -->
+            <v-btn
+              type="submit"
+              @click="
+                createProjectDialog = false;
+                createProject();
+              "
+            >
+              Create
+            </v-btn>
+
+            <v-btn @click="createProjectDialog = false">Cancel</v-btn>
+          </v-form>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
     <!-- Edit Project Form Dialog -->
     <v-dialog v-model="editDialog" max-width="600">
       <v-card>
@@ -280,13 +280,35 @@ export default {
           throw new Error("Failed to fetch team members");
         }
 
-        this.teamMembersSA = await responseSA.json();
-        this.teamMembersDEV = await responseDEV.json();
-        this.teamMembersIMP = await responseIMP.json();
+        // Fetch team members data
+        const teamMembersSA = await responseSA.json();
+        const teamMembersDEV = await responseDEV.json();
+        const teamMembersIMP = await responseIMP.json();
+
+        // Assign to data properties with user_id included
+        this.teamMembersSA = teamMembersSA.map((user) => ({
+          user_id: user.id, // Include user_id here
+          user_firstname: user.user_firstname,
+          user_position: user.user_position,
+          user_role: user.user_role,
+        }));
+        this.teamMembersDEV = teamMembersDEV.map((user) => ({
+          user_id: user.id, // Include user_id here
+          user_firstname: user.user_firstname,
+          user_position: user.user_position,
+          user_role: user.user_role,
+        }));
+        this.teamMembersIMP = teamMembersIMP.map((user) => ({
+          user_id: user.id, // Include user_id here
+          user_firstname: user.user_firstname,
+          user_position: user.user_position,
+          user_role: user.user_role,
+        }));
       } catch (error) {
         console.error("Error fetching team members:", error);
       }
     },
+
     selectAllSA() {
       if (this.selectedSA.length === this.teamMembersSA.length) {
         this.selectedSA = [];
@@ -317,11 +339,15 @@ export default {
     },
     async createProject() {
       if (
-        !this.newPorject.project_id ||
-        !this.newPorject.project_name_TH ||
-        !this.newPorject.project_name_ENG
+        !this.newProject.project_id ||
+        !this.newProject.project_name_TH ||
+        !this.newProject.project_name_ENG
       ) {
-        alert("Please fill in all required fields.");
+        await Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Please fill in all required fields.",
+        });
         return;
       }
       try {
@@ -333,17 +359,23 @@ export default {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              ...this.newPorject,
+              project_id: this.newProject.project_id,
+              project_name_TH: this.newProject.project_name_TH,
+              project_name_ENG: this.newProject.project_name_ENG,
+              selectedSA: this.selectedSA.map((member) => member.user_id),
+              selectedDEV: this.selectedDEV.map((member) => member.user_id),
+              selectedIMP: this.selectedIMP.map((member) => member.user_id),
             }),
           }
         );
+        const data = await response.json();
         if (!response.ok) {
-          throw new Error("Failed to create Project");
+          throw new Error(data.message || "Failed to create Project");
         }
         await Swal.fire({
           icon: "success",
           title: "Success",
-          text: "New Project created successfully",
+          text: data.message || "New Project created successfully",
         });
         this.createProjectDialog = false;
         this.fetchProjects();
@@ -352,10 +384,11 @@ export default {
         await Swal.fire({
           icon: "error",
           title: "Error",
-          text: "Failed to create Project",
+          text: error.message || "Failed to create Project",
         });
       }
     },
+
     async fetchProjects() {
       try {
         const response = await fetch("http://localhost:7777/projects/getAll");
