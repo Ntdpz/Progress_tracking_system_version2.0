@@ -81,7 +81,7 @@
                 <!-- New fields for SA, DEV, IMP selection -->
                 <v-select
                   v-model="selectedSA"
-                  :items="teamMembers"
+                  :items="formatTeamMembers(teamMembersSA)"
                   label="Select SA"
                   multiple
                 >
@@ -94,7 +94,7 @@
 
                 <v-select
                   v-model="selectedDEV"
-                  :items="teamMembers"
+                  :items="formatTeamMembers(teamMembersDEV)"
                   label="Select DEV"
                   multiple
                 >
@@ -107,7 +107,7 @@
 
                 <v-select
                   v-model="selectedIMP"
-                  :items="teamMembers"
+                  :items="formatTeamMembers(teamMembersIMP)"
                   label="Select IMP"
                   multiple
                 >
@@ -219,6 +219,9 @@ export default {
   layout: "admin",
   data() {
     return {
+      teamMembersSA: [],
+      teamMembersDEV: [],
+      teamMembersIMP: [],
       newProject: {
         project_id: "",
         project_name_TH: "",
@@ -261,26 +264,56 @@ export default {
     };
   },
   methods: {
+    async fetchTeamMembers() {
+      try {
+        const responseSA = await fetch(
+          "http://localhost:7777/users/getUserByPosition?user_position=System Analyst"
+        );
+        const responseDEV = await fetch(
+          "http://localhost:7777/users/getUserByPosition?user_position=Developer"
+        );
+        const responseIMP = await fetch(
+          "http://localhost:7777/users/getUserByPosition?user_position=Implementer"
+        );
+
+        if (!responseSA.ok || !responseDEV.ok || !responseIMP.ok) {
+          throw new Error("Failed to fetch team members");
+        }
+
+        this.teamMembersSA = await responseSA.json();
+        this.teamMembersDEV = await responseDEV.json();
+        this.teamMembersIMP = await responseIMP.json();
+      } catch (error) {
+        console.error("Error fetching team members:", error);
+      }
+    },
     selectAllSA() {
-      if (this.selectedSA.length === this.teamMembers.length) {
+      if (this.selectedSA.length === this.teamMembersSA.length) {
         this.selectedSA = [];
       } else {
-        this.selectedSA = [...this.teamMembers];
+        this.selectedSA = [...this.teamMembersSA];
       }
     },
     selectAllDEV() {
-      if (this.selectedDEV.length === this.teamMembers.length) {
+      if (this.selectedDEV.length === this.teamMembersDEV.length) {
         this.selectedDEV = [];
       } else {
-        this.selectedDEV = [...this.teamMembers];
+        this.selectedDEV = [...this.teamMembersDEV];
       }
     },
     selectAllIMP() {
-      if (this.selectedIMP.length === this.teamMembers.length) {
+      if (this.selectedIMP.length === this.teamMembersIMP.length) {
         this.selectedIMP = [];
       } else {
-        this.selectedIMP = [...this.teamMembers];
+        this.selectedIMP = [...this.teamMembersIMP];
       }
+    },
+
+    formatTeamMembers(teamMembers) {
+      return teamMembers.map((member) => ({
+        text: `${member.user_position}: ${member.user_firstname} ${member.user_lastname}`,
+        value: member,
+      }));
     },
     async createProject() {
       if (
@@ -514,6 +547,7 @@ export default {
     },
   },
   mounted() {
+    this.fetchTeamMembers();
     this.updateDateTime();
     this.fetchProjects();
     setInterval(this.updateDateTime, 1000);
