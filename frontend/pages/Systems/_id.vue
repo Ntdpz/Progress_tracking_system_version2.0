@@ -86,7 +86,8 @@
 
       <template v-slot:item.actions="{ item }">
         <v-icon class="me-2" size="20" px @click="openEditDialog(item)">mdi-pencil-circle</v-icon>
-        <v-icon size="20" px @click="confirmDeleteScreen(item)">mdi-delete-empty</v-icon>
+        <v-icon v-show="shouldShowDeleteButton" class="me-2" size="20" px
+          @click="confirmDeleteScreen(item)">mdi-delete-empty</v-icon>
         <v-btn @click="goToScreensDetail(item.id)" style="margin-left: 10px;">Screens Detail</v-btn>
       </template>
     </v-data-table>
@@ -102,6 +103,7 @@ export default {
   layout: "admin",
   data() {
     return {
+      shouldShowDeleteButton: true,
       dateStartMenu: false,
       dateEndMenu: false,
       systemNameENG: "",
@@ -117,7 +119,7 @@ export default {
         screen_plan_start: "",
         screen_plan_end: "",
       },
-      editScreen: {
+      editedScreen: {
         screen_id: "",
         screen_name: "",
         screen_manday: "",
@@ -254,10 +256,13 @@ export default {
           title: "Success",
           text: "Screen updated successfully",
         });
+
         this.editScreenDialog = false;
+
         this.fetchScreens();
       } catch (error) {
         console.error("Error updating screen:", error);
+
         await Swal.fire({
           icon: "error",
           title: "Error",
@@ -265,6 +270,7 @@ export default {
         });
       }
     },
+
     goToScreensDetails(screen) {
       this.$router.push({
         path: `/Screen/${screen.id}`,
@@ -275,7 +281,7 @@ export default {
       this.$router.push("/Screen/HistoryScreen");
     },
     openEditDialog(screen) {
-      this.editScreen = { ...screen };
+      this.editedScreen = { ...screen };
       this.editScreenDialog = true;
     },
     async softDeleteScreen(screen) {
