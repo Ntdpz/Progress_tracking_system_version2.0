@@ -8,7 +8,6 @@
             <v-text-field v-model="personInCharge" label="Person in Charge" required></v-text-field>
             <v-text-field v-model="detail" label="Detail" required></v-text-field>
             <v-btn type="submit">Create</v-btn>
-
             <v-btn color="error" @click="cancel">Cancel</v-btn>
         </v-form>
     </div>
@@ -30,7 +29,7 @@ export default {
     },
     methods: {
         async createTask() {
-            // Pass Screen ID as a Prop
+            // Get screen id from URL
             const screenId = this.$route.params.id;
 
             try {

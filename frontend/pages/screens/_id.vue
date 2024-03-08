@@ -1,12 +1,12 @@
 <template>
     <div class="screen-details">
-        <div class=" screen-top-section">
+        <div class="screen-top-section">
             <!-- Title -->
             <v-row>
                 <v-col>
                     <h1>Screen Details</h1>
                 </v-col>
-                <!-- seperate line vertically-->
+                <!-- separate line vertically-->
                 <v-col>
                     <v-divider vertical></v-divider>
                 </v-col>
@@ -17,41 +17,36 @@
             </v-row>
             <!-- search bar  -->
             <v-row style="margin-top: 20px; margin-left: 20px; width: 480px;">
-                <v-text-field 
-                v-model="search" 
-                prepend-inner-icon="mdi-magnify" 
-                label="Search" outlined
-                hide-details>
-                </v-text-field>
+                <v-text-field v-model="search" prepend-inner-icon="mdi-magnify" label="Search" outlined
+                    hide-details></v-text-field>
             </v-row>
         </div>
-        <!-- Display TaskCard componenet in 4 card per row-->
+        <!-- Display TaskCard component in 4 cards per row-->
         <div class="display-card">
             <v-divider></v-divider>
             <v-row>
                 <v-col v-for="task in tasks" :key="task.task_id" cols="12" sm="6" md="4" lg="3">
-                    <TaskCard 
-                        :taskName="task.task_name" 
-                        :taskId="task.task_id"         
-                        :taskDetail="task.task_detail"
+                    <TaskCard :taskName="task.task_name" :taskId="task.task_id" :taskDetail="task.task_detail"
                         :taskPersonInCharge="task.person_in_charge" :taskPlanStart="task.task_plan_start"
                         :taskPlanEnd="task.task_plan_end" :taskStatus="task.task_status"
                         @openEditTaskForm="openEditTaskForm" />
                 </v-col>
             </v-row>
         </div>
-
+        <!-- Create Task Form -->
+        <v-dialog v-model="createTaskFormVisible" max-width="500px">
+            <CreateTaskForm :screenId="screenId" @cancel="closeCreateTaskForm" />
+        </v-dialog>
     </div>
 </template>
 
 <script>
-// import axios from 'axios';
-// import Swal from 'sweetalert2';
-import CreateTaskForm from '../../components/TaskCardandForm/CreateTaskForm.vue'; // 
-import TaskCard from '../../components/TaskCardandForm/TaskCard.vue'; //
-import EditTaskForm from '../../components/TaskCardandForm/EditTaskForm.vue'; // 
+import axios from 'axios';
+import CreateTaskForm from '../../components/TaskCardandForm/CreateTaskForm.vue';
+import TaskCard from '../../components/TaskCardandForm/TaskCard.vue';
+import EditTaskForm from '../../components/TaskCardandForm/EditTaskForm.vue';
 
-export default{
+export default {
     layout: 'admin',
     components: {
         CreateTaskForm,
@@ -92,13 +87,11 @@ export default{
             this.editTaskFormVisible = false;
         }
     },
-
-}
-    
-
-
+    mounted() {
+        this.fetchTasks();
+    }
+};
 </script>
-
 
 <style scoped>
 .display-card {
