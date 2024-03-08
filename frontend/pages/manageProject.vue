@@ -48,55 +48,32 @@
         <v-icon size="20" px @click="softDeleteProject(item)">
           mdi-delete-empty
         </v-icon>
-        <v-btn size="30" px @click="viewProjectDetails(item)">
-          ProjectDetails
+        <v-btn size="30" px @click="viewProjectDetails(item)" style="margin-left: 10px;">
+          Project Details
         </v-btn>
       </template>
     </v-data-table>
     <!-- Create Project Dialog -->
-    <v-dialog
-      v-model="createProjectDialog"
-      max-width="600"
-      ref="createProjectDialog"
-    >
+    <v-dialog v-model="createProjectDialog" max-width="600" ref="createProjectDialog">
       <v-card>
         <v-card-title>Create New Project</v-card-title>
         <v-card-text>
           <!-- Form to create new project -->
           <v-form>
-            <v-text-field
-              v-model="newProject.project_id"
-              label="Project ID"
-            ></v-text-field>
-            <v-text-field
-              v-model="newProject.project_name_TH"
-              label="Project Name (TH)"
-            ></v-text-field>
-            <v-text-field
-              v-model="newProject.project_name_ENG"
-              label="Project Name (EN)"
-            ></v-text-field>
+            <v-text-field v-model="newProject.project_id" label="Project ID"></v-text-field>
+            <v-text-field v-model="newProject.project_name_TH" label="Project Name (TH)"></v-text-field>
+            <v-text-field v-model="newProject.project_name_ENG" label="Project Name (EN)"></v-text-field>
 
             <!-- New fields for SA, DEV, IMP selection -->
-            <v-select
-              v-model="selectedSA"
-              :items="formatTeamMembers(teamMembersSA)"
-              label="Select SA"
-              multiple
-            >
+            <v-select v-model="selectedSA" :items="formatTeamMembers(teamMembersSA)" label="Select SA" multiple>
               <template v-slot:prepend-item>
                 <v-list-item @click="selectAllSA">
                   <v-list-item-content>Select All</v-list-item-content>
                 </v-list-item>
               </template>
             </v-select>
-            
-            <v-select
-              v-model="selectedDEV"
-              :items="formatTeamMembers(teamMembersDEV)"
-              label="Select DEV"
-              multiple
-            >
+
+            <v-select v-model="selectedDEV" :items="formatTeamMembers(teamMembersDEV)" label="Select DEV" multiple>
               <template v-slot:prepend-item>
                 <v-list-item @click="selectAllDEV">
                   <v-list-item-content>Select All</v-list-item-content>
@@ -104,12 +81,7 @@
               </template>
             </v-select>
 
-            <v-select
-              v-model="selectedIMP"
-              :items="formatTeamMembers(teamMembersIMP)"
-              label="Select IMP"
-              multiple
-            >
+            <v-select v-model="selectedIMP" :items="formatTeamMembers(teamMembersIMP)" label="Select IMP" multiple>
               <template v-slot:prepend-item>
                 <v-list-item @click="selectAllIMP">
                   <v-list-item-content>Select All</v-list-item-content>
@@ -118,13 +90,10 @@
             </v-select>
 
             <!-- Button to submit -->
-            <v-btn
-              type="submit"
-              @click="
+            <v-btn type="submit" @click="
                 createProjectDialog = false;
                 createProject();
-              "
-            >
+              ">
               Create
             </v-btn>
 

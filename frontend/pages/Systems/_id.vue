@@ -39,9 +39,9 @@
                 <v-select v-model="newScreen.screen_level" label="Screen Level"
                   :items="['Very Difficult', 'Hard', 'Moderate', 'Easy', 'Simple']"></v-select>
 
-                <!-- File input for avatar -->
-                <v-file-input :rules="rules" accept="image/png, image/jpeg, image/bmp" label="Avatar"
-                  placeholder="Pick an avatar" prepend-icon="mdi-camera" v-model="newScreen.avatar"></v-file-input>
+                <!-- File input for photo -->
+                <v-file-input :rules="rules" accept="image/png, image/jpeg, image/bmp" label="Photo"
+                  placeholder="Pick a photo" prepend-icon="mdi-camera" v-model="newScreen.avatar"></v-file-input>
 
                 <v-btn type="submit" @click="createScreenDialog = false; createScreen();">Create</v-btn>
                 <v-btn @click="createScreenDialog = false">Cancel</v-btn>
@@ -73,7 +73,6 @@
         <v-dialog v-model="showHistoryDialog" max-width="800">
           <v-data-table headers="headers" :items="deletedScreens">
             <!-- Define headers for the table -->
-
             <template v-slot:top>
               <v-toolbar flat>
                 <v-toolbar-title>Deleted Screens History</v-toolbar-title>
@@ -88,7 +87,7 @@
       <template v-slot:item.actions="{ item }">
         <v-icon class="me-2" size="20" px @click="openEditDialog(item)">mdi-pencil-circle</v-icon>
         <v-icon size="20" px @click="confirmDeleteScreen(item)">mdi-delete-empty</v-icon>
-        <v-btn @click="goToScreensDetail(item.id)">screen Detail</v-btn>
+        <v-btn @click="goToScreensDetail(item.id)" style="margin-left: 10px;">Screens Detail</v-btn>
       </template>
     </v-data-table>
   </div>
@@ -559,13 +558,8 @@ export default {
           confirmButtonColor: "#3085d6",
           cancelButtonColor: "#d33",
           confirmButtonText: "Yes, delete it!",
-          showClass: {
-            popup: "animate__animated animate__fadeInDown", // กำหนด animation เมื่อแสดง SweetAlert
-          },
-          hideClass: {
-            popup: "animate__animated animate__fadeOutUp", // กำหนด animation เมื่อซ่อน SweetAlert
-          },
         });
+
         if (confirmResult.isConfirmed) {
           // If user confirms deletion, call deleteScreen method
           await this.deleteScreen(screen);
@@ -576,6 +570,7 @@ export default {
         console.error("Error confirming delete screen:", error);
       }
     },
+    
     async deleteScreen(screen) {
       const screenId = screen.id;
       try {
