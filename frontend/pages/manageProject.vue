@@ -269,28 +269,8 @@
         <v-card-text>
           <v-select
             v-model="selectedUsers"
-            :items="
-              availableUsers.filter((user) => user.user_position === 'SA')
-            "
-            label="Select SA"
-            multiple
-          ></v-select>
-
-          <v-select
-            v-model="selectedUsers"
-            :items="
-              availableUsers.filter((user) => user.user_position === 'DEV')
-            "
-            label="Select DEV"
-            multiple
-          ></v-select>
-
-          <v-select
-            v-model="selectedUsers"
-            :items="
-              availableUsers.filter((user) => user.user_position === 'IMP')
-            "
-            label="Select IMP"
+            :items="availableUsers"
+            label="Select User(s)"
             multiple
           ></v-select>
         </v-card-text>
@@ -392,14 +372,41 @@ export default {
           throw new Error("Failed to fetch available users");
         }
         const availableUsersData = await availableUsersResponse.json();
-
-        // Filter out users already assigned to the project
-        this.availableUsers = availableUsersData.filter(
-          (user) =>
-            !this.userProjects.some((project) => project.user_id === user.id)
-        );
+        this.availableUsers = availableUsersData;
       } catch (error) {
         console.error("Error fetching user projects:", error);
+      }
+    },
+    closeNestedDialog() {
+      this.dialogAssignUser = false;
+    },
+    async assignUser() {
+      try {
+        const project_id = this.selectedProject.id;
+        const user_id = this.selectedUsers.map((user) => user.id);
+
+        const response = await fetch(
+          `http://localhost:7777/user_projects/createUser_project`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ user_id, project_id }),
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to assign user(s) to project");
+        }
+
+        // Refresh user projects after assigning user(s)
+        await this.manageUserProjects(this.selectedProject);
+
+        // Close the nested dialog
+        this.closeNestedDialog();
+      } catch (error) {
+        console.error("Error assigning user(s) to project:", error);
       }
     },
     closeNestedDialog() {
