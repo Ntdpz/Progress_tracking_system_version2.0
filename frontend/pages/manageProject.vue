@@ -1,11 +1,14 @@
 <template>
   <!-- Dashboard container -->
-  <div class="dashboard" style="
+  <div
+    class="dashboard"
+    style="
       background-color: #ffffff;
       padding: 10px 70px;
       border-radius: 0;
       margin-right: 30px;
-    ">
+    "
+  >
     <!-- Greeting and current date/time -->
     <v-row no-gutters class="mt-4">
       <v-col class="text-left" style="margin-right: 16px">
@@ -17,27 +20,43 @@
     <!-- Search bar -->
     <v-row no-gutters>
       <v-col cols="12">
-        <input type="text" v-model="searchQuery" placeholder="Search..." style="
+        <input
+          type="text"
+          v-model="searchQuery"
+          placeholder="Search..."
+          style="
             margin-bottom: 10px;
             width: 100%;
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
             font-size: 16px;
-          " />
+          "
+        />
       </v-col>
     </v-row>
 
     <!-- Project data table -->
-    <v-data-table :headers="headers" :items="filteredProjects" :sort-by="[{ key: 'project_id', order: 'asc' }]">
+    <v-data-table
+      :headers="headers"
+      :items="filteredProjects"
+      :sort-by="[{ key: 'project_id', order: 'asc' }]"
+    >
       <template v-slot:top>
         <v-toolbar flat>
           <v-toolbar-title>Project Management</v-toolbar-title>
           <v-divider class="mx-4" inset vertical></v-divider>
           <v-spacer></v-spacer>
-          <v-btn color="primary" dark @click="goToCreateProject">New Project</v-btn>
-          <v-btn color="primary" dark @click="goToHistoryProject" style="margin-left: 10px;">Show History
-            Project</v-btn>
+          <v-btn color="primary" dark @click="goToCreateProject"
+            >New Project</v-btn
+          >
+          <v-btn
+            color="primary"
+            dark
+            @click="goToHistoryProject"
+            style="margin-left: 10px"
+            >Show History Project</v-btn
+          >
         </v-toolbar>
       </template>
 
@@ -48,24 +67,45 @@
         <v-icon size="20" px @click="softDeleteProject(item)">
           mdi-delete-empty
         </v-icon>
-        <v-btn size="30" px @click="viewProjectDetails(item)" style="margin-left: 10px;">
-          Project Details
+        <v-btn size="30" px @click="viewProjectDetails(item)">
+          ProjectDetails
+        </v-btn>
+        <v-btn size="30" px @click="manageUserProjects(item)">
+          manageUserProjects
         </v-btn>
       </template>
     </v-data-table>
     <!-- Create Project Dialog -->
-    <v-dialog v-model="createProjectDialog" max-width="600" ref="createProjectDialog">
+    <v-dialog
+      v-model="createProjectDialog"
+      max-width="600"
+      ref="createProjectDialog"
+    >
       <v-card>
         <v-card-title>Create New Project</v-card-title>
         <v-card-text>
           <!-- Form to create new project -->
           <v-form>
-            <v-text-field v-model="newProject.project_id" label="Project ID"></v-text-field>
-            <v-text-field v-model="newProject.project_name_TH" label="Project Name (TH)"></v-text-field>
-            <v-text-field v-model="newProject.project_name_ENG" label="Project Name (EN)"></v-text-field>
+            <v-text-field
+              v-model="newProject.project_id"
+              label="Project ID"
+            ></v-text-field>
+            <v-text-field
+              v-model="newProject.project_name_TH"
+              label="Project Name (TH)"
+            ></v-text-field>
+            <v-text-field
+              v-model="newProject.project_name_ENG"
+              label="Project Name (EN)"
+            ></v-text-field>
 
             <!-- New fields for SA, DEV, IMP selection -->
-            <v-select v-model="selectedSA" :items="formatTeamMembers(teamMembersSA)" label="Select SA" multiple>
+            <v-select
+              v-model="selectedSA"
+              :items="formatTeamMembers(teamMembersSA)"
+              label="Select SA"
+              multiple
+            >
               <template v-slot:prepend-item>
                 <v-list-item @click="selectAllSA">
                   <v-list-item-content>Select All</v-list-item-content>
@@ -73,7 +113,12 @@
               </template>
             </v-select>
 
-            <v-select v-model="selectedDEV" :items="formatTeamMembers(teamMembersDEV)" label="Select DEV" multiple>
+            <v-select
+              v-model="selectedDEV"
+              :items="formatTeamMembers(teamMembersDEV)"
+              label="Select DEV"
+              multiple
+            >
               <template v-slot:prepend-item>
                 <v-list-item @click="selectAllDEV">
                   <v-list-item-content>Select All</v-list-item-content>
@@ -81,7 +126,12 @@
               </template>
             </v-select>
 
-            <v-select v-model="selectedIMP" :items="formatTeamMembers(teamMembersIMP)" label="Select IMP" multiple>
+            <v-select
+              v-model="selectedIMP"
+              :items="formatTeamMembers(teamMembersIMP)"
+              label="Select IMP"
+              multiple
+            >
               <template v-slot:prepend-item>
                 <v-list-item @click="selectAllIMP">
                   <v-list-item-content>Select All</v-list-item-content>
@@ -90,10 +140,13 @@
             </v-select>
 
             <!-- Button to submit -->
-            <v-btn type="submit" @click="
+            <v-btn
+              type="submit"
+              @click="
                 createProjectDialog = false;
                 createProject();
-              ">
+              "
+            >
               Create
             </v-btn>
 
@@ -110,9 +163,18 @@
           <!-- Form to edit project details -->
           <v-form @submit.prevent="saveEditedProject">
             <!-- Include form fields for editing project details -->
-            <v-text-field v-model="editedProject.project_id" label="Project ID"></v-text-field>
-            <v-text-field v-model="editedProject.project_name_TH" label="Project Name (TH)"></v-text-field>
-            <v-text-field v-model="editedProject.project_name_ENG" label="Project Name (ENG)"></v-text-field>
+            <v-text-field
+              v-model="editedProject.project_id"
+              label="Project ID"
+            ></v-text-field>
+            <v-text-field
+              v-model="editedProject.project_name_TH"
+              label="Project Name (TH)"
+            ></v-text-field>
+            <v-text-field
+              v-model="editedProject.project_name_ENG"
+              label="Project Name (ENG)"
+            ></v-text-field>
             <!-- Button to save changes -->
             <v-btn type="submit">Save Changes</v-btn>
           </v-form>
@@ -121,15 +183,29 @@
     </v-dialog>
 
     <!-- Project Details Dialog -->
-    <v-dialog v-model="editProjectDialog" max-width="600" ref="editProjectDialog">
+    <v-dialog
+      v-model="editProjectDialog"
+      max-width="600"
+      ref="editProjectDialog"
+    >
       <v-card>
         <v-card-title>Edit Project</v-card-title>
         <v-card-text>
           <!-- Form to edit system -->
           <v-form @submit.prevent="updateProject">
-            <v-text-field v-model="editProject.project_id" label="Project ID" readonly></v-text-field>
-            <v-text-field v-model="editProject.project_name_TH" label="Project Name (TH)"></v-text-field>
-            <v-text-field v-model="editProject.project_name_ENG" label="Project Name (EN)"></v-text-field>
+            <v-text-field
+              v-model="editProject.project_id"
+              label="Project ID"
+              readonly
+            ></v-text-field>
+            <v-text-field
+              v-model="editProject.project_name_TH"
+              label="Project Name (TH)"
+            ></v-text-field>
+            <v-text-field
+              v-model="editProject.project_name_ENG"
+              label="Project Name (EN)"
+            ></v-text-field>
             <!-- Add more fields as needed -->
             <!-- You can also add selection fields for system analyst and member -->
             <!-- Add buttons to submit and cancel -->
@@ -137,6 +213,93 @@
             <v-btn @click="editProjectDialog = false">Cancel</v-btn>
           </v-form>
         </v-card-text>
+      </v-card>
+    </v-dialog>
+
+    <!-- Manage project users dialog -->
+    <v-dialog v-model="dialogUserProjects" max-width="800px">
+      <v-card>
+        <v-card-title>User Projects</v-card-title>
+        <v-card-text>
+          <v-text-field
+            v-model="search"
+            label="Search"
+            dense
+            hide-details
+            solo
+            flat
+          ></v-text-field>
+          <v-data-table
+            :headers="userProjectsHeaders"
+            :items="filteredUserProjects"
+          >
+            <template v-slot:item="{ item }">
+              <tr>
+                <td>{{ item.id }}</td>
+                <td>{{ item.user_firstname }}</td>
+                <td>{{ item.user_lastname }}</td>
+                <td>{{ item.user_position }}</td>
+                <td>
+                  <v-img
+                    :src="getBase64Image(item.user_pic)"
+                    height="50"
+                    contain
+                  ></v-img>
+                </td>
+              </tr>
+            </template>
+          </v-data-table>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn color="blue darken-1" text @click="dialogUserProjects = false"
+            >Close</v-btn
+          >
+          <!-- Button to open nested dialog -->
+          <v-btn color="blue darken-1" text @click="openNestedDialog"
+            >Assign User</v-btn
+          >
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <!-- Nested Dialog for Assigning User -->
+    <v-dialog v-model="dialogAssignUser" max-width="500px">
+      <v-card>
+        <v-card-title>Assign User</v-card-title>
+        <v-card-text>
+          <v-select
+            v-model="selectedUsers"
+            :items="
+              availableUsers.filter((user) => user.user_position === 'SA')
+            "
+            label="Select SA"
+            multiple
+          ></v-select>
+
+          <v-select
+            v-model="selectedUsers"
+            :items="
+              availableUsers.filter((user) => user.user_position === 'DEV')
+            "
+            label="Select DEV"
+            multiple
+          ></v-select>
+
+          <v-select
+            v-model="selectedUsers"
+            :items="
+              availableUsers.filter((user) => user.user_position === 'IMP')
+            "
+            label="Select IMP"
+            multiple
+          ></v-select>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn color="blue darken-1" text @click="closeNestedDialog"
+            >Cancel</v-btn
+          >
+          <v-btn color="blue darken-1" text @click="assignUser">Assign</v-btn>
+        </v-card-actions>
       </v-card>
     </v-dialog>
   </div>
@@ -150,6 +313,19 @@ export default {
   layout: "admin",
   data() {
     return {
+      dialogAssignUser: false,
+      selectedUsers: [],
+      availableUsers: [],
+      search: "", // Add this line
+      dialogUserProjects: false, // ตัวแปรสำหรับเปิด/ปิด Dialog
+      userProjectsHeaders: [
+        { text: "ID", value: "id" },
+        { text: "First Name", value: "user_firstname" },
+        { text: "Last Name", value: "user_lastname" },
+        { text: "Position", value: "user_position" },
+        { text: "Picture", value: "user_pic" }, // เพิ่มหัวข้อ Picture ลงใน userProjectsHeaders
+      ],
+      userProjects: [], // เก็บข้อมูลที่ได้รับจาก API ในตัวแปรนี้
       teamMembersSA: [],
       teamMembersDEV: [],
       teamMembersIMP: [],
@@ -195,6 +371,104 @@ export default {
     };
   },
   methods: {
+    async manageUserProjects(item) {
+      try {
+        const project_id = item.id;
+        const response = await fetch(
+          `http://localhost:7777/user_projects/getUserProjectsByProjectId/${project_id}`
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch user projects");
+        }
+        const data = await response.json();
+        this.userProjects = data;
+        this.dialogUserProjects = true;
+
+        // Fetch available users to assign to the project
+        const availableUsersResponse = await fetch(
+          `http://localhost:7777/users/getAvailableUsers`
+        );
+        if (!availableUsersResponse.ok) {
+          throw new Error("Failed to fetch available users");
+        }
+        const availableUsersData = await availableUsersResponse.json();
+
+        // Filter out users already assigned to the project
+        this.availableUsers = availableUsersData.filter(
+          (user) =>
+            !this.userProjects.some((project) => project.user_id === user.id)
+        );
+      } catch (error) {
+        console.error("Error fetching user projects:", error);
+      }
+    },
+    closeNestedDialog() {
+      this.dialogAssignUser = false;
+    },
+    async assignUser() {
+      try {
+        const project_id = this.selectedProject.id;
+        const user_id = this.selectedUsers.map((user) => user.id);
+
+        const response = await fetch(
+          `http://localhost:7777/user_projects/createUser_project`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ user_id, project_id }),
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to assign user(s) to project");
+        }
+
+        // Refresh user projects after assigning user(s)
+        await this.manageUserProjects(this.selectedProject);
+
+        // Close the nested dialog
+        this.closeNestedDialog();
+      } catch (error) {
+        console.error("Error assigning user(s) to project:", error);
+      }
+    },
+    openNestedDialog() {
+      // เปิด Dialog ซ้อนเมื่อคลิกปุ่ม "Assign User"
+      this.dialogAssignUser = true;
+    },
+    closeNestedDialog() {
+      // ปิด Dialog ซ้อนเมื่อคลิกปุ่ม "Cancel"
+      this.dialogAssignUser = false;
+    },
+    assignUser() {
+      // ใส่โค้ดสำหรับการกำหนดผู้ใช้งานที่นี่
+      // เมื่อกำหนดผู้ใช้งานเสร็จสิ้น ปิด Dialog ซ้อน
+      this.dialogAssignUser = false;
+    },
+    getBase64Image(base64) {
+      return base64;
+    },
+    async manageUserProjects(item) {
+      try {
+        const project_id = item.id; // ดึง id ของ project จาก item ที่รับเข้ามา
+        const response = await fetch(
+          `http://localhost:7777/user_projects/getUserProjectsByProjectId/${project_id}`
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch user projects");
+        }
+        const data = await response.json();
+        // นำข้อมูลที่ได้รับมาเก็บไว้ในตัวแปรของคุณเพื่อนำไปแสดงใน <v-dialog>
+        this.userProjects = data;
+        // เปิด <v-dialog> เพื่อแสดงข้อมูลที่ได้รับมา
+        this.dialogUserProjects = true;
+      } catch (error) {
+        console.error("Error fetching user projects:", error);
+      }
+    },
+
     async fetchTeamMembers() {
       try {
         const responseSA = await fetch(
@@ -489,6 +763,23 @@ export default {
     },
   },
   computed: {
+    filteredUserProjects() {
+      return this.userProjects.filter((item) => {
+        return (
+          item.id
+            .toString()
+            .toLowerCase()
+            .includes(this.search.toLowerCase()) ||
+          item.user_firstname
+            .toLowerCase()
+            .includes(this.search.toLowerCase()) ||
+          item.user_lastname
+            .toLowerCase()
+            .includes(this.search.toLowerCase()) ||
+          item.user_position.toLowerCase().includes(this.search.toLowerCase())
+        );
+      });
+    },
     filteredProjects() {
       return this.projects
         .map((project) => ({
@@ -510,6 +801,7 @@ export default {
         });
     },
   },
+
   mounted() {
     this.fetchTeamMembers();
     this.updateDateTime();
