@@ -356,52 +356,23 @@ export default {
   },
   methods: {
     fetchAvailableUsers(project_id) {
-      // ใช้ Axios หรือวิธีการรับข้อมูลที่คุณใช้
       axios
         .get(
           "http://localhost:7777/user_projects/getUsersNotInProject/" +
             project_id
         )
         .then((response) => {
-          // สร้าง displayText จากข้อมูลที่ได้รับ
           this.availableUsers = response.data.map((user) => ({
             id: user.id,
             user_firstname: user.user_firstname,
             user_lastname: user.user_lastname,
             user_position: user.user_position,
-            // สร้างข้อความที่แสดงใน v-select
             displayText: `${user.user_position}: ${user.user_firstname} ${user.user_lastname}`,
           }));
         })
         .catch((error) => {
           console.error("Error fetching available users:", error);
         });
-    },
-    async manageUserProjects(item) {
-      try {
-        const project_id = item.id;
-        const response = await fetch(
-          `http://localhost:7777/user_projects/getUserProjectsByProjectId/${project_id}`
-        );
-        if (!response.ok) {
-          throw new Error("Failed to fetch user projects");
-        }
-        const data = await response.json();
-        this.userProjects = data;
-        this.dialogUserProjects = true;
-
-        // Fetch available users to assign to the project
-        const availableUsersResponse = await fetch(
-          `http://localhost:7777/users/getAvailableUsers`
-        );
-        if (!availableUsersResponse.ok) {
-          throw new Error("Failed to fetch available users");
-        }
-        const availableUsersData = await availableUsersResponse.json();
-        this.availableUsers = availableUsersData;
-      } catch (error) {
-        console.error("Error fetching user projects:", error);
-      }
     },
 
     async assignUser() {
@@ -437,33 +408,40 @@ export default {
       this.dialogAssignUser = false;
     },
     openNestedDialog() {
-      // เรียก API เพื่อดึงข้อมูลผู้ใช้ที่ไม่ได้รับมอบหมายในโปรเจค
-      axios
-        .get(
-          `http://localhost:7777/user_projects/getUsersNotInProject/${this.project_id}`
-        )
-        .then((response) => {
-          // รับข้อมูลผู้ใช้ที่ไม่ได้รับมอบหมายในโปรเจค
-          this.availableUsers = response.data;
-          // เปิดหน้าต่างการกำหนดผู้ใช้
-          this.dialogAssignUser = true;
-          this.fetchAvailableUsers(this.project_id);
-        })
-        .catch((error) => {
-          console.error("Error fetching available users:", error);
-        });
+      this.dialogAssignUser = true;
     },
     assignUser() {
-      // ใส่โค้ดสำหรับการกำหนดผู้ใช้งานที่นี่
-      // เมื่อกำหนดผู้ใช้งานเสร็จสิ้น ปิด Dialog ซ้อน
-      this.dialogAssignUser = false;
+      // ตรวจสอบว่ามีผู้ใช้ที่ถูกเลือกหรือไม่
+      if (this.selectedUsers.length === 0) {
+        console.error("No users selected to assign.");
+        return;
+      }
+
+      // ส่งข้อมูลผู้ใช้ที่ถูกเลือกไปยัง API
+      const project_id = this.selectedProject.id;
+      const user_ids = this.selectedUsers.map((user) => user.id);
+      axios
+        .post("http://localhost:7777/user_projects/createUser_project", {
+          project_id: project_id,
+          user_ids: user_ids,
+        })
+        .then((response) => {
+          console.log("Users assigned successfully:", response.data);
+          // ปิด Dialog หลังจากกำหนดผู้ใช้เสร็จสิ้น
+          this.dialogAssignUser = false;
+        })
+        .catch((error) => {
+          console.error("Error assigning users:", error);
+        });
     },
+
     getBase64Image(base64) {
       return base64;
     },
     async manageUserProjects(item) {
       try {
         const project_id = item.id; // ดึง id ของ project จาก item ที่รับเข้ามา
+        this.fetchAvailableUsers(project_id);
         const response = await fetch(
           `http://localhost:7777/user_projects/getUserProjectsByProjectId/${project_id}`
         );
@@ -814,7 +792,11 @@ export default {
   },
 
   mounted() {
-    this.fetchAvailableUsers();
+    console.log("Project ID:", this.project_id);
+    // ตรวจสอบว่ามี project_id ก่อนที่จะเรียกใช้ fetchAvailableUsers
+    if (this.project_id) {
+      this.fetchAvailableUsers(this.project_id);
+    }
     this.fetchTeamMembers();
     this.updateDateTime();
     this.fetchProjects();
