@@ -17,7 +17,7 @@
         <div class="task-list">
             <!-- ScreenName and Progress -->
             <div class="topper">
-                <h2>Task Management: {{ ScreenName }}</h2>
+                <h3>Task Management: {{ ScreenName }}</h3>
                 <v-divider vertical></v-divider>
                 <!-- open add task form -->
                 <v-btn color="primary" @click="dialogAddTaskForm = true">Add Task</v-btn>
@@ -29,7 +29,10 @@
                 <v-col v-for="task in filteredTasks" :key="task.task_id" cols="12" md="6" lg="4">
                     <v-card class="task-card">
                         <v-card-title>
-                            <h3>{{ task.task_name }}</h3>
+                            <h3 style="margin-right: 10px;"> {{ task.task_name }}</h3> 
+                            <v-divider vertical></v-divider>
+                            <v-spacer></v-spacer>
+                            <h4 style="margin-left:10px ;">  ID: {{ task.task_id }}</h4>
                         </v-card-title>
                         <v-card-text>
                             <v-row>
