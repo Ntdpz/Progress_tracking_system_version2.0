@@ -41,7 +41,7 @@
                             </v-row>
                         </v-card-text>
                         <v-card-actions>
-                            <v-btn color="orange lighten-2" @click="openEditTaskForm(task)">Update</v-btn>
+                            <v-btn color="primary" @click="dialogEditTaskForm = true; editedTask = task">Edit</v-btn>
                             <v-spacer></v-spacer>
                             <v-btn icon @click="show = !show">
                                 <v-icon>{{ show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
@@ -59,13 +59,40 @@
                                         <v-card-text>End: {{ task.task_plan_end }}</v-card-text>
                                     </v-col>
                                 </v-row>
-                                <v-chip color="primary" outlined>{{ task.task_status }}</v-chip>
                                 <v-card-text>Task Detail: {{ task.task_detail }}</v-card-text>
                             </div>
                         </v-expand-transition>
                     </v-card>
                 </v-col>
             </v-row>
+            <!-- Edit task dialog -->
+            <div>
+                <v-dialog v-model="dialogEditTaskForm" max-width="600px">
+                    <v-card>
+                        <v-card-title>
+                            <h2>Edit Task</h2>
+                        </v-card-title>
+                        <v-card-text>
+                            <!-- Edit task form -->
+                            <v-form @submit.prevent="updateTask">
+                                <!-- Form fields to edit task details -->
+                                <v-text-field v-model="editedTask.task_name" label="Task Name" required></v-text-field>
+                                <v-text-field v-model="editedTask.person_in_charge" label="Person in Charge"
+                                    required></v-text-field>
+                                <v-text-field v-model="editedTask.task_plan_start" label="Plan Start"
+                                    required></v-text-field>
+                                <v-text-field v-model="editedTask.task_plan_end" label="Plan End"
+                                    required></v-text-field>
+                                <v-text-field v-model="editedTask.task_detail" label="Detail" required></v-text-field>
+                                <!-- Submit button -->
+                                <v-btn type="submit">Update</v-btn>
+                                <!-- Cancel button -->
+                                <v-btn color="error" @click="cancelEdit">Cancel</v-btn>
+                            </v-form>
+                        </v-card-text>
+                    </v-card>
+                </v-dialog>
+            </div>
             <!-- Create task dialog -->
             <v-dialog v-model="dialogAddTaskForm" max-width="600px">
                 <v-card>
@@ -73,13 +100,21 @@
                         <h2>Create New Task</h2>
                     </v-card-title>
                     <v-card-text>
+                        <!-- Create task form -->
                         <v-form @submit.prevent="createTask">
+                            <!-- Form fields to create a new task -->
+                            <v-text-field v-model="newTask.task_id" label="Task ID" required></v-text-field>
                             <v-text-field v-model="newTask.task_name" label="Task Name" required></v-text-field>
-                            <v-text-field v-model="newTask.person_in_charge" label="Person in Charge" required></v-text-field>
-                            <v-text-field v-model="newTask.task_plan_start" label="Plan Start" required></v-text-field>
-                            <v-text-field v-model="newTask.task_plan_end" label="Plan End" required></v-text-field>
+                            <v-text-field v-model="newTask.person_in_charge" label="Person in Charge"
+                                required></v-text-field>
+                            <v-text-field v-model="newTask.task_plan_start" label="Plan Start" type="date"
+                                required></v-text-field>
+                            <v-text-field v-model="newTask.task_plan_end" label="Plan End" type="date"
+                                required></v-text-field>
                             <v-text-field v-model="newTask.task_detail" label="Detail" required></v-text-field>
+                            <!-- Submit button -->
                             <v-btn type="submit">Create</v-btn>
+                            <!-- Cancel button -->
                             <v-btn color="error" @click="cancel">Cancel</v-btn>
                         </v-form>
                     </v-card-text>
@@ -97,105 +132,97 @@ export default {
     layout: "admin",
     data() {
         return {
+
+            // Dialogs
+            dialogEditTaskForm: false,
             dialogAddTaskForm: false,
             show: false,
             // Screen data
             ScreenName: "",
-            ScreenProgress: "",
+            //ScreenProgress: "",
             //Search bar
             searchQuery: "",
-            // Task data
+          
+            //Edited Task data
+            searchQuery: "",
+            editedTask: { 
+                task_id: "",
+                task_name: "",
+                person_in_charge: "No one in charge",
+                task_status: "",
+                task_plan_start: "",
+                task_plan_end: "",
+                task_detail: "",
+            },
+            //Task data
+            tasks: [],
             //New Task data
-            newTask: [
-                {
-                    task_id: "",
-                    task_name: "",
-                    person_in_charge: "",
-                    task_status: "",
-                    task_plan_start: "",
-                    task_plan_end: "",
-                    task_detail: "",
-                },
-            ],
-            //Task
-            tasks: [
-                {
-                    task_id: "1",
-                    task_name: "Task 1",
-                    person_in_charge: "Person 1",
-                    task_status: "In Progress",
-                    task_plan_start: "2021-08-01",
-                    task_plan_end: "2021-08-31",
-                    task_detail: "This is a task detail with out any description.",
-                },
-                {
-                    task_id: "2",
-                    task_name: "Task 2",
-                    person_in_charge: "Person 2",
-                    task_status: "In Progress",
-                    task_plan_start: "2021-08-01",
-                    task_plan_end: "2021-08-31",
-                    task_detail: "This is a task",
-                },
-                {
-                    task_id: "3",
-                    task_name: "Task 3",
-                    person_in_charge: "Person 3",
-                    task_status: "In Progress",
-                    task_plan_start: "2021-08-01",
-                    task_plan_end: "2021-08-31",
-                    task_detail: "This is a task",
-                },
-            ],
+            newTask: {
+                task_id: "",
+                task_name: "",
+                person_in_charge: "",
+                task_plan_start: "",
+                task_plan_end: "",
+                task_detail: "",
+            },
 
         };
     },
     computed: {
         filteredTasks() {
-            return this.tasks.filter((task) => {
-                return (
-                    task.task_name.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-                    task.task_id.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-                    task.person_in_charge.toLowerCase().includes(this.searchQuery.toLowerCase())
-                );
-            });
+            if (this.tasks && Array.isArray(this.tasks)) {
+                return this.tasks.filter(task => task.task_name.toLowerCase().includes(this.searchQuery.toLowerCase()));
+            } else {
+                return [];
+            }
         },
     },
     async mounted() {
-        // Fetch screen data
-        try {
-            // Fetch Screen Name and Progress
-            const screenId = this.$route.params.id;
-            const response = await fetch(`http://localhost:7777/screens/${screenId}`);
-            const data = await response.json();
-            this.ScreenName = data.screen_name;
-            // this.ScreenProgress = data.screen_progress;
-            
-        } catch (error) {
-            console.error("Error fetching screen data:", error);
-            Swal.fire({
-                icon: "error",
-                title: "Error fetching screen data",
-                text: error.message,
-            });            
-        }
-
-        // Fetch tasks
-        try {
-            const screenId = this.$route.params.id;
-            const response = await fetch(`http://localhost:7777/tasks/${screenId}`);
-            const data = await response.json();
-            this.tasks = data;
-        } catch (error) {
-            console.error("Error fetching tasks:", error);
-            Swal.fire({
-                icon: "error",
-                title: "Error fetching tasks",
-                text: error.message,
-            });
-        }
+        this.fetchScreenDetail();
+        this.fetchTasks();
     },
     methods: {
+        
+        //Fetch screen detail
+        async fetchScreenDetail() {
+            try {
+                const screenId = this.$route.params.id;
+                const response = await fetch(`http://localhost:7777/screens/getOne/${screenId}`);
+        if (!response.ok) {
+                    throw new Error("Failed to fetch screen");
+                }
+                const screenData = await response.json();
+                console.log("Screen data:", screenData); // Log the received data
+                // Assuming screenData is an array with one element
+                const screen = screenData[0];
+                this.ScreenName = screen.screen_name; // Set the ScreenName
+                // You can set other properties here as well
+            } catch (error) {
+                console.error("Error fetching screen:", error);
+                // Handle error fetching Screen
+            }
+        },
+        //Cancel create task
+        cancel() {
+            this.dialogAddTaskForm = false;
+        },
+        //fetch task
+        async fetchTasks() {
+            try {
+                const screenId = this.$route.params.id;
+                const response = await fetch(`http://localhost:7777/tasks/searchByScreenId/${screenId}`);
+                if (!response.ok) {
+                    throw new Error("Failed to fetch tasks");
+                }
+                const tasks = await response.json();
+                console.log("Tasks:", tasks); // Log the received tasks
+                this.tasks = tasks; // Set the tasks
+            } catch (error) {
+                console.error("Error fetching tasks:", error);
+                // Handle error fetching tasks
+            }
+        },
+
         // Open add task form
         openAddTaskForm() {
             this.$router.push({
@@ -204,48 +231,96 @@ export default {
             });
         },
         //Create new task
-        async createTask(){
-            //Fetch screen detail for screen_id sytem_id and project_id
+        async createTask() {
+            // Fetch screen detail for screen_id, system_id, and project_id
             const screenId = this.$route.params.id;
-            const response = await fetch(`http://localhost:7777/screens/${screenId}`);
-            const data = await response.json();
-            this.newTask.screen_id = data.screen_id;
-            this.newTask.system_id = data.system_id;
-            this.newTask.project_id = data.project_id;
-            //Create new task
+            const screenResponse = await fetch(`http://localhost:7777/screens/getOne/${screenId}`);
+            const screenData = await screenResponse.json();
+            const screen = screenData[0];
+            // Convert date to correct format
+            let startDate = new Date(this.newTask.task_plan_start);
+            let formattedStartDate = startDate.toISOString().split('T')[0];
+
+            let endDate = new Date(this.newTask.task_plan_end);
+            let formattedEndDate = endDate.toISOString().split('T')[0];
+
+            const requestData = {
+                task_name: this.newTask.task_name,
+                task_id: this.newTask.task_id,
+                person_in_charge: this.newTask.person_in_charge,
+                task_detail: this.newTask.task_detail,
+                task_plan_start: formattedStartDate,
+                task_plan_end: formattedEndDate,
+                screen_id: screenId,
+                project_id: screen.project_id,
+                system_id: screen.system_id,
+            };
+
+            // Create new task
             try {
-                const response = await fetch("http://localhost:7777/tasks", {
+                const response = await fetch("http://localhost:7777/tasks/createTasks", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
                     },
-                    body: JSON.stringify(this.newTask),
+                    body: JSON.stringify(requestData), // Use requestData instead of this.newTask
                 });
-                const data = await response.json();
-                console.log("New task created:", data);
-                Swal.fire({
-                    icon: "success",
-                    title: "New task created",
-                    text: "Task has been created successfully",
-                });
-                this.$router.go();
+
+                if (response.ok) {
+                    Swal.fire({
+                        icon: "success",
+                        title: "Task created successfully",
+                    });
+                    this.dialogAddTaskForm = false;
+                    this.fetchTasks();
+                }
+                else {
+                    throw new Error("Failed to create new task");
+                }
+
             } catch (error) {
                 console.error("Error creating new task:", error);
                 Swal.fire({
                     icon: "error",
                     title: "Error creating new task",
-                    text: error.message,
+                    text: 'Please try again',
                 });
             }
         },
-        // Open update task form
-        openEditTaskForm(task) {
-            this.$router.push({
-                name: "task-edit",
-                params: { id: task.task_id },
-            });
-       
+        //Update task
+        async updateTask() {
+            try {
+                const response = await fetch(`http://localhost:7777/tasks/updateTask/${this.editedTask.task_id}`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(this.editedTask),
+                });
+
+                if (response.ok) {
+                    Swal.fire({
+                        icon: "success",
+                        title: "Task updated successfully",
+                    });
+                    this.dialogEditTaskForm = false;
+                    this.fetchTasks();
+                } else {
+                    throw new Error("Failed to update task");
+                }
+            } catch (error) {
+                console.error("Error updating task:", error);
+                Swal.fire({
+                    icon: "error",
+                    title: "Error updating task",
+                    text: "Please try again",
+                });
+            }
         },
+        cancelEdit() {
+            this.dialogEditTaskForm = false;
+        },
+       
     },
 };
 
