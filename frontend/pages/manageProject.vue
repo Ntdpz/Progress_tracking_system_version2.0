@@ -255,7 +255,7 @@
             >Close</v-btn
           >
           <!-- Button to open nested dialog -->
-          <v-btn color="blue darken-1" text @click="openNestedDialog"
+          <v-btn color="blue darken-1" text @click="openNestedDialog()"
             >Assign User</v-btn
           >
         </v-card-actions>
@@ -271,6 +271,7 @@
             v-model="selectedUsers"
             :items="availableUsers"
             label="Select User(s)"
+            item-text="displayText"
             multiple
           ></v-select>
         </v-card-text>
@@ -287,12 +288,15 @@
 
 <script>
 import Swal from "sweetalert2";
+import axios from "axios";
 
 export default {
   name: "ProjectManagement",
   layout: "admin",
   data() {
     return {
+      project_id: null,
+      displayText: "",
       dialogAssignUser: false,
       selectedUsers: [],
       availableUsers: [],
@@ -351,6 +355,28 @@ export default {
     };
   },
   methods: {
+    fetchAvailableUsers(project_id) {
+      // ใช้ Axios หรือวิธีการรับข้อมูลที่คุณใช้
+      axios
+        .get(
+          "http://localhost:7777/user_projects/getUsersNotInProject/" +
+            project_id
+        )
+        .then((response) => {
+          // สร้าง displayText จากข้อมูลที่ได้รับ
+          this.availableUsers = response.data.map((user) => ({
+            id: user.id,
+            user_firstname: user.user_firstname,
+            user_lastname: user.user_lastname,
+            user_position: user.user_position,
+            // สร้างข้อความที่แสดงใน v-select
+            displayText: `${user.user_position}: ${user.user_firstname} ${user.user_lastname}`,
+          }));
+        })
+        .catch((error) => {
+          console.error("Error fetching available users:", error);
+        });
+    },
     async manageUserProjects(item) {
       try {
         const project_id = item.id;
@@ -377,9 +403,7 @@ export default {
         console.error("Error fetching user projects:", error);
       }
     },
-    closeNestedDialog() {
-      this.dialogAssignUser = false;
-    },
+
     async assignUser() {
       try {
         const project_id = this.selectedProject.id;
@@ -411,43 +435,23 @@ export default {
     },
     closeNestedDialog() {
       this.dialogAssignUser = false;
-    },
-    async assignUser() {
-      try {
-        const project_id = this.selectedProject.id;
-        const user_id = this.selectedUsers.map((user) => user.id);
-
-        const response = await fetch(
-          `http://localhost:7777/user_projects/createUser_project`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ user_id, project_id }),
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error("Failed to assign user(s) to project");
-        }
-
-        // Refresh user projects after assigning user(s)
-        await this.manageUserProjects(this.selectedProject);
-
-        // Close the nested dialog
-        this.closeNestedDialog();
-      } catch (error) {
-        console.error("Error assigning user(s) to project:", error);
-      }
     },
     openNestedDialog() {
-      // เปิด Dialog ซ้อนเมื่อคลิกปุ่ม "Assign User"
-      this.dialogAssignUser = true;
-    },
-    closeNestedDialog() {
-      // ปิด Dialog ซ้อนเมื่อคลิกปุ่ม "Cancel"
-      this.dialogAssignUser = false;
+      // เรียก API เพื่อดึงข้อมูลผู้ใช้ที่ไม่ได้รับมอบหมายในโปรเจค
+      axios
+        .get(
+          `http://localhost:7777/user_projects/getUsersNotInProject/${this.project_id}`
+        )
+        .then((response) => {
+          // รับข้อมูลผู้ใช้ที่ไม่ได้รับมอบหมายในโปรเจค
+          this.availableUsers = response.data;
+          // เปิดหน้าต่างการกำหนดผู้ใช้
+          this.dialogAssignUser = true;
+          this.fetchAvailableUsers(this.project_id);
+        })
+        .catch((error) => {
+          console.error("Error fetching available users:", error);
+        });
     },
     assignUser() {
       // ใส่โค้ดสำหรับการกำหนดผู้ใช้งานที่นี่
@@ -810,6 +814,7 @@ export default {
   },
 
   mounted() {
+    this.fetchAvailableUsers();
     this.fetchTeamMembers();
     this.updateDateTime();
     this.fetchProjects();
