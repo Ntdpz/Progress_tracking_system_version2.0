@@ -17,7 +17,7 @@
                             <v-icon dark>mdi-account</v-icon>
                         </v-avatar>
                         <!-- person in charge -->
-                        <h5> {{ taskPersonInCharge }} </h5>
+                        <h5> person_in_charge </h5>
                     </v-row>
                 </div>
                 <v-card-actions>
