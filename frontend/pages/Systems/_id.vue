@@ -36,7 +36,7 @@
           <v-btn color="primary" dark @click="goToCreateScreen"
             >New Screen</v-btn
           >
-          <v-btn color="primary" dark @click="goToHistoryScreen"
+          <v-btn color="primary" dark @click="goToHistoryScreens"
             >Show History Screen</v-btn
           >
           <!-- <v-btn color="primary" dark @click="goToHistoryScreen"
@@ -113,28 +113,23 @@
               <v-form @submit.prevent="updateScreen">
                 <v-text-field
                   v-model="editScreen.screen_id"
-                  label="Screen ID"
+                  label="Screen ID" readonly
                 ></v-text-field>
                 <v-text-field
                   v-model="editScreen.screen_name"
                   label="Screen Name"
                 ></v-text-field>
-                <v-text-field
-                  v-model="editScreen.screen_manday"
-                  label="Screen Manday"
-                ></v-text-field>
-                <v-text-field
+                <v-select
                   v-model="editScreen.screen_level"
-                  label="Screen level"
-                ></v-text-field>
-                <v-text-field
-                  v-model="editScreen.screen_plan_start"
-                  label="Date start "
-                ></v-text-field>
-                <v-text-field
-                  v-model="editScreen.screen_plan_end"
-                  label="Date End"
-                ></v-text-field>
+                  label="Screen Level"
+                  :items="[
+                    'Very Difficult',
+                    'Hard',
+                    'Moderate',
+                    'Easy',
+                    'Simple',
+                  ]"
+                ></v-select>
                 <v-btn type="submit">Update</v-btn>
                 <v-btn @click="editScreenDialog = false">Cancel</v-btn>
               </v-form>
@@ -156,34 +151,25 @@
             </template>
           </v-data-table>
         </v-dialog>
-        <!-- Header row -->
-        <tr>
-          <th>Screen ID</th>
-          <th>Screen Name</th>
-          <th>Due Date</th>
-          <th>Screen Level</th>
-          <th>Progress</th>
-          <th>Picture</th>
-          <th>Actions</th>
-        </tr>
+        
       </template>
 
       <template v-slot:item="{ item }">
         <tr>
-          <td>{{ item.screen_id }}</td>
-          <td>{{ item.screen_name }}</td>
-          <td>{{ item.screen_plan_end }}</td>
-          <td>{{ item.screen_level }}</td>
-          <td>{{ item.screen_progress }}</td>
-          <td>
-            <v-img :src="getBase64Image(item.screen_pic)" height="50" contain></v-img>
-          </td>
-          <td>
-            <v-icon class="me-2" size="20" px @click="openEditDialog(item)">mdi-pencil-circle</v-icon>
-            <v-icon size="20" px @click="confirmDeleteScreen(item)">mdi-delete-empty</v-icon>
-            <v-btn @click="goToScreensDetail(item.id)">Screen Detail</v-btn>
-          </td>
-        </tr>
+    <td>
+      <b>Screen ID:</b> {{ item.screen_id }} <br>
+      <b>Screen Name:</b> {{ item.screen_name }} <br>
+      <b>Due Date:</b> {{ item.screen_plan_end }} <br>
+      <b>Screen Level:</b> {{ item.screen_level }} <br>
+      <b>Progress:</b> {{ item.screen_progress }} <br>
+      <b>Picture:</b> <v-img :src="getBase64Image(item.screen_pic)" height="50" contain></v-img>
+    </td>
+    <td>
+      <v-icon class="me-2" size="20" px @click="openEditDialog(item)">mdi-pencil-circle</v-icon>
+      <v-icon size="20" px @click="confirmDeleteScreen(item)">mdi-delete-empty</v-icon>
+      <v-btn @click="goToScreensDetail(item.id)">Screen Detail</v-btn>
+    </td>
+  </tr>
       </template>
     </v-data-table>
   </div>
@@ -217,10 +203,7 @@ export default {
       editScreen: {
         screen_id: "",
         screen_name: "",
-        screen_manday: "",
         screen_level: "",
-        screen_plan_start: "",
-        screen_plan_end: "",
       },
       screens: [],
       searchQuery: "", // Search query for filtering systems
@@ -230,6 +213,14 @@ export default {
         { text: "Due date", value: "screen_plan_end" },
         { text: "Screen Level", value: "screen_level" },
         { text: "Image", value: "screen_pic" }, // เปลี่ยนจาก "Progress" เป็น "Picture"
+        { text: "Actions", value: "actions", sortable: false },
+      ],
+       headers: [
+        { text: "Screen ID", value: "screen_id" },
+        { text: "Screen Name", value: "screen_name" },
+        { text: "Due date", value: "screen_plan_end" },
+        { text: "Screen ", value: "screen_level" },
+        { text: "Progress", value: "screen_progress" },
         { text: "Actions", value: "actions", sortable: false },
       ],
       
@@ -362,7 +353,7 @@ export default {
     async updateScreen() {
       try {
         const response = await fetch(
-          `http://localhost:7777/screens/updateScreen/${this.editScreen.screen_id}`,
+          `http://localhost:7777/screens/updateScreen/${this.editScreen.id}`,
           {
             method: "PUT",
             headers: {
@@ -396,8 +387,26 @@ export default {
         params: { selectedScreen: screen },
       });
     },
-    async goToHistoryScreen() {
-      this.$router.push("/Screen/HistoryScreen");
+    async goToHistoryScreens() {
+      await this.fetchDeletedScreens();
+      this.showHistoryDialog = true;
+    },
+    async fetchDeletedScreens() {
+      try {
+        const systemId = this.$route.params.id;
+        const response = await fetch(
+          `http://localhost:7777/screens/searchBySystemId_delete/${systemId}`
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch deleted screens");
+        }
+        const deletedScreens = await response.json();
+        console.log(deletedScreens); // ตรวจสอบ deleted screens ที่ได้รับมา
+        this.deletedScreens = deletedScreens;
+      } catch (error) {
+        console.error("Error fetching deleted screens:", error);
+        // Handle error fetching deleted screens
+      }
     },
     openEditDialog(screen) {
       this.editScreen = { ...screen };
@@ -457,8 +466,9 @@ export default {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              screen_name_TH: this.editedScreen.screen_name_TH,
-              screen_name_ENG: this.editedScreen.screen_name_ENG,
+              screen_id: this.editedScreen.screen_id,
+              screen_name: this.editedScreen.screen_name,
+              screen_level: this.editedScreen.screen_level,
             }),
           }
         );
