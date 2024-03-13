@@ -304,6 +304,7 @@ export default {
   layout: "admin",
   data() {
     return {
+      selectedUsersAF: [],
       project_id: null,
       displayText: "",
       dialogAssignUser: false,
