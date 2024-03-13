@@ -246,6 +246,12 @@
                     contain
                   ></v-img>
                 </td>
+                <td>
+                  <!-- Add trash icon here -->
+                  <v-icon @click="deleteUser(project_id, item)"
+                    >mdi-delete</v-icon
+                  >
+                </td>
               </tr>
             </template>
           </v-data-table>
@@ -305,6 +311,7 @@ export default {
       availableUsers: [],
       search: "", // Add this line
       dialogUserProjects: false, // ตัวแปรสำหรับเปิด/ปิด Dialog
+      search: "",
       userProjectsHeaders: [
         { text: "ID", value: "id" },
         { text: "First Name", value: "user_firstname" },
@@ -358,6 +365,59 @@ export default {
     };
   },
   methods: {
+    async manageUserProjects(item) {
+      try {
+        const project_id = item.id; // ดึง id ของ project จาก item ที่รับเข้ามา
+        // ตรวจสอบว่า project_id มีค่าที่ถูกต้องหรือไม่
+        if (!project_id) {
+          console.error(
+            "Error fetching user projects: project_id is undefined"
+          );
+          return;
+        }
+        this.fetchAvailableUsers(project_id);
+        this.deleteUser(project_id);
+        const response = await fetch(
+          `http://localhost:7777/user_projects/getUserProjectsByProjectId/${project_id}`
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch user projects");
+        }
+        const data = await response.json();
+        // นำข้อมูลที่ได้รับมาเก็บไว้ในตัวแปรของคุณเพื่อนำไปแสดงใน <v-dialog>
+        this.userProjects = data;
+        // เปิด <v-dialog> เพื่อแสดงข้อมูลที่ได้รับมา
+        this.dialogUserProjects = true;
+      } catch (error) {
+        console.error("Error fetching user projects:", error);
+      }
+    },
+
+    async deleteUser(project_id, item) {
+      try {
+        const projectId = project_id;
+        if (!projectId) {
+          console.error("Error deleting user: project_id is undefined");
+          return;
+        }
+        if (!item || !item.user_id) {
+          console.error("Error deleting user: item or user_id is undefined");
+          return;
+        }
+        const response = await axios.delete(
+          `http://localhost:7777/user_projects/deleteUserProjectById/${projectId}/${item.user_id}`
+        );
+        if (response.status === 200) {
+          // Handle success
+          console.log(response.data.message);
+        } else {
+          // Handle error
+          console.error("Failed to delete user:", response.status);
+        }
+      } catch (error) {
+        console.error("Error deleting user:", error);
+      }
+    },
     fetchAvailableUsers(project_id) {
       axios
         .get(
@@ -379,6 +439,7 @@ export default {
           console.error("Error fetching available users:", error);
         });
     },
+
     assignUserAF() {
       // ตรวจสอบว่ามีผู้ใช้ที่ถูกเลือกหรือไม่
       if (this.selectedUsersAF.length === 0) {
@@ -400,7 +461,7 @@ export default {
 
       axios
         .post("http://localhost:7777/user_projects/createUser_project", {
-          project_id: project_id,
+          project_id,
           user_id: user_ids,
         })
         .then((response) => {
@@ -475,25 +536,6 @@ export default {
 
     getBase64Image(base64) {
       return base64;
-    },
-    async manageUserProjects(item) {
-      try {
-        const project_id = item.id; // ดึง id ของ project จาก item ที่รับเข้ามา
-        this.fetchAvailableUsers(project_id);
-        const response = await fetch(
-          `http://localhost:7777/user_projects/getUserProjectsByProjectId/${project_id}`
-        );
-        if (!response.ok) {
-          throw new Error("Failed to fetch user projects");
-        }
-        const data = await response.json();
-        // นำข้อมูลที่ได้รับมาเก็บไว้ในตัวแปรของคุณเพื่อนำไปแสดงใน <v-dialog>
-        this.userProjects = data;
-        // เปิด <v-dialog> เพื่อแสดงข้อมูลที่ได้รับมา
-        this.dialogUserProjects = true;
-      } catch (error) {
-        console.error("Error fetching user projects:", error);
-      }
     },
 
     async fetchTeamMembers() {

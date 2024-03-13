@@ -134,6 +134,29 @@ router.delete("/deleteUserID/:user_id", async (req, res) => {
         return res.status(500).send();
     }
 });
+router.delete("/deleteUserProjectById/:project_id/:user_id", async (req, res) => {
+    const { project_id, user_id } = req.params;
+    try {
+        connection.query(
+            "DELETE FROM user_projects WHERE project_id = ? AND user_id = ?",
+            [project_id, user_id],
+            (err, results, fields) => {
+                if (err) {
+                    console.log(err);
+                    return res.status(400).send();
+                }
+                if (results.affectedRows === 0) {
+                    return res.status(404).json({ message: "No matching record found" });
+                }
+                return res.status(200).json({ message: "Record deleted successfully!" });
+            }
+        );
+    } catch (err) {
+        console.log(err);
+        return res.status(500).send();
+    }
+});
+
 
 //* DELETE user by project_id
 router.delete("/deleteProjectID/:project_id", async (req, res) => {
