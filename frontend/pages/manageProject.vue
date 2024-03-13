@@ -267,11 +267,13 @@
       <v-card>
         <v-card-title>Assign User</v-card-title>
         <v-card-text>
+          <!-- New field for selecting users -->
           <v-select
-            v-model="selectedUsers"
+            v-model="selectedUsersAF"
             :items="availableUsers"
             label="Select User(s)"
             item-text="displayText"
+            item-value="id"
             multiple
           ></v-select>
         </v-card-text>
@@ -279,7 +281,8 @@
           <v-btn color="blue darken-1" text @click="closeNestedDialog"
             >Cancel</v-btn
           >
-          <v-btn color="blue darken-1" text @click="assignUser">Assign</v-btn>
+          <!-- Button to assign selected users -->
+          <v-btn color="blue darken-1" text @click="assignUserAF">Assign</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -369,9 +372,44 @@ export default {
             user_position: user.user_position,
             displayText: `${user.user_position}: ${user.user_firstname} ${user.user_lastname}`,
           }));
+          // หลังจากกำหนดค่า availableUsers ให้กำหนดค่า project_id ด้วย
+          this.project_id = project_id;
         })
         .catch((error) => {
           console.error("Error fetching available users:", error);
+        });
+    },
+    assignUserAF() {
+      // ตรวจสอบว่ามีผู้ใช้ที่ถูกเลือกหรือไม่
+      if (this.selectedUsersAF.length === 0) {
+        console.error("No users selected to assign.");
+        return;
+      }
+
+      // ดึง project_id จากภายนอก Dialog โดยเรียกใช้ฟังก์ชัน fetchAvailableUsers(project_id)
+      const project_id = this.project_id;
+
+      // ตรวจสอบว่า project_id มีค่าหรือไม่
+      if (!project_id) {
+        console.error("No project_id available.");
+        return;
+      }
+
+      // ส่งข้อมูลผู้ใช้ที่ถูกเลือกไปยัง API
+      const user_ids = this.selectedUsersAF;
+
+      axios
+        .post("http://localhost:7777/user_projects/createUser_project", {
+          project_id: project_id,
+          user_id: user_ids,
+        })
+        .then((response) => {
+          console.log("Users assigned successfully:", response.data);
+          // ปิด Dialog หลังจากกำหนดผู้ใช้เสร็จสิ้น
+          this.dialogAssignUser = false;
+        })
+        .catch((error) => {
+          console.error("Error assigning users:", error);
         });
     },
 
