@@ -276,8 +276,26 @@
           <!-- New field for selecting users -->
           <v-select
             v-model="selectedUsersAF"
-            :items="availableUsers"
-            label="Select User(s)"
+            :items="systemAnalysts"
+            label="Select SA"
+            item-text="displayText"
+            item-value="id"
+            multiple
+          ></v-select>
+
+          <v-select
+            v-model="selectedUsersAF"
+            :items="developers"
+            label="Select DEV"
+            item-text="displayText"
+            item-value="id"
+            multiple
+          ></v-select>
+
+          <v-select
+            v-model="selectedUsersAF"
+            :items="implementers"
+            label="Select IMP"
             item-text="displayText"
             item-value="id"
             multiple
@@ -401,10 +419,7 @@ export default {
           console.error("Error deleting user: project_id is undefined");
           return;
         }
-        if (!item || !item.user_id) {
-          console.error("Error deleting user: item or user_id is undefined");
-          return;
-        }
+
         const response = await axios.delete(
           `http://localhost:7777/user_projects/deleteUserProjectById/${projectId}/${item.user_id}`
         );
@@ -836,6 +851,24 @@ export default {
     },
   },
   computed: {
+    developers() {
+      // กรอง availableUsers เพื่อเลือกเฉพาะ user_position เป็น "Developer"
+      return this.availableUsers.filter(
+        (user) => user.user_position === "Developer"
+      );
+    },
+    implementers() {
+      // กรอง availableUsers เพื่อเลือกเฉพาะ user_position เป็น "Implementer"
+      return this.availableUsers.filter(
+        (user) => user.user_position === "Implementer"
+      );
+    },
+    systemAnalysts() {
+      // กรอง availableUsers เพื่อเลือกเฉพาะ user_position เป็น "System Analyst"
+      return this.availableUsers.filter(
+        (user) => user.user_position === "System Analyst"
+      );
+    },
     filteredUserProjects() {
       return this.userProjects.filter((item) => {
         return (
@@ -876,7 +909,6 @@ export default {
   },
 
   mounted() {
-    console.log("Project ID:", this.project_id);
     // ตรวจสอบว่ามี project_id ก่อนที่จะเรียกใช้ fetchAvailableUsers
     if (this.project_id) {
       this.fetchAvailableUsers(this.project_id);
