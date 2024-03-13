@@ -481,20 +481,23 @@ export default {
 
         // Assign to data properties with user_id included
         this.teamMembersSA = teamMembersSA.map((user) => ({
-          user_id: user.id, // Include user_id here
+          user_id: user.id,
           user_firstname: user.user_firstname,
+          user_lastname: user.user_lastname, // Include user_lastname here
           user_position: user.user_position,
           user_role: user.user_role,
         }));
         this.teamMembersDEV = teamMembersDEV.map((user) => ({
-          user_id: user.id, // Include user_id here
+          user_id: user.id,
           user_firstname: user.user_firstname,
+          user_lastname: user.user_lastname, // Include user_lastname here
           user_position: user.user_position,
           user_role: user.user_role,
         }));
         this.teamMembersIMP = teamMembersIMP.map((user) => ({
-          user_id: user.id, // Include user_id here
+          user_id: user.id,
           user_firstname: user.user_firstname,
+          user_lastname: user.user_lastname, // Include user_lastname here
           user_position: user.user_position,
           user_role: user.user_role,
         }));
