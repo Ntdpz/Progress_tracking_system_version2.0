@@ -45,6 +45,12 @@
                 <!-- แสดงรูปภาพที่ถูกเลือก -->
                 <v-img v-if="newScreen.photo" :src="newScreen.photo" class="mt-4" max-height="200"></v-img>
 
+<<<<<<< HEAD
+=======
+                <!-- File input for photo -->
+                <v-file-input :rules="rules" accept="image/png, image/jpeg, image/bmp" label="Photo"
+                  placeholder="Pick a photo" prepend-icon="mdi-camera" v-model="newScreen.photo"></v-file-input>
+>>>>>>> 955230a80f44402f140e6b263aec0f3b56f7eec9
 
                 <v-btn type="submit" @click="createScreenDialog = false; createScreen();">Create</v-btn>
                 <v-btn @click="createScreenDialog = false">Cancel</v-btn>
