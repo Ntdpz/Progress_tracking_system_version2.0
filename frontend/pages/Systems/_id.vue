@@ -3,117 +3,57 @@
     <!-- Search bar -->
     <v-row no-gutters>
       <v-col cols="12">
-        <input
-          type="text"
-          v-model="searchQuery"
-          placeholder="Search..."
-          style="
+        <input type="text" v-model="searchQuery" placeholder="Search..." style="
             margin-bottom: 10px;
             width: 100%;
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
             font-size: 16px;
-          "
-        />
+          " />
       </v-col>
     </v-row>
-    
+
     <!--data table -->
-    <v-data-table
-      :headers="userScreenHeaders"
-      :items="filteredScreens"
-      :items-per-page="5"
-      class="elevation-1"
-    >
+    <v-data-table :headers="userScreenHeaders" :items="filteredScreens" :items-per-page="5" class="elevation-1">
       <template v-slot:top>
         <v-toolbar flat>
-          <v-toolbar-title
-            >Screen Management - System : {{ systemNameENG }}</v-toolbar-title
-          >
+          <v-toolbar-title>Screen Management - System : {{ systemNameENG }}</v-toolbar-title>
           <v-divider class="mx-4" inset vertical></v-divider>
           <v-spacer></v-spacer>
-          <v-btn color="primary" dark @click="goToCreateScreen"
-            >New Screen</v-btn
-          >
-          <v-btn color="primary" dark @click="goToHistoryScreens"
-            >Show History Screen</v-btn
-          >
+          <v-btn color="primary" dark @click="goToCreateScreen">New Screen</v-btn>
+          <v-btn color="primary" dark @click="goToHistoryScreens">Show History Screen</v-btn>
           <!-- <v-btn color="primary" dark @click="goToHistoryScreen"
             >Show HistoryScreen</v-btn
           > -->
         </v-toolbar>
 
         <!-- Create Screen Dialog -->
-        <v-dialog
-          v-model="createScreenDialog"
-          max-width="600"
-          ref="createScreenDialog"
-        >
+        <v-dialog v-model="createScreenDialog" max-width="600" ref="createScreenDialog">
           <v-card>
             <v-card-title>Create New Screen</v-card-title>
             <v-card-text>
               <!-- Form to create a new screen -->
               <v-form>
-<<<<<<< HEAD
                 <v-text-field v-model="newScreen.screen_id" label="Screen ID"></v-text-field>
                 <v-text-field v-model="newScreen.screen_name" label="Screen Name"></v-text-field>
-                <v-select v-model="newScreen.screen_level" label="Screen Level"
-                  :items="['Very Difficult', 'Hard', 'Moderate', 'Easy', 'Simple']"></v-select>
-                <!-- File input for photo -->
-                <v-file-input :rules="rules" accept="image/png, image/jpeg, image/bmp" label="Photo"
-                  placeholder="Pick a photo" prepend-icon="mdi-camera" v-model="newScreen.photo"></v-file-input>
-
-                <!-- แสดงรูปภาพที่ถูกเลือก -->
-                <v-img v-if="newScreen.photo" :src="newScreen.photo" class="mt-4" max-height="200"></v-img>
-
-<<<<<<< HEAD
-=======
-                <!-- File input for photo -->
-                <v-file-input :rules="rules" accept="image/png, image/jpeg, image/bmp" label="Photo"
-                  placeholder="Pick a photo" prepend-icon="mdi-camera" v-model="newScreen.photo"></v-file-input>
->>>>>>> 955230a80f44402f140e6b263aec0f3b56f7eec9
-=======
-                <v-text-field
-                  v-model="newScreen.screen_id"
-                  label="Screen ID"
-                ></v-text-field>
-                <v-text-field
-                  v-model="newScreen.screen_name"
-                  label="Screen Name"
-                ></v-text-field>
-                <v-select
-                  v-model="newScreen.screen_level"
-                  label="Screen Level"
-                  :items="[
-                    'Very Difficult',
-                    'Hard',
-                    'Moderate',
-                    'Easy',
-                    'Simple',
-                  ]"
-                ></v-select>
+                <v-select v-model="newScreen.screen_level" label="Screen Level" :items="[
+          'Very Difficult',
+          'Hard',
+          'Moderate',
+          'Easy',
+          'Simple',
+        ]"></v-select>
 
                 <!-- File input for avatar -->
-                <v-file-input
-                  :rules="rules"
-                  accept="image/png, image/jpeg, image/bmp"
-                  label="Avatar"
-                  placeholder="Pick an avatar"
-                  prepend-icon="mdi-camera"
-                  v-model="newScreen.avatar"
-                >
+                <v-file-input :rules="rules" accept="image/png, image/jpeg, image/bmp" label="Avatar"
+                  placeholder="Pick an avatar" prepend-icon="mdi-camera" v-model="newScreen.avatar">
                 </v-file-input>
->>>>>>> main
 
-                <v-btn
-                  type="submit"
-                  @click="
-                    createScreenDialog = false;
-                    createScreen();
-                  "
-                  >Create</v-btn
-                >
+                <v-btn type="submit" @click="
+          createScreenDialog = false;
+        createScreen();
+        ">Create</v-btn>
                 <v-btn @click="createScreenDialog = false">Cancel</v-btn>
               </v-form>
             </v-card-text>
@@ -121,35 +61,21 @@
         </v-dialog>
 
         <!-- Edit Screen Dialog -->
-        <v-dialog
-          v-model="editScreenDialog"
-          max-width="600"
-          ref="editScreenDialog"
-        >
+        <v-dialog v-model="editScreenDialog" max-width="600" ref="editScreenDialog">
           <v-card>
             <v-card-title>Edit Screen</v-card-title>
             <v-card-text>
               <!-- Form to edit screen -->
               <v-form @submit.prevent="updateScreen">
-                <v-text-field
-                  v-model="editScreen.screen_id"
-                  label="Screen ID" readonly
-                ></v-text-field>
-                <v-text-field
-                  v-model="editScreen.screen_name"
-                  label="Screen Name"
-                ></v-text-field>
-                <v-select
-                  v-model="editScreen.screen_level"
-                  label="Screen Level"
-                  :items="[
-                    'Very Difficult',
-                    'Hard',
-                    'Moderate',
-                    'Easy',
-                    'Simple',
-                  ]"
-                ></v-select>
+                <v-text-field v-model="editScreen.screen_id" label="Screen ID" readonly></v-text-field>
+                <v-text-field v-model="editScreen.screen_name" label="Screen Name"></v-text-field>
+                <v-select v-model="editScreen.screen_level" label="Screen Level" :items="[
+          'Very Difficult',
+          'Hard',
+          'Moderate',
+          'Easy',
+          'Simple',
+        ]"></v-select>
                 <v-btn type="submit">Update</v-btn>
                 <v-btn @click="editScreenDialog = false">Cancel</v-btn>
               </v-form>
@@ -171,25 +97,25 @@
             </template>
           </v-data-table>
         </v-dialog>
-        
+
       </template>
 
       <template v-slot:item="{ item }">
         <tr>
-    <td>
-      <b>Screen ID:</b> {{ item.screen_id }} <br>
-      <b>Screen Name:</b> {{ item.screen_name }} <br>
-      <b>Due Date:</b> {{ item.screen_plan_end }} <br>
-      <b>Screen Level:</b> {{ item.screen_level }} <br>
-      <b>Progress:</b> {{ item.screen_progress }} <br>
-      <b>Picture:</b> <v-img :src="getBase64Image(item.screen_pic)" height="50" contain></v-img>
-    </td>
-    <td>
-      <v-icon class="me-2" size="20" px @click="openEditDialog(item)">mdi-pencil-circle</v-icon>
-      <v-icon size="20" px @click="confirmDeleteScreen(item)">mdi-delete-empty</v-icon>
-      <v-btn @click="goToScreensDetail(item.id)">Screen Detail</v-btn>
-    </td>
-  </tr>
+          <td>
+            <b>Screen ID:</b> {{ item.screen_id }} <br>
+            <b>Screen Name:</b> {{ item.screen_name }} <br>
+            <b>Due Date:</b> {{ item.screen_plan_end }} <br>
+            <b>Screen Level:</b> {{ item.screen_level }} <br>
+            <b>Progress:</b> {{ item.screen_progress }} <br>
+            <b>Picture:</b> <v-img :src="getBase64Image(item.screen_pic)" height="50" contain></v-img>
+          </td>
+          <td>
+            <v-icon class="me-2" size="20" px @click="openEditDialog(item)">mdi-pencil-circle</v-icon>
+            <v-icon size="20" px @click="confirmDeleteScreen(item)">mdi-delete-empty</v-icon>
+            <v-btn @click="goToScreensDetail(item.id)">Screen Detail</v-btn>
+          </td>
+        </tr>
       </template>
     </v-data-table>
   </div>
@@ -204,7 +130,6 @@ export default {
   layout: "admin",
   data() {
     return {
-      base64DataFromDatabase: "YOUR_BASE64_STRING_HERE",
       dateStartMenu: false,
       dateEndMenu: false,
       systemNameENG: "",
@@ -231,22 +156,20 @@ export default {
       userScreensHeaders: [
         { text: "Screen ID", value: "screen_id" },
         { text: "Screen Name", value: "screen_name" },
-        { text: "Picture", value: "screen_pic"},
         { text: "Due date", value: "screen_plan_end" },
         { text: "Screen Level", value: "screen_level" },
         { text: "Image", value: "screen_pic" }, // เปลี่ยนจาก "Progress" เป็น "Picture"
         { text: "Actions", value: "actions", sortable: false },
       ],
-       headers: [
+      headers: [
         { text: "Screen ID", value: "screen_id" },
         { text: "Screen Name", value: "screen_name" },
         { text: "Due date", value: "screen_plan_end" },
         { text: "Screen ", value: "screen_level" },
         { text: "Progress", value: "screen_progress" },
         { text: "Actions", value: "actions", sortable: false },
-        
       ],
-      
+
       watch: {
         // Watch for changes in the selected system ID and fetch details accordingly
         selectedSystemId: "fetchSystemDetails",
@@ -284,11 +207,7 @@ export default {
           screen_name: this.newScreen.screen_name,
           screen_status: "default_status", // Update with your default status
           screen_level: this.newScreen.screen_level,
-<<<<<<< HEAD
-          screen_pic: await this.base64Encode(this.newScreen.photo),
-=======
           screen_pic: base64Image, // Update with your default pic
->>>>>>> main
           system_id: systemId,
           screen_progress: 0, // Update with your default progress
           screen_plan_start: this.newScreen.screen_plan_start || null, // Use null if empty
@@ -312,21 +231,10 @@ export default {
         // Check if the screen was created successfully
         if (response.ok) {
           await Swal.fire({
-<<<<<<< HEAD
-            icon: 'success',
-            title: 'Screen Created!',
-            text: 'The new screen has been created successfully.',
-            showConfirmButton: true, // Show OK button
-            allowOutsideClick: false, // Prevent closing by clicking outside
-          }).then(() => {
-            // Update the screens table after the user clicks OK
-            this.fetchScreens();
-=======
             icon: "success",
             title: "Screen Created!",
             text: "The new screen has been created successfully.",
             timer: 3000, // Set the timer to 3 seconds (3000 milliseconds)
->>>>>>> main
           });
         } else {
           throw new Error("Failed to create screen");
@@ -346,20 +254,6 @@ export default {
         // ... continue
       }
     },
-<<<<<<< HEAD
-    async base64Encode(file) {
-      return new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result.split(',')[1]);
-      });
-    },
-    // Function to decode a base64 string to a data URI
-    base64DecodeToDataURI(base64String) {
-      return `data:image/png;base64,${base64String}`;
-    },
-    
-=======
     // Function to convert image to Base64
     imageToBase64(imagePath) {
       return new Promise((resolve, reject) => {
@@ -380,7 +274,6 @@ export default {
     getBase64Image(base64Data) {
       return "data:image/jpeg;base64," + base64Data;
     },
->>>>>>> main
 
     async fetchSystemNameENG() {
       try {
@@ -802,35 +695,37 @@ export default {
         );
       });
     },
-    decodedImage() {
-      return this.base64DecodeToDataURI(this.base64DataFromDatabase);
-    },
   },
 };
 </script>
 
 <style>
-  /* CSS for the table */
+/* CSS for the table */
 .system-details {
-  overflow-x: auto; /* Add horizontal scrollbar if table overflows */
+  overflow-x: auto;
+  /* Add horizontal scrollbar if table overflows */
 }
 
 /* Set width for each column */
 .system-details td,
 .system-details th {
-  min-width: 120px; /* Adjust width as needed */
-  max-width: 120px; /* Adjust width as needed */
-  word-wrap: break-word; /* Allow long text to wrap */
+  min-width: 120px;
+  /* Adjust width as needed */
+  max-width: 120px;
+  /* Adjust width as needed */
+  word-wrap: break-word;
+  /* Allow long text to wrap */
 }
 
 /* CSS for the image */
 .system-details img {
-  width: 50px; /* Adjust width of the image */
-  height: auto; /* Maintain aspect ratio */
-  display: block; /* Make sure image is displayed as a block element */
-  margin: auto; /* Center the image horizontally */
+  width: 50px;
+  /* Adjust width of the image */
+  height: auto;
+  /* Maintain aspect ratio */
+  display: block;
+  /* Make sure image is displayed as a block element */
+  margin: auto;
+  /* Center the image horizontally */
 }
-
-  
 </style>
-
