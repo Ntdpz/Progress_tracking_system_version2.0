@@ -1,18 +1,34 @@
 <template>
   <v-app dark>
+    <!-- Navigation drawer -->
     <v-navigation-drawer v-model="drawer" :clipped="clipped" app>
+      <!-- Logo -->
       <v-list-item class="pt-1 pb-5">
         <v-list-item-content>
           <v-list-item-title class="text-h6">
             <v-layout align-center justify-center>
-              <v-img lazy-src="/mainlogo.png" max-height="150" max-width="100" src="/mainlogo.png"></v-img>
+              <!-- Main logo -->
+              <v-img
+                lazy-src="/mainlogo.png"
+                max-height="150"
+                max-width="100"
+                src="/mainlogo.png"
+              ></v-img>
             </v-layout>
           </v-list-item-title>
         </v-list-item-content>
       </v-list-item>
 
+      <!-- Main menu items -->
       <v-list class="pb-0" dense rounded>
-        <v-list-item v-for="(item, i) in items" :key="i" :to="item.to" router exact color="primary">
+        <v-list-item
+          v-for="(item, i) in items"
+          :key="i"
+          :to="item.to"
+          router
+          exact
+          color="primary"
+        >
           <v-list-item-action>
             <v-icon color="black">{{ item.icon }}</v-icon>
           </v-list-item-action>
@@ -22,45 +38,79 @@
         </v-list-item>
       </v-list>
 
+      <!-- Admin menu items -->
       <v-list class="pa-0" v-show="user_role == 'Admin'" dense rounded>
-        <v-list-group v-for="(project, index) in items3" :key="index" v-model="project.active"
-          :prepend-icon="project.action" no-action class="pl-2">
+        <v-list-group
+          v-for="(project, index) in items3"
+          :key="index"
+          v-model="project.active"
+          :prepend-icon="project.action"
+          no-action
+          class="pl-2"
+        >
           <template v-slot:activator>
             <v-list-item-content>
               <v-list-item-title>โครงการ</v-list-item-title>
             </v-list-item-content>
           </template>
 
-          <v-list-item v-for="child in project.projectList" :key="child.title" :to="`/issueList/${child.id}`">
+          <v-list-item
+            v-for="child in project.projectList"
+            :key="child.title"
+            :to="`/issueList/${child?.id}`"
+          >
             <v-list-item-content>
-              <v-list-item-title><v-icon color="primary" class="mr-2">mdi mdi-format-list-bulleted</v-icon>{{
-                child.project_name }}</v-list-item-title>
+              <v-list-item-title
+                ><v-icon color="primary" class="mr-2"
+                  >mdi mdi-format-list-bulleted</v-icon
+                >{{ child?.project_name }}</v-list-item-title
+              >
             </v-list-item-content>
           </v-list-item>
         </v-list-group>
       </v-list>
-      <!-- {{ this.projectDetails.projectList }} -->
-      <v-list v-show="user_role == 'User'" dense rounded>
-        <v-list-group v-for="(project, index) in projectDetails" :key="index" v-model="project.active"
-          :prepend-icon="project.action" no-action>
 
+      <!-- User menu items -->
+      <v-list class="pt-0 pb-0" v-show="user_role == 'User'" dense rounded>
+        <v-list-group
+          v-for="(project, index) in projectDetails"
+          :key="index"
+          v-model="project.active"
+          :prepend-icon="project.action"
+          no-action
+        >
           <template v-slot:activator>
             <v-list-item-content>
               <v-list-item-title>{{ project.title }}</v-list-item-title>
             </v-list-item-content>
           </template>
 
-          <v-list-item v-for="child in projectDetails.projectList" :key="child.title" :to="`/issueList/${child[0].id}`">
+          <v-list-item
+            v-for="child in projectDetails.projectList"
+            :key="child.title"
+            :to="`/issueList/${child[0]?.id}`"
+          >
             <v-list-item-content>
-              <v-list-item-title><v-icon color="primary" class="mr-2">mdi mdi-format-list-bulleted</v-icon>{{
-                child[0].project_name }}</v-list-item-title>
+              <v-list-item-title
+                ><v-icon color="primary" class="mr-2"
+                  >mdi mdi-format-list-bulleted</v-icon
+                >{{ child[0]?.project_name }}</v-list-item-title
+              >
             </v-list-item-content>
           </v-list-item>
         </v-list-group>
       </v-list>
 
-      <v-list class="pt-0 pb-0" dense rounded>
-        <v-list-item v-for="(item, i) in filteredItems" :key="i" :to="item.to" router color="primary" exact>
+      <!-- Additional menu items -->
+      <v-list class="pt-0" dense rounded>
+        <v-list-item
+          v-for="(item, i) in filteredItems"
+          :key="i"
+          :to="item.to"
+          router
+          color="primary"
+          exact
+        >
           <v-list-item-action>
             <v-icon color="black">{{ item.icon }}</v-icon>
           </v-list-item-action>
@@ -70,8 +120,16 @@
         </v-list-item>
       </v-list>
 
+      <!-- Logout button -->
       <v-list class="pt-0" dense rounded>
-        <v-list-item v-for="(item, i) in logout" :key="i" router exact color="error" @click="handleLogout()">
+        <v-list-item
+          v-for="(item, i) in logout"
+          :key="i"
+          router
+          exact
+          color="error"
+          @click="handleLogout()"
+        >
           <v-list-item-action>
             <v-icon color="error">{{ item.icon }}</v-icon>
           </v-list-item-action>
@@ -81,11 +139,13 @@
         </v-list-item>
       </v-list>
 
+      <!-- User information -->
       <template v-slot:append>
         <div class="pa-5">
           <v-card elevation="0">
             <v-row align="center">
               <v-col cols="2">
+                <!-- User avatar -->
                 <v-avatar size="40">
                   <img :src="user_pic" alt="User Avatar" />
                 </v-avatar>
@@ -94,41 +154,58 @@
                 <v-col>
                   <v-row>
                     <p class="ml-2 mb-0" style="font-size: 15px">
-                      {{ user.user_firstname }}
+                      {{ user?.user_firstname }}
                     </p>
                   </v-row>
                   <v-row>
                     <p class="ml-2 mb-0" style="font-size: 15px">
-                      {{ user.user_role }}
+                      {{ user?.user_role }}
                     </p>
                   </v-row>
                 </v-col>
               </v-col>
               <v-col cols="2" class="pa-0">
-                <v-btn icon to="/profile"><v-icon small color="primary">mdi-pencil</v-icon></v-btn>
+                <!-- Edit profile button -->
+                <v-btn icon to="/profile"
+                  ><v-icon small color="primary">mdi-pencil</v-icon></v-btn
+                >
               </v-col>
             </v-row>
           </v-card>
         </div>
       </template>
     </v-navigation-drawer>
-    <v-app-bar :clipped-left="clipped" app style="height: 49px" class="app-bar" color="white" elevation="1" outlined>
-      <v-app-bar-nav-icon color="primary" @click.stop="drawer = !drawer" class="mb-3" />
+
+    <!-- App bar -->
+    <v-app-bar
+      :clipped-left="clipped"
+      app
+      style="height: 49px"
+      class="app-bar"
+      color="white"
+      elevation="1"
+      outlined
+    >
+      <!-- Navigation drawer toggle button -->
+      <v-app-bar-nav-icon
+        color="primary"
+        @click.stop="drawer = !drawer"
+        class="mb-3"
+      />
+
+      <!-- App title -->
       <v-toolbar-title class="mb-3">
-        <!-- <v-img
-          lazy-src="/pingar-high-resolution-logo-transparent.png"
-          max-height="250"
-          max-width="250"
-          src="/pingar-high-resolution-logo-transparent.png"
-        ></v-img> -->
         <h4>Progress Tracking</h4>
       </v-toolbar-title>
+
+      <!-- Logout button -->
       <v-spacer></v-spacer>
       <v-btn icon class="mb-3" color="error" @click="logout">
         <v-icon>mdi-logout</v-icon>
       </v-btn>
     </v-app-bar>
 
+    <!-- Main content -->
     <v-main>
       <v-container>
         <Nuxt />
@@ -143,7 +220,7 @@ export default {
   data() {
     return {
       project_name_ENG: "",
-      //auth
+      // Auth
       user: this.$auth.user,
       loggedIn: this.$auth.loggedIn,
       clipped: false,
@@ -165,11 +242,6 @@ export default {
           title: "หน้าหลัก",
           to: "/",
         },
-        // {
-        //   icon: "mdi-bell-badge",
-        //   title: "แจ้งเตือน",
-        //   to: "/notification",
-        // },
       ],
       logout: [
         {
@@ -195,10 +267,9 @@ export default {
   async mounted() {
     await this.$axios.get("/projects/getAll").then((res) => {
       res.data.forEach((project) => {
-        project.active = false; // initialize active property to false
+        project.active = false; // Initialize active property to false
       });
       this.items3[0].projectList = res.data;
-      // console.log(this.items3, "this.items3");
     });
     await this.getUser();
     await this.getOwnProject();
@@ -267,13 +338,9 @@ export default {
         .get("/user_projects/getOneUserID/" + this.$auth.user.id)
         .then((res) => {
           this.ownProject = res.data;
-          // console.log("ownProject", this.ownProject);
-
           this.projectIds = this.ownProject.map(
             (project) => project.project_id
           );
-          // console.log("this.projectIds", this.projectIds);
-
           const requests = this.projectIds.map((projectId) => {
             return this.$axios.get("/projects/getOne/" + projectId);
           });
@@ -286,9 +353,8 @@ export default {
       await this.$axios
         .get("/users/getOne/" + this.$auth.user.id)
         .then((res) => {
-          this.user_role = res.data[0].user_role;
-          this.user_pic = res.data[0].user_pic;
-          // console.log(this.user_role, "user position");
+          this.user_role = res.data[0]?.user_role;
+          this.user_pic = res.data[0]?.user_pic;
         });
     },
     async handleLogout() {
@@ -304,7 +370,7 @@ export default {
   font-family: "Lato", sans-serif;
 }
 
-.v-list-group>>>i {
+.v-list-group >>> i {
   color: black;
 }
 </style>

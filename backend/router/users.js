@@ -75,6 +75,23 @@ router.put("/updateUsers/:id", (req, res) => { // อัปเดตข้อม
     return res.status(500).send(err); // ส่งรหัสสถานะ 500 (Internal Server Error) พร้อมกับข้อความข้อผิดพลาดกลับไปยัง client
   }
 });
+router.get("/getUserByPosition", async (req, res) => { // ค้นหาผู้ใช้ตามตำแหน่ง
+  try {
+    const positionFilter = req.query.user_position; // รับค่าจากพารามิเตอร์ user_position
+    let query = "SELECT * FROM users WHERE user_position = ?"; // สร้างคำสั่ง SQL สำหรับการค้นหาผู้ใช้ตามตำแหน่ง
+    connection.query(query, [positionFilter], (err, results, fields) => { // ส่งคำสั่ง SQL ไปยังฐานข้อมูลและรับผลลัพธ์
+      if (err) { // หากเกิดข้อผิดพลาดในการค้นหาข้อมูล
+        console.log(err);
+        return res.status(400).send(); // ส่งรหัสสถานะ 400 (Bad Request) กลับไปยัง client
+      }
+      res.status(200).json(results); // ส่งผลลัพธ์กลับไปยัง client พร้อมกำหนดสถานะการตอบกลับเป็น 200 (OK)
+    });
+  } catch (err) { // หากเกิดข้อผิดพลาดระหว่างการประมวลผล
+    console.log(err);
+    return res.status(500).send(); // ส่งรหัสสถานะ 500 (Internal Server Error) กลับไปยัง client
+  }
+});
+
 router.get("/getAll", async (req, res) => { // รับข้อมูลทั้งหมด
   try {
     const positionFilter = req.query.user_position; // รับค่าจากพารามิเตอร์ user_position

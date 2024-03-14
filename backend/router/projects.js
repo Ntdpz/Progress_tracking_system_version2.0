@@ -173,7 +173,23 @@ router.post("/createProject", async (req, res) => {
           console.error("Error while inserting a project into the database", err);
           return res.status(400).send();
         }
-        return res.status(201).json({ message: "New project successfully created!" });
+
+        // Create user_project relations
+        const { selectedSA, selectedDEV, selectedIMP } = req.body;
+        const users = [...selectedSA, ...selectedDEV, ...selectedIMP];
+        const userProjectValues = users.map(user_id => [user_id, id]);
+
+        connection.query(
+          "INSERT INTO user_projects (user_id, project_id) VALUES ?",
+          [userProjectValues],
+          (error, results, fields) => {
+            if (error) {
+              console.error("Error while inserting users into the project", error);
+              return res.status(400).send();
+            }
+            return res.status(201).json({ message: "New project successfully created!" });
+          }
+        );
       }
     );
   } catch (err) {
@@ -181,6 +197,7 @@ router.post("/createProject", async (req, res) => {
     return res.status(500).send();
   }
 });
+
 
 // Route to update project
 router.put("/updateProject/:id", async (req, res) => {
