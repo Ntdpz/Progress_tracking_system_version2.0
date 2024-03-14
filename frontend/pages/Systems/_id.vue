@@ -22,7 +22,7 @@
           <v-divider class="mx-4" inset vertical></v-divider>
           <v-spacer></v-spacer>
           <v-btn color="primary" dark @click="goToCreateScreen">New Screen</v-btn>
-          <v-btn color="primary" dark @click="goToHistoryScreens">Show History Screen</v-btn>
+          <v-btn color="primary" dark @click="goToHistoryScreens" style="margin-left: 10px;">Show History Screen</v-btn>
           <!-- <v-btn color="primary" dark @click="goToHistoryScreen"
             >Show HistoryScreen</v-btn
           > -->
@@ -45,9 +45,9 @@
           'Simple',
         ]"></v-select>
 
-                <!-- File input for avatar -->
-                <v-file-input :rules="rules" accept="image/png, image/jpeg, image/bmp" label="Avatar"
-                  placeholder="Pick an avatar" prepend-icon="mdi-camera" v-model="newScreen.avatar">
+                <!-- File input for photo -->
+                <v-file-input :rules="rules" accept="image/png, image/jpeg, image/bmp" label="Photo"
+                  placeholder="Pick an photo" prepend-icon="mdi-camera" v-model="newScreen.photo">
                 </v-file-input>
 
                 <v-btn type="submit" @click="
@@ -76,6 +76,15 @@
           'Easy',
           'Simple',
         ]"></v-select>
+
+                <!-- File input for photo -->
+                <v-file-input :rules="rules" accept="image/png, image/jpeg, image/bmp" label="Photo"
+                  placeholder="Pick a photo" prepend-icon="mdi-camera" v-model="editScreen.photo">
+                </v-file-input>
+
+                <!-- Display current photo -->
+                <v-img v-if="editScreen.photo" :src="editScreen.photo" height="100" contain></v-img>
+
                 <v-btn type="submit">Update</v-btn>
                 <v-btn @click="editScreenDialog = false">Cancel</v-btn>
               </v-form>
@@ -199,7 +208,7 @@ export default {
         const projectId = systemData.project_id;
 
         // Convert image to Base64
-        const base64Image = await this.imageToBase64(this.newScreen.avatar);
+        const base64Image = await this.imageToBase64(this.newScreen.photo);
 
         // Prepare data to send
         const requestData = {
@@ -298,6 +307,18 @@ export default {
 
     async updateScreen() {
       try {
+        // Convert image to Base64
+        const base64Image = await this.imageToBase64(this.editScreen.photo);
+
+        // Prepare data to send
+        const requestData = {
+          screen_id: this.editScreen.screen_id,
+          screen_name: this.editScreen.screen_name,
+          screen_level: this.editScreen.screen_level,
+          screen_pic: base64Image, // Updated photo
+        };
+
+        // Make the request to update the screen
         const response = await fetch(
           `http://localhost:7777/screens/updateScreen/${this.editScreen.id}`,
           {
@@ -305,19 +326,22 @@ export default {
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify(this.editScreen),
+            body: JSON.stringify(requestData),
           }
         );
-        if (!response.ok) {
+
+        // Check if the screen was updated successfully
+        if (response.ok) {
+          await Swal.fire({
+            icon: "success",
+            title: "Success",
+            text: "Screen updated successfully",
+          });
+          this.editScreenDialog = false;
+          this.fetchScreens();
+        } else {
           throw new Error("Failed to update screen");
         }
-        await Swal.fire({
-          icon: "success",
-          title: "Success",
-          text: "Screen updated successfully",
-        });
-        this.editScreenDialog = false;
-        this.fetchScreens();
       } catch (error) {
         console.error("Error updating screen:", error);
         await Swal.fire({
@@ -327,6 +351,7 @@ export default {
         });
       }
     },
+    
     goToScreensDetails(screen) {
       this.$router.push({
         path: `/Screen/${screen.id}`,
