@@ -1,0 +1,39 @@
+# ใช้ node:lts ในระบบเป็น builder
+FROM node:lts as builder
+
+# ตั้งค่าโฟลเดอร์ที่ใช้ในการทำงาน
+WORKDIR /app
+
+# คัดลอกไฟล์ทั้งหมดไปยังโฟลเดอร์ทำงาน
+COPY . .
+
+# ติดตั้ง dependencies และ build โปรเจค
+RUN yarn install \
+    --prefer-offline \
+    --frozen-lockfile \
+    --non-interactive \
+    --production=false
+
+RUN yarn build
+
+# ลบ node_modules เพื่อลดขนาด image
+RUN rm -rf node_modules
+
+# เลือกฐานของ image ที่ใช้ในการรันแอปพลิเคชัน
+FROM node:lts
+
+# ตั้งค่าโฟลเดอร์ที่ใช้ในการทำงาน
+WORKDIR /app
+
+# คัดลอก built app จาก builder stage
+COPY --from=builder /app .
+
+# กำหนด environment variable และ expose port 3000
+ENV HOST 0.0.0.0
+EXPOSE 3000
+
+# ติดตั้ง Nuxt.js
+RUN npm install nuxt
+
+# สั่งรัน Nuxt.js บน port 3000 โดยใช้ npm เพื่อรันโดยตรง
+CMD [ "npm ", "run" ,"dev" ]

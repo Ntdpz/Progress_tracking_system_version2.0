@@ -1,0 +1,3 @@
+echo "mysql-data/" >> .gitignore
+
+mysql-data/
