@@ -85,7 +85,7 @@
                 <!-- Display current photo -->
                 <v-img v-if="editScreen.photo" :src="editScreen.photo" height="100" contain></v-img>
 
-                <v-btn type="submit">Update</v-btn>
+                <v-btn type="submit" @click="updateScreen">Update</v-btn>
                 <v-btn @click="editScreenDialog = false">Cancel</v-btn>
               </v-form>
             </v-card-text>
@@ -109,15 +109,15 @@
       </template>
 
       <!-- Header Row -->
-     <template v-slot:header>
-    <thead>
-      <tr>
-        <th v-for="header in userScreensHeaders" :key="header.value">
-          {{ header.text }}
-        </th>
-      </tr>
-    </thead>
-  </template>
+      <template v-slot:header>
+        <thead>
+          <tr>
+            <th v-for="header in userScreensHeaders" :key="header.value">
+              {{ header.text }}
+            </th>
+          </tr>
+        </thead>
+      </template>
 
       <!-- Data Rows -->
       <template v-slot:item="{ item }">
@@ -131,7 +131,7 @@
             <!-- Actions -->
             <v-icon class="me-2" size="20" px @click="openEditDialog(item)">mdi-pencil-circle</v-icon>
             <v-icon size="20" px @click="confirmDeleteScreen(item)">mdi-delete-empty</v-icon>
-            <v-btn @click="goToScreensDetail(item.id)">Screen Detail</v-btn>
+            <v-btn @click="goToScreensDetail(item.id)">Tasks</v-btn>
           </td>
         </tr>
       </template>

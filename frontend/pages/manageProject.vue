@@ -68,10 +68,10 @@
           mdi-delete-empty
         </v-icon>
         <v-btn size="30" px @click="viewProjectDetails(item)">
-          Project Detail
+          Ststems
         </v-btn>
         <v-btn size="30" px @click="manageUserProjects(item)">
-          manageUserProjects
+          manage User Projects
         </v-btn>
       </template>
     </v-data-table>

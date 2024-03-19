@@ -99,7 +99,7 @@
       <template v-slot:item.actions="{ item }">
         <v-icon class="me-2" size="20" px @click="openEditDialog(item)">mdi-pencil-circle</v-icon>
         <v-icon size="20" px @click="confirmDeleteSystem(item)">mdi-delete-empty</v-icon>
-        <v-btn @click="goToSystemsDetail(item.id)" style="margin-left: 10px;">Systems Detail</v-btn>
+        <v-btn @click="goToSystemsDetail(item.id)" style="margin-left: 10px;">Screens</v-btn>
       </template>
     </v-data-table>
   </div>
