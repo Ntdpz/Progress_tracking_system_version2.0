@@ -106,19 +106,16 @@
             </template>
           </v-data-table>
         </v-dialog>
-
       </template>
 
       <template v-slot:item="{ item }">
         <tr>
-          <td>
-            <b>Screen ID:</b> {{ item.screen_id }} <br>
-            <b>Screen Name:</b> {{ item.screen_name }} <br>
-            <b>Due Date:</b> {{ item.screen_plan_end }} <br>
-            <b>Screen Level:</b> {{ item.screen_level }} <br>
-            <b>Progress:</b> {{ item.screen_progress }} <br>
-            <b>Picture:</b> <v-img :src="getBase64Image(item.screen_pic)" height="50" contain></v-img>
-          </td>
+          <td><b>Screen ID:</b> {{ item.screen_id }}</td>
+          <td><b>Screen Name:</b> {{ item.screen_name }}</td>
+          <td><b>Due Date:</b> {{ item.screen_plan_end }}</td>
+          <td><b>Screen Level:</b> {{ item.screen_level }}</td>
+          <td><b>Progress:</b> {{ item.screen_progress }}</td>
+          <td><b>Picture:</b> <v-img :src="getBase64Image(item.screen_pic)" height="50" contain></v-img></td>
           <td>
             <v-icon class="me-2" size="20" px @click="openEditDialog(item)">mdi-pencil-circle</v-icon>
             <v-icon size="20" px @click="confirmDeleteScreen(item)">mdi-delete-empty</v-icon>
@@ -126,6 +123,7 @@
           </td>
         </tr>
       </template>
+
     </v-data-table>
   </div>
 </template>
