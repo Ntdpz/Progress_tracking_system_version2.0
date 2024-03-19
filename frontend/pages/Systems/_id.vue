@@ -108,15 +108,27 @@
         </v-dialog>
       </template>
 
+      <!-- Header Row -->
+     <template v-slot:header>
+    <thead>
+      <tr>
+        <th v-for="header in userScreensHeaders" :key="header.value">
+          {{ header.text }}
+        </th>
+      </tr>
+    </thead>
+  </template>
+
+      <!-- Data Rows -->
       <template v-slot:item="{ item }">
         <tr>
-          <td><b>Screen ID:</b> {{ item.screen_id }}</td>
-          <td><b>Screen Name:</b> {{ item.screen_name }}</td>
-          <td><b>Due Date:</b> {{ item.screen_plan_end }}</td>
-          <td><b>Screen Level:</b> {{ item.screen_level }}</td>
-          <td><b>Progress:</b> {{ item.screen_progress }}</td>
-          <td><b>Picture:</b> <v-img :src="getBase64Image(item.screen_pic)" height="50" contain></v-img></td>
+          <td>{{ item.screen_id }}</td>
+          <td>{{ item.screen_name }}</td>
+          <td>{{ item.screen_plan_end }}</td>
+          <td>{{ item.screen_level }}</td>
+          <td>{{ item.screen_progress }}</td>
           <td>
+            <!-- Actions -->
             <v-icon class="me-2" size="20" px @click="openEditDialog(item)">mdi-pencil-circle</v-icon>
             <v-icon size="20" px @click="confirmDeleteScreen(item)">mdi-delete-empty</v-icon>
             <v-btn @click="goToScreensDetail(item.id)">Screen Detail</v-btn>
@@ -165,7 +177,7 @@ export default {
         { text: "Screen Name", value: "screen_name" },
         { text: "Due date", value: "screen_plan_end" },
         { text: "Screen Level", value: "screen_level" },
-        { text: "Image", value: "screen_pic" }, // เปลี่ยนจาก "Progress" เป็น "Picture"
+        // { text: "Image", value: "screen_pic" }, // เปลี่ยนจาก "Progress" เป็น "Picture"
         { text: "Actions", value: "actions", sortable: false },
       ],
       headers: [
