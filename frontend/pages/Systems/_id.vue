@@ -178,7 +178,7 @@ export default {
         { text: "Due date", value: "screen_plan_end" },
         { text: "Screen Level", value: "screen_level" },
         // { text: "Image", value: "screen_pic" }, // เปลี่ยนจาก "Progress" เป็น "Picture"
-        { text: "Actions", value: "actions", sortable: false },
+        // { text: "Actions", value: "actions", sortable: false },
       ],
       headers: [
         { text: "Screen ID", value: "screen_id" },
