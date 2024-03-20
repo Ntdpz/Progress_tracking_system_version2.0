@@ -100,6 +100,9 @@
         <v-icon class="me-2" size="20" px @click="openEditDialog(item)">mdi-pencil-circle</v-icon>
         <v-icon size="20" px @click="confirmDeleteSystem(item)">mdi-delete-empty</v-icon>
         <v-btn @click="goToSystemsDetail(item.id)" style="margin-left: 10px;">Screens</v-btn>
+        <v-btn size="30" px @click="manageUserSystems(item)" style="margin-left: 10px">
+          manage User Systems
+        </v-btn>
       </template>
     </v-data-table>
   </div>
