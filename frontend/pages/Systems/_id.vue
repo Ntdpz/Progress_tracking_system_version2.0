@@ -92,9 +92,8 @@
           </v-card>
         </v-dialog>
 
-        <!-- Show deleted screens history -->
         <v-dialog v-model="showHistoryDialog" max-width="800">
-          <v-data-table headers="headers" :items="deletedScreens">
+          <v-data-table :headers="headers" :items="deletedScreens">
             <!-- Define headers for the table -->
 
             <template v-slot:top>
@@ -106,6 +105,7 @@
             </template>
           </v-data-table>
         </v-dialog>
+
       </template>
 
       <!-- Header Row -->
@@ -369,9 +369,23 @@ export default {
       });
     },
     async goToHistoryScreens() {
-      await this.fetchDeletedScreens();
-      this.showHistoryDialog = true;
+      try {
+        // Fetch deleted screens data
+        await this.fetchDeletedScreens();
+
+        // Show history dialog to display deleted screens
+        this.showHistoryDialog = true;
+      } catch (error) {
+        console.error("Error fetching deleted screens:", error);
+        // Handle error fetching deleted screens
+        await Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Failed to fetch deleted screens",
+        });
+      }
     },
+
     async fetchDeletedScreens() {
       try {
         const systemId = this.$route.params.id;
@@ -382,11 +396,16 @@ export default {
           throw new Error("Failed to fetch deleted screens");
         }
         const deletedScreens = await response.json();
-        console.log(deletedScreens); // ตรวจสอบ deleted screens ที่ได้รับมา
+        console.log(deletedScreens); // Check the deleted screens data received
         this.deletedScreens = deletedScreens;
       } catch (error) {
         console.error("Error fetching deleted screens:", error);
         // Handle error fetching deleted screens
+        await Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Failed to fetch deleted screens",
+        });
       }
     },
     openEditDialog(screen) {
@@ -637,6 +656,60 @@ export default {
       } catch (error) {
         console.error("Error fetching deleted screen:", error);
         // Handle error fetching deleted screen
+      }
+    },
+
+    async deletedScreens(item) {
+      try {
+        const confirmResult = await Swal.fire({
+          title: "Are you sure?",
+          text: "You are about to restore this screen.",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, restore it!",
+        });
+
+        if (confirmResult.isConfirmed) {
+          const screenId = item.id;
+          const response = await fetch(
+            `http://localhost:7777/screens/updateScreen/${screenId}`,
+            {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                screen_name: item.screen_name,
+                screen_id: item.screen_id,
+                is_deleted: 0,
+              }),
+            }
+          );
+
+          if (!response.ok) {
+            throw new Error("Failed to restore screen");
+          }
+
+          console.log("Screen restored successfully");
+
+          await Swal.fire(
+            "Success",
+            "Screen restored successfully.",
+            "success"
+          );
+
+          // Update the deleted screens data after restoration
+          this.fetchDeletedScreens();
+        }
+      } catch (error) {
+        console.error("Error restoring screen:", error);
+        await Swal.fire(
+          "Error",
+          "An error occurred during the screen restoration process.",
+          "error"
+        );
       }
     },
 
