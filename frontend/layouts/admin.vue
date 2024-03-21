@@ -39,7 +39,7 @@
       </v-list>
 
       <!-- Admin menu items -->
-      <v-list class="pa-0" v-show="user_role == 'Admin'" dense rounded>
+      <!-- <v-list class="pa-0" v-show="user_role == 'Admin'" dense rounded>
         <v-list-group
           v-for="(project, index) in items3"
           :key="index"
@@ -68,7 +68,7 @@
             </v-list-item-content>
           </v-list-item>
         </v-list-group>
-      </v-list>
+      </v-list> -->
 
       <!-- User menu items -->
       <v-list class="pt-0 pb-0" v-show="user_role == 'User'" dense rounded>
@@ -193,11 +193,20 @@
         class="mb-3"
       />
 
+     <!-- Forward and Backward buttons -->
+    <v-btn icon class="mb-3" @click="goBackward">
+      <v-icon v-icon>mdi-arrow-left</v-icon>
+    </v-btn>
+    <v-btn icon class="mb-3" @click="goForward">
+      <v-icon>mdi-arrow-right</v-icon>
+    </v-btn>
+
       <!-- App title -->
       <v-toolbar-title class="mb-3">
         <h4>Progress Tracking</h4>
       </v-toolbar-title>
 
+    
       <!-- Logout button -->
       <v-spacer></v-spacer>
       <v-btn icon class="mb-3" color="error" @click="logout">
@@ -287,11 +296,11 @@ export default {
             item.title !== "Manage Project" &&
             item.title !== "Dashboard"
         );
-        items.splice(0, 0, {
-          icon: "mdi-view-dashboard",
-          title: "แดชบอร์ด",
-          to: "/dashboard",
-        });
+        // items.splice(0, 0, {
+        //   icon: "mdi-view-dashboard",
+        //   title: "แดชบอร์ด",
+        //   to: "/dashboard",
+        // });
         items.splice(0, 0, {
           icon: "mdi-account",
           title: "จัดการผู้ใช้งานระบบ",
@@ -361,6 +370,16 @@ export default {
       await this.$auth.logout();
       this.$router.push("/login");
     },
+    goBackward() {
+    // Add logic for moving backward
+    // For example, you can use router to navigate
+    this.$router.go(-1); // Go back one step
+  },
+  goForward() {
+    // Add logic for moving forward
+    // For example, you can use router to navigate
+    this.$router.go(1); // Go forward one step
+  },
   },
 };
 </script>

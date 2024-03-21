@@ -9,7 +9,7 @@
     <!-- Greeting and current date/time -->
     <v-row no-gutters class="mt-4">
       <v-col class="text-left" style="margin-right: 16px">
-        <h1 class="text-01">{{ greeting }}, Bee</h1>
+        <h1 class="text-01">{{ greeting }}</h1>
         <p class="text-01">{{ currentDateTime }}</p>
       </v-col>
     </v-row>
