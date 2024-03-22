@@ -103,6 +103,17 @@
                 <v-spacer></v-spacer>
               </v-toolbar>
             </template>
+
+            <!-- Define actions for each row -->
+            <template v-slot:item.actions="{ item }">
+              <v-btn color="primary" @click="restoreScreen(item)">
+                Restore
+              </v-btn>
+              <v-btn color="error" @click="confirmDeleteHistoryScreen(item)">
+                Delete
+              </v-btn>
+            </template>
+
           </v-data-table>
         </v-dialog>
 
@@ -273,6 +284,108 @@ export default {
         // ... continue
       }
     },
+
+    async restoreScreen(item) {
+      try {
+        const confirmResult = await Swal.fire({
+          title: "Are you sure?",
+          text: "You are about to restore this screen.",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, restore it!",
+        });
+
+        if (confirmResult.isConfirmed) {
+          const screenId = item.id;
+          const response = await fetch(
+            `http://localhost:7777/screens/updateScreen/${screenId}`,
+            {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                screen_nameTH: item.screen_nameTH,
+                screen_nameEN: item.screen_nameEN,
+                screen_shortname: item.screen_shortname,
+                project_id: item.project_id,
+                is_deleted: 0, // Update the is_deleted field to 0 for restoration
+              }),
+            }
+          );
+
+          if (!response.ok) {
+            throw new Error("Failed to restore screen");
+          }
+
+          console.log("Screen restored successfully");
+
+          await Swal.fire(
+            "Success",
+            "Screen restored successfully.",
+            "success"
+          );
+
+          // Update the main page with the restored data
+          this.$emit("restore-screen", item); // Assuming you emit an event to handle the restoration in the parent component
+        }
+      } catch (error) {
+        console.error("Error restoring screen:", error);
+        await Swal.fire(
+          "Error",
+          "An error occurred during the screen restoration process.",
+          "error"
+        );
+      }
+    },
+
+    // Method to confirm and delete a history screen
+    async confirmDeleteHistoryScreen(item) {
+      try {
+        const confirmResult = await Swal.fire({
+          title: "Are you sure?",
+          text: "You won't be able to revert this!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, delete it!",
+        });
+
+        if (confirmResult.isConfirmed) {
+          const screenId = item.id;
+          const response = await fetch(
+            `http://localhost:7777/screens/deleteHistoryScreens/${screenId}`,
+            {
+              method: "DELETE",
+            }
+          );
+
+          if (!response.ok) {
+            throw new Error("Failed to delete screen history");
+          }
+
+          await Swal.fire({
+            icon: "success",
+            title: "Success",
+            text: "Screen history deleted successfully",
+          });
+
+          // Refresh the deleted screens data
+          this.fetchDeletedScreens();
+        }
+      } catch (error) {
+        console.error("Error confirming delete history screen:", error);
+        await Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Failed to delete screen history",
+        });
+      }
+    },
+
     // Function to convert image to Base64
     imageToBase64(imagePath) {
       return new Promise((resolve, reject) => {
@@ -361,7 +474,7 @@ export default {
         });
       }
     },
-    
+
     goToScreensDetails(screen) {
       this.$router.push({
         path: `/Screen/${screen.id}`,
@@ -388,26 +501,19 @@ export default {
 
     async fetchDeletedScreens() {
       try {
-        const systemId = this.$route.params.id;
-        const response = await fetch(
-          `http://localhost:7777/screens/searchBySystemId_delete/${systemId}`
-        );
+        const response = await fetch("http://localhost:7777/screens/deletedScreens");
         if (!response.ok) {
           throw new Error("Failed to fetch deleted screens");
         }
-        const deletedScreens = await response.json();
-        console.log(deletedScreens); // Check the deleted screens data received
-        this.deletedScreens = deletedScreens;
+        const data = await response.json();
+        // Update the deleted screens data in your Vue component
+        this.deletedScreens = data; // Assuming deletedScreens is a reactive data property
       } catch (error) {
         console.error("Error fetching deleted screens:", error);
-        // Handle error fetching deleted screens
-        await Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: "Failed to fetch deleted screens",
-        });
+        // Handle the error, such as displaying an error message
       }
     },
+
     openEditDialog(screen) {
       this.editScreen = { ...screen };
       this.editScreenDialog = true;
@@ -546,98 +652,6 @@ export default {
       } catch (error) {
         console.error("Error fetching system details:", error);
         // Handle error fetching system details
-      }
-    },
-
-    async restoreScreen(item) {
-      try {
-        const confirmResult = await Swal.fire({
-          title: "Are you sure?",
-          text: "You are about to restore this screen.",
-          icon: "warning",
-          showCancelButton: true,
-          confirmButtonColor: "#3085d6",
-          cancelButtonColor: "#d33",
-          confirmButtonText: "Yes, restore it!",
-        });
-
-        if (confirmResult.isConfirmed) {
-          const screenId = item.id;
-          const response = await fetch(
-            `http://localhost:7777/screens/updateScreen/${screenId}`,
-            {
-              method: "PUT",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                screen_name: item.screen_name,
-                screen_id: item.screen_id,
-                is_deleted: 0,
-              }),
-            }
-          );
-
-          if (!response.ok) {
-            throw new Error("Failed to restore screen");
-          }
-
-          console.log("Screeb restored successfully");
-
-          await Swal.fire(
-            "Success",
-            "Screen restored successfully.",
-            "success"
-          );
-
-          // เพิ่มบรรทัดนี้เพื่ออัพเดทตารางอัตโนมัติ
-          this.fetchDeletedScreens();
-        }
-      } catch (error) {
-        console.error("Error restoring screen:", error);
-        await Swal.fire(
-          "Error",
-          "An error occurred during the screen restoration process.",
-          "error"
-        );
-      }
-    },
-    async confirmDeleteHistoryScreen(item) {
-      try {
-        const confirmResult = await Swal.fire({
-          title: "Are you sure?",
-          text: "You won't be able to revert this!",
-          icon: "warning",
-          showCancelButton: true,
-          confirmButtonColor: "#3085d6",
-          cancelButtonColor: "#d33",
-          confirmButtonText: "Yes, delete it!",
-        });
-        if (confirmResult.isConfirmed) {
-          const screenId = item.id; // Get the ID of the system to delete
-          const response = await fetch(
-            `http://localhost:7777/screens/deleteHistoryScreens/${screenId}`,
-            {
-              method: "DELETE",
-            }
-          );
-          if (!response.ok) {
-            throw new Error("Failed to delete screen");
-          }
-          await Swal.fire({
-            icon: "success",
-            title: "Success",
-            text: "System and related data deleted successfully",
-          });
-          this.fetchDeletedScreens(); // Refresh the deleted screen data
-        }
-      } catch (error) {
-        console.error("Error confirming delete history screen:", error);
-        await Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: "Failed to delete history screen",
-        });
       }
     },
 
