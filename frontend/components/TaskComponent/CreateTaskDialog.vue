@@ -24,7 +24,7 @@
                     <v-row>
                         <v-col cols="12">
                             <v-text-field v-model="newTasks.task_manday" label="Estimate Working Hours" type="number"
-                                min="1" max="99"></v-text-field>
+                                step="0.1"></v-text-field>
                         </v-col>
                     </v-row>
                     <v-row>
@@ -57,7 +57,7 @@
 <script>
 export default {
     props: {
-        value: Boolean, // Define a prop for v-model binding
+        value: Boolean,
     },
 
     data() {
@@ -67,8 +67,8 @@ export default {
             newTasks: {
                 task_id: "",
                 task_name: "",
-                tasks_detail: "",
-                task_manday:"",
+                task_detail: "",
+                task_manday: "", // Initialize as float
                 task_status: "",
                 task_plan_start: "",
                 task_plan_end: "",
@@ -77,25 +77,24 @@ export default {
     },
     watch: {
         value(newValue) {
-            this.dialog = newValue; // Update 'dialog' based on the prop value
+            this.dialog = newValue;
         },
         dialog(newDialog) {
-            this.$emit("input", newDialog); // Emit 'input' event to update v-model in parent
+            this.$emit("input", newDialog);
         },
     },
     methods: {
-        // Create new task
         saveTask() {
             if (!this.newTasks.task_plan_start || !this.newTasks.task_plan_end) {
                 console.error('Plan start or end date is not set.');
-                return; // Exit the method if dates are not set
+                return;
             }
 
-            this.$emit("save-task", this.newTasks); // Emit 'save-task' event with newTasks data
-            this.dialog = false; // Close dialog
+            this.$emit("save-task", this.newTasks);
+            this.dialog = false;
         },
         cancelTask() {
-            this.dialog = false; // Close dialog without saving
+            this.dialog = false;
         },
     },
 };

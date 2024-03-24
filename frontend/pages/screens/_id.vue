@@ -25,25 +25,21 @@
             </div>
             <v-divider></v-divider>
             <!-- Display Task in Card -->
+            <!-- Display Task in Card -->
             <v-row>
-                <v-col v-for="task in filteredTasks" :key="task.task_id" cols="12" md="6" lg="4">
-                    <TaskCard :task="task" class="task-card">
-
-                    </TaskCard>
+                <v-col v-for="(task, index) in filteredTasks" :key="index" cols="12" md="6" lg="4">
+                    <TaskCard :task="task" class="task-card" @edit-task="openEditTaskDialog"
+                        @open-update-task-dialog="openUpdateTaskDialog"></TaskCard>
                 </v-col>
             </v-row>
             <!-- Edit task dialog -->
             <div>
-                <EditTaskDialog v-model="dialogEditTaskForm" :editedTask="editedTask" @update-task="updateTask"
-                    @cancel-edit="cancelEdit">
+                <EditTaskDialog v-model="dialogEditTaskForm" :edited-task="editedTask" @update-task="handleUpdateTask">
                 </EditTaskDialog>
-            </div>
-            <!-- Update task dialog -->
-            <div>
+                <!-- Update Task Dialog  -->
+                <UpdateTaskDialog v-model="dialogUpdateTaskForm" @update-task="handleUpdateTask"></UpdateTaskDialog>
 
-            </div>
-            <!-- Create task dialog -->
-            <div>
+                <!-- Create task dialog -->
                 <CreateTaskDialog v-model="dialogAddTaskForm" @save-task="handleSaveTask"></CreateTaskDialog>
             </div>
         </div>
@@ -55,6 +51,7 @@ import Swal from "sweetalert2";
 import TaskCard from '../../components/TaskComponent/TaskCard.vue';
 import EditTaskDialog from '../../components/TaskComponent/EditTaskDialog.vue';
 import CreateTaskDialog from '../../components/TaskComponent/CreateTaskDialog.vue';
+import UpdateTaskDialog from "~/components/TaskComponent/UpdateTaskDialog.vue";
 
 export default {
     layout: "admin",
@@ -62,24 +59,27 @@ export default {
         TaskCard,
         EditTaskDialog,
         CreateTaskDialog,
-
+        UpdateTaskDialog,
     },
     data() {
         return {
             //Dialog
             dialogAddTaskForm: false,
             dialogEditTaskForm: false,
+            dialogUpdateTaskForm: false,
 
             // Task
+            editedTask: {},
+            updatedTask: {},
             ScreenName: "",
             tasks: [],
             searchQuery: "",
             //Create new task
             newTasks: {
-            // new task properties
+                // new task properties
                 task_id: "",
                 task_name: "",
-                task_manday:"",
+                task_manday: "",
                 tasks_detail: "",
                 task_status: "",
                 task_plan_start: "",
@@ -101,7 +101,82 @@ export default {
         this.fetchTasks();
     },
     methods: {
-        // Open dialog
+        // open edit dialog
+        openEditTaskDialog(task) {
+            this.dialogEditTaskForm = true;
+            this.editedTask = task;
+        },
+        // handle edit task
+        async handleEditTask(taskData) {
+            console.log('Received task data:', taskData);
+            try {
+                const response = await fetch("http://localhost:7777/tasks/updateTasks", {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(taskData),
+                });
+
+                if (response.ok) {
+                    Swal.fire({
+                        icon: "success",
+                        title: "Task updated successfully",
+                    });
+                    this.dialogEditTaskForm = false;
+                    this.fetchTasks();
+                } else {
+                    throw new Error("Failed to update task");
+                }
+            } catch (error) {
+                console.error("Error updating task:", error);
+                Swal.fire({
+                    icon: "error",
+                    title: "Error updating task",
+                    text: 'Please try again',
+                });
+            }
+        },
+
+        // open update dialog
+        openUpdateTaskDialog() {
+            this.dialogUpdateTaskForm = true;
+            this.updatedTask = task;
+        },
+        // handle update task
+        async handleUpdateTask(taskData) {
+            console.log('Received task data:', taskData);
+            try {
+                const response = await fetch("http://localhost:7777/tasks/updateTasks", {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(taskData),
+                });
+
+                if (response.ok) {
+                    Swal.fire({
+                        icon: "success",
+                        title: "Task updated successfully",
+                    });
+                    this.dialogUpdateTaskForm = false;
+                    this.fetchTasks();
+                } else {
+                    throw new Error("Failed to update task");
+                }
+            } catch (error) {
+                console.error("Error updating task:", error);
+                Swal.fire({
+                    icon: "error",
+                    title: "Error updating task",
+                    text: 'Please try again',
+                });
+            }
+        },
+
+
+        // Open creat dialog
         openCreateTaskDialog() {
             this.dialogAddTaskForm = true;
         },
@@ -175,8 +250,6 @@ export default {
             }
         },
 
-
-
         //Fetch screen detail
         async fetchScreenDetail() {
             try {
@@ -214,6 +287,9 @@ export default {
                 // Handle error fetching tasks
             }
         },
+
+        // handle edit task
+
     },
 };
 

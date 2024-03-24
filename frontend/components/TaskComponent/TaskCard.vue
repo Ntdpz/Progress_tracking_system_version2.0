@@ -4,7 +4,7 @@
             {{ taskName }}
             <v-spacer></v-spacer>
             <!-- Edit icon -->
-            <v-btn icon @click="editTask">
+            <v-btn icon @click="openEditTaskDialog">
                 <v-icon>mdi-pencil</v-icon>
             </v-btn>
         </v-card-title>
@@ -23,7 +23,7 @@
             </div>
         </v-card-text>
         <v-card-actions>
-            <v-btn text @click="updateTaskProgress">
+            <v-btn text @click="openUpdateTaskDialog">
                 Update
             </v-btn>
             <v-spacer></v-spacer>
@@ -98,14 +98,15 @@ export default {
         },
     },
     methods: {
-        // Update task progress 
-        updateTaskProgress() {
-            this.$emit("update-task-progress", this.task);
+        // open Update task progress dialog
+        openUpdateTaskDialog() {
+            this.$emit('open-update-task-dialog', this.task); // Emit the 'open-update-task-dialog' event with the task as payload
         },
-        // Edit task
-        editTask() {
-            this.$emit("edit-task", this.task);
+        // open Edit task dialog
+        openEditTaskDialog() {
+            this.$emit('edit-task', this.task); // Emit the 'edit-task' event with the task as payload
         },
+        
     },
 };
 </script>

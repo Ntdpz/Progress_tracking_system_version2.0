@@ -1,95 +1,97 @@
 <template>
-    <v-dialog v-model="dialog" max-width="600px">
+    <v-dialog v-model="dialog" max-width="500px">
         <v-card>
-            <!-- Field task Id, un-editable -->
-            <v-text-field v-model="taskId" label="Task Id" outlined readonly></v-text-field>
-            <!-- Field Name-->
-            <v-text-field v-model="taskName" label="Task Name" outlined required></v-text-field>
-            <!-- Field detail -->
-            <v-textarea v-model="taskDetail" label="Task Detail" outlined required></v-textarea>
-            <!-- Field status-->
-            <v-select v-model="taskStatus" :items="['Not Started', 'In Progress', 'Completed']" label="Task Status"
-                outlined required></v-select>
-            <!-- Field plan start choose in calendar-->
-            <v-menu ref="menu" v-model="menu" :close-on-content-click="false" :return-value.sync="taskPlanStart"
-                transition="scale-transition" offset-y min-width="290px">
-                <template v-slot:activator="{ on }">
-                    <v-text-field v-model="taskPlanStart" label="Plan Start" outlined readonly v-on="on"></v-text-field>
-                </template>
-                <v-date-picker v-model="taskPlanStart" no-title scrollable>
-                    <v-spacer></v-spacer>
-                    <v-btn text color="primary" @click="menu = false">Cancel</v-btn>
-                    <v-btn text color="primary" @click="$refs.menu.save(taskPlanStart)">OK</v-btn>
-                </v-date-picker>
-            </v-menu>
-            <!-- Field plan end choose in calendar-->
-            <v-menu ref="menu" v-model="menu" :close-on-content-click="false" :return-value.sync="taskPlanEnd"
-                transition="scale-transition" offset-y min-width="290px">
-                <template v-slot:activator="{ on }">
-                    <v-text-field v-model="taskPlanEnd" label="Plan End" outlined readonly v-on="on"></v-text-field>
-                </template>
-                <v-date-picker v-model="taskPlanEnd" no-title scrollable>
-                    <v-spacer></v-spacer>
-                    <v-btn text color="primary" @click="menu = false">Cancel</v-btn>
-                    <v-btn text color="primary" @click="$refs.menu.save(taskPlanEnd)">OK</v-btn>
-                </v-date-picker>
-            </v-menu>
-
-            <!-- Confirm and Cancel button -->
-            <v-row>
-                <v-col cols="4">
-                    <v-btn color="primary" @click="editTask">Confirm</v-btn>
-                </v-col>
-                <v-spacer></v-spacer>
-                <v-col cols="4">
-                    <v-btn color="error" @click="cancel">Cancel</v-btn>
-                </v-col>
-            </v-row>
-            <!-- Delete button -->
-            <v-row>
-                <v-btn color="orange" @click="deleteTask">
-                    <v-icon>mdi-delete</v-icon>
-                    Delete
-                </v-btn>
-            </v-row>
+            <v-card-title>
+                <span class="headline">{{ dialogTitle }}</span>
+            </v-card-title>
+            <v-card-text>
+                <v-container>
+                    <!-- Task ID input -->
+                    <v-row>
+                        <v-col cols="12">
+                            <v-text-field v-model="editedTask.task_id" label="Task ID" type="number"
+                                readonly></v-text-field>
+                        </v-col>
+                    </v-row>
+                    <!-- Task Name input -->
+                    <v-row>
+                        <v-col cols="12">
+                            <v-text-field v-model="editedTask.task_name" label="Task Name"></v-text-field>
+                        </v-col>
+                    </v-row>
+                    <!-- Assignee input -->
+                    <v-row>
+                        <v-col cols="12">
+                            <v-select v-model="editedTask.assignee" :items="assigneeOptions"
+                                label="Assignee"></v-select>
+                        </v-col>
+                    </v-row>
+                    <!-- Estimate Working Hours input -->
+                    <v-row>
+                        <v-col cols="12">
+                            <v-text-field v-model="editedTask.task_manday" label="Estimate Working Hours" type="number"
+                                step="0.1"></v-text-field>
+                        </v-col>
+                    </v-row>
+                    <!-- Task Plan Start input -->
+                    <v-row>
+                        <v-col cols="12">
+                            <v-text-field v-model="editedTask.task_plan_start" label="Task Plan Start"
+                                type="date"></v-text-field>
+                        </v-col>
+                    </v-row>
+                    <!-- Task Plan End input -->
+                    <v-row>
+                        <v-col cols="12">
+                            <v-text-field v-model="editedTask.task_plan_end" label="Task Plan End"
+                                type="date"></v-text-field>
+                        </v-col>
+                    </v-row>
+                    <!-- Task Detail input -->
+                    <v-row>
+                        <v-col cols="12">
+                            <v-textarea v-model="editedTask.task_detail" label="Task Detail"></v-textarea>
+                        </v-col>
+                    </v-row>
+                </v-container>
+            </v-card-text>
+            <v-card-actions>
+                <v-btn color="primary" @click="saveTask">Save</v-btn>
+                <v-btn color="secondary" @click="cancelTask">Cancel</v-btn>
+            </v-card-actions>
         </v-card>
     </v-dialog>
 </template>
 
 <script>
-
 export default {
     props: {
-        value: Boolean, // Define a prop for v-model binding
+        value: Boolean,
+        editedTask: Object,
     },
-    
     data() {
         return {
-           dialog: false,
-
+            dialog: false, // Define dialog property
+            dialogTitle: 'Edit Task',
+            assigneeOptions: ["John Doe", "Jane Smith", "Tom Brown", "Alice Green"],
         };
     },
+    watch: {
+        value(newValue) {
+            this.dialog = newValue;
+        },
+        dialog(newDialog) {
+            this.$emit("input", newDialog);
+        },
+    },
     methods: {
-        editTask() {
-            const task = {
-                taskName: this.taskName,
-                taskDetail: this.taskDetail,
-                taskPlanStart: this.taskPlanStart,
-                taskPlanEnd: this.taskPlanEnd,
-                taskStatus: this.taskStatus
-            };
-            this.$emit('edit', task);
-
+        saveTask() {
+            this.$emit("update-task", this.editedTask);
+            this.dialog = false;
         },
-        cancel() {
-            this.$emit('cancel');
+        cancelTask() {
+            this.dialog = false;
         },
-
-        deleteTask() {
-            this.$emit('delete');
-        }
-    }
+    },
 };
-
-        
 </script>
