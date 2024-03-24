@@ -329,7 +329,8 @@ export default {
           );
 
           // Update the main page with the restored data
-          this.$emit("restore-screen", item); // Assuming you emit an event to handle the restoration in the parent component
+          // Assuming you emit an event to handle the restoration in the parent component
+          this.$emit("restore-screen", item);
         }
       } catch (error) {
         console.error("Error restoring screen:", error);
@@ -341,7 +342,6 @@ export default {
       }
     },
 
-    // Method to confirm and delete a history screen
     async confirmDeleteHistoryScreen(item) {
       try {
         const confirmResult = await Swal.fire({
@@ -501,16 +501,26 @@ export default {
 
     async fetchDeletedScreens() {
       try {
-        const response = await fetch("http://localhost:7777/screens/deletedScreens");
+        const screenId = this.$route.params.id;
+        const response = await fetch(
+          `http://localhost:7777/screens/searchByScreenId_delete/${screenId}`
+        );
+
         if (!response.ok) {
           throw new Error("Failed to fetch deleted screens");
         }
-        const data = await response.json();
-        // Update the deleted screens data in your Vue component
-        this.deletedScreens = data; // Assuming deletedScreens is a reactive data property
+
+        const deletedScreens = await response.json();
+        console.log(deletedScreens); // Check the deleted screens received
+        this.deletedScreens = deletedScreens;
       } catch (error) {
-        console.error("Error fetching deleted screens:", error);
-        // Handle the error, such as displaying an error message
+        console.error("Error fetching deleted screen:", error);
+        // Handle error fetching deleted screen
+        await Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Failed to fetch deleted screens",
+        });
       }
     },
 
@@ -628,48 +638,26 @@ export default {
       }
     },
 
-    async fetchSystemDetails() {
-      const systemId = this.$route.params.id;
-
-      try {
-        const response = await fetch(
-          `http://localhost:7777/systems/getOne/${systemId}`
-        );
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch system details");
-        }
-
-        const systemData = await response.json();
-
-        // ตรวจสอบว่า project_id ไม่เป็น null และไม่ว่างเปล่า
-        // หากเป็น null หรือว่างเปล่า กำหนดค่าเริ่มต้นเป็นค่าที่ต้องการ
-        this.projectId =
-          systemData.project_id !== null
-            ? systemData.project_id
-            : "defaultProjectId";
-        // ... ต่อไป
-      } catch (error) {
-        console.error("Error fetching system details:", error);
-        // Handle error fetching system details
-      }
-    },
-
     async fetchDeletedScreens() {
       try {
         const systemId = this.$route.params.id;
         const response = await fetch(
-          `http://localhost:7777/screens/searchBySystemId_delete/${systemId}`
+          `http://localhost:7777/screens/searchBySystemId_delete/${systemId}`//ติดแก้ไขที่ตรงนี้
         );
         if (!response.ok) {
           throw new Error("Failed to fetch deleted screens");
         }
         const deletedScreens = await response.json();
-        console.log(deletedScreens); // ตรวจสอบ deleted Screens ที่ได้รับมา
+        console.log(deletedScreens); // Check the deleted screens received
         this.deletedScreens = deletedScreens;
       } catch (error) {
         console.error("Error fetching deleted screen:", error);
         // Handle error fetching deleted screen
+        await Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Failed to fetch deleted screens",
+        });
       }
     },
 
