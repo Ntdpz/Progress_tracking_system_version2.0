@@ -142,7 +142,7 @@
             <!-- Actions -->
             <v-icon class="me-2" size="20" px @click="openEditDialog(item)">mdi-pencil-circle</v-icon>
             <v-icon size="20" px @click="confirmDeleteScreen(item)">mdi-delete-empty</v-icon>
-            <v-btn @click="goToScreensDetail(item.id)">Tasks</v-btn>
+            <v-btn @click="goToScreensDetail(item.id)" style="margin-left: 10px;">Tasks</v-btn>
           </td>
         </tr>
       </template>

@@ -47,7 +47,7 @@
         <v-icon size="20" px @click="softDeleteProject(item)">
           mdi-delete-empty
         </v-icon>
-        <v-btn size="30" px @click="viewProjectDetails(item)">
+        <v-btn size="30" px @click="viewProjectDetails(item)" style="margin-left: 10px;">
           Ststems
         </v-btn>
         <v-btn size="30" px @click="manageUserProjects(item)" style="margin-left: 10px">
