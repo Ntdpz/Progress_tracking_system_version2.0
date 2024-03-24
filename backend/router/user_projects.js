@@ -228,6 +228,25 @@ router.get("/getUsersNotInProject/:project_id", async (req, res) => {
     }
 });
 
+router.get("/getUserProjectsByProjectId/:project_id", async (req, res) => {
+  const project_id = req.params.project_id;
+  try {
+    connection.query(
+      "SELECT up.user_id, u.id, u.user_firstname, u.user_lastname, u.user_position, u.user_department, u.user_pic FROM user_projects up INNER JOIN users u ON up.user_id = u.id WHERE up.project_id = ?",
+      [project_id],
+      (err, results, fields) => {
+        if (err) {
+          console.log(err);
+          return res.status(400).send();
+        }
+        res.status(200).json(results);
+      }
+    );
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send();
+  }
+});
 
 
 

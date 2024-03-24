@@ -1,18 +1,15 @@
 <template>
   <!-- Dashboard container -->
-  <div
-    class="dashboard"
-    style="
+  <div class="dashboard" style="
       background-color: #ffffff;
       padding: 10px 70px;
       border-radius: 0;
       margin-right: 30px;
-    "
-  >
+    ">
     <!-- Greeting and current date/time -->
     <v-row no-gutters class="mt-4">
       <v-col class="text-left" style="margin-right: 16px">
-        <h1 class="text-01">{{ greeting }}, Bee</h1>
+        <h1 class="text-01">{{ greeting }}</h1>
         <p class="text-01">{{ currentDateTime }}</p>
       </v-col>
     </v-row>
@@ -20,43 +17,26 @@
     <!-- Search bar -->
     <v-row no-gutters>
       <v-col cols="12">
-        <input
-          type="text"
-          v-model="searchQuery"
-          placeholder="Search..."
-          style="
+        <input type="text" v-model="searchQuery" placeholder="Search..." style="
             margin-bottom: 10px;
             width: 100%;
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
             font-size: 16px;
-          "
-        />
+          " />
       </v-col>
     </v-row>
 
     <!-- Project data table -->
-    <v-data-table
-      :headers="headers"
-      :items="filteredProjects"
-      :sort-by="[{ key: 'project_id', order: 'asc' }]"
-    >
+    <v-data-table :headers="headers" :items="filteredProjects" :sort-by="[{ key: 'project_id', order: 'asc' }]">
       <template v-slot:top>
         <v-toolbar flat>
           <v-toolbar-title>Project Management</v-toolbar-title>
           <v-divider class="mx-4" inset vertical></v-divider>
           <v-spacer></v-spacer>
-          <v-btn color="primary" dark @click="goToCreateProject"
-            >New Project</v-btn
-          >
-          <v-btn
-            color="primary"
-            dark
-            @click="goToHistoryProject"
-            style="margin-left: 10px"
-            >Show History Project</v-btn
-          >
+          <v-btn color="primary" dark @click="goToCreateProject">New Project</v-btn>
+          <v-btn color="primary" dark @click="goToHistoryProject" style="margin-left: 10px">Show History Project</v-btn>
         </v-toolbar>
       </template>
 
@@ -68,24 +48,21 @@
           mdi-delete-empty
         </v-icon>
         <v-btn size="30" px @click="viewProjectDetails(item)">
-          ProjectDetails
+          Ststems
         </v-btn>
-        <v-btn size="30" px @click="manageUserProjects(item)">
-          manageUserProjects
+        <v-btn size="30" px @click="manageUserProjects(item)" style="margin-left: 10px">
+          manage User Projects
         </v-btn>
       </template>
     </v-data-table>
 
     <!-- Create Project Dialog -->
-    <v-dialog
-      v-model="createProjectDialog"
-      max-width="600"
-      ref="createProjectDialog"
-    >
+    <v-dialog v-model="createProjectDialog" max-width="600" ref="createProjectDialog">
       <v-card>
         <v-card-title>Create New Project</v-card-title>
         <v-card-text>
           <!-- Form to create new project -->
+<<<<<<< HEAD
           <v-form @submit.prevent="createProject">
             <v-text-field
               v-model="newProject.project_id"
@@ -99,14 +76,15 @@
               v-model="newProject.project_name_ENG"
               label="Project Name (EN)"
             ></v-text-field>
+=======
+          <v-form>
+            <v-text-field v-model="newProject.project_id" label="Project ID"></v-text-field>
+            <v-text-field v-model="newProject.project_name_TH" label="Project Name (TH)"></v-text-field>
+            <v-text-field v-model="newProject.project_name_ENG" label="Project Name (EN)"></v-text-field>
+>>>>>>> Create_Screen
 
             <!-- New fields for SA, DEV, IMP selection -->
-            <v-select
-              v-model="selectedSA"
-              :items="formatTeamMembers(teamMembersSA)"
-              label="Select SA"
-              multiple
-            >
+            <v-select v-model="selectedSA" :items="formatTeamMembers(teamMembersSA)" label="Select SA" multiple>
               <template v-slot:prepend-item>
                 <v-list-item @click="selectAllSA">
                   <v-list-item-content>Select All</v-list-item-content>
@@ -114,12 +92,7 @@
               </template>
             </v-select>
 
-            <v-select
-              v-model="selectedDEV"
-              :items="formatTeamMembers(teamMembersDEV)"
-              label="Select DEV"
-              multiple
-            >
+            <v-select v-model="selectedDEV" :items="formatTeamMembers(teamMembersDEV)" label="Select DEV" multiple>
               <template v-slot:prepend-item>
                 <v-list-item @click="selectAllDEV">
                   <v-list-item-content>Select All</v-list-item-content>
@@ -127,12 +100,7 @@
               </template>
             </v-select>
 
-            <v-select
-              v-model="selectedIMP"
-              :items="formatTeamMembers(teamMembersIMP)"
-              label="Select IMP"
-              multiple
-            >
+            <v-select v-model="selectedIMP" :items="formatTeamMembers(teamMembersIMP)" label="Select IMP" multiple>
               <template v-slot:prepend-item>
                 <v-list-item @click="selectAllIMP">
                   <v-list-item-content>Select All</v-list-item-content>
@@ -141,12 +109,23 @@
             </v-select>
 
             <!-- Button to submit -->
+<<<<<<< HEAD
             <v-btn type="submit">Create</v-btn>
+=======
+            <v-btn type="submit" @click="
+                createProjectDialog = false;
+                createProject();
+              ">
+              Create
+            </v-btn>
+
+>>>>>>> Create_Screen
             <v-btn @click="createProjectDialog = false">Cancel</v-btn>
           </v-form>
         </v-card-text>
       </v-card>
     </v-dialog>
+<<<<<<< HEAD
 
     <!-- Edit Project Dialog -->
     <v-dialog
@@ -154,24 +133,36 @@
       max-width="600"
       ref="editProjectDialog"
     >
+=======
+    <!-- Edit Project Form Dialog -->
+    <v-dialog v-model="editDialog" max-width="600">
+      <v-card>
+        <v-card-title>Edit Project</v-card-title>
+        <v-card-text>
+          <!-- Form to edit project details -->
+          <v-form @submit.prevent="saveEditedProject">
+            <!-- Include form fields for editing project details -->
+            <v-text-field v-model="editedProject.project_id" label="Project ID"></v-text-field>
+            <v-text-field v-model="editedProject.project_name_TH" label="Project Name (TH)"></v-text-field>
+            <v-text-field v-model="editedProject.project_name_ENG" label="Project Name (ENG)"></v-text-field>
+            <!-- Button to save changes -->
+            <v-btn type="submit">Save Changes</v-btn>
+          </v-form>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+
+    <!-- Project Details Dialog -->
+    <v-dialog v-model="editProjectDialog" max-width="600" ref="editProjectDialog">
+>>>>>>> Create_Screen
       <v-card>
         <v-card-title>Edit Project</v-card-title>
         <v-card-text>
           <!-- Form to edit system -->
           <v-form @submit.prevent="updateProject">
-            <v-text-field
-              v-model="editProject.project_id"
-              label="Project ID"
-              readonly
-            ></v-text-field>
-            <v-text-field
-              v-model="editProject.project_name_TH"
-              label="Project Name (TH)"
-            ></v-text-field>
-            <v-text-field
-              v-model="editProject.project_name_ENG"
-              label="Project Name (EN)"
-            ></v-text-field>
+            <v-text-field v-model="editProject.project_id" label="Project ID" readonly></v-text-field>
+            <v-text-field v-model="editProject.project_name_TH" label="Project Name (TH)"></v-text-field>
+            <v-text-field v-model="editProject.project_name_ENG" label="Project Name (EN)"></v-text-field>
             <!-- Add more fields as needed -->
             <!-- You can also add selection fields for system analyst and member -->
             <!-- Add buttons to submit and cancel -->
@@ -187,18 +178,8 @@
       <v-card>
         <v-card-title>User Projects</v-card-title>
         <v-card-text>
-          <v-text-field
-            v-model="search"
-            label="Search"
-            dense
-            hide-details
-            solo
-            flat
-          ></v-text-field>
-          <v-data-table
-            :headers="userProjectsHeaders"
-            :items="filteredUserProjects"
-          >
+          <v-text-field v-model="search" label="Search" dense hide-details solo flat></v-text-field>
+          <v-data-table :headers="userProjectsHeaders" :items="filteredUserProjects">
             <template v-slot:item="{ item }">
               <tr>
                 <td>{{ item.id }}</td>
@@ -206,30 +187,20 @@
                 <td>{{ item.user_lastname }}</td>
                 <td>{{ item.user_position }}</td>
                 <td>
-                  <v-img
-                    :src="getBase64Image(item.user_pic)"
-                    height="50"
-                    contain
-                  ></v-img>
+                  <v-img :src="getBase64Image(item.user_pic)" height="50" contain></v-img>
                 </td>
                 <td>
                   <!-- Add trash icon here -->
-                  <v-icon @click="deleteUser(project_id, item)"
-                    >mdi-delete</v-icon
-                  >
+                  <v-icon @click="deleteUser(project_id, item)">mdi-delete</v-icon>
                 </td>
               </tr>
             </template>
           </v-data-table>
         </v-card-text>
         <v-card-actions>
-          <v-btn color="blue darken-1" text @click="dialogUserProjects = false"
-            >Close</v-btn
-          >
+          <v-btn color="blue darken-1" text @click="dialogUserProjects = false">Close</v-btn>
           <!-- Button to open nested dialog -->
-          <v-btn color="blue darken-1" text @click="openNestedDialog()"
-            >Assign User</v-btn
-          >
+          <v-btn color="blue darken-1" text @click="openNestedDialog()">Assign User</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -240,37 +211,17 @@
         <v-card-title>Assign User</v-card-title>
         <v-card-text>
           <!-- New field for selecting users -->
-          <v-select
-            v-model="selectedUsersAF"
-            :items="systemAnalysts"
-            label="Select SA"
-            item-text="displayText"
-            item-value="id"
-            multiple
-          ></v-select>
+          <v-select v-model="selectedUsersAF" :items="systemAnalysts" label="Select SA" item-text="displayText"
+            item-value="id" multiple></v-select>
 
-          <v-select
-            v-model="selectedUsersAF"
-            :items="developers"
-            label="Select DEV"
-            item-text="displayText"
-            item-value="id"
-            multiple
-          ></v-select>
+          <v-select v-model="selectedUsersAF" :items="developers" label="Select DEV" item-text="displayText"
+            item-value="id" multiple></v-select>
 
-          <v-select
-            v-model="selectedUsersAF"
-            :items="implementers"
-            label="Select IMP"
-            item-text="displayText"
-            item-value="id"
-            multiple
-          ></v-select>
+          <v-select v-model="selectedUsersAF" :items="implementers" label="Select IMP" item-text="displayText"
+            item-value="id" multiple></v-select>
         </v-card-text>
         <v-card-actions>
-          <v-btn color="blue darken-1" text @click="closeNestedDialog"
-            >Cancel</v-btn
-          >
+          <v-btn color="blue darken-1" text @click="closeNestedDialog">Cancel</v-btn>
           <!-- Button to assign selected users -->
           <v-btn color="blue darken-1" text @click="assignUserAF">Assign</v-btn>
         </v-card-actions>
