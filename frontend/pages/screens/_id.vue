@@ -28,16 +28,14 @@
             <!-- Display Task in Card -->
             <v-row>
                 <v-col v-for="(task, index) in filteredTasks" :key="index" cols="12" md="6" lg="4">
-                    <TaskCard :task="task" class="task-card" @edit-task="openEditTaskDialog"
-                        @open-update-task-dialog="openUpdateTaskDialog"></TaskCard>
+                    <TaskCard :task="task" class="task-card" @edit-task="openEditTaskDialog" @delete-task="deleteTask"></TaskCard>
                 </v-col>
             </v-row>
             <!-- Edit task dialog -->
             <div>
-                <EditTaskDialog v-model="dialogEditTaskForm" :edited-task="editedTask" @update-task="handleUpdateTask">
+                <EditTaskDialog v-model="dialogEditTaskForm" :edited-task="editedTask" >
                 </EditTaskDialog>
-                <!-- Update Task Dialog  -->
-                <UpdateTaskDialog v-model="dialogUpdateTaskForm" @update-task="handleUpdateTask"></UpdateTaskDialog>
+
 
                 <!-- Create task dialog -->
                 <CreateTaskDialog v-model="dialogAddTaskForm" @save-task="handleSaveTask"></CreateTaskDialog>
@@ -51,7 +49,6 @@ import Swal from "sweetalert2";
 import TaskCard from '../../components/TaskComponent/TaskCard.vue';
 import EditTaskDialog from '../../components/TaskComponent/EditTaskDialog.vue';
 import CreateTaskDialog from '../../components/TaskComponent/CreateTaskDialog.vue';
-import UpdateTaskDialog from "~/components/TaskComponent/UpdateTaskDialog.vue";
 
 export default {
     layout: "admin",
@@ -59,7 +56,6 @@ export default {
         TaskCard,
         EditTaskDialog,
         CreateTaskDialog,
-        UpdateTaskDialog,
     },
     data() {
         return {
@@ -70,7 +66,6 @@ export default {
 
             // Task
             editedTask: {},
-            updatedTask: {},
             ScreenName: "",
             tasks: [],
             searchQuery: "",
@@ -137,43 +132,32 @@ export default {
                 });
             }
         },
-
-        // open update dialog
-        openUpdateTaskDialog() {
-            this.dialogUpdateTaskForm = true;
-            this.updatedTask = task;
-        },
-        // handle update task
-        async handleUpdateTask(taskData) {
-            console.log('Received task data:', taskData);
+        async deleteTask(task) {
+            console.log('Received task data:', task);
             try {
-                const response = await fetch("http://localhost:7777/tasks/updateTasks", {
-                    method: "PUT",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(taskData),
+                const response = await fetch(`http://localhost:7777/tasks/deleteHistoryTasks/${task.id}`, {
+                    method: "DELETE",
                 });
 
                 if (response.ok) {
                     Swal.fire({
                         icon: "success",
-                        title: "Task updated successfully",
+                        title: "Task and related data deleted successfully",
                     });
-                    this.dialogUpdateTaskForm = false;
                     this.fetchTasks();
                 } else {
-                    throw new Error("Failed to update task");
+                    throw new Error("Failed to delete task and related data");
                 }
             } catch (error) {
-                console.error("Error updating task:", error);
+                console.error("Error deleting task and related data:", error.message); // Log the specific error message
                 Swal.fire({
                     icon: "error",
-                    title: "Error updating task",
+                    title: "Error deleting task and related data",
                     text: 'Please try again',
                 });
             }
         },
+
 
 
         // Open creat dialog

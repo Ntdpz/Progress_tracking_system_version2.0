@@ -23,8 +23,8 @@
             </div>
         </v-card-text>
         <v-card-actions>
-            <v-btn text @click="openUpdateTaskDialog">
-                Update
+            <v-btn text @click="DeleteTask">
+                Delete
             </v-btn>
             <v-spacer></v-spacer>
             <v-btn class="ma-2" icon @click="show = !show">
@@ -105,6 +105,10 @@ export default {
         // open Edit task dialog
         openEditTaskDialog() {
             this.$emit('edit-task', this.task); // Emit the 'edit-task' event with the task as payload
+        },
+        // Delete task
+        DeleteTask() {
+            this.$emit('delete-task', this.task); // Emit the 'delete-task' event with the task as payload
         },
         
     },
