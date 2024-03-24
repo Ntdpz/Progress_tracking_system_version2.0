@@ -62,26 +62,10 @@
         <v-card-title>Create New Project</v-card-title>
         <v-card-text>
           <!-- Form to create new project -->
-<<<<<<< HEAD
-          <v-form @submit.prevent="createProject">
-            <v-text-field
-              v-model="newProject.project_id"
-              label="Project ID"
-            ></v-text-field>
-            <v-text-field
-              v-model="newProject.project_name_TH"
-              label="Project Name (TH)"
-            ></v-text-field>
-            <v-text-field
-              v-model="newProject.project_name_ENG"
-              label="Project Name (EN)"
-            ></v-text-field>
-=======
           <v-form>
             <v-text-field v-model="newProject.project_id" label="Project ID"></v-text-field>
             <v-text-field v-model="newProject.project_name_TH" label="Project Name (TH)"></v-text-field>
             <v-text-field v-model="newProject.project_name_ENG" label="Project Name (EN)"></v-text-field>
->>>>>>> Create_Screen
 
             <!-- New fields for SA, DEV, IMP selection -->
             <v-select v-model="selectedSA" :items="formatTeamMembers(teamMembersSA)" label="Select SA" multiple>
@@ -109,9 +93,6 @@
             </v-select>
 
             <!-- Button to submit -->
-<<<<<<< HEAD
-            <v-btn type="submit">Create</v-btn>
-=======
             <v-btn type="submit" @click="
                 createProjectDialog = false;
                 createProject();
@@ -119,21 +100,11 @@
               Create
             </v-btn>
 
->>>>>>> Create_Screen
             <v-btn @click="createProjectDialog = false">Cancel</v-btn>
           </v-form>
         </v-card-text>
       </v-card>
     </v-dialog>
-<<<<<<< HEAD
-
-    <!-- Edit Project Dialog -->
-    <v-dialog
-      v-model="editProjectDialog"
-      max-width="600"
-      ref="editProjectDialog"
-    >
-=======
     <!-- Edit Project Form Dialog -->
     <v-dialog v-model="editDialog" max-width="600">
       <v-card>
@@ -154,7 +125,6 @@
 
     <!-- Project Details Dialog -->
     <v-dialog v-model="editProjectDialog" max-width="600" ref="editProjectDialog">
->>>>>>> Create_Screen
       <v-card>
         <v-card-title>Edit Project</v-card-title>
         <v-card-text>
