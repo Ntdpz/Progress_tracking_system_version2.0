@@ -75,7 +75,7 @@ router.post("/createUser_system", async (req, res) => {
             const id = generateId();
             // screen_id exists in the screens table, insert new record into user_screens table
             connection.query(
-                "INSERT INTO user_systems(id, user_id, system_id,project_id) VALUES(?, ?, ?, ?)",
+                "INSERT INTO user_systems(id, user_id, system_id, project_id) VALUES(?, ?, ?, ?)",
                 [id, user_id[i], system_id, project_id],
                 (err, results, fields) => {
                     if (err) {
