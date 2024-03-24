@@ -1,5 +1,5 @@
 <template>
-  <div class="system-details">
+  <div class="screen-details">
     <!-- Search bar -->
     <v-row no-gutters>
       <v-col cols="12">
@@ -829,8 +829,8 @@ export default {
 }
 
 /* Set width for each column */
-.system-details td,
-.system-details th {
+.screen-details td,
+.screen-details th {
   min-width: 120px;
   /* Adjust width as needed */
   max-width: 120px;
@@ -840,7 +840,7 @@ export default {
 }
 
 /* CSS for the image */
-.system-details img {
+.screen-details img {
   width: 50px;
   /* Adjust width of the image */
   height: auto;
