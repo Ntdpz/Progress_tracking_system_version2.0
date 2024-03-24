@@ -461,7 +461,7 @@ export default {
             text: "Screen updated successfully",
           });
           this.editScreenDialog = false;
-          this.fetchScreens();
+          this.fetchScreens(); // Assuming fetchScreens() fetches updated screen data
         } else {
           throw new Error("Failed to update screen");
         }
