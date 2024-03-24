@@ -201,8 +201,8 @@ export default {
       ],
 
       watch: {
-        // Watch for changes in the selected system ID and fetch details accordingly
-        selectedSystemId: "fetchSystemDetails",
+        // Watch for changes in the selected screen ID and fetch details accordingly
+        selectedScreenId: "fetchScreenDetails",
       },
     };
   },
@@ -214,19 +214,19 @@ export default {
   },
   methods: {
     async createScreen() {
-      const systemId = this.$route.params.id;
+      const screenId = this.$route.params.id;
 
       try {
-        // Fetch system data to get project_id
-        const systemResponse = await fetch(
-          `http://localhost:7777/systems/getOne/${systemId}`
+        // Fetch screen data to get project_id
+        const screenResponse = await fetch(
+          `http://localhost:7777/screens/getOne/${screenId}`
         );
-        if (!systemResponse.ok) {
-          throw new Error("Failed to fetch system data");
+        if (!screenResponse.ok) {
+          throw new Error("Failed to fetch screen data");
         }
 
-        const systemData = await systemResponse.json();
-        const projectId = systemData.project_id;
+        const screenData = await screenResponse.json();
+        const projectId = screenData.project_id;
 
         // Convert image to Base64
         const base64Image = await this.imageToBase64(this.newScreen.photo);
@@ -238,7 +238,7 @@ export default {
           screen_status: "default_status", // Update with your default status
           screen_level: this.newScreen.screen_level,
           screen_pic: base64Image, // Update with your default pic
-          system_id: systemId,
+          screen_id: screenId,
           screen_progress: 0, // Update with your default progress
           screen_plan_start: this.newScreen.screen_plan_start || null, // Use null if empty
           screen_plan_end: this.newScreen.screen_plan_end || null, // Use null if empty
@@ -342,7 +342,7 @@ export default {
       }
     },
 
-    async confirmDeleteHistoryScreen(item) {
+    async confirmDeleteHistoryScreen() {
       try {
         const confirmResult = await Swal.fire({
           title: "Are you sure?",
@@ -355,7 +355,7 @@ export default {
         });
 
         if (confirmResult.isConfirmed) {
-          const screenId = item.id;
+          const screenId = this.deletedScreen.id; // Assuming deletedScreen is accessible in this component
           const response = await fetch(
             `http://localhost:7777/screens/deleteHistoryScreens/${screenId}`,
             {
@@ -409,9 +409,9 @@ export default {
 
     async fetchSystemNameENG() {
       try {
-        const systemId = this.$route.params.id;
+        const screenId = this.$route.params.id;
         const response = await fetch(
-          `http://localhost:7777/systems/getOne/${systemId}`
+          `http://localhost:7777/systems/getOne/${screenId}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch system");
@@ -640,9 +640,9 @@ export default {
 
     async fetchDeletedScreens() {
       try {
-        const systemId = this.$route.params.id;
+        const screenId = this.$route.params.id;
         const response = await fetch(
-          `http://localhost:7777/screens/searchBySystemId_delete/${systemId}`//ติดแก้ไขที่ตรงนี้
+          `http://localhost:7777/screens/searchBySystemId_delete/${screenId}`//ติดแก้ไขที่ตรงนี้ ตรง/searchBySystemIdแก้ไขอะไรยังไม่ได้
         );
         if (!response.ok) {
           throw new Error("Failed to fetch deleted screens");
@@ -716,10 +716,10 @@ export default {
     },
 
     async fetchScreens() {
-      const systemId = this.$route.params.id;
+      const screenId = this.$route.params.id;
       try {
         const response = await fetch(
-          `http://localhost:7777/screens/searchBySystemId/${systemId}`
+          `http://localhost:7777/screens/searchBySystemId/${screenId}`//ข้อมูลที่แสดงตรงหน้าจอ ตรง/searchBySystemIdแก้ไขอะไรยังไม่ได้
         );
         if (!response.ok) {
           throw new Error("Failed to fetch screens");
