@@ -24,8 +24,7 @@
           <v-btn color="primary" dark @click="goToCreateScreen">New Screen</v-btn>
           <v-btn color="primary" dark @click="goToHistoryScreens" style="margin-left: 10px;">Show History Screen</v-btn>
           <!-- <v-btn color="primary" dark @click="goToHistoryScreen"
-            >Show HistoryScreen</v-btn
-          > -->
+            >Show HistoryScreen</v-btn> -->
         </v-toolbar>
 
         <!-- Create Screen Dialog -->
@@ -116,7 +115,6 @@
 
           </v-data-table>
         </v-dialog>
-
       </template>
 
       <!-- Header Row -->
@@ -258,7 +256,6 @@ export default {
         );
 
         // Check if the screen was created successfully
-        // Check if the screen was created successfully
         if (response.ok) {
           await Swal.fire({
             icon: "success",
@@ -346,7 +343,7 @@ export default {
       try {
         const confirmResult = await Swal.fire({
           title: "Are you sure?",
-          text: "You won't be able to revert this!",
+          text: "You won't be able to delete this!",
           icon: "warning",
           showCancelButton: true,
           confirmButtonColor: "#3085d6",
@@ -532,7 +529,7 @@ export default {
       try {
         const confirmResult = await Swal.fire({
           title: "Are you sure?",
-          text: "You won't be able to revert this!",
+          text: "You won't be able to delete this!",
           icon: "warning",
           showCancelButton: true,
           confirmButtonColor: "#3085d6",
@@ -754,10 +751,10 @@ export default {
             popup: "animate__animated animate__fadeOutUp", // กำหนด animation เมื่อซ่อน SweetAlert
           },
         });
-        if (confirmResult.isConfirmed) {
-          // If user confirms deletion, call deleteScreen method
-          await this.deleteScreen(screen);
-          // อัพเดทข้อมูลโดยอัตโนมัติหลังจากลบข้อมูล
+        if (confirmResult.isConfirmed) {// If user confirms deletion, call deleteScreen method
+
+          await this.deleteScreen(screen);// อัพเดทข้อมูลโดยอัตโนมัติหลังจากลบข้อมูล
+
           this.fetchScreens();
         }
       } catch (error) {
