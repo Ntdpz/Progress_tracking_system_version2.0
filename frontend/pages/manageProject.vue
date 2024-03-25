@@ -47,7 +47,7 @@
         <v-icon size="20" px @click="softDeleteProject(item)">
           mdi-delete-empty
         </v-icon>
-        <v-btn size="30" px @click="viewProjectDetails(item)">
+        <v-btn size="30" px @click="viewProjectDetails(item)" style="margin-left: 10px;">
           Ststems
         </v-btn>
         <v-btn size="30" px @click="manageUserProjects(item)" style="margin-left: 10px">
@@ -55,6 +55,7 @@
         </v-btn>
       </template>
     </v-data-table>
+
     <!-- Create Project Dialog -->
     <v-dialog v-model="createProjectDialog" max-width="600" ref="createProjectDialog">
       <v-card>
@@ -281,7 +282,7 @@ export default {
           return;
         }
         this.fetchAvailableUsers(project_id);
-        this.deleteUser(project_id);
+
         const response = await fetch(
           `http://localhost:7777/user_projects/getUserProjectsByProjectId/${project_id}`
         );
@@ -300,26 +301,50 @@ export default {
 
     async deleteUser(project_id, item) {
       try {
-        const projectId = project_id;
-        if (!projectId) {
+        // const projectId = project_id; // ไม่จำเป็นต้องทำเช่นนี้
+        if (!project_id) {
+          await Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "Project ID is undefined",
+          });
           console.error("Error deleting user: project_id is undefined");
           return;
         }
 
         const response = await axios.delete(
-          `http://localhost:7777/user_projects/deleteUserProjectById/${projectId}/${item.user_id}`
+          `http://localhost:7777/user_projects/deleteUserProjectById/${project_id}/${item.user_id}`
         );
+
         if (response.status === 200) {
           // Handle success
+          await Swal.fire({
+            icon: "success",
+            title: "Success",
+            text: response.data.message,
+          });
           console.log(response.data.message);
+          // อัปเดตตารางผู้ใช้หลังจากลบผู้ใช้เสร็จสิ้น
+          this.fetchAvailableUsers(project_id);
         } else {
           // Handle error
+          await Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "Failed to delete user",
+          });
           console.error("Failed to delete user:", response.status);
         }
       } catch (error) {
+        await Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Error deleting user",
+        });
         console.error("Error deleting user:", error);
       }
     },
+
     fetchAvailableUsers(project_id) {
       axios
         .get(
@@ -342,10 +367,14 @@ export default {
         });
     },
 
-    assignUserAF() {
+    async assignUserAF() {
       // ตรวจสอบว่ามีผู้ใช้ที่ถูกเลือกหรือไม่
       if (this.selectedUsersAF.length === 0) {
-        console.error("No users selected to assign.");
+        await Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "No users selected to assign.",
+        });
         return;
       }
 
@@ -354,57 +383,45 @@ export default {
 
       // ตรวจสอบว่า project_id มีค่าหรือไม่
       if (!project_id) {
-        console.error("No project_id available.");
+        await Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "No project_id available.",
+        });
         return;
       }
 
       // ส่งข้อมูลผู้ใช้ที่ถูกเลือกไปยัง API
       const user_ids = this.selectedUsersAF;
 
-      axios
-        .post("http://localhost:7777/user_projects/createUser_project", {
-          project_id,
-          user_id: user_ids,
-        })
-        .then((response) => {
-          console.log("Users assigned successfully:", response.data);
-          // ปิด Dialog หลังจากกำหนดผู้ใช้เสร็จสิ้น
-          this.dialogAssignUser = false;
-        })
-        .catch((error) => {
-          console.error("Error assigning users:", error);
-        });
-    },
-
-    async assignUser() {
       try {
-        const project_id = this.selectedProject.id;
-        const user_id = this.selectedUsers.map((user) => user.id);
-
-        const response = await fetch(
-          `http://localhost:7777/user_projects/createUser_project`,
+        const response = await axios.post(
+          "http://localhost:7777/user_projects/createUser_project",
           {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ user_id, project_id }),
+            project_id,
+            user_ids,
           }
         );
-
-        if (!response.ok) {
-          throw new Error("Failed to assign user(s) to project");
-        }
-
-        // Refresh user projects after assigning user(s)
-        await this.manageUserProjects(this.selectedProject);
-
-        // Close the nested dialog
-        this.closeNestedDialog();
+        await Swal.fire({
+          icon: "success",
+          title: "Success",
+          text: "Users assigned successfully!",
+        });
+        console.log("Users assigned successfully:", response.data);
+        // เมื่อกำหนดผู้ใช้เสร็จสิ้น ให้เรียก fetchAvailableUsers เพื่ออัพเดตตารางผู้ใช้
+        this.fetchAvailableUsers(project_id);
+        // ปิด Dialog หลังจากกำหนดผู้ใช้เสร็จสิ้น
+        this.dialogAssignUser = false;
       } catch (error) {
-        console.error("Error assigning user(s) to project:", error);
+        await Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Error assigning users.",
+        });
+        console.error("Error assigning users:", error);
       }
     },
+
     closeNestedDialog() {
       this.dialogAssignUser = false;
     },
@@ -530,6 +547,31 @@ export default {
         return;
       }
       try {
+        let requestBody = {
+          project_id: this.newProject.project_id,
+          project_name_TH: this.newProject.project_name_TH,
+          project_name_ENG: this.newProject.project_name_ENG,
+        };
+
+        // Check if any team members are selected
+        if (this.selectedSA.length > 0) {
+          requestBody.selectedSA = this.selectedSA.map(
+            (member) => member.user_id
+          );
+        }
+
+        if (this.selectedDEV.length > 0) {
+          requestBody.selectedDEV = this.selectedDEV.map(
+            (member) => member.user_id
+          );
+        }
+
+        if (this.selectedIMP.length > 0) {
+          requestBody.selectedIMP = this.selectedIMP.map(
+            (member) => member.user_id
+          );
+        }
+
         const response = await fetch(
           "http://localhost:7777/projects/createProject",
           {
@@ -537,14 +579,7 @@ export default {
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({
-              project_id: this.newProject.project_id,
-              project_name_TH: this.newProject.project_name_TH,
-              project_name_ENG: this.newProject.project_name_ENG,
-              selectedSA: this.selectedSA.map((member) => member.user_id),
-              selectedDEV: this.selectedDEV.map((member) => member.user_id),
-              selectedIMP: this.selectedIMP.map((member) => member.user_id),
-            }),
+            body: JSON.stringify(requestBody),
           }
         );
         const data = await response.json();
@@ -567,7 +602,6 @@ export default {
         });
       }
     },
-
     async fetchProjects() {
       try {
         const response = await fetch("http://localhost:7777/projects/getAll");
@@ -583,13 +617,13 @@ export default {
     async updateProject() {
       try {
         const response = await fetch(
-          `http://localhost:7777/projects/updateProject/${this.editedProject.project_id}`,
+          `http://localhost:7777/projects/updateProject/${this.editProject.id}`,
           {
             method: "PUT",
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify(this.editedProject),
+            body: JSON.stringify(this.editProject),
           }
         );
         if (!response.ok) {
@@ -670,43 +704,6 @@ export default {
     },
     async goToCreateProject() {
       this.createProjectDialog = true;
-    },
-    async saveEditedProject() {
-      try {
-        const response = await fetch(
-          `http://localhost:7777/projects/updateProject/${this.editedProject.project_id}`,
-          {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              project_name_TH: this.editedProject.project_name_TH,
-              project_name_ENG: this.editedProject.project_name_ENG,
-            }),
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error("Failed to update project");
-        }
-
-        await Swal.fire({
-          icon: "success",
-          title: "Success",
-          text: "Project updated successfully",
-        });
-
-        this.$router.go();
-      } catch (error) {
-        console.error("Error updating project:", error);
-
-        await Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: "Failed to update project",
-        });
-      }
     },
     updateDateTime() {
       const now = new Date();

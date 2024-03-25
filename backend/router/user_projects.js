@@ -68,13 +68,13 @@ router.get("/getOneScreenID/:project_id", async (req, res) => {
 
 // * POST FROM user_projects
 router.post("/createUser_project", async (req, res) => {
-    const { user_id, project_id } = req.body;
+    const { user_ids, project_id } = req.body; // เปลี่ยนชื่อตัวแปรจาก user_id เป็น user_ids
     try {
-        for (let i = 0; i < user_id.length; i++) {
+        for (let i = 0; i < user_ids.length; i++) { // เปลี่ยนชื่อตัวแปรจาก user_id เป็น user_ids
             // Check if the combination of user_id and project_id already exists in the database
             connection.query(
                 "SELECT * FROM user_projects WHERE user_id = ? AND project_id = ?",
-                [user_id[i], project_id],
+                [user_ids[i], project_id],
                 (err, results, fields) => {
                     if (err) {
                         console.log("Error while checking for duplicate user_projects in the database", err);
@@ -87,7 +87,7 @@ router.post("/createUser_project", async (req, res) => {
                         // Insert new record into user_projects table
                         connection.query(
                             "INSERT INTO user_projects(user_id, project_id) VALUES(?, ?)",
-                            [user_id[i], project_id],
+                            [user_ids[i], project_id],
                             (err, results, fields) => {
                                 if (err) {
                                     console.log("Error while inserting a user_project into the database", err);
@@ -107,6 +107,7 @@ router.post("/createUser_project", async (req, res) => {
         return res.status(400).send();
     }
 });
+
 
 //* DELETE user by user_id
 router.delete("/deleteUserID/:user_id", async (req, res) => {
