@@ -158,9 +158,8 @@ async function updateProject(project) {
   }
 }
 
-// Route to create a new project
 router.post("/createProject", async (req, res) => {
-  const { project_id, project_name_TH, project_name_ENG } = req.body;
+  const { project_id, project_name_TH, project_name_ENG, selectedSA, selectedDEV, selectedIMP } = req.body;
 
   const id = generateId(); // Generate ID using generateId() function
 
@@ -174,22 +173,25 @@ router.post("/createProject", async (req, res) => {
           return res.status(400).send();
         }
 
-        // Create user_project relations
-        const { selectedSA, selectedDEV, selectedIMP } = req.body;
-        const users = [...selectedSA, ...selectedDEV, ...selectedIMP];
-        const userProjectValues = users.map(user_id => [user_id, id]);
+        // Create user_project relations if TeamMembers are provided
+        if (selectedSA || selectedDEV || selectedIMP) {
+          const users = [...(selectedSA || []), ...(selectedDEV || []), ...(selectedIMP || [])];
+          const userProjectValues = users.map(user_id => [user_id, id]);
 
-        connection.query(
-          "INSERT INTO user_projects (user_id, project_id) VALUES ?",
-          [userProjectValues],
-          (error, results, fields) => {
-            if (error) {
-              console.error("Error while inserting users into the project", error);
-              return res.status(400).send();
+          connection.query(
+            "INSERT INTO user_projects (user_id, project_id) VALUES ?",
+            [userProjectValues],
+            (error, results, fields) => {
+              if (error) {
+                console.error("Error while inserting users into the project", error);
+                return res.status(400).send();
+              }
+              return res.status(201).json({ message: "New project successfully created!" });
             }
-            return res.status(201).json({ message: "New project successfully created!" });
-          }
-        );
+          );
+        } else {
+          return res.status(201).json({ message: "New project successfully created!" });
+        }
       }
     );
   } catch (err) {
@@ -197,6 +199,7 @@ router.post("/createProject", async (req, res) => {
     return res.status(500).send();
   }
 });
+
 
 
 // Route to update project
@@ -269,7 +272,6 @@ router.delete("/delete/:id", async (req, res) => {
   }
 });
 
-// Route to delete project along with related data
 router.delete("/deleteHistoryProject/:id", async (req, res) => {
   const id = req.params.id;
 
@@ -313,19 +315,34 @@ router.delete("/deleteHistoryProject/:id", async (req, res) => {
                   return res.status(500).send();
                 }
 
-                // Now, delete the project itself
+                // Now, delete user_projects related to the project_id
                 connection.query(
                   `
-                  DELETE FROM projects
-                  WHERE id = ?
+                  DELETE FROM user_projects
+                  WHERE project_id = ?
                   `,
                   [id],
-                  (err, results, fields) => {
+                  async (err, results, fields) => {
                     if (err) {
                       console.error(err);
                       return res.status(500).send();
                     }
-                    return res.status(200).json({ message: "Project and related data deleted successfully!" });
+
+                    // Now, delete the project itself
+                    connection.query(
+                      `
+                      DELETE FROM projects
+                      WHERE id = ?
+                      `,
+                      [id],
+                      (err, results, fields) => {
+                        if (err) {
+                          console.error(err);
+                          return res.status(500).send();
+                        }
+                        return res.status(200).json({ message: "Project and related data deleted successfully!" });
+                      }
+                    );
                   }
                 );
               }
@@ -339,6 +356,7 @@ router.delete("/deleteHistoryProject/:id", async (req, res) => {
     return res.status(500).send();
   }
 });
+
 
 // Route to add user-project mappings
 router.post("/addUserProject", async (req, res) => {

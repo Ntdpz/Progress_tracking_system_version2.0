@@ -312,11 +312,13 @@ router.post('/createSystem', async (req, res) => {
     system_shortname,
     system_analyst,
     system_member,
+    system_plan_start,
+    system_plan_end,
   } = req.body;
   const id = generateId();
   try {
     connection.query(
-      'INSERT INTO systems(id, project_id, system_id, system_nameTH, system_nameEN, system_shortname, system_analyst, system_member) VALUES(?, ?, ?, ?, ?, ?, ?, ?)',
+      'INSERT INTO systems(id, project_id, system_id, system_nameTH, system_nameEN, system_shortname, system_analyst, system_member, system_plan_start, system_plan_end) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
       [
         id,
         project_id,
@@ -326,6 +328,8 @@ router.post('/createSystem', async (req, res) => {
         system_shortname,
         system_analyst,
         system_member,
+        system_plan_start,
+        system_plan_end,
       ],
       (err, results, fields) => {
         if (err) {
@@ -342,6 +346,8 @@ router.post('/createSystem', async (req, res) => {
     return res.status(500).send();
   }
 });
+
+
 
 // Route to update system details
 router.put('/updateSystem/:id', async (req, res) => {
