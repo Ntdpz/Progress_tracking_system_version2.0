@@ -15,7 +15,7 @@
     </v-row>
 
     <!--data table -->
-    <v-data-table :headers="userScreenHeaders" :items="filteredScreens" :items-per-page="5" class="elevation-1">
+    <v-data-table :headers="headers" :items="filteredScreens" :items-per-page="5" class="elevation-1">
       <template v-slot:top>
         <v-toolbar flat>
           <v-toolbar-title>Screen Management - System : {{ systemNameENG }}</v-toolbar-title>
@@ -108,25 +108,20 @@
         </v-dialog>
       </template>
 
-      <!-- Header Row -->
-      <template v-slot:header>
-        <thead>
-          <tr>
-            <th v-for="header in userScreensHeaders" :key="header.value">
-              {{ header.text }}
-            </th>
-          </tr>
-        </thead>
-      </template>
+      
 
       <!-- Data Rows -->
       <template v-slot:item="{ item }">
         <tr>
           <td>{{ item.screen_id }}</td>
           <td>{{ item.screen_name }}</td>
+          <td>{{ item.screen_plan_start }}</td>
           <td>{{ item.screen_plan_end }}</td>
+          <td>{{ item.screen_manday }}</td>
           <td>{{ item.screen_level }}</td>
           <td>{{ item.screen_progress }}</td>
+          <td>{{ item.screen_type }}</td>
+          <td>{{ item.task_count }}</td>
           <td>
             <!-- Actions -->
             <v-icon class="me-2" size="20" px @click="openEditDialog(item)">mdi-pencil-circle</v-icon>
@@ -183,9 +178,13 @@ export default {
       headers: [
         { text: "Screen ID", value: "screen_id" },
         { text: "Screen Name", value: "screen_name" },
-        { text: "Due date", value: "screen_plan_end" },
+        { text: "Plan Start", value: "screen_plan_start" },
+        { text: "Plan End", value: "screen_plan_end" },
+        { text: "Manday", value: "screen_manday" },
         { text: "Screen ", value: "screen_level" },
         { text: "Progress", value: "screen_progress" },
+        { text: "Screen type", value: "screen_type"  },
+        { text: "Task count", value: "task_count" },
         { text: "Actions", value: "actions", sortable: false },
       ],
 
