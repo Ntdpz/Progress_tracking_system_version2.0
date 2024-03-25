@@ -214,19 +214,19 @@ export default {
   },
   methods: {
     async createScreen() {
-      const screenId = this.$route.params.id;
+      const systemId = this.$route.params.id;
 
       try {
-        // Fetch screen data to get project_id
-        const screenResponse = await fetch(
-          `http://localhost:7777/screens/getOne/${screenId}`
+        // Fetch system data to get project_id
+        const systemResponse = await fetch(
+          `http://localhost:7777/systems/getOne/${systemId}`
         );
-        if (!screenResponse.ok) {
-          throw new Error("Failed to fetch screen data");
+        if (!systemResponse.ok) {
+          throw new Error("Failed to fetch system data");
         }
 
-        const screenData = await screenResponse.json();
-        const projectId = screenData.project_id;
+        const systemData = await systemResponse.json();
+        const projectId = systemData.project_id;
 
         // Convert image to Base64
         const base64Image = await this.imageToBase64(this.newScreen.photo);
@@ -238,7 +238,7 @@ export default {
           screen_status: "default_status", // Update with your default status
           screen_level: this.newScreen.screen_level,
           screen_pic: base64Image, // Update with your default pic
-          screen_id: screenId,
+          system_id: systemId,
           screen_progress: 0, // Update with your default progress
           screen_plan_start: this.newScreen.screen_plan_start || null, // Use null if empty
           screen_plan_end: this.newScreen.screen_plan_end || null, // Use null if empty
