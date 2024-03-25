@@ -15,7 +15,7 @@
     </v-row>
 
     <!--data table -->
-    <v-data-table :headers="userScreenHeaders" :items="filteredScreens" :items-per-page="5" class="elevation-1">
+    <v-data-table :headers="headers" :items="filteredScreens" :items-per-page="5" class="elevation-1">
       <template v-slot:top>
         <v-toolbar flat>
           <v-toolbar-title>Screen Management - System : {{ systemNameENG }}</v-toolbar-title>
@@ -117,7 +117,7 @@
         </v-dialog>
       </template>
 
-      <!-- Header Row -->
+      <!-- Header Row
       <template v-slot:header>
         <thead>
           <tr>
@@ -126,16 +126,20 @@
             </th>
           </tr>
         </thead>
-      </template>
+      </template> -->
 
       <!-- Data Rows -->
       <template v-slot:item="{ item }">
         <tr>
           <td>{{ item.screen_id }}</td>
           <td>{{ item.screen_name }}</td>
+          <td>{{ item.screen_plan_start }}</td>
           <td>{{ item.screen_plan_end }}</td>
+          <td>{{ item.screen_man_day }}</td>
+          <td>{{ item.screen_type }}</td>
+          <td>{{ item.screen_task_count }}</td>
           <td>{{ item.screen_level }}</td>
-          <td>{{ item.screen_progress }}</td>
+          <!-- <td>{{ item.screen_progress }}</td> -->
           <td>
             <!-- Actions -->
             <v-icon class="me-2" size="20" px @click="openEditDialog(item)">mdi-pencil-circle</v-icon>
@@ -184,7 +188,11 @@ export default {
       userScreensHeaders: [
         { text: "Screen ID", value: "screen_id" },
         { text: "Screen Name", value: "screen_name" },
-        { text: "Due date", value: "screen_plan_end" },
+        { text: "Plan Start", value: "screen_plan_start" },
+        { text: "Plan End", value: "screen_plan_end" },
+        { text: "Man day", value: "screen_manday" },
+        { text: "Screen type", value: "screen_type" },
+        { text: "Task Count", value: "screen_task_count" },
         { text: "Screen Level", value: "screen_level" },
         // { text: "Image", value: "screen_pic" }, // เปลี่ยนจาก "Progress" เป็น "Picture"
         // { text: "Actions", value: "actions", sortable: false },
@@ -192,9 +200,12 @@ export default {
       headers: [
         { text: "Screen ID", value: "screen_id" },
         { text: "Screen Name", value: "screen_name" },
-        { text: "Due date", value: "screen_plan_end" },
-        { text: "Screen ", value: "screen_level" },
-        { text: "Progress", value: "screen_progress" },
+        { text: "Plan Start", value: "screen_plan_start" },
+        { text: "Plan End", value: "screen_plan_end" },
+        { text: "Man day", value: "screen_manday" },
+        { text: "Screen type", value: "screen_type" },
+        { text: "Task Count", value: "screen_task_count" },
+        { text: "Screen Level", value: "screen_level" },
         { text: "Actions", value: "actions", sortable: false },
       ],
 
@@ -256,6 +267,7 @@ export default {
         );
 
         // Check if the screen was created successfully
+        // Check if the screen was created successfully
         if (response.ok) {
           await Swal.fire({
             icon: "success",
@@ -281,6 +293,7 @@ export default {
         // ... continue
       }
     },
+
 
     async restoreScreen(item) {
       try {
@@ -427,15 +440,11 @@ export default {
 
     async updateScreen() {
       try {
-        // Convert image to Base64
-        const base64Image = await this.imageToBase64(this.editScreen.photo);
-
         // Prepare data to send
         const requestData = {
           screen_id: this.editScreen.screen_id,
           screen_name: this.editScreen.screen_name,
           screen_level: this.editScreen.screen_level,
-          screen_pic: base64Image, // Updated photo
         };
 
         // Make the request to update the screen
@@ -738,7 +747,7 @@ export default {
       try {
         const confirmResult = await Swal.fire({
           title: "Are you sure?",
-          text: "You won't be able to revert this!",
+          text: "You won't be able to delete this!",
           icon: "warning",
           showCancelButton: true,
           confirmButtonColor: "#3085d6",
