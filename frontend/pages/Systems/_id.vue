@@ -36,6 +36,10 @@
               <v-form>
                 <v-text-field v-model="newScreen.screen_id" label="Screen ID"></v-text-field>
                 <v-text-field v-model="newScreen.screen_name" label="Screen Name"></v-text-field>
+                <v-text-field v-model="newScreen.screen_plan_start" label="Plant Start" type="date"></v-text-field>
+                <v-text-field v-model="newScreen.screen_plan_end" label="Plant End" type="date"></v-text-field>
+                <v-text-field v-model="newScreen.screen_manday" label="Man day" type="float"></v-text-field>
+                <v-text-field v-model="newScreen.screen_type" label="Screen Type"></v-text-field>
                 <v-select v-model="newScreen.screen_level" label="Screen Level" :items="[
           'Very Difficult',
           'Hard',
@@ -68,6 +72,7 @@
               <v-form @submit.prevent="updateScreen">
                 <v-text-field v-model="editScreen.screen_id" label="Screen ID" readonly></v-text-field>
                 <v-text-field v-model="editScreen.screen_name" label="Screen Name"></v-text-field>
+                <v-text-field v-model="editScreen.screen_type" label="Screen Type"></v-text-field>
                 <v-select v-model="editScreen.screen_level" label="Screen Level" :items="[
           'Very Difficult',
           'Hard',
@@ -133,8 +138,8 @@
         <tr>
           <td>{{ item.screen_id }}</td>
           <td>{{ item.screen_name }}</td>
-          <td>{{ item.screen_plan_start }}</td>
-          <td>{{ item.screen_plan_end }}</td>
+          <td>{{ formattedScreensPlanStart(item.screen_plan_start) }}</td>
+          <td>{{ formattedScreenPlanEnd(item.screen_plan_end) }}</td>
           <td>{{ item.screen_man_day }}</td>
           <td>{{ item.screen_type }}</td>
           <td>{{ item.screen_task_count }}</td>
@@ -169,6 +174,8 @@ export default {
       deletedScreens: [],
       createScreenDialog: false,
       editScreenDialog: false,
+      formattedPlanStart: '',
+      formattedPlanEnd: '',
       newScreen: {
         screen_id: "",
         screen_name: "",
@@ -222,6 +229,7 @@ export default {
     this.fetchSystemNameENG();
   },
   methods: {
+
     async createScreen() {
       const systemId = this.$route.params.id;
 
@@ -248,6 +256,7 @@ export default {
           screen_level: this.newScreen.screen_level,
           screen_pic: base64Image, // Update with your default pic
           system_id: systemId,
+          screen_manday:  this.newScreen.screen_manday,
           screen_progress: 0, // Update with your default progress
           screen_plan_start: this.newScreen.screen_plan_start || null, // Use null if empty
           screen_plan_end: this.newScreen.screen_plan_end || null, // Use null if empty
@@ -293,7 +302,6 @@ export default {
         // ... continue
       }
     },
-
 
     async restoreScreen(item) {
       try {
@@ -444,6 +452,9 @@ export default {
         const requestData = {
           screen_id: this.editScreen.screen_id,
           screen_name: this.editScreen.screen_name,
+          screen_type:  this.editScreen.screen_type,
+          screen_status: this.editScreen,
+          screen_detail: this.editScreen,
           screen_level: this.editScreen.screen_level,
         };
 
@@ -590,6 +601,12 @@ export default {
             body: JSON.stringify({
               screen_id: this.editedScreen.screen_id,
               screen_name: this.editedScreen.screen_name,
+              screen_plan_start: this.formatDatePlanStart(),
+              screen_plan_end: this.formatDatePlanEnd(),
+              screen_manday: this.editScreen.screen_manday,
+              screen_type: this.editScreen.screen_type,
+              screen_status: this.editScreen,
+              screen_detail: this.editScreen,
               screen_level: this.editedScreen.screen_level,
             }),
           }
@@ -802,6 +819,7 @@ export default {
     },
   },
   computed: {
+
     filteredScreens() {
       return this.screens.filter((screen) => {
         const searchText = this.searchQuery.toLowerCase();
@@ -810,6 +828,30 @@ export default {
           screen.screen_name.toLowerCase().includes(searchText)
         );
       });
+    },
+
+    formattedScreensPlanStart() {
+      return function (screenPlanStart) {
+        if (!screenPlanStart) return ''; // Check if planStart date is defined
+        const date = new Date(screenPlanStart); // Create a Date object from planStart
+        const day = date.getDate(); // Get the day of the month
+        const month = date.getMonth() + 1; // Get the month (0-indexed, hence +1)
+        const year = date.getFullYear(); // Get the full year
+        // Format the date as "day/month/year"
+        return `${day}/${month}/${year}`;
+      };
+    },
+    // Compute the formatted planEnd date
+    formattedScreenPlanEnd() {
+      return function (screenPlanEnd) {
+      if (!screenPlanEnd) return ''; // Check if planStart date is defined
+      const date = new Date(screenPlanEnd); // Create a Date object from planStart
+      const day = date.getDate(); // Get the day of the month
+      const month = date.getMonth() + 1; // Get the month (0-indexed, hence +1)
+      const year = date.getFullYear(); // Get the full year
+      // Format the date as "day/month/year"
+      return `${day}/${month}/${year}`;
+      };
     },
   },
 };
