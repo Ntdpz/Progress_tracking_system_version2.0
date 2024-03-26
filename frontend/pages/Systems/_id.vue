@@ -38,8 +38,7 @@
                 <v-text-field v-model="newScreen.screen_name" label="Screen Name"></v-text-field>
                 <v-text-field v-model="newScreen.screen_plan_start" label="Plant Start" type="date"></v-text-field>
                 <v-text-field v-model="newScreen.screen_plan_end" label="Plant End" type="date"></v-text-field>
-                <v-text-field v-model="newScreen.screen_manday" label="Man day" type="float"></v-text-field>
-                <v-text-field v-model="newScreen.screen_type" label="Screen Type"></v-text-field>
+                <v-text-field v-model="newScreen.screen_manday" label="Manday" type="float"></v-text-field>
                 <v-select v-model="newScreen.screen_level" label="Screen Level" :items="[
           'Very Difficult',
           'Hard',
@@ -72,7 +71,9 @@
               <v-form @submit.prevent="updateScreen">
                 <v-text-field v-model="editScreen.screen_id" label="Screen ID" readonly></v-text-field>
                 <v-text-field v-model="editScreen.screen_name" label="Screen Name"></v-text-field>
-                <v-text-field v-model="editScreen.screen_type" label="Screen Type"></v-text-field>
+                <v-text-field v-model="editScreen.screen_plan_start" label="Plant Start" type="date"></v-text-field>
+                <v-text-field v-model="editScreen.screen_plan_end" label="Plant End" type="date"></v-text-field>
+                <v-text-field v-model="editScreen.screen_manday" label="Manday" type="float"></v-text-field>
                 <v-select v-model="editScreen.screen_level" label="Screen Level" :items="[
           'Very Difficult',
           'Hard',
@@ -138,11 +139,11 @@
         <tr>
           <td>{{ item.screen_id }}</td>
           <td>{{ item.screen_name }}</td>
-          <td>{{ item.screen_type }}</td>
+          <!-- <td>{{ item.screen_type }}</td> -->
+          <td>{{ item.screen_task_count }}</td>
           <td>{{ formattedScreensPlanStart(item.screen_plan_start) }}</td>
           <td>{{ formattedScreenPlanEnd(item.screen_plan_end) }}</td>
           <td>{{ item.screen_man_day }}</td>
-          <td>{{ item.screen_task_count }}</td>
           <td>{{ item.screen_level }}</td>
           <!-- <td>{{ item.screen_progress }}</td> -->
           <td>
@@ -200,8 +201,8 @@ export default {
         { text: "Task Count", value: "screen_task_count" },
         { text: "Plan Start", value: "screen_plan_start" },
         { text: "Plan End", value: "screen_plan_end" },
-        { text: "Man day", value: "screen_manday" },
-        { text: "Screen type", value: "screen_type" },
+        { text: "Manday", value: "screen_manday" },
+        // { text: "Screen type", value: "screen_type" },
         { text: "Screen Level", value: "screen_level" },
         // { text: "Image", value: "screen_pic" }, // เปลี่ยนจาก "Progress" เป็น "Picture"
         // { text: "Actions", value: "actions", sortable: false },
@@ -212,8 +213,8 @@ export default {
         { text: "Task Count", value: "screen_task_count" },
         { text: "Plan Start", value: "screen_plan_start" },
         { text: "Plan End", value: "screen_plan_end" },
-        { text: "Man day", value: "screen_manday" },
-        { text: "Screen type", value: "screen_type" },
+        { text: "Manday", value: "screen_manday" },
+        // { text: "Screen type", value: "screen_type" },
         { text: "Screen Level", value: "screen_level" },
         { text: "Actions", value: "actions", sortable: false },
       ],
