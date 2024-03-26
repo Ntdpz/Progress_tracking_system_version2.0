@@ -180,6 +180,7 @@ export default {
         screen_id: "",
         screen_name: "",
         screen_manday: "",
+        screen_type: "",
         screen_level: "",
         screen_pic: "",
         screen_plan_start: "",
@@ -188,6 +189,7 @@ export default {
       editScreen: {
         screen_id: "",
         screen_name: "",
+        screen_type: "",
         screen_level: "",
       },
       screens: [],
@@ -256,7 +258,8 @@ export default {
           screen_level: this.newScreen.screen_level,
           screen_pic: base64Image, // Update with your default pic
           system_id: systemId,
-          screen_manday:  this.newScreen.screen_manday,
+          screen_manday: this.newScreen.screen_manday,
+          screen_type: this.newScreen.screen_type,
           screen_progress: 0, // Update with your default progress
           screen_plan_start: this.newScreen.screen_plan_start || null, // Use null if empty
           screen_plan_end: this.newScreen.screen_plan_end || null, // Use null if empty
@@ -452,9 +455,9 @@ export default {
         const requestData = {
           screen_id: this.editScreen.screen_id,
           screen_name: this.editScreen.screen_name,
-          screen_type:  this.editScreen.screen_type,
-          screen_status: this.editScreen,
-          screen_detail: this.editScreen,
+          screen_type: this.editScreen.screen_type,
+          screen_status: this.editScreen.screen_status, // Fixed typo
+          screen_detail: this.editScreen.screen_detail, // Fixed typo
           screen_level: this.editScreen.screen_level,
         };
 
@@ -487,7 +490,7 @@ export default {
         await Swal.fire({
           icon: "error",
           title: "Error",
-          text: "Failed to update screen",
+          text: error.message, // Display the specific error message
         });
       }
     },
@@ -844,13 +847,13 @@ export default {
     // Compute the formatted planEnd date
     formattedScreenPlanEnd() {
       return function (screenPlanEnd) {
-      if (!screenPlanEnd) return ''; // Check if planStart date is defined
-      const date = new Date(screenPlanEnd); // Create a Date object from planStart
-      const day = date.getDate(); // Get the day of the month
-      const month = date.getMonth() + 1; // Get the month (0-indexed, hence +1)
-      const year = date.getFullYear(); // Get the full year
-      // Format the date as "day/month/year"
-      return `${day}/${month}/${year}`;
+        if (!screenPlanEnd) return ''; // Check if planStart date is defined
+        const date = new Date(screenPlanEnd); // Create a Date object from planStart
+        const day = date.getDate(); // Get the day of the month
+        const month = date.getMonth() + 1; // Get the month (0-indexed, hence +1)
+        const year = date.getFullYear(); // Get the full year
+        // Format the date as "day/month/year"
+        return `${day}/${month}/${year}`;
       };
     },
   },
