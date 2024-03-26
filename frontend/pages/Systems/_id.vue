@@ -123,17 +123,6 @@
         </v-dialog>
       </template>
 
-      <!-- Header Row
-      <template v-slot:header>
-        <thead>
-          <tr>
-            <th v-for="header in userScreensHeaders" :key="header.value">
-              {{ header.text }}
-            </th>
-          </tr>
-        </thead>
-      </template> -->
-
       <!-- Data Rows -->
       <template v-slot:item="{ item }">
         <tr>
@@ -159,10 +148,8 @@
   </div>
 </template>
 
-
 <script>
 import Swal from "sweetalert2";
-
 export default {
   name: "SystemDetails",
   layout: "admin",
@@ -329,17 +316,24 @@ export default {
                 "Content-Type": "application/json",
               },
               body: JSON.stringify({
-                screen_nameTH: item.screen_nameTH,
-                screen_nameEN: item.screen_nameEN,
-                screen_shortname: item.screen_shortname,
-                project_id: item.project_id,
-                is_deleted: 0, // Update the is_deleted field to 0 for restoration
+                screenId: screenId,
+                screen_id: item.screen_id,
+                screen_name: item.screen_name,
+                screen_plan_start: item.screen_plan_start,
+                screen_plan_end: item.screen_plan_end,
+                screen_manday: item.screen_manday,
+                screen_level: item.screen_level,
+                screen_pic: item.screen_pic,
+                is_deleted: 0, // Update is_deleted to 0 for restoration
               }),
             }
           );
 
+          console.log("Response:", response);
+
           if (!response.ok) {
-            throw new Error("Failed to restore screen");
+            const responseData = await response.json();
+            throw new Error(`Failed to restore screen: ${responseData.message}`);
           }
 
           console.log("Screen restored successfully");
@@ -350,7 +344,6 @@ export default {
             "success"
           );
 
-          // Update the main page with the restored data
           // Assuming you emit an event to handle the restoration in the parent component
           this.$emit("restore-screen", item);
         }
@@ -456,9 +449,11 @@ export default {
         const requestData = {
           screen_id: this.editScreen.screen_id,
           screen_name: this.editScreen.screen_name,
+          screen_plan_start: this.formatDatePlanStart(),
+          screen_plan_end: this.formatDatePlanEnd(),
           screen_type: this.editScreen.screen_type,
-          screen_status: this.editScreen.screen_status, // Fixed typo
-          screen_detail: this.editScreen.screen_detail, // Fixed typo
+          screen_status: this.editScreen.screen_status, // Fixed type
+          screen_detail: this.editScreen.screen_detail, // Fixed type
           screen_level: this.editScreen.screen_level,
         };
 
@@ -703,7 +698,7 @@ export default {
         if (confirmResult.isConfirmed) {
           const screenId = item.id;
           const response = await fetch(
-            `http://localhost:7777/screens/updateScreen/${screenId}`,
+            `http://localhost:7777/screens/updateScreen/${item.id}`,
             {
               method: "PUT",
               headers: {
