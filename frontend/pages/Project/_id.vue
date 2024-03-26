@@ -66,87 +66,8 @@
 
 
         <!-- Show deleted systems history -->
-        <v-dialog v-model="showHistoryDialog" max-width="800">
-          <v-data-table :headers="headers" :items="deletedSystems">
-            <!-- Define headers for the table -->
-            <template v-slot:top>
-              <v-toolbar flat>
-                <v-toolbar-title>Deleted Systems History</v-toolbar-title>
-                <v-divider class="mx-4" inset vertical></v-divider>
-                <v-spacer></v-spacer>
-              </v-toolbar>
+        <show-history-dialog :showHistoryDialog="showHistoryDialog" :deletedSystems="deletedSystems" :headers="headers"></show-history-dialog>
             </template>
-
-            <!-- Define actions for each row -->
-            <template v-slot:item.actions="{ item }">
-              <v-btn color="primary" @click="restoreSystem(item)">
-                Restore
-              </v-btn>
-              <v-btn color="error" @click="confirmDeleteHistorySystem(item)">
-                Delete
-              </v-btn>
-            </template>
-
-            <!-- Define template when no data is available -->
-            <!-- <template v-slot:no-data>
-              <v-btn color="primary" @click="initialize">Reset</v-btn>
-            </template> -->
-          </v-data-table>
-        </v-dialog>
-      </template>
-
-      <!-- Manage systems users dialog -->
-    <v-dialog v-model="dialogUserSystems" max-width="800px">
-      <v-card>
-        <v-card-title>User Systems</v-card-title>
-        <v-card-text>
-          <v-text-field v-model="search" label="Search" dense hide-details solo flat></v-text-field>
-          <v-data-table :headers="userSystemsHeaders" :items="filteredUserProjects">
-            <template v-slot:item="{ item }">
-              <tr>
-                <td>{{ item.id }}</td>
-                <td>{{ item.user_firstname }}</td>
-                <td>{{ item.user_lastname }}</td>
-                <td>{{ item.user_position }}</td>
-               
-                <td>
-                  <!-- Add trash icon here -->
-                  <v-icon @click="tse(s, item)">mdi-delete</v-icon>
-                </td>
-              </tr>
-            </template>
-          </v-data-table>
-        </v-card-text>
-        <v-card-actions>
-          <v-btn color="blue darken-1" text @click="dialogUserSystems = false">Close</v-btn>
-          <!-- Button to open nested dialog -->
-          <v-btn color="blue darken-1" text @click="testsss">Assign User</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-
-<!-- Nested Dialog for Assigning User -->
-    <v-dialog v-model="dialogAssignUser" max-width="500px">
-      <v-card>
-        <v-card-title>Assign User</v-card-title>
-        <v-card-text>
-          <!-- New field for selecting users -->
-          <v-select v-model="selectedUsersAF" :items="ssss" label="Select SA" item-text="displayText"
-            item-value="id" multiple></v-select>
-
-          <v-select v-model="selectedUsersAF" :items="ssss" label="Select DEV" item-text="displayText"
-            item-value="id" multiple></v-select>
-
-          <v-select v-model="selectedUsersAF" :items="ssss" label="Select IMP" item-text="displayText"
-            item-value="id" multiple></v-select>
-        </v-card-text>
-        <v-card-actions>
-          <v-btn color="blue darken-1" text @click="closeNestedDialog">Cancel</v-btn>
-          <!-- Button to assign selected users -->
-          <v-btn color="blue darken-1" text @click="assignUserAF">Assign</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
 
       <template v-slot:item.actions="{ item }">
         <v-icon class="me-2" size="20" px @click="openEditDialog(item)">mdi-pencil-circle</v-icon>
@@ -165,12 +86,14 @@
 import Swal from "sweetalert2";
 import axios from "axios";
 import EditSystemDialog from "../../components/SystemComponent/EditSystemDialog.vue";
+import ShowHistoryDialog from "../../components/SystemComponent/ShowHistoryDialog.vue";
 
 export default {
   name: "SystemsDataTable",
   layout: "admin",
   components: {
     EditSystemDialog,
+    ShowHistoryDialog,
   },
   data() {
     return {
@@ -345,61 +268,7 @@ export default {
         // Handle error fetching project
       }
     },
-    async restoreSystem(item) {
-      try {
-        const confirmResult = await Swal.fire({
-          title: "Are you sure?",
-          text: "You are about to restore this system.",
-          icon: "warning",
-          showCancelButton: true,
-          confirmButtonColor: "#3085d6",
-          cancelButtonColor: "#d33",
-          confirmButtonText: "Yes, restore it!",
-        });
-
-        if (confirmResult.isConfirmed) {
-          const systemId = item.id;
-          const response = await fetch(
-            `http://localhost:7777/systems/updateSystem/${systemId}`,
-            {
-              method: "PUT",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                system_nameTH: item.system_nameTH,
-                system_nameEN: item.system_nameEN,
-                system_shortname: item.system_shortname,
-                project_id: item.project_id,
-                is_deleted: 0,
-              }),
-            }
-          );
-
-          if (!response.ok) {
-            throw new Error("Failed to restore system");
-          }
-
-          console.log("System restored successfully");
-
-          await Swal.fire(
-            "Success",
-            "System restored successfully.",
-            "success"
-          );
-
-          // เพิ่มบรรทัดนี้เพื่ออัพเดทตารางอัตโนมัติ
-          this.fetchDeletedSystems();
-        }
-      } catch (error) {
-        console.error("Error restoring system:", error);
-        await Swal.fire(
-          "Error",
-          "An error occurred during the system restoration process.",
-          "error"
-        );
-      }
-    },
+    
 
     async mounted() {
       try {
@@ -419,44 +288,6 @@ export default {
       }
     },
 
-    async confirmDeleteHistorySystem(item) {
-      try {
-        const confirmResult = await Swal.fire({
-          title: "Are you sure?",
-          text: "You won't be able to revert this!",
-          icon: "warning",
-          showCancelButton: true,
-          confirmButtonColor: "#3085d6",
-          cancelButtonColor: "#d33",
-          confirmButtonText: "Yes, delete it!",
-        });
-        if (confirmResult.isConfirmed) {
-          const systemId = item.id; // Get the ID of the system to delete
-          const response = await fetch(
-            `http://localhost:7777/systems/deleteHistorySystems/${systemId}`,
-            {
-              method: "DELETE",
-            }
-          );
-          if (!response.ok) {
-            throw new Error("Failed to delete system");
-          }
-          await Swal.fire({
-            icon: "success",
-            title: "Success",
-            text: "System and related data deleted successfully",
-          });
-          this.fetchDeletedSystems(); // Refresh the deleted systems data
-        }
-      } catch (error) {
-        console.error("Error confirming delete history system:", error);
-        await Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: "Failed to delete history system",
-        });
-      }
-    },
     async goToHistorySystems() {
       await this.fetchDeletedSystems();
       this.showHistoryDialog = true;
@@ -479,39 +310,6 @@ export default {
       }
     },
     
-    async updateSystem() {
-      try {
-        const response = await fetch(
-          `http://localhost:7777/systems/updateSystem/${this.editedSystem.id}`,
-          {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(this.editedSystem),
-          }
-        );
-        if (!response.ok) {
-          throw new Error("Failed to update system");
-        }
-        await Swal.fire({
-          icon: "success",
-          title: "Success",
-          text: "System updated successfully",
-        });
-        this.editSystemDialog = false;
-        this.fetchSystems();
-      } catch (error) {
-        console.error("Error updating system:", error);
-        await Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: "Failed to update system",
-        });
-        
-      }
-    },
-
     async fetchSystems() {
       const projectId = this.$route.params.id;
       try {
