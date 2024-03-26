@@ -14,15 +14,6 @@
           " />
       </v-col>
 
-      <!-- <div>
-    <h1>Check Users in Project</h1>
-    <button @click="checkUsers">Check Users</button>
-    <div v-if="usersLoaded">
-      <p v-if="users.length > 0">มีผู้ใช้ในโปรเจกต์</p>
-      <p v-else>ไม่มีผู้ใช้ในโปรเจกต์</p>
-    </div>
-  </div> -->
-
     </v-row>
     <!-- Data Table -->
     <v-data-table :headers="headers" :items="filteredSystems" :items-per-page="5" class="elevation-1">
@@ -68,25 +59,11 @@
         </v-dialog>
 
         <!-- Edit System Dialog -->
-        <v-dialog v-model="editSystemDialog" max-width="600" ref="editSystemDialog">
-          <v-card>
-            <v-card-title>Edit System</v-card-title>
-            <v-card-text>
-              <!-- Form to edit system -->
-              <v-form @submit.prevent="updateSystem">
-                <v-text-field v-model="editedSystem.system_id" label="System ID" readonly></v-text-field>
-                <v-text-field v-model="editedSystem.system_nameTH" label="System Name (TH)"></v-text-field>
-                <v-text-field v-model="editedSystem.system_nameEN" label="System Name (EN)"></v-text-field>
-                <v-text-field v-model="editedSystem.system_shortname" label="Short Name"></v-text-field>
-                <!-- Add more fields as needed -->
-                <!-- You can also add selection fields for system analyst and member -->
-                <!-- Add buttons to submit and cancel -->
-                <v-btn type="submit">Update</v-btn>
-                <v-btn @click="editSystemDialog = false">Cancel</v-btn>
-              </v-form>
-            </v-card-text>
-          </v-card>
-        </v-dialog>
+<edit-system-dialog
+  :edit-system-dialog="editSystemDialog"
+  :edited-system="editedSystem"
+></edit-system-dialog>
+
 
         <!-- Show deleted systems history -->
         <v-dialog v-model="showHistoryDialog" max-width="800">
@@ -187,10 +164,14 @@
 <script>
 import Swal from "sweetalert2";
 import axios from "axios";
+import EditSystemDialog from "../../components/SystemComponent/EditSystemDialog.vue";
 
 export default {
   name: "SystemsDataTable",
   layout: "admin",
+  components: {
+    EditSystemDialog,
+  },
   data() {
     return {
       // Sample team members data
@@ -241,43 +222,7 @@ export default {
     };
   },
   methods: {
-//     async checkUsers() {
-//   try {
-//     const project_id = this.$route.params.id;
-//     await this.fetchUserProjects(project_id); // เรียกใช้ฟังก์ชัน fetchUserProjects เพื่อดึงข้อมูลผู้ใช้
-    
-//     // ตรวจสอบว่ามีข้อมูลผู้ใช้หรือไม่
-//     if (this.userProjects && this.userProjects.length > 0) {
-//       // มีผู้ใช้ในโปรเจกต์นี้
-//       console.log("มีผู้ใช้ในโปรเจกต์นี้");
-//       // แสดงรายชื่อผู้ใช้ที่มีในโปรเจกต์
-//       this.userProjects.forEach(user => {
-//         console.log(user.user_id,user.user_firstname); // ประเภทของข้อมูล user_id อาจเป็นอย่างอื่นตามโครงสร้างของข้อมูลที่ได้รับ
-//       });
-//     } else {
-//       // ไม่มีผู้ใช้ในโปรเจกต์นี้
-//       console.log("ไม่มีผู้ใช้ในโปรเจกต์นี้");
-//     }
-//   } catch (error) {
-//     console.error("Error checking users:", error);
-//   }
-// },
-
-// async fetchUserProjects(project_id) {
-//     try {
-//       const response = await fetch(`http://localhost:7777/user_projects/getUserProjectsByProjectId/${project_id}`);
-//       if (!response.ok) {
-//         throw new Error("Failed to fetch user projects");
-//       }
-//       const data = await response.json();
-//       // ตั้งค่า userProjects เป็นข้อมูลที่ได้รับมา
-//       this.userProjects = data;
-//     } catch (error) {
-//       console.error("Error fetching user projects:", error);
-//     }
-//   },
-  // http://localhost:7777/user_projects/getUserProjectsByProjectId/${projectId
-  
+ 
     async fetchUserProjectsByProjectId(projectId) {
     try {
       const response = await axios.get(`http://localhost:7777/user_projects/getUserProjectsByProjectId/${projectId}`);
@@ -563,6 +508,7 @@ export default {
           title: "Error",
           text: "Failed to update system",
         });
+        
       }
     },
 
