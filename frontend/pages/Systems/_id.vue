@@ -71,9 +71,6 @@
               <v-form @submit.prevent="updateScreen">
                 <v-text-field v-model="editScreen.screen_id" label="Screen ID" readonly></v-text-field>
                 <v-text-field v-model="editScreen.screen_name" label="Screen Name"></v-text-field>
-                <v-text-field v-model="editScreen.screen_plan_start" label="Plant Start" type="date"></v-text-field>
-                <v-text-field v-model="editScreen.screen_plan_end" label="Plant End" type="date"></v-text-field>
-                <v-text-field v-model="editScreen.screen_manday" label="Manday" type="float"></v-text-field>
                 <v-select v-model="editScreen.screen_level" label="Screen Level" :items="[
           'Very Difficult',
           'Hard',
@@ -449,11 +446,6 @@ export default {
         const requestData = {
           screen_id: this.editScreen.screen_id,
           screen_name: this.editScreen.screen_name,
-          screen_plan_start: this.formatDatePlanStart(),
-          screen_plan_end: this.formatDatePlanEnd(),
-          screen_type: this.editScreen.screen_type,
-          screen_status: this.editScreen.screen_status, // Fixed type
-          screen_detail: this.editScreen.screen_detail, // Fixed type
           screen_level: this.editScreen.screen_level,
         };
 
@@ -600,12 +592,6 @@ export default {
             body: JSON.stringify({
               screen_id: this.editedScreen.screen_id,
               screen_name: this.editedScreen.screen_name,
-              screen_plan_start: this.formatDatePlanStart(),
-              screen_plan_end: this.formatDatePlanEnd(),
-              screen_manday: this.editScreen.screen_manday,
-              screen_type: this.editScreen.screen_type,
-              screen_status: this.editScreen,
-              screen_detail: this.editScreen,
               screen_level: this.editedScreen.screen_level,
             }),
           }
@@ -618,9 +604,10 @@ export default {
         await Swal.fire({
           icon: "success",
           title: "Success",
-          text: "screen updated successfully",
+          text: "Screen updated successfully",
         });
 
+        // Assuming you want to refresh the page after successful update
         this.$router.go();
       } catch (error) {
         console.error("Error updating screen:", error);
@@ -632,6 +619,7 @@ export default {
         });
       }
     },
+
     updateDateTime() {
       const now = new Date();
       const options = {
