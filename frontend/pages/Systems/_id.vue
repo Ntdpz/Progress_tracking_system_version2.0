@@ -13,7 +13,7 @@
           " />
       </v-col>
     </v-row>
-
+ 
     <!--data table -->
     <v-data-table :headers="headers" :items="filteredScreens" :items-per-page="5" class="elevation-1">
       <template v-slot:top>
@@ -141,9 +141,18 @@
           </td>
         </tr>
       </template>
-
     </v-data-table>
+    <!-- User Check Section -->
+    <div>
+      <h1>Check Users in Project</h1>
+      <button @click="checkUsers">Check Users</button>
+      <div v-if="usersLoaded">
+        <p v-if="users.length > 0">มีผู้ใช้ในโปรเจกต์</p>
+        <p v-else>ไม่มีผู้ใช้ในโปรเจกต์</p>
+      </div>
+    </div>
   </div>
+ 
 </template>
 
 
@@ -155,6 +164,9 @@ export default {
   layout: "admin",
   data() {
     return {
+      userSystems:[],
+      user: [],
+
       dateStartMenu: false,
       dateEndMenu: false,
       systemNameENG: "",
@@ -212,6 +224,42 @@ export default {
     this.fetchSystemNameENG();
   },
   methods: {
+
+        async checkUsers() {
+  try {
+    const systemId = this.$route.params.id;
+    await this.fetchUserSystems(systemId); // เรียกใช้ฟังก์ชัน fetchUserProjects เพื่อดึงข้อมูลผู้ใช้
+    
+    // ตรวจสอบว่ามีข้อมูลผู้ใช้หรือไม่
+    if (this.userSystems && this.userSystems.length > 0) {
+      // มีผู้ใช้ในโปรเจกต์นี้
+      console.log("มีผู้ใช้ในโปรเจกต์นี้");
+      // แสดงรายชื่อผู้ใช้ที่มีในโปรเจกต์
+      this.userSystems.forEach(user => {
+        console.log(user.user_id,user.user_firstname); // ประเภทของข้อมูล user_id อาจเป็นอย่างอื่นตามโครงสร้างของข้อมูลที่ได้รับ
+      });
+    } else {
+      // ไม่มีผู้ใช้ในโปรเจกต์นี้
+      console.log("ไม่มีผู้ใช้ในโปรเจกต์นี้");
+    }
+  } catch (error) {
+    console.error("Error checking users:", error);
+  }
+},
+
+async fetchUserSystems(system_id) {
+    try {
+      const response = await fetch(`http://localhost:7777/user_systems//getOneScreenID/${system_id}`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch user systems");
+      }
+      const data = await response.json();
+      // ตั้งค่า userProjects เป็นข้อมูลที่ได้รับมา
+      this.userSystems = data;
+    } catch (error) {
+      console.error("Error fetching user systems:", error);
+    }
+  },
     async createScreen() {
       const systemId = this.$route.params.id;
 
@@ -299,17 +347,17 @@ export default {
         if (confirmResult.isConfirmed) {
           const screenId = item.id;
           const response = await fetch(
-            `http://localhost:7777/screens/updateScreen/${screenId}`,
+            `http://localhost:7777/screens/updateScreen/${item}`,
             {
               method: "PUT",
               headers: {
                 "Content-Type": "application/json",
               },
               body: JSON.stringify({
-                screen_nameTH: item.screen_nameTH,
-                screen_nameEN: item.screen_nameEN,
-                screen_shortname: item.screen_shortname,
-                project_id: item.project_id,
+                screenId: item.screenId,
+                
+                
+                
                 is_deleted: 0, // Update the is_deleted field to 0 for restoration
               }),
             }
