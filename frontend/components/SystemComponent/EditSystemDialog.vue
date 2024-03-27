@@ -52,7 +52,7 @@ export default {
         });
         this.editSystemDialog = false;
         this.fetchSystems();
-        this.$router.go();
+
       } catch (error) {
         console.error("Error updating system:", error);
         await Swal.fire({
@@ -60,8 +60,8 @@ export default {
           title: "Error",
           text: "Failed to update system",
         });
-        
       }
+      window.location.reload();
     },
 
     async fetchSystems() {
