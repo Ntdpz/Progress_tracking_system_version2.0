@@ -49,15 +49,16 @@
                 <v-text-field v-model="newSystem.system_shortname" label="Short Name"></v-text-field>
 
                 <!-- New fields for SA, DEV, IMP selection -->
-            
-            
-<v-select v-model="selectedUsers" :items="formatUserProjects(userProjects)" label="Select User" multiple>
-  <template v-slot:prepend-item>
-    <v-list-item @click="selectAll">
-      <v-list-item-content>Select All</v-list-item-content>
-    </v-list-item>
-  </template>
-</v-select>
+
+
+                <v-select v-model="selectedUsers" :items="formatUserProjects(userProjects)" label="Select User"
+                  multiple>
+                  <template v-slot:prepend-item>
+                    <v-list-item @click="selectAll">
+                      <v-list-item-content>Select All</v-list-item-content>
+                    </v-list-item>
+                  </template>
+                </v-select>
 
 
                 <v-btn type="submit">Create</v-btn>
@@ -119,57 +120,57 @@
       </template>
 
       <!-- Manage systems users dialog -->
-    <v-dialog v-model="dialogUserSystems" max-width="800px">
-      <v-card>
-        <v-card-title>User Systems</v-card-title>
-        <v-card-text>
-          <v-text-field v-model="search" label="Search" dense hide-details solo flat></v-text-field>
-          <v-data-table :headers="userSystemsHeaders" :items="filteredUserProjects">
-            <template v-slot:item="{ item }">
-              <tr>
-                <td>{{ item.id }}</td>
-                <td>{{ item.user_firstname }}</td>
-                <td>{{ item.user_lastname }}</td>
-                <td>{{ item.user_position }}</td>
-               
-                <td>
-                  <!-- Add trash icon here -->
-                  <v-icon @click="tse(s, item)">mdi-delete</v-icon>
-                </td>
-              </tr>
-            </template>
-          </v-data-table>
-        </v-card-text>
-        <v-card-actions>
-          <v-btn color="blue darken-1" text @click="dialogUserSystems = false">Close</v-btn>
-          <!-- Button to open nested dialog -->
-          <v-btn color="blue darken-1" text @click="testsss">Assign User</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+      <v-dialog v-model="dialogUserSystems" max-width="800px">
+        <v-card>
+          <v-card-title>User Systems</v-card-title>
+          <v-card-text>
+            <v-text-field v-model="search" label="Search" dense hide-details solo flat></v-text-field>
+            <v-data-table :headers="userSystemsHeaders" :items="filteredUserProjects">
+              <template v-slot:item="{ item }">
+                <tr>
+                  <td>{{ item.id }}</td>
+                  <td>{{ item.user_firstname }}</td>
+                  <td>{{ item.user_lastname }}</td>
+                  <td>{{ item.user_position }}</td>
 
-<!-- Nested Dialog for Assigning User -->
-    <v-dialog v-model="dialogAssignUser" max-width="500px">
-      <v-card>
-        <v-card-title>Assign User</v-card-title>
-        <v-card-text>
-          <!-- New field for selecting users -->
-          <v-select v-model="selectedUsersAF" :items="ssss" label="Select SA" item-text="displayText"
-            item-value="id" multiple></v-select>
+                  <td>
+                    <!-- Add trash icon here -->
+                    <v-icon @click="tse(s, item)">mdi-delete</v-icon>
+                  </td>
+                </tr>
+              </template>
+            </v-data-table>
+          </v-card-text>
+          <v-card-actions>
+            <v-btn color="blue darken-1" text @click="dialogUserSystems = false">Close</v-btn>
+            <!-- Button to open nested dialog -->
+            <v-btn color="blue darken-1" text @click="testsss">Assign User</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
 
-          <v-select v-model="selectedUsersAF" :items="ssss" label="Select DEV" item-text="displayText"
-            item-value="id" multiple></v-select>
+      <!-- Nested Dialog for Assigning User -->
+      <v-dialog v-model="dialogAssignUser" max-width="500px">
+        <v-card>
+          <v-card-title>Assign User</v-card-title>
+          <v-card-text>
+            <!-- New field for selecting users -->
+            <v-select v-model="selectedUsersAF" :items="ssss" label="Select SA" item-text="displayText" item-value="id"
+              multiple></v-select>
 
-          <v-select v-model="selectedUsersAF" :items="ssss" label="Select IMP" item-text="displayText"
-            item-value="id" multiple></v-select>
-        </v-card-text>
-        <v-card-actions>
-          <v-btn color="blue darken-1" text @click="closeNestedDialog">Cancel</v-btn>
-          <!-- Button to assign selected users -->
-          <v-btn color="blue darken-1" text @click="assignUserAF">Assign</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+            <v-select v-model="selectedUsersAF" :items="ssss" label="Select DEV" item-text="displayText" item-value="id"
+              multiple></v-select>
+
+            <v-select v-model="selectedUsersAF" :items="ssss" label="Select IMP" item-text="displayText" item-value="id"
+              multiple></v-select>
+          </v-card-text>
+          <v-card-actions>
+            <v-btn color="blue darken-1" text @click="closeNestedDialog">Cancel</v-btn>
+            <!-- Button to assign selected users -->
+            <v-btn color="blue darken-1" text @click="assignUserAF">Assign</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
 
       <template v-slot:item.actions="{ item }">
         <v-icon class="me-2" size="20" px @click="openEditDialog(item)">mdi-pencil-circle</v-icon>
@@ -180,7 +181,7 @@
         </v-btn>
       </template>
     </v-data-table>
-    
+
   </div>
 </template>
 
@@ -195,10 +196,10 @@ export default {
     return {
       // Sample team members data
       teamMembers: ["SA1", "SA2", "DEV1", "DEV2", "IMP1", "IMP2"],
-      
+
       selectedUsers: [], // เก็บข้อมูลผู้ใช้ที่ถูกเลือก
       userProjects: [], // เก็บข้อมูล user_projects ที่ได้มาจาก API
-      
+
       users: [], // เก็บข้อมูลผู้ใช้ที่ดึงมาจาก API
 
       dialogUserSystems: false, // ตัวแปรสำหรับเปิด/ปิด Dialog
@@ -237,84 +238,84 @@ export default {
         { text: "Manday", value: "system_manday" },
         { text: "Actions", value: "actions", sortable: false },
       ],
-      
+
     };
   },
   methods: {
-//     async checkUsers() {
-//   try {
-//     const project_id = this.$route.params.id;
-//     await this.fetchUserProjects(project_id); // เรียกใช้ฟังก์ชัน fetchUserProjects เพื่อดึงข้อมูลผู้ใช้
-    
-//     // ตรวจสอบว่ามีข้อมูลผู้ใช้หรือไม่
-//     if (this.userProjects && this.userProjects.length > 0) {
-//       // มีผู้ใช้ในโปรเจกต์นี้
-//       console.log("มีผู้ใช้ในโปรเจกต์นี้");
-//       // แสดงรายชื่อผู้ใช้ที่มีในโปรเจกต์
-//       this.userProjects.forEach(user => {
-//         console.log(user.user_id,user.user_firstname); // ประเภทของข้อมูล user_id อาจเป็นอย่างอื่นตามโครงสร้างของข้อมูลที่ได้รับ
-//       });
-//     } else {
-//       // ไม่มีผู้ใช้ในโปรเจกต์นี้
-//       console.log("ไม่มีผู้ใช้ในโปรเจกต์นี้");
-//     }
-//   } catch (error) {
-//     console.error("Error checking users:", error);
-//   }
-// },
+    //     async checkUsers() {
+    //   try {
+    //     const project_id = this.$route.params.id;
+    //     await this.fetchUserProjects(project_id); // เรียกใช้ฟังก์ชัน fetchUserProjects เพื่อดึงข้อมูลผู้ใช้
 
-// async fetchUserProjects(project_id) {
-//     try {
-//       const response = await fetch(`http://localhost:7777/user_projects/getUserProjectsByProjectId/${project_id}`);
-//       if (!response.ok) {
-//         throw new Error("Failed to fetch user projects");
-//       }
-//       const data = await response.json();
-//       // ตั้งค่า userProjects เป็นข้อมูลที่ได้รับมา
-//       this.userProjects = data;
-//     } catch (error) {
-//       console.error("Error fetching user projects:", error);
-//     }
-//   },
-  // http://localhost:7777/user_projects/getUserProjectsByProjectId/${projectId
-  
+    //     // ตรวจสอบว่ามีข้อมูลผู้ใช้หรือไม่
+    //     if (this.userProjects && this.userProjects.length > 0) {
+    //       // มีผู้ใช้ในโปรเจกต์นี้
+    //       console.log("มีผู้ใช้ในโปรเจกต์นี้");
+    //       // แสดงรายชื่อผู้ใช้ที่มีในโปรเจกต์
+    //       this.userProjects.forEach(user => {
+    //         console.log(user.user_id,user.user_firstname); // ประเภทของข้อมูล user_id อาจเป็นอย่างอื่นตามโครงสร้างของข้อมูลที่ได้รับ
+    //       });
+    //     } else {
+    //       // ไม่มีผู้ใช้ในโปรเจกต์นี้
+    //       console.log("ไม่มีผู้ใช้ในโปรเจกต์นี้");
+    //     }
+    //   } catch (error) {
+    //     console.error("Error checking users:", error);
+    //   }
+    // },
+
+    // async fetchUserProjects(project_id) {
+    //     try {
+    //       const response = await fetch(`http://localhost:7777/user_projects/getUserProjectsByProjectId/${project_id}`);
+    //       if (!response.ok) {
+    //         throw new Error("Failed to fetch user projects");
+    //       }
+    //       const data = await response.json();
+    //       // ตั้งค่า userProjects เป็นข้อมูลที่ได้รับมา
+    //       this.userProjects = data;
+    //     } catch (error) {
+    //       console.error("Error fetching user projects:", error);
+    //     }
+    //   },
+    // http://localhost:7777/user_projects/getUserProjectsByProjectId/${projectId
+
     async fetchUserProjectsByProjectId(projectId) {
-    try {
-      const response = await axios.get(`http://localhost:7777/user_projects/getUserProjectsByProjectId/${projectId}`);
-      if (response.status === 200) {
-        // ดึงข้อมูลผู้ใช้จากการเรียก API
-        this.userProjects = response.data;
-        // console.log(this.userProjects)
-      } else {
-        console.error('Failed to fetch user projects');
+      try {
+        const response = await axios.get(`http://localhost:7777/user_projects/getUserProjectsByProjectId/${projectId}`);
+        if (response.status === 200) {
+          // ดึงข้อมูลผู้ใช้จากการเรียก API
+          this.userProjects = response.data;
+          // console.log(this.userProjects)
+        } else {
+          console.error('Failed to fetch user projects');
+        }
+      } catch (error) {
+        console.error('Error fetching user projects:', error);
       }
-    } catch (error) {
-      console.error('Error fetching user projects:', error);
-    }
-  },
+    },
 
-     formatUserProjects(userProjects) {
+    formatUserProjects(userProjects) {
       return userProjects.map(user => ({
         text: `${user.user_firstname} ${user.user_lastname} (${user.user_position})`,
         value: user.user_id,
       }));
     },
 
-  selectAll() {
-    // สร้าง array ใหม่ที่มีค่าเท่ากับ items ทั้งหมด
-    const allValues = this.formatUserProjects(this.userProjects).map(item => item.value);
-    // ตรวจสอบว่าทุก item ใน allValues ถูกเลือกแล้วหรือไม่
-    const allSelected = allValues.every(value => this.selectedUsers.includes(value));
-    // หากทุก item ถูกเลือกแล้ว ให้ลบทุก item ออกจาก selectedUsers
-    if (allSelected) {
-      this.selectedUsers.splice(0, this.selectedUsers.length);
-    } else {
-      // หากยังไม่เลือกทั้งหมด ให้กำหนด selectedUsers เป็น allValues
-      this.selectedUsers = allValues;
-    }
-  },
+    selectAll() {
+      // สร้าง array ใหม่ที่มีค่าเท่ากับ items ทั้งหมด
+      const allValues = this.formatUserProjects(this.userProjects).map(item => item.value);
+      // ตรวจสอบว่าทุก item ใน allValues ถูกเลือกแล้วหรือไม่
+      const allSelected = allValues.every(value => this.selectedUsers.includes(value));
+      // หากทุก item ถูกเลือกแล้ว ให้ลบทุก item ออกจาก selectedUsers
+      if (allSelected) {
+        this.selectedUsers.splice(0, this.selectedUsers.length);
+      } else {
+        // หากยังไม่เลือกทั้งหมด ให้กำหนด selectedUsers เป็น allValues
+        this.selectedUsers = allValues;
+      }
+    },
 
-  async createSystem() {
+    async createSystem() {
       const projectId = this.$route.params.id;
       if (
         !this.newSystem.system_id ||
@@ -533,7 +534,7 @@ export default {
         // Handle error fetching deleted systems
       }
     },
-    
+
     async updateSystem() {
       try {
         const response = await fetch(
@@ -653,7 +654,7 @@ export default {
         });
       }
     },
-    
+
   },
   computed: {
     userOptions() {
@@ -661,7 +662,7 @@ export default {
       return this.users.map(user => ({ text: user.name, value: user.id }));
     },
 
-     filteredUserSystems() {
+    filteredUserSystems() {
       return this.userSystems.filter((item) => {
         return (
           item.id
@@ -716,7 +717,7 @@ export default {
     const projectId = this.$route.params.id; // ดึง project id จากพารามิเตอร์ URL
     this.fetchUserProjectsByProjectId(projectId); // เรียกใช้เมื่อคอมโพเนนต์โหลด
     // console.log(this.userProjects)
-    
+
     // this.fetchUserProjects(this.project_id);
     this.project_id = this.$route.params.id;
     this.fetchSystems();
