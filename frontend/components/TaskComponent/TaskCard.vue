@@ -110,7 +110,7 @@ export default {
         DeleteTask() {
             this.$emit('delete-task', this.task); // Emit the 'delete-task' event with the task as payload
         },
-        
+
     },
 };
 </script>

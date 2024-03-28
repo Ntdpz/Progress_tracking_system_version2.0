@@ -5,19 +5,14 @@
     <!-- Search bar -->
     <v-row no-gutters>
       <v-col cols="12">
-        <input
-          type="text"
-          v-model="searchQuery"
-          placeholder="Search..."
-          style="
+        <input type="text" v-model="searchQuery" placeholder="Search..." style="
             margin-bottom: 10px;
             width: 100%;
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
             font-size: 16px;
-          "
-        />
+          " />
       </v-col>
     </v-row>
     <div class="task-list">
@@ -32,19 +27,8 @@
       <!-- Display Task in Card -->
       <!-- Display Task in Card -->
       <v-row>
-        <v-col
-          v-for="(task, index) in filteredTasks"
-          :key="index"
-          cols="12"
-          md="6"
-          lg="4"
-        >
-          <TaskCard
-            :task="task"
-            class="task-card"
-            @edit-task="openEditTaskDialog"
-            @delete-task="deleteTask"
-          ></TaskCard>
+        <v-col v-for="(task, index) in filteredTasks" :key="index" cols="12" md="6" lg="4">
+          <TaskCard :task="task" class="task-card" @edit-task="openEditTaskDialog" @delete-task="deleteTask"></TaskCard>
         </v-col>
       </v-row>
       <!-- Edit task dialog -->
@@ -53,10 +37,7 @@
         </EditTaskDialog>
 
         <!-- Create task dialog -->
-        <CreateTaskDialog
-          v-model="dialogAddTaskForm"
-          @save-task="handleSaveTask"
-        ></CreateTaskDialog>
+        <CreateTaskDialog v-model="dialogAddTaskForm" @save-task="handleSaveTask"></CreateTaskDialog>
       </div>
     </div>
   </div>
