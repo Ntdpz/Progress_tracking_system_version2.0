@@ -81,6 +81,7 @@
                   :items="formatUserProjects(userProjects)"
                   label="Select User"
                   multiple
+                  item-text="text"
                 >
                   <template v-slot:prepend-item>
                     <v-list-item @click="selectAll">
@@ -89,8 +90,8 @@
                   </template>
                 </v-select>
 
-                <v-btn type="submit">Create</v-btn>
-                <v-btn @click="createSystemDialog = false">Cancel</v-btn>
+                <v-btn color="primary" type="submit">Create</v-btn>
+                <v-btn color="error" @click="createSystemDialog = false">Cancel</v-btn>
               </v-form>
             </v-card-text>
           </v-card>
@@ -457,8 +458,15 @@ export default {
           system_nameTH: this.newSystem.system_nameTH,
           system_nameEN: this.newSystem.system_nameEN,
           system_shortname: this.newSystem.system_shortname,
-          selectedUsers: this.selectedUsers.map((user) => user.user_id), // แปลงเป็นรูปแบบของ user_id เพื่อส่งไปยังเซิร์ฟเวอร์
+          // selectedUsers: this.selectedUsers.map((user) => user.user_id), // แปลงเป็นรูปแบบของ user_id เพื่อส่งไปยังเซิร์ฟเวอร์
         };
+        // Check if any team members are selected
+        // แปลงเป็นรูปแบบของ user_id เพื่อส่งไปยังเซิร์ฟเวอร์
+        if (this.selectedUsers.length > 0) {
+          requestBody.selectedUsers = this.selectedUsers.map(
+            (user) => user.user_id
+          );
+        }
 
         const response = await fetch(
           "http://localhost:7777/systems/createSystem",
@@ -483,11 +491,13 @@ export default {
         this.newSystem = {
           system_id: "",
           system_nameTH: "",
-          system_nameEN: "",
+          system_nameEN: "",  
           system_shortname: "",
         };
         this.selectedUsers = []; // เมื่อสร้างระบบเสร็จแล้ว ล้างข้อมูลผู้ใช้ที่ถูกเลือก
         this.fetchSystems(); // โหลดข้อมูลระบบใหม่
+        // เพิ่มเรียกใช้งาน addUserToSystem ที่นี่
+      
       } catch (error) {
         console.error("Error creating System:", error);
         await Swal.fire({
