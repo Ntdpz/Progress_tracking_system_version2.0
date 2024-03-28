@@ -24,7 +24,8 @@
           <v-btn color="primary" dark @click="goToCreateScreen">New Screen</v-btn>
           <v-btn color="primary" dark @click="goToHistoryScreens" style="margin-left: 10px;">Show History Screen</v-btn>
           <!-- <v-btn color="primary" dark @click="goToHistoryScreen"
-            >Show HistoryScreen</v-btn> -->
+            >Show HistoryScreen</v-btn
+          > -->
         </v-toolbar>
 
         <!-- Create Screen Dialog -->
@@ -36,9 +37,6 @@
               <v-form>
                 <v-text-field v-model="newScreen.screen_id" label="Screen ID"></v-text-field>
                 <v-text-field v-model="newScreen.screen_name" label="Screen Name"></v-text-field>
-                <v-text-field v-model="newScreen.screen_plan_start" label="Plant Start" type="date"></v-text-field>
-                <v-text-field v-model="newScreen.screen_plan_end" label="Plant End" type="date"></v-text-field>
-                <v-text-field v-model="newScreen.screen_manday" label="Manday" type="float"></v-text-field>
                 <v-select v-model="newScreen.screen_level" label="Screen Level" :items="[
           'Very Difficult',
           'Hard',
@@ -118,21 +116,16 @@
 
           </v-data-table>
         </v-dialog>
-<<<<<<< HEAD
 
       </template>
 
       
-=======
-      </template>
->>>>>>> c0c74cfbd527534c933b0394302efa19cfd3cb4a
 
       <!-- Data Rows -->
       <template v-slot:item="{ item }">
         <tr>
           <td>{{ item.screen_id }}</td>
           <td>{{ item.screen_name }}</td>
-<<<<<<< HEAD
           <td>{{ item.screen_plan_start }}</td>
           <td>{{ item.screen_plan_end }}</td>
           <td>{{ item.screen_manday }}</td>
@@ -140,15 +133,6 @@
           <td>{{ item.screen_progress }}</td>
           <td>{{ item.screen_type }}</td>
           <td>{{ item.task_count }}</td>
-=======
-          <!-- <td>{{ item.screen_type }}</td> -->
-          <td>{{ item.screen_task_count }}</td>
-          <td>{{ formattedScreensPlanStart(item.screen_plan_start) }}</td>
-          <td>{{ formattedScreenPlanEnd(item.screen_plan_end) }}</td>
-          <td>{{ item.screen_man_day }}</td>
-          <td>{{ item.screen_level }}</td>
-          <!-- <td>{{ item.screen_progress }}</td> -->
->>>>>>> c0c74cfbd527534c933b0394302efa19cfd3cb4a
           <td>
             <!-- Actions -->
             <v-icon class="me-2" size="20" px @click="openEditDialog(item)">mdi-pencil-circle</v-icon>
@@ -171,8 +155,10 @@
  
 </template>
 
+
 <script>
 import Swal from "sweetalert2";
+
 export default {
   name: "SystemDetails",
   layout: "admin",
@@ -188,13 +174,10 @@ export default {
       deletedScreens: [],
       createScreenDialog: false,
       editScreenDialog: false,
-      formattedPlanStart: '',
-      formattedPlanEnd: '',
       newScreen: {
         screen_id: "",
         screen_name: "",
         screen_manday: "",
-        screen_type: "",
         screen_level: "",
         screen_pic: "",
         screen_plan_start: "",
@@ -203,7 +186,6 @@ export default {
       editScreen: {
         screen_id: "",
         screen_name: "",
-        screen_type: "",
         screen_level: "",
       },
       screens: [],
@@ -211,11 +193,7 @@ export default {
       userScreensHeaders: [
         { text: "Screen ID", value: "screen_id" },
         { text: "Screen Name", value: "screen_name" },
-        { text: "Task Count", value: "screen_task_count" },
-        { text: "Plan Start", value: "screen_plan_start" },
-        { text: "Plan End", value: "screen_plan_end" },
-        { text: "Manday", value: "screen_manday" },
-        // { text: "Screen type", value: "screen_type" },
+        { text: "Due date", value: "screen_plan_end" },
         { text: "Screen Level", value: "screen_level" },
         // { text: "Image", value: "screen_pic" }, // เปลี่ยนจาก "Progress" เป็น "Picture"
         // { text: "Actions", value: "actions", sortable: false },
@@ -223,7 +201,6 @@ export default {
       headers: [
         { text: "Screen ID", value: "screen_id" },
         { text: "Screen Name", value: "screen_name" },
-<<<<<<< HEAD
         { text: "Plan Start", value: "screen_plan_start" },
         { text: "Plan End", value: "screen_plan_end" },
         { text: "Manday", value: "screen_manday" },
@@ -231,14 +208,6 @@ export default {
         { text: "Progress", value: "screen_progress" },
         { text: "Screen type", value: "screen_type"  },
         { text: "Task count", value: "task_count" },
-=======
-        { text: "Task Count", value: "screen_task_count" },
-        { text: "Plan Start", value: "screen_plan_start" },
-        { text: "Plan End", value: "screen_plan_end" },
-        { text: "Manday", value: "screen_manday" },
-        // { text: "Screen type", value: "screen_type" },
-        { text: "Screen Level", value: "screen_level" },
->>>>>>> c0c74cfbd527534c933b0394302efa19cfd3cb4a
         { text: "Actions", value: "actions", sortable: false },
       ],
 
@@ -256,7 +225,6 @@ export default {
   },
   methods: {
 
-<<<<<<< HEAD
         async checkUsers() {
   try {
     const systemId = this.$route.params.id;
@@ -292,8 +260,6 @@ async fetchUserSystems(system_id) {
       console.error("Error fetching user systems:", error);
     }
   },
-=======
->>>>>>> c0c74cfbd527534c933b0394302efa19cfd3cb4a
     async createScreen() {
       const systemId = this.$route.params.id;
 
@@ -320,8 +286,6 @@ async fetchUserSystems(system_id) {
           screen_level: this.newScreen.screen_level,
           screen_pic: base64Image, // Update with your default pic
           system_id: systemId,
-          screen_manday: this.newScreen.screen_manday,
-          screen_type: this.newScreen.screen_type,
           screen_progress: 0, // Update with your default progress
           screen_plan_start: this.newScreen.screen_plan_start || null, // Use null if empty
           screen_plan_end: this.newScreen.screen_plan_end || null, // Use null if empty
@@ -390,32 +354,17 @@ async fetchUserSystems(system_id) {
                 "Content-Type": "application/json",
               },
               body: JSON.stringify({
-<<<<<<< HEAD
                 screenId: item.screenId,
                 
                 
                 
                 is_deleted: 0, // Update the is_deleted field to 0 for restoration
-=======
-                screenId: screenId,
-                screen_id: item.screen_id,
-                screen_name: item.screen_name,
-                screen_plan_start: item.screen_plan_start,
-                screen_plan_end: item.screen_plan_end,
-                screen_manday: item.screen_manday,
-                screen_level: item.screen_level,
-                screen_pic: item.screen_pic,
-                is_deleted: 0, // Update is_deleted to 0 for restoration
->>>>>>> c0c74cfbd527534c933b0394302efa19cfd3cb4a
               }),
             }
           );
 
-          console.log("Response:", response);
-
           if (!response.ok) {
-            const responseData = await response.json();
-            throw new Error(`Failed to restore screen: ${responseData.message}`);
+            throw new Error("Failed to restore screen");
           }
 
           console.log("Screen restored successfully");
@@ -426,6 +375,7 @@ async fetchUserSystems(system_id) {
             "success"
           );
 
+          // Update the main page with the restored data
           // Assuming you emit an event to handle the restoration in the parent component
           this.$emit("restore-screen", item);
         }
@@ -443,7 +393,7 @@ async fetchUserSystems(system_id) {
       try {
         const confirmResult = await Swal.fire({
           title: "Are you sure?",
-          text: "You won't be able to delete this!",
+          text: "You won't be able to revert this!",
           icon: "warning",
           showCancelButton: true,
           confirmButtonColor: "#3085d6",
@@ -527,11 +477,15 @@ async fetchUserSystems(system_id) {
 
     async updateScreen() {
       try {
+        // Convert image to Base64
+        const base64Image = await this.imageToBase64(this.editScreen.photo);
+
         // Prepare data to send
         const requestData = {
           screen_id: this.editScreen.screen_id,
           screen_name: this.editScreen.screen_name,
           screen_level: this.editScreen.screen_level,
+          screen_pic: base64Image, // Updated photo
         };
 
         // Make the request to update the screen
@@ -563,7 +517,7 @@ async fetchUserSystems(system_id) {
         await Swal.fire({
           icon: "error",
           title: "Error",
-          text: error.message, // Display the specific error message
+          text: "Failed to update screen",
         });
       }
     },
@@ -625,7 +579,7 @@ async fetchUserSystems(system_id) {
       try {
         const confirmResult = await Swal.fire({
           title: "Are you sure?",
-          text: "You won't be able to delete this!",
+          text: "You won't be able to revert this!",
           icon: "warning",
           showCancelButton: true,
           confirmButtonColor: "#3085d6",
@@ -689,10 +643,9 @@ async fetchUserSystems(system_id) {
         await Swal.fire({
           icon: "success",
           title: "Success",
-          text: "Screen updated successfully",
+          text: "screen updated successfully",
         });
 
-        // Assuming you want to refresh the page after successful update
         this.$router.go();
       } catch (error) {
         console.error("Error updating screen:", error);
@@ -704,7 +657,6 @@ async fetchUserSystems(system_id) {
         });
       }
     },
-
     updateDateTime() {
       const now = new Date();
       const options = {
@@ -771,7 +723,7 @@ async fetchUserSystems(system_id) {
         if (confirmResult.isConfirmed) {
           const screenId = item.id;
           const response = await fetch(
-            `http://localhost:7777/screens/updateScreen/${item.id}`,
+            `http://localhost:7777/screens/updateScreen/${screenId}`,
             {
               method: "PUT",
               headers: {
@@ -836,7 +788,7 @@ async fetchUserSystems(system_id) {
       try {
         const confirmResult = await Swal.fire({
           title: "Are you sure?",
-          text: "You won't be able to delete this!",
+          text: "You won't be able to revert this!",
           icon: "warning",
           showCancelButton: true,
           confirmButtonColor: "#3085d6",
@@ -849,10 +801,10 @@ async fetchUserSystems(system_id) {
             popup: "animate__animated animate__fadeOutUp", // กำหนด animation เมื่อซ่อน SweetAlert
           },
         });
-        if (confirmResult.isConfirmed) {// If user confirms deletion, call deleteScreen method
-
-          await this.deleteScreen(screen);// อัพเดทข้อมูลโดยอัตโนมัติหลังจากลบข้อมูล
-
+        if (confirmResult.isConfirmed) {
+          // If user confirms deletion, call deleteScreen method
+          await this.deleteScreen(screen);
+          // อัพเดทข้อมูลโดยอัตโนมัติหลังจากลบข้อมูล
           this.fetchScreens();
         }
       } catch (error) {
@@ -891,7 +843,6 @@ async fetchUserSystems(system_id) {
     },
   },
   computed: {
-
     filteredScreens() {
       return this.screens.filter((screen) => {
         const searchText = this.searchQuery.toLowerCase();
@@ -900,30 +851,6 @@ async fetchUserSystems(system_id) {
           screen.screen_name.toLowerCase().includes(searchText)
         );
       });
-    },
-
-    formattedScreensPlanStart() {
-      return function (screenPlanStart) {
-        if (!screenPlanStart) return ''; // Check if planStart date is defined
-        const date = new Date(screenPlanStart); // Create a Date object from planStart
-        const day = date.getDate(); // Get the day of the month
-        const month = date.getMonth() + 1; // Get the month (0-indexed, hence +1)
-        const year = date.getFullYear(); // Get the full year
-        // Format the date as "day/month/year"
-        return `${day}/${month}/${year}`;
-      };
-    },
-    // Compute the formatted planEnd date
-    formattedScreenPlanEnd() {
-      return function (screenPlanEnd) {
-        if (!screenPlanEnd) return ''; // Check if planStart date is defined
-        const date = new Date(screenPlanEnd); // Create a Date object from planStart
-        const day = date.getDate(); // Get the day of the month
-        const month = date.getMonth() + 1; // Get the month (0-indexed, hence +1)
-        const year = date.getFullYear(); // Get the full year
-        // Format the date as "day/month/year"
-        return `${day}/${month}/${year}`;
-      };
     },
   },
 };
