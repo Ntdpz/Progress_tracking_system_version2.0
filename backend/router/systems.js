@@ -347,8 +347,6 @@ router.post('/createSystem', async (req, res) => {
   }
 });
 
-
-
 // Route to update system details
 router.put('/updateSystem/:id', async (req, res) => {
   const id = req.params.id;
@@ -547,5 +545,6 @@ router.post('/addUserSystem', async (req, res) => {
     return res.status(500).send('Internal Server Error');
   }
 });
+
 
 module.exports = router;

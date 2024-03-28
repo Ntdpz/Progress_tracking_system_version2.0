@@ -206,7 +206,7 @@
                 </td> -->
                   <td>
                     <!-- Add trash icon here -->
-                    <v-icon @click="deleteUser(system_id, item)"
+                    <v-icon @click="deleteUser(system_id, item.id)"
                       >mdi-delete</v-icon
                     >
                   </td>
@@ -240,6 +240,7 @@ export default {
       // Sample team members data
       teamMembers: ["SA1", "SA2", "DEV1", "DEV2", "IMP1", "IMP2"],
       projectId: [],
+      system_id: null,
       dialogUserSystems: false,
 
       userSystemHeader: [
@@ -247,7 +248,7 @@ export default {
         { text: "First Name", value: "user_firstname" },
         { text: "Last Name", value: "user_lastname" },
         { text: "Position", value: "user_position" },
-        { text: "Picture", value: "user_pic" }, // เพิ่มหัวข้อ Picture ลงใน userProjectsHeaders
+        // { text: "Picture", value: "user_pic" }, // เพิ่มหัวข้อ Picture ลงใน userProjectsHeaders
       ],
       search: "", // Add this line
       AvailableUsersSystem: [],
@@ -256,7 +257,7 @@ export default {
       selectedUsers: [], // เก็บข้อมูลผู้ใช้ที่ถูกเลือก
       userProjects: [], // เก็บข้อมูล user_projects ที่ได้มาจาก API
 
-      users: [], // เก็บข้อมูลผู้ใช้ที่ดึงมาจาก API
+      // users: [], // เก็บข้อมูลผู้ใช้ที่ดึงมาจาก API
 
       projectNameENG: "",
       showHistoryDialog: false,
@@ -337,20 +338,20 @@ export default {
 
     async manageUserSystems(item) {
       try {
-        const system_id = item.id; // ดึง id ของระบบจาก item ที่รับเข้ามา
-        // ตรวจสอบว่า system_id มีค่าที่ถูกต้องหรือไม่
-        if (!system_id) {
-          console.error("Error fetching user systems: system_id is undefined");
+        const systemId = item.id; // ดึง id ของระบบจาก item ที่รับเข้ามา
+        // ตรวจสอบว่า systemId มีค่าที่ถูกต้องหรือไม่
+        if (!systemId) {
+          console.error("Error fetching user systems: systemId is undefined");
           return;
         }
 
         // เรียกเมธอดเพื่อเรียกข้อมูลผู้ใช้ที่เกี่ยวข้องกับระบบนี้
-        this.fetchAvailableUsers(this.$route.params.id);
-        // Log เพื่อตรวจสอบค่า system_id
-        console.log("System ID:", system_id);
+        this.fetchAvailableUsersSystem(this.$route.params.id);
+        // Log เพื่อตรวจสอบค่า systemId
+        console.log("System ID:", systemId);
 
         const response = await fetch(
-          `http://localhost:7777/user_systems/getOneScreenID/${system_id}`
+          `http://localhost:7777/user_systems/getOneScreenID/${systemId}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch user systems");
@@ -364,33 +365,12 @@ export default {
         console.error("Error fetching user systems:", error);
       }
     },
-    fetchAvailableUsers(project_id) {
-      axios
-        .get(
-          "http://localhost:7777/user_projects/getUserProjectsByProjectId/" +
-            project_id
-        )
-        .then((response) => {
-          this.availableUsers = response.data.map((user) => ({
-            id: user.id,
-            user_firstname: user.user_firstname,
-            user_lastname: user.user_lastname,
-            user_position: user.user_position,
-            displayText: `${user.user_position}: ${user.user_firstname} ${user.user_lastname}`,
-          }));
-          // หลังจากกำหนดค่า availableUsers ให้กำหนดค่า project_id ด้วย
-          this.project_id = project_id;
-        })
-        .catch((error) => {
-          console.error("Error fetching available users:", error);
-        });
-    },
-
-    fetchAvailableUsersSystem(system_id) {
+    
+    fetchAvailableUsersSystem(systemId) {
       axios
         .get(
           "http://localhost:7777/user_systems/getOneScreenID/" +
-            system_id
+            systemId
         )
         .then((response) => {
           this.availableUsers = response.data.map((user) => ({
@@ -400,15 +380,16 @@ export default {
             user_position: user.user_position,
             displayText: `${user.user_position}: ${user.user_firstname} ${user.user_lastname}`,
           }));
-          // หลังจากกำหนดค่า availableUsers ให้กำหนดค่า project_id ด้วย
-          this.system_id = system_id;
+          // หลังจากกำหนดค่า availableUsers ให้กำหนดค่า system_id ด้วย
+          this.systemId = systemId;
         })
         .catch((error) => {
           console.error("Error fetching available users:", error);
         });
     },
 
-    async deleteUser(system_id, user_id) {
+    async deleteUser(systemId, user_id) {
+      console.log(systemId, user_id)
   try {
     if (!user_id) {
       await Swal.fire({
@@ -433,11 +414,12 @@ export default {
         text: response.data.message,
       });
       // เรียกใช้ deleteUser() โดยส่ง user_id ของผู้ใช้ที่ต้องการลบ
-      await this.deleteUser(item.user_id);
+      await this.deleteUser(systemId, user_id);
 
       console.log(response.data.message);
+      window.location.reload();
       // อัปเดตข้อมูลผู้ใช้หลังจากที่ลบผู้ใช้เสร็จสิ้น
-      this.fetchAvailableUsersSystem(system_id);
+      this.fetchAvailableUsersSystem(systemId);
     } else {
       // จัดการกรณีที่เกิดข้อผิดพลาด
       await Swal.fire({
@@ -449,11 +431,6 @@ export default {
     }
   } catch (error) {
     // จัดการกรณีที่เกิดข้อผิดพลาดระหว่างการลบผู้ใช้
-    await Swal.fire({
-      icon: "error",
-      title: "Error",
-      text: "Error deleting user",
-    });
     console.error("Error deleting user:", error);
   }
 },
@@ -797,10 +774,10 @@ export default {
     },
   },
   computed: {
-    userOptions() {
-      // แปลงข้อมูลผู้ใช้ให้อยู่ในรูปแบบที่ v-select ต้องการ
-      return this.users.map((user) => ({ text: user.name, value: user.id }));
-    },
+    // userOptions() {
+    //   // แปลงข้อมูลผู้ใช้ให้อยู่ในรูปแบบที่ v-select ต้องการ
+    //   return this.selectedUsers.map((user) => ({ text: user.name, value: user.id }));
+    // },
 
     filteredUserProjects() {
       return this.userProjects.filter((item) => {

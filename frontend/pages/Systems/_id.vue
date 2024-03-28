@@ -249,7 +249,7 @@ export default {
 
 async fetchUserSystems(system_id) {
     try {
-      const response = await fetch(`http://localhost:7777/user_systems//getOneScreenID/${system_id}`);
+      const response = await fetch(`http://localhost:7777/user_systems/getOneScreenID/${system_id}`);
       if (!response.ok) {
         throw new Error("Failed to fetch user systems");
       }
