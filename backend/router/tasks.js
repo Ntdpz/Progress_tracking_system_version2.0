@@ -28,20 +28,21 @@ router.post('/createTasks', async (req, res) => {
         const {
             task_id,
             task_name,
-            tasks_detail,
-            task_manday,
+            task_detail,
             task_status,
             screen_id,
             project_id,
             system_id,
             task_plan_start,
             task_plan_end,
+            task_member_id,
+            task_manday // เพิ่มฟิลด์ task_manday เข้ามา
         } = req.body;
 
-        const id = generateId(); // Using generateId() function to generate ID
+        const id = generateId(); // ใช้ generateId() function เพื่อสร้าง ID
 
         const query =
-            'INSERT INTO Tasks (id, task_id, task_name, tasks_detail, task_status, screen_id, project_id, system_id, task_plan_start, task_plan_end) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+            'INSERT INTO tasks (id, task_id, task_name, task_detail, task_status, screen_id, project_id, system_id, task_plan_start, task_plan_end, task_member_id, task_manday) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'; // เพิ่มฟิลด์ task_manday เข้าไปในคำสั่ง SQL
 
         await new Promise((resolve, reject) => {
             connection.query(
@@ -50,14 +51,15 @@ router.post('/createTasks', async (req, res) => {
                     id,
                     task_id,
                     task_name,
-                    tasks_detail,
-                    task_manday,
+                    task_detail,
                     task_status,
                     screen_id,
                     project_id,
                     system_id,
                     task_plan_start,
                     task_plan_end,
+                    task_member_id,
+                    task_manday // เพิ่ม task_manday เข้าไปใน array ของ parameters
                 ],
                 (err, result) => {
                     if (err) reject(err);
@@ -73,6 +75,8 @@ router.post('/createTasks', async (req, res) => {
     }
 });
 
+
+
 // Route for getting all tasks
 router.get('/getAll', async (req, res) => {
     try {
@@ -85,7 +89,6 @@ router.get('/getAll', async (req, res) => {
                     const task_manday = moment.duration(moment(task.task_plan_end).diff(moment(task.task_plan_start))).asDays();
                     if (task.task_manday !== task_manday) {
                         // Update task_manday in the database
-                        await updateTaskManday(task.id, task_manday);
                         // Update task object with new task_manday
                         return {
                             ...task,
@@ -300,18 +303,6 @@ router.get('/searchByScreenId_delete/:screen_id', async (req, res) => {
     }
 });
 
-async function updateTaskManday(taskId, taskManday) {
-    const updateQuery = 'UPDATE Tasks SET task_manday = ? WHERE id = ?';
-    connection.query(updateQuery, [taskManday, taskId], (err, result) => {
-        if (err) {
-            console.error('Error updating task manday:', err);
-            throw err;
-        }
-        console.log('Task manday updated successfully:', result);
-    });
-}
-
-
 // Function to format dates
 function formatDates(tasks) {
     return tasks.map(task => ({
@@ -323,30 +314,22 @@ function formatDates(tasks) {
     }));
 }
 
-// Function to update task_manday
-async function updateTaskManday(taskId, taskManday) {
-    const updateQuery = 'UPDATE Tasks SET task_manday = ? WHERE id = ?';
-    connection.query(updateQuery, [taskManday, taskId], (err, result) => {
-        if (err) {
-            console.error('Error updating task manday:', err);
-            throw err;
-        }
-        console.log('Task manday updated successfully:', result);
-    });
-}
+
 
 // Route for updating task data
 router.put('/updateTasks/:id', async (req, res) => {
     try {
         const {
             task_name,
+            task_detail,
             task_status,
-            tasks_detail,
+            task_manday,
             task_progress,
             task_plan_start,
             task_plan_end,
             task_actual_start,
             task_actual_end,
+            task_member_id,
         } = req.body;
 
         const { id } = req.params;
@@ -358,14 +341,19 @@ router.put('/updateTasks/:id', async (req, res) => {
             updatedTaskFields.task_name = task_name;
         }
 
+        // Check and add task_detail if provided
+        if (task_detail !== undefined) {
+            updatedTaskFields.task_detail = task_detail;
+        }
+
         // Check and add task_status if provided
         if (task_status !== undefined) {
             updatedTaskFields.task_status = task_status;
         }
 
-        // Check and add tasks_detail if provided
-        if (tasks_detail !== undefined) {
-            updatedTaskFields.tasks_detail = tasks_detail;
+        // Check and add task_manday if provided
+        if (task_manday !== undefined) {
+            updatedTaskFields.task_manday = task_manday;
         }
 
         // Check and add task_progress if provided
@@ -393,6 +381,11 @@ router.put('/updateTasks/:id', async (req, res) => {
             updatedTaskFields.task_actual_end = task_actual_end;
         }
 
+        // Check and add task_member_id if provided
+        if (task_member_id !== undefined) {
+            updatedTaskFields.task_member_id = task_member_id;
+        }
+
         if (Object.keys(updatedTaskFields).length === 0) {
             return res.status(400).json({ error: 'No fields to update' });
         }
@@ -412,6 +405,7 @@ router.put('/updateTasks/:id', async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
+
 
 // Route for deleting a task
 router.delete('/delete/:id', async (req, res) => {
