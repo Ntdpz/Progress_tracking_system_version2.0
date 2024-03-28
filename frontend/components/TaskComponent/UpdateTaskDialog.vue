@@ -47,10 +47,10 @@
 
 
 
-    export default {
-        props: {
-            value: Boolean,
-        },
+export default {
+    props: {
+        value: Boolean,
+    },
     data() {
         return {
             taskId: "",
@@ -80,7 +80,7 @@
             this.dialog = false;
         },
     }
-     
+
 };
 
 
