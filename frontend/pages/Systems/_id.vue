@@ -3,115 +3,59 @@
     <!-- Search bar -->
     <v-row no-gutters>
       <v-col cols="12">
-        <input
-          type="text"
-          v-model="searchQuery"
-          placeholder="Search..."
-          style="
+        <input type="text" v-model="searchQuery" placeholder="Search..." style="
             margin-bottom: 10px;
             width: 100%;
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
             font-size: 16px;
-          "
-        />
+          " />
       </v-col>
     </v-row>
 
     <!--data table -->
-    <v-data-table
-      :headers="headers"
-      :items="filteredScreens"
-      :items-per-page="5"
-      class="elevation-1"
-    >
+    <v-data-table :headers="headers" :items="filteredScreens" :items-per-page="5" class="elevation-1">
       <template v-slot:top>
         <v-toolbar flat>
-          <v-toolbar-title
-            >Screen Management - System : {{ systemNameENG }}</v-toolbar-title
-          >
+          <v-toolbar-title>Screen Management - System : {{ systemNameENG }}</v-toolbar-title>
           <v-divider class="mx-4" inset vertical></v-divider>
           <v-spacer></v-spacer>
-          <v-btn color="primary" dark @click="goToCreateScreen"
-            >New Screen</v-btn
-          >
-          <v-btn
-            color="primary"
-            dark
-            @click="goToHistoryScreens"
-            style="margin-left: 10px"
-            >Show History Screen</v-btn
-          >
+          <v-btn color="primary" dark @click="goToCreateScreen">New Screen</v-btn>
+          <v-btn color="primary" dark @click="goToHistoryScreens" style="margin-left: 10px">Show History Screen</v-btn>
           <!-- <v-btn color="primary" dark @click="goToHistoryScreen"
             >Show HistoryScreen</v-btn> -->
         </v-toolbar>
 
         <!-- Create Screen Dialog -->
-        <v-dialog
-          v-model="createScreenDialog"
-          max-width="600"
-          ref="createScreenDialog"
-        >
+        <v-dialog v-model="createScreenDialog" max-width="600" ref="createScreenDialog">
           <v-card>
             <v-card-title>Create New Screen</v-card-title>
             <v-card-text>
               <!-- Form to create a new screen -->
               <v-form>
-                <v-text-field
-                  v-model="newScreen.screen_id"
-                  label="Screen ID"
-                ></v-text-field>
-                <v-text-field
-                  v-model="newScreen.screen_name"
-                  label="Screen Name"
-                ></v-text-field>
-                <v-text-field
-                  v-model="newScreen.screen_plan_start"
-                  label="Plant Start"
-                  type="date"
-                ></v-text-field>
-                <v-text-field
-                  v-model="newScreen.screen_plan_end"
-                  label="Plant End"
-                  type="date"
-                ></v-text-field>
-                <v-text-field
-                  v-model="newScreen.screen_manday"
-                  label="Manday"
-                  type="float"
-                ></v-text-field>
-                <v-select
-                  v-model="newScreen.screen_level"
-                  label="Screen Level"
-                  :items="[
+                <v-text-field v-model="newScreen.screen_id" label="Screen ID"></v-text-field>
+                <v-text-field v-model="newScreen.screen_name" label="Screen Name"></v-text-field>
+                <v-text-field v-model="newScreen.screen_plan_start" label="Plant Start" type="date"></v-text-field>
+                <v-text-field v-model="newScreen.screen_plan_end" label="Plant End" type="date"></v-text-field>
+                <v-text-field v-model="newScreen.screen_manday" label="Manday" type="float"></v-text-field>
+                <v-select v-model="newScreen.screen_level" label="Screen Level" :items="[
                     'Very Difficult',
                     'Hard',
                     'Moderate',
                     'Easy',
                     'Simple',
-                  ]"
-                ></v-select>
+                  ]"></v-select>
 
                 <!-- File input for photo -->
-                <v-file-input
-                  :rules="rules"
-                  accept="image/png, image/jpeg, image/bmp"
-                  label="Photo"
-                  placeholder="Pick an photo"
-                  prepend-icon="mdi-camera"
-                  v-model="newScreen.photo"
-                >
+                <v-file-input :rules="rules" accept="image/png, image/jpeg, image/bmp" label="Photo"
+                  placeholder="Pick an photo" prepend-icon="mdi-camera" v-model="newScreen.photo">
                 </v-file-input>
 
-                <v-btn
-                  type="submit"
-                  @click="
+                <v-btn type="submit" @click="
                     createScreenDialog = false;
                     createScreen();
-                  "
-                  >Create</v-btn
-                >
+                  ">Create</v-btn>
                 <v-btn @click="createScreenDialog = false">Cancel</v-btn>
               </v-form>
             </v-card-text>
@@ -119,55 +63,30 @@
         </v-dialog>
 
         <!-- Edit Screen Dialog -->
-        <v-dialog
-          v-model="editScreenDialog"
-          max-width="600"
-          ref="editScreenDialog"
-        >
+        <v-dialog v-model="editScreenDialog" max-width="600" ref="editScreenDialog">
           <v-card>
             <v-card-title>Edit Screen</v-card-title>
             <v-card-text>
               <!-- Form to edit screen -->
               <v-form @submit.prevent="updateScreen">
-                <v-text-field
-                  v-model="editScreen.screen_id"
-                  label="Screen ID"
-                  readonly
-                ></v-text-field>
-                <v-text-field
-                  v-model="editScreen.screen_name"
-                  label="Screen Name"
-                ></v-text-field>
-                <v-select
-                  v-model="editScreen.screen_level"
-                  label="Screen Level"
-                  :items="[
+                <v-text-field v-model="editScreen.screen_id" label="Screen ID" readonly></v-text-field>
+                <v-text-field v-model="editScreen.screen_name" label="Screen Name"></v-text-field>
+                <v-select v-model="editScreen.screen_level" label="Screen Level" :items="[
                     'Very Difficult',
                     'Hard',
                     'Moderate',
                     'Easy',
                     'Simple',
-                  ]"
-                ></v-select>
+                  ]"></v-select>
+                <v-text-field v-model="editScreen.screen_pic" label="Screen Picture" readonly></v-text-field>
 
                 <!-- File input for photo -->
-                <v-file-input
-                  :rules="rules"
-                  accept="image/png, image/jpeg, image/bmp"
-                  label="Photo"
-                  placeholder="Pick a photo"
-                  prepend-icon="mdi-camera"
-                  v-model="editScreen.photo"
-                >
+                <v-file-input :rules="rules" accept="image/png, image/jpeg, image/bmp" label="New Picture"
+                  placeholder="Select a picture" prepend-icon="mdi-camera" v-model="editScreen.photo">
                 </v-file-input>
 
                 <!-- Display current photo -->
-                <v-img
-                  v-if="editScreen.photo"
-                  :src="editScreen.photo"
-                  height="100"
-                  contain
-                ></v-img>
+                <v-img v-if="editScreen.photo" :src="editScreen.photo" height="100" contain></v-img>
 
                 <v-btn type="submit" @click="updateScreen">Update</v-btn>
                 <v-btn @click="editScreenDialog = false">Cancel</v-btn>
@@ -215,15 +134,9 @@
           <!-- <td>{{ item.screen_progress }}</td> -->
           <td>
             <!-- Actions -->
-            <v-icon class="me-2" size="20" px @click="openEditDialog(item)"
-              >mdi-pencil-circle</v-icon
-            >
-            <v-icon size="20" px @click="confirmDeleteScreen(item)"
-              >mdi-delete-empty</v-icon
-            >
-            <v-btn @click="goToScreensDetail(item.id)" style="margin-left: 10px"
-              >Tasks</v-btn
-            >
+            <v-icon class="me-2" size="20" px @click="openEditDialog(item)">mdi-pencil-circle</v-icon>
+            <v-icon size="20" px @click="confirmDeleteScreen(item)">mdi-delete-empty</v-icon>
+            <v-btn @click="goToScreensDetail(item.id)" style="margin-left: 10px">Tasks</v-btn>
           </td>
         </tr>
       </template>
