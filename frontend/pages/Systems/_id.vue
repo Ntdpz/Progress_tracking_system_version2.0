@@ -481,13 +481,21 @@ export default {
 
     async updateScreen() {
       try {
-
-        // Prepare data to send
+        // Prepare the data to send
         const requestData = {
           screen_id: this.editScreen.screen_id,
           screen_name: this.editScreen.screen_name,
           screen_level: this.editScreen.screen_level,
+          screen_pic: "", // Initialize as an empty string to prepare for base64
         };
+
+        // Check if a new image is selected
+        if (this.newScreenPic) {
+          // Convert the image to base64
+          const base64Image = await this.imageToBase64(this.newScreenPic);
+          // Set screen_pic to the base64 of the image
+          requestData.screen_pic = base64Image;
+        }
 
         // Make the request to update the screen
         const response = await fetch(
@@ -509,7 +517,7 @@ export default {
             text: "Screen updated successfully",
           });
           this.editScreenDialog = false;
-          this.fetchScreens(); // Assuming fetchScreens() fetches updated screen data
+          this.fetchScreens(); // Fetch the updated screen data
         } else {
           throw new Error("Failed to update screen");
         }
@@ -845,6 +853,18 @@ export default {
         });
       }
     },
+
+    async fetchScreenPhoto(screenId) {
+      try {
+        const response = await fetch(`http://localhost:7777/screens/getScreenPhoto/${screenId}`);
+        const data = await response.json();
+        return data.photoUrl; // แปลงให้อยู่ในรูปแบบ URL ของรูปภาพ
+      } catch (error) {
+        console.error('Error fetching screen photo:', error);
+        return null;
+      }
+    },
+
   },
   computed: {
     filteredScreens() {
