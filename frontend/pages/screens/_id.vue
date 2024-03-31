@@ -74,7 +74,7 @@ export default {
         task_id: "",
         task_name: "",
         task_manday: "",
-        tasks_detail: "",
+        task_detail: "",
         task_status: "",
         task_plan_start: "",
         task_plan_end: "",
