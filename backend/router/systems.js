@@ -1,9 +1,9 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const connection = require('../db'); // Import database connection
-const path = require('path');
-const { db, connectToDatabase } = require(path.join(__dirname, '../db')); // Import database utilities
-const moment = require('moment'); // Import moment library for date manipulation
+const connection = require("../db"); // Import database connection
+const path = require("path");
+const { db, connectToDatabase } = require(path.join(__dirname, "../db")); // Import database utilities
+const moment = require("moment"); // Import moment library for date manipulation
 
 // Function to generate a random ID
 function generateId() {
@@ -14,7 +14,7 @@ function generateId() {
 }
 
 // Route to get all systems
-router.get('/getAll', async (req, res) => {
+router.get("/getAll", async (req, res) => {
   try {
     const systemIdFilter = req.query.system_id;
     const projectFilter = req.query.project_id;
@@ -38,16 +38,16 @@ router.get('/getAll', async (req, res) => {
     const queryParams = [];
 
     if (projectFilter) {
-      query += ' WHERE Systems.project_id = ? AND Systems.is_deleted = false'; // Add condition for 'is_deleted = false'
+      query += " WHERE Systems.project_id = ? AND Systems.is_deleted = false"; // Add condition for 'is_deleted = false'
       queryParams.push(projectFilter);
     } else if (systemIdFilter) {
-      query += ' WHERE Systems.id = ? AND Systems.is_deleted = false'; // Add condition for 'is_deleted = false'
+      query += " WHERE Systems.id = ? AND Systems.is_deleted = false"; // Add condition for 'is_deleted = false'
       queryParams.push(systemIdFilter);
     } else {
-      query += ' WHERE Systems.is_deleted = false'; // Add condition for 'is_deleted = false'
+      query += " WHERE Systems.is_deleted = false"; // Add condition for 'is_deleted = false'
     }
 
-    query += ' GROUP BY Systems.id';
+    query += " GROUP BY Systems.id";
 
     // Execute the query
     connection.query(query, queryParams, async (err, results, fields) => {
@@ -67,8 +67,9 @@ router.get('/getAll', async (req, res) => {
     return res.status(500).send();
   }
 });
+
 // Route to get all systems by project_id
-router.get('/getAll/:project_id', async (req, res) => {
+router.get("/getAll/:project_id", async (req, res) => {
   const projectId = req.params.project_id;
   try {
     const query = `
@@ -109,7 +110,7 @@ router.get('/getAll/:project_id', async (req, res) => {
 });
 
 // Route to get all historical systems
-router.get('/getAllHistorySystem', async (req, res) => {
+router.get("/getAllHistorySystem", async (req, res) => {
   try {
     let query = `
       SELECT Systems.id, 
@@ -168,18 +169,34 @@ async function updateSystem(system) {
     const updatedSystem = {
       screen_count: system.screen_count,
       system_progress: system.system_progress,
-      system_plan_start: new Date(system.system_plan_start).toISOString().split('T')[0],
-      system_plan_end: new Date(system.system_plan_end).toISOString().split('T')[0],
+      // Check if system_plan_start and system_plan_end are null, then keep them as null
+      system_plan_start: system.system_plan_start
+        ? new Date(system.system_plan_start).toISOString().split("T")[0]
+        : null,
+      system_plan_end: system.system_plan_end
+        ? new Date(system.system_plan_end).toISOString().split("T")[0]
+        : null,
       system_manday: system.system_manday,
-      id: system.id
+      id: system.id,
     };
 
     // Execute the update query
     await new Promise((resolve, reject) => {
-      connection.query(updateQuery, [updatedSystem.screen_count, updatedSystem.system_progress, updatedSystem.system_plan_start, updatedSystem.system_plan_end, updatedSystem.system_manday, updatedSystem.id], (err, result) => {
-        if (err) reject(err);
-        resolve(updatedSystem);
-      });
+      connection.query(
+        updateQuery,
+        [
+          updatedSystem.screen_count,
+          updatedSystem.system_progress,
+          updatedSystem.system_plan_start,
+          updatedSystem.system_plan_end,
+          updatedSystem.system_manday,
+          updatedSystem.id,
+        ],
+        (err, result) => {
+          if (err) reject(err);
+          resolve(updatedSystem);
+        }
+      );
     });
 
     return updatedSystem;
@@ -189,11 +206,11 @@ async function updateSystem(system) {
 }
 
 // Route to get one system by id
-router.get('/getOne/:id', async (req, res) => {
+router.get("/getOne/:id", async (req, res) => {
   const id = req.params.id;
   try {
     connection.query(
-      'SELECT * FROM systems WHERE id = ?',
+      "SELECT * FROM systems WHERE id = ?",
       [id],
       (err, results, fields) => {
         if (err) {
@@ -201,11 +218,13 @@ router.get('/getOne/:id', async (req, res) => {
           return res.status(400).send();
         }
         if (results.length === 0) {
-          return res.status(404).json({ message: 'System not found!' });
+          return res.status(404).json({ message: "System not found!" });
         }
         const system = results[0];
         if (system.is_deleted === 1) {
-          return res.status(200).json({ message: 'This system has been deleted.' });
+          return res
+            .status(200)
+            .json({ message: "This system has been deleted." });
         }
         res.status(200).json(system);
       }
@@ -217,7 +236,7 @@ router.get('/getOne/:id', async (req, res) => {
 });
 
 // Route to search systems by project_id
-router.get('/searchByProjectId/:project_id', async (req, res) => {
+router.get("/searchByProjectId/:project_id", async (req, res) => {
   try {
     const { project_id } = req.params;
 
@@ -260,7 +279,7 @@ router.get('/searchByProjectId/:project_id', async (req, res) => {
 });
 
 // Route to search deleted systems by project_id
-router.get('/searchByProjectId_delete/:project_id', async (req, res) => {
+router.get("/searchByProjectId_delete/:project_id", async (req, res) => {
   try {
     const { project_id } = req.params;
 
@@ -302,23 +321,22 @@ router.get('/searchByProjectId_delete/:project_id', async (req, res) => {
   }
 });
 
-// Route to create a new system
-router.post('/createSystem', async (req, res) => {
+// API createSystem
+router.post("/createSystem", async (req, res) => {
   const {
     project_id,
     system_id,
     system_nameTH,
     system_nameEN,
     system_shortname,
-    system_analyst,
-    system_member,
-    system_plan_start,
-    system_plan_end,
+    selectedUser,
   } = req.body;
-  const id = generateId();
+
+  const id = generateId(); // Generate a valid ID using generateId() function
+
   try {
     connection.query(
-      'INSERT INTO systems(id, project_id, system_id, system_nameTH, system_nameEN, system_shortname, system_analyst, system_member, system_plan_start, system_plan_end) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      "INSERT INTO systems (id, project_id, system_id, system_nameTH, system_nameEN, system_shortname) VALUES (?, ?, ?, ?, ?, ?)",
       [
         id,
         project_id,
@@ -326,19 +344,51 @@ router.post('/createSystem', async (req, res) => {
         system_nameTH,
         system_nameEN,
         system_shortname,
-        system_analyst,
-        system_member,
-        system_plan_start,
-        system_plan_end,
-      ],
+      ], // Use the generated ID
       (err, results, fields) => {
         if (err) {
-          console.error('Error while inserting a system into the database', err);
+          console.error(
+            "Error while inserting a system into the database",
+            err
+          );
           return res.status(400).send();
         }
-        return res
-          .status(201)
-          .json({ message: 'New system successfully created!' });
+
+        // Create user_system relations if selectedUsers are provided
+        if (selectedUser) {
+          const userSystemValues = selectedUser.map((user_id) => [
+            user_id,
+            id, // Use the provided system_id
+            project_id,
+          ]);
+
+          connection.query(
+            "INSERT INTO user_systems (user_id, system_id, project_id) VALUES ?",
+            [userSystemValues],
+            (error, results, fields) => {
+              if (error) {
+                console.error(
+                  "Error while inserting users into the system",
+                  error
+                );
+                return res.status(400).send();
+              }
+              return res
+                .status(201)
+                .json({
+                  message: "New system and users assigned successfully!",
+                  system_id: id,
+                }); // Return the system_id
+            }
+          );
+        } else {
+          return res
+            .status(201)
+            .json({
+              message: "New system created successfully!",
+              system_id: id,
+            }); // Return the system_id
+        }
       }
     );
   } catch (err) {
@@ -348,14 +398,14 @@ router.post('/createSystem', async (req, res) => {
 });
 
 // Route to update system details
-router.put('/updateSystem/:id', async (req, res) => {
+router.put("/updateSystem/:id", async (req, res) => {
   const id = req.params.id;
   const {
     system_nameTH,
     system_nameEN,
     system_shortname,
     project_id,
-    is_deleted // เพิ่ม is_deleted เข้ามาในการรับค่า
+    is_deleted, // เพิ่ม is_deleted เข้ามาในการรับค่า
   } = req.body;
 
   const updatedSystemFields = {};
@@ -376,24 +426,25 @@ router.put('/updateSystem/:id', async (req, res) => {
     updatedSystemFields.project_id = project_id;
   }
 
-  if (is_deleted !== undefined) { // เพิ่มเงื่อนไขสำหรับ is_deleted
+  if (is_deleted !== undefined) {
+    // เพิ่มเงื่อนไขสำหรับ is_deleted
     updatedSystemFields.is_deleted = is_deleted;
   }
 
   if (Object.keys(updatedSystemFields).length === 0) {
-    return res.status(400).json({ error: 'No fields to update' });
+    return res.status(400).json({ error: "No fields to update" });
   }
 
   try {
     connection.query(
-      'UPDATE systems SET ? WHERE id = ?',
+      "UPDATE systems SET ? WHERE id = ?",
       [updatedSystemFields, id],
       (err, results, fields) => {
         if (err) {
           console.error(err);
           return res.status(400).send();
         }
-        res.status(200).json({ message: 'System updated successfully!' });
+        res.status(200).json({ message: "System updated successfully!" });
       }
     );
   } catch (err) {
@@ -401,7 +452,6 @@ router.put('/updateSystem/:id', async (req, res) => {
     return res.status(500).send();
   }
 });
-
 
 // Route to delete a system by id
 router.delete("/delete/:id", async (req, res) => {
@@ -419,7 +469,9 @@ router.delete("/delete/:id", async (req, res) => {
         if (results.affectedRows === 0) {
           return res.status(404).json({ message: "No system with that id!" });
         }
-        return res.status(200).json({ message: "System deleted successfully!" });
+        return res
+          .status(200)
+          .json({ message: "System deleted successfully!" });
       }
     );
   } catch (err) {
@@ -433,73 +485,23 @@ router.delete("/deleteHistorySystems/:id", async (req, res) => {
   const id = req.params.id;
 
   try {
-    connection.beginTransaction(async (err) => {
-      if (err) {
-        console.error(err);
-        return res.status(500).send();
-      }
-
-      // Delete tasks related to screens with the given system_id
-      connection.query(
-        `
-        DELETE FROM tasks
-        WHERE screen_id IN (SELECT id FROM screens WHERE system_id = ?)
-        `,
-        [id],
-        async (err, results, fields) => {
-          if (err) {
-            console.error(err);
-            connection.rollback(() => {
-              return res.status(500).send();
-            });
-          }
-
-          // Now, delete screens related to the system_id
-          connection.query(
-            `
-            DELETE FROM screens
-            WHERE system_id = ?
-            `,
-            [id],
-            async (err, results, fields) => {
-              if (err) {
-                console.error(err);
-                connection.rollback(() => {
-                  return res.status(500).send();
-                });
-              }
-
-              // Now, delete the system itself
-              connection.query(
-                `
-                DELETE FROM systems
-                WHERE id = ?
-                `,
-                [id],
-                async (err, results, fields) => {
-                  if (err) {
-                    console.error(err);
-                    connection.rollback(() => {
-                      return res.status(500).send();
-                    });
-                  }
-
-                  connection.commit((err) => {
-                    if (err) {
-                      console.error(err);
-                      connection.rollback(() => {
-                        return res.status(500).send();
-                      });
-                    }
-                    return res.status(200).json({ message: "System and related data deleted successfully!" });
-                  });
-                }
-              );
-            }
-          );
+    // Execute the delete history system trigger
+    connection.query(
+      `
+      DELETE FROM systems
+      WHERE id = ?
+      `,
+      [id],
+      (err, results, fields) => {
+        if (err) {
+          console.error(err);
+          return res.status(500).send();
         }
-      );
-    });
+        return res
+          .status(200)
+          .json({ message: "System and related data deleted successfully!" });
+      }
+    );
   } catch (err) {
     console.error(err);
     return res.status(500).send();
@@ -507,21 +509,21 @@ router.delete("/deleteHistorySystems/:id", async (req, res) => {
 });
 
 // Route to add user to systems
-router.post('/addUserSystem', async (req, res) => {
+router.post("/addUserSystem", async (req, res) => {
   const { user_id, system_ids } = req.body;
   try {
     const createUserSystemMappings = async (user_id, system_ids) => {
       // Check that system_ids is an array
       if (!Array.isArray(system_ids)) {
-        console.error('Error: system_ids is not an array');
-        return res.status(400).send('system_ids must be an array');
+        console.error("Error: system_ids is not an array");
+        return res.status(400).send("system_ids must be an array");
       }
 
       // Map over the system IDs and insert a new row into the user_systems table for each one
       for (const system_id of system_ids) {
         try {
           await connection.query(
-            'INSERT INTO user_systems (user_id, system_id) VALUES (?, ?)',
+            "INSERT INTO user_systems (user_id, system_id) VALUES (?, ?)",
             [user_id, system_id]
           );
         } catch (error) {
@@ -537,14 +539,13 @@ router.post('/addUserSystem', async (req, res) => {
         }
       }
 
-      return res.status(200).send('User-system mappings created successfully');
+      return res.status(200).send("User-system mappings created successfully");
     };
     await createUserSystemMappings(user_id, system_ids);
   } catch (err) {
-    console.error('Error while creating user-system mappings', err);
-    return res.status(500).send('Internal Server Error');
+    console.error("Error while creating user-system mappings", err);
+    return res.status(500).send("Internal Server Error");
   }
 });
-
 
 module.exports = router;

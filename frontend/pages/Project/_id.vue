@@ -19,6 +19,7 @@
         />
       </v-col>
     </v-row>
+
     <!-- Data Table -->
     <v-data-table
       :headers="headers"
@@ -26,246 +27,332 @@
       :items-per-page="5"
       class="elevation-1"
     >
+      <!-- ส่วน Toolbar -->
       <template v-slot:top>
         <v-toolbar flat>
-          <v-toolbar-title
-            >Systems Management - Project :
-            {{ projectNameENG }}</v-toolbar-title
-          >
-          <v-divider class="mx-4" inset vertical></v-divider>
+          <!-- ชื่อโปรเจค -->
+          <v-toolbar-title>Systems Management</v-toolbar-title>
+          <!-- ใช้ v-spacer เพื่อชิดปุ่มไปทางขวา -->
           <v-spacer></v-spacer>
+          <!-- เพิ่มปุ่ม New System -->
           <v-btn color="primary" dark @click="goToCreateSystem"
             >New System</v-btn
           >
+          <!-- เพิ่มปุ่ม Show History System -->
           <v-btn
             color="primary"
             dark
             @click="goToHistorySystems"
             style="margin-left: 10px"
-            >Show HistorySystem</v-btn
+            >Show History System</v-btn
           >
         </v-toolbar>
-
-        <!-- Create System Dialog -->
-        <v-dialog
-          v-model="createSystemDialog"
-          max-width="600"
-          ref="createSystemDialog"
-        >
-          <v-card>
-            <v-card-title>Create New System</v-card-title>
-            <v-card-text>
-              <!-- Form to create new system -->
-              <v-form @submit.prevent="createSystem">
-                <v-text-field
-                  v-model="newSystem.system_id"
-                  label="System ID"
-                ></v-text-field>
-                <v-text-field
-                  v-model="newSystem.system_nameTH"
-                  label="System Name (TH)"
-                ></v-text-field>
-                <v-text-field
-                  v-model="newSystem.system_nameEN"
-                  label="System Name (EN)"
-                ></v-text-field>
-                <v-text-field
-                  v-model="newSystem.system_shortname"
-                  label="Short Name"
-                ></v-text-field>
-
-                <!-- New fields for SA, DEV, IMP selection -->
-
-                <v-select
-                  v-model="selectedUsers"
-                  :items="formatUserProjects(userProjects)"
-                  label="Select User"
-                  multiple
-                >
-                  <template v-slot:prepend-item>
-                    <v-list-item @click="selectAll">
-                      <v-list-item-content>Select All</v-list-item-content>
-                    </v-list-item>
-                  </template>
-                </v-select>
-
-                <v-btn type="submit">Create</v-btn>
-                <v-btn @click="createSystemDialog = false">Cancel</v-btn>
-              </v-form>
-            </v-card-text>
-          </v-card>
-        </v-dialog>
-
-        <!-- Edit System Dialog -->
-        <v-dialog
-          v-model="editSystemDialog"
-          max-width="600"
-          ref="editSystemDialog"
-        >
-          <v-card>
-            <v-card-title>Edit System</v-card-title>
-            <v-card-text>
-              <!-- Form to edit system -->
-              <v-form @submit.prevent="updateSystem">
-                <v-text-field
-                  v-model="editedSystem.system_id"
-                  label="System ID"
-                  readonly
-                ></v-text-field>
-                <v-text-field
-                  v-model="editedSystem.system_nameTH"
-                  label="System Name (TH)"
-                ></v-text-field>
-                <v-text-field
-                  v-model="editedSystem.system_nameEN"
-                  label="System Name (EN)"
-                ></v-text-field>
-                <v-text-field
-                  v-model="editedSystem.system_shortname"
-                  label="Short Name"
-                ></v-text-field>
-                <!-- Add more fields as needed -->
-                <!-- You can also add selection fields for system analyst and member -->
-                <!-- Add buttons to submit and cancel -->
-                <v-btn type="submit">Update</v-btn>
-                <v-btn @click="editSystemDialog = false">Cancel</v-btn>
-              </v-form>
-            </v-card-text>
-          </v-card>
-        </v-dialog>
-
-        <!-- Show deleted systems history -->
-        <v-dialog v-model="showHistoryDialog" max-width="800">
-          <v-data-table :headers="headers" :items="deletedSystems">
-            <!-- Define headers for the table -->
-            <template v-slot:top>
-              <v-toolbar flat>
-                <v-toolbar-title>Deleted Systems History</v-toolbar-title>
-                <v-divider class="mx-4" inset vertical></v-divider>
-                <v-spacer></v-spacer>
-              </v-toolbar>
-            </template>
-
-            <!-- Define actions for each row -->
-            <template v-slot:item.actions="{ item }">
-              <v-btn color="primary" @click="restoreSystem(item)">
-                Restore
-              </v-btn>
-              <v-btn color="error" @click="confirmDeleteHistorySystem(item)">
-                Delete
-              </v-btn>
-            </template>
-          </v-data-table>
-        </v-dialog>
       </template>
 
-      <template v-slot:item.actions="{ item }">
-        <v-icon class="me-2" size="20" px @click="openEditDialog(item)"
-          >mdi-pencil-circle</v-icon
-        >
-        <v-icon size="20" px @click="confirmDeleteSystem(item)"
-          >mdi-delete-empty</v-icon
-        >
-        <v-btn @click="goToSystemsDetail(item.id)" style="margin-left: 10px"
-          >Screens</v-btn
-        >
-        <v-btn
-          size="30"
-          px
-          @click="manageUserSystems(item)"
-          style="margin-left: 10px"
-        >
-          manage User Systems
-        </v-btn>
+      <!-- ส่วนแสดงข้อมูล -->
+      <template v-slot:item="{ item }">
+        <tr>
+          <!-- แสดงข้อมูลต่าง ๆ -->
+          <td>{{ item.system_id }}</td>
+          <td>{{ item.system_nameTH }}</td>
+          <td>{{ item.system_nameEN }}</td>
+          <td>{{ item.system_shortname }}</td>
+          <td>{{ item.screen_count ? item.screen_count : "0" }}</td>
+          <td>{{ item.system_progress ? item.system_progress : "0" }}</td>
+          <td>
+            {{
+              item.system_plan_start ? item.system_plan_start : "Not determined"
+            }}
+          </td>
+          <td>
+            {{ item.system_plan_end ? item.system_plan_end : "Not determined" }}
+          </td>
+          <td>{{ item.system_manday ? item.system_manday : "0" }}</td>
+          <!-- เพิ่มปุ่ม manage user systems -->
+          <td>
+            <v-icon class="me-2" size="20" px @click="openEditDialog(item)"
+              >mdi-pencil-circle</v-icon
+            >
+            <v-icon size="20" px @click="confirmDeleteSystem(item)"
+              >mdi-delete-empty</v-icon
+            >
+            <v-btn @click="goToSystemsDetail(item.id)" style="margin-left: 10px"
+              >Systems Detail</v-btn
+            >
+            <!-- เพิ่มปุ่ม manage user systems -->
+            <v-btn @click="openManageUserDialog(item)"
+              >Manage User Systems</v-btn
+            >
+          </td>
+        </tr>
       </template>
     </v-data-table>
 
-  
-    <!-- Dialog to display user systems -->
-      <v-dialog v-model="dialogUserSystems" max-width="600">
-        <v-card>
-          <v-card-title>User Systems</v-card-title>
-          <v-card-text>
+    <!-- Create System Dialog -->
+    <v-dialog
+      v-model="createSystemDialog"
+      max-width="600"
+      ref="createSystemDialog"
+    >
+      <v-card>
+        <v-card-title>Create New System</v-card-title>
+        <v-card-text>
+          <!-- Form to create new system -->
+          <v-form @submit.prevent="createSystem">
             <v-text-field
-              v-model="search"
-              label="Search"
-              dense
-              hide-details
-              solo
-              flat
+              v-model="newSystem.system_id"
+              label="System ID"
             ></v-text-field>
-            <v-data-table :headers="userSystemHeader" :items="userSystems">
-              <template v-slot:item="{ item }">
-                <tr v-if="item">
-                  <td>{{ item.id }}</td>
-                  <td>{{ item.user_firstname }}</td>
-                  <td>{{ item.user_lastname }}</td>
-                  <td>{{ item.user_position }}</td>
-                  <!-- <td>
-                  <v-img :src="getBase64Image(item.user_pic)" height="50" contain></v-img>
-                </td> -->
-                  <td>
-                    <!-- Add trash icon here -->
-                    <v-icon @click="deleteUser(system_id, item.id)"
-                      >mdi-delete</v-icon
-                    >
-                  </td>
-                </tr>
-              </template>
-            </v-data-table>
-          </v-card-text>
-          <v-card-actions>
-            <v-btn color="primary" @click="t">Assign Users</v-btn>
-            <v-btn color="error" @click="dialogUserSystems = false"
-              >Cancel</v-btn
-            >
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
+            <v-text-field
+              v-model="newSystem.system_nameTH"
+              label="System Name (TH)"
+            ></v-text-field>
+            <v-text-field
+              v-model="newSystem.system_nameEN"
+              label="System Name (EN)"
+            ></v-text-field>
+            <v-text-field
+              v-model="newSystem.system_shortname"
+              label="Short Name"
+            ></v-text-field>
 
+            <!-- Add v-select for selecting users -->
+            <v-select
+              v-model="selectedUsers"
+              :items="filteredUsers('Implementer')"
+              label="Select Implementer"
+              item-value="user_id"
+              item-text="displayName"
+              multiple
+            ></v-select>
+
+            <v-select
+              v-model="selectedUsers"
+              :items="filteredUsers('Developer')"
+              label="Select Developer"
+              item-value="user_id"
+              item-text="displayName"
+              multiple
+            ></v-select>
+
+            <v-select
+              v-model="selectedUsers"
+              :items="filteredUsers('System Analyst')"
+              label="Select System Analyst"
+              item-value="user_id"
+              item-text="displayName"
+              multiple
+            ></v-select>
+
+            <v-btn type="submit">Create</v-btn>
+            <v-btn @click="createSystemDialog = false">Cancel</v-btn>
+          </v-form>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+
+    <!-- Edit System Dialog -->
+    <v-dialog v-model="editSystemDialog" max-width="600" ref="editSystemDialog">
+      <v-card>
+        <v-card-title>Edit System</v-card-title>
+        <v-card-text>
+          <!-- Form to edit system -->
+          <v-form @submit.prevent="updateSystem">
+            <v-text-field
+              v-model="editedSystem.system_id"
+              label="System ID"
+              readonly
+            ></v-text-field>
+            <v-text-field
+              v-model="editedSystem.system_nameTH"
+              label="System Name (TH)"
+            ></v-text-field>
+            <v-text-field
+              v-model="editedSystem.system_nameEN"
+              label="System Name (EN)"
+            ></v-text-field>
+            <v-text-field
+              v-model="editedSystem.system_shortname"
+              label="Short Name"
+            ></v-text-field>
+
+            <v-btn type="submit">Update</v-btn>
+            <v-btn @click="editSystemDialog = false">Cancel</v-btn>
+          </v-form>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+
+    <!-- Show deleted systems history -->
+    <v-dialog v-model="showHistoryDialog" max-width="800">
+      <v-data-table :headers="headers" :items="deletedSystems">
+        <!-- Define headers for the table -->
+        <template v-slot:top>
+          <v-toolbar flat>
+            <v-toolbar-title>Deleted Systems History</v-toolbar-title>
+            <v-divider class="mx-4" inset vertical></v-divider>
+            <v-spacer></v-spacer>
+          </v-toolbar>
+        </template>
+
+        <!-- Define actions for each row -->
+        <template v-slot:item.actions="{ item }">
+          <v-btn color="primary" @click="restoreSystem(item)"> Restore </v-btn>
+          <v-btn color="error" @click="confirmDeleteHistorySystem(item)">
+            Delete
+          </v-btn>
+        </template>
+      </v-data-table>
+    </v-dialog>
+
+    <!-- Dialog สำหรับการจัดการผู้ใช้ระบบ -->
+    <v-dialog v-model="manageUserDialog" max-width="800px">
+      <v-card>
+        <v-card-title>Manage User Systems</v-card-title>
+        <v-card-text>
+          <v-text-field
+            v-model="search"
+            label="Search"
+            dense
+            hide-details
+            solo
+            flat
+          ></v-text-field>
+          <v-data-table
+            :headers="userSystemsHeaders"
+            :items="users"
+            :search="search"
+          >
+            <template v-slot:item="{ item }">
+              <tr>
+                <td>{{ item.id }}</td>
+                <td>{{ item.user_firstname }}</td>
+                <td>{{ item.user_lastname }}</td>
+                <td>{{ item.user_position }}</td>
+                <td>
+                  <v-img :src="item.user_pic" height="50" contain></v-img>
+                </td>
+                <td>
+                  <!-- Add trash icon here -->
+                  <v-icon
+                    @click="
+                      deleteUser(selectedSystemId, selectedProjectId, item.id)
+                    "
+                    >mdi-delete</v-icon
+                  >
+                </td>
+              </tr>
+            </template>
+          </v-data-table>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn color="blue darken-1" text @click="manageUserDialog = false"
+            >Close</v-btn
+          >
+          <v-btn
+            color="blue darken-1"
+            text
+            @click="openNestedDialog(selectedSystemId, selectedProjectId)"
+            >Assign User</v-btn
+          >
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <!-- assing Userdialog -->
+    <v-dialog v-model="assinguserDalog" max-width="500px">
+      <v-card>
+        <v-card-title>Assign User</v-card-title>
+        <v-card-text>
+          <v-select
+            v-model="selectedUsers"
+            :items="
+              availableUsers.filter(
+                (user) => user.user_position === 'Implementer'
+              )
+            "
+            label="Select Implementer"
+            item-text="displayName"
+            item-value="id"
+            multiple
+          ></v-select>
+
+          <v-select
+            v-model="selectedUsers"
+            :items="
+              availableUsers.filter(
+                (user) => user.user_position === 'Developer'
+              )
+            "
+            label="Select Developer"
+            item-text="displayName"
+            item-value="id"
+            multiple
+          ></v-select>
+
+          <v-select
+            v-model="selectedUsers"
+            :items="
+              availableUsers.filter(
+                (user) => user.user_position === 'System Analyst'
+              )
+            "
+            label="Select System Analyst"
+            item-text="displayName"
+            item-value="id"
+            multiple
+          ></v-select>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn color="blue darken-1" text @click="assinguserDalog = false"
+            >Close</v-btn
+          >
+          <v-btn color="blue darken-1" text @click="assignUser">Assign</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
 <script>
 import Swal from "sweetalert2";
 import axios from "axios";
-import EditSystemDialog from "../../components/SystemComponent/EditSystemDialog.vue";
 
 export default {
   name: "SystemsDataTable",
   layout: "admin",
-  components: {},
   data() {
     return {
-      // Sample team members data
-      teamMembers: ["SA1", "SA2", "DEV1", "DEV2", "IMP1", "IMP2"],
-      projectId: [],
-      system_id: null,
-      dialogUserSystems: false,
-
-      userSystemHeader: [
+      selectedUsers: [],
+      availableUsers: [],
+      assignUserDialog: false,
+      assinguserDalog: false,
+      selectedProjectId: null,
+      users: [],
+      system_id: "",
+      userSystemsHeaders: [
         { text: "ID", value: "id" },
         { text: "First Name", value: "user_firstname" },
         { text: "Last Name", value: "user_lastname" },
         { text: "Position", value: "user_position" },
-        // { text: "Picture", value: "user_pic" }, // เพิ่มหัวข้อ Picture ลงใน userProjectsHeaders
+        { text: "Picture", value: "user_pic" },
       ],
-      search: "", // Add this line
-      AvailableUsersSystem: [],
-      availableUsers: [],
-      userSystems: [],
-      selectedUsers: [], // เก็บข้อมูลผู้ใช้ที่ถูกเลือก
-      userProjects: [], // เก็บข้อมูล user_projects ที่ได้มาจาก API
-
-      // users: [], // เก็บข้อมูลผู้ใช้ที่ดึงมาจาก API
-
+      search: "",
+      manageUserDialog: false,
+      selectedSystemId: "",
+      selectedUser: null,
+      showUserDialog: false,
+      dropdown: false,
+      projectUsers: [],
+      showDetails: false,
+      project: {},
       projectNameENG: "",
       showHistoryDialog: false,
       deletedSystems: [],
       createSystemDialog: false,
       editSystemDialog: false,
-
       newSystem: {
+        id: "",
         system_id: "",
         system_nameTH: "",
         system_nameEN: "",
@@ -294,210 +381,120 @@ export default {
     };
   },
   methods: {
-    async fetchUserProjectsByProjectId(projectId) {
+    filteredUsers(position) {
+      return this.projectUsers
+        .filter((user) => user.user_position === position)
+        .map((user) => ({
+          ...user,
+          displayName: `${user.user_firstname} ${user.user_lastname}`,
+        }));
+    },
+    async assignUser() {
+      try {
+        const { selectedUsers, selectedSystemId, selectedProjectId } = this;
+        // เรียก API เพื่อสร้างการเชื่อมต่อระหว่างผู้ใช้และระบบ
+        const response = await axios.post(
+          `http://localhost:7777/user_systems/createUser_system`,
+          {
+            user_id: selectedUsers,
+            system_id: selectedSystemId,
+            project_id: selectedProjectId,
+          }
+        );
+        console.log(response.data.message); // พิมพ์ข้อความจากการสร้างผู้ใช้ระบบใหม่
+        // ปิด Dialog หลังจากที่สร้างผู้ใช้ระบบเรียบร้อย
+        this.assinguserDalog = false;
+        // สามารถดำเนินการอื่นๆ ตามต้องการ เช่น รีเฟรชรายการผู้ใช้หรืออื่นๆ
+      } catch (error) {
+        console.error("Error assigning user:", error);
+        // จัดการข้อผิดพลาดหากมีปัญหาในการสร้างผู้ใช้ระบบ
+      }
+    },
+
+    async fetchUsersBySystemAndProject(systemId, projectId) {
+      try {
+        const response = await axios.get(
+          `http://localhost:7777/user_systems/getUserBySystemAndProject/${systemId}/${projectId}`
+        );
+        this.users = response.data;
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    openManageUserDialog(item) {
+      this.selectedSystemId = item.id; // เก็บรหัสระบบที่เลือก
+      this.selectedProjectId = item.project_id; // เก็บรหัสโปรเจคที่เลือก
+      this.manageUserDialog = true; // เปิด Dialog
+      this.fetchUsersBySystemAndProject(item.id, item.project_id); // เรียกใช้งานฟังก์ชันโหลดข้อมูลผู้ใช้
+    },
+
+    async openNestedDialog(systemId, projectId) {
+      try {
+        // เรียก API เพื่อรับรายชื่อผู้ใช้ที่สามารถเลือกได้
+        const response = await axios.get(
+          `http://localhost:7777/user_systems/checkUsersNotInSystem/${projectId}/${systemId}`
+        );
+
+        // เพิ่มข้อมูล user_position เข้าไปในชุดข้อมูล
+        const usersWithDisplayName = response.data.map((user) => ({
+          ...user,
+          displayName: `${user.user_position} : ${user.user_firstname} ${user.user_lastname}`,
+        }));
+
+        // กำหนดข้อมูลผู้ใช้ใหม่ตามตำแหน่ง
+        this.availableUsers = usersWithDisplayName;
+
+        // เปิด Dialog
+        this.assinguserDalog = true;
+      } catch (error) {
+        console.error(error);
+      }
+    },
+
+    async deleteUser(systemId, projectId, userId) {
+      try {
+        const response = await axios.delete(
+          `http://localhost:7777/user_systems/deleteUserSystem/${systemId}/${projectId}/${userId}`
+        );
+
+        // ตรวจสอบว่าคำขอ DELETE สำเร็จหรือไม่
+        if (response.status === 200) {
+          // ลบผู้ใช้ระบบจากตาราง users ใน Vue
+          const index = this.users.findIndex((user) => user.id === userId);
+          if (index !== -1) {
+            this.users.splice(index, 1);
+          }
+          // แสดงข้อความเตือนว่าลบผู้ใช้ระบบสำเร็จ
+        } else {
+          // แสดงข้อความเตือนว่ามีข้อผิดพลาดในการลบผู้ใช้ระบบ
+        }
+      } catch (error) {
+        // แสดงข้อความเตือนว่ามีข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์
+        console.error("Error deleting user system:", error);
+      }
+    },
+
+    goToCreateSystem() {
+      // Open the create system dialog first
+      this.createSystemDialog = true;
+    },
+    toggleDropdown() {
+      this.dropdown = !this.dropdown;
+    },
+    async fetchProjectUsers() {
+      const projectId = this.$route.params.id;
       try {
         const response = await axios.get(
           `http://localhost:7777/user_projects/getUserProjectsByProjectId/${projectId}`
         );
-        if (response.status === 200) {
-          // ดึงข้อมูลผู้ใช้จากการเรียก API
-          this.userProjects = response.data;
-          // console.log(this.userProjects)
-        } else {
-          console.error("Failed to fetch user projects");
-        }
+        this.projectUsers = response.data.map((user) => ({
+          ...user,
+          displayName: `${user.user_position} : ${user.user_firstname} ${user.user_lastname}`,
+        }));
       } catch (error) {
-        console.error("Error fetching user projects:", error);
+        console.error(error);
       }
     },
-
-    formatUserProjects(userProjects) {
-      return userProjects.map((user) => ({
-        text: `${user.user_firstname} ${user.user_lastname} (${user.user_position})`,
-        value: user.user_id,
-      }));
-    },
-
-    selectAll() {
-      // สร้าง array ใหม่ที่มีค่าเท่ากับ items ทั้งหมด
-      const allValues = this.formatUserProjects(this.userProjects).map(
-        (item) => item.value
-      );
-      // ตรวจสอบว่าทุก item ใน allValues ถูกเลือกแล้วหรือไม่
-      const allSelected = allValues.every((value) =>
-        this.selectedUsers.includes(value)
-      );
-      // หากทุก item ถูกเลือกแล้ว ให้ลบทุก item ออกจาก selectedUsers
-      if (allSelected) {
-        this.selectedUsers.splice(0, this.selectedUsers.length);
-      } else {
-        // หากยังไม่เลือกทั้งหมด ให้กำหนด selectedUsers เป็น allValues
-        this.selectedUsers = allValues;
-      }
-    },
-
-    async manageUserSystems(item) {
-      try {
-        const systemId = item.id; // ดึง id ของระบบจาก item ที่รับเข้ามา
-        // ตรวจสอบว่า systemId มีค่าที่ถูกต้องหรือไม่
-        if (!systemId) {
-          console.error("Error fetching user systems: systemId is undefined");
-          return;
-        }
-
-        // เรียกเมธอดเพื่อเรียกข้อมูลผู้ใช้ที่เกี่ยวข้องกับระบบนี้
-        this.fetchAvailableUsersSystem(this.$route.params.id);
-        // Log เพื่อตรวจสอบค่า systemId
-        console.log("System ID:", systemId);
-
-        const response = await fetch(
-          `http://localhost:7777/user_systems/getOneScreenID/${systemId}`
-        );
-        if (!response.ok) {
-          throw new Error("Failed to fetch user systems");
-        }
-        const data = await response.json();
-        // นำข้อมูลที่ได้รับมาเก็บไว้ในตัวแปรของคุณเพื่อนำไปแสดงใน <v-dialog>
-        this.userSystems = data;
-        // เปิด <v-dialog> เพื่อแสดงข้อมูลที่ได้รับมา
-        this.dialogUserSystems = true;
-      } catch (error) {
-        console.error("Error fetching user systems:", error);
-      }
-    },
-    
-    fetchAvailableUsersSystem(systemId) {
-      axios
-        .get(
-          "http://localhost:7777/user_systems/getOneScreenID/" +
-            systemId
-        )
-        .then((response) => {
-          this.availableUsers = response.data.map((user) => ({
-            id: user.id,
-            user_firstname: user.user_firstname,
-            user_lastname: user.user_lastname,
-            user_position: user.user_position,
-            displayText: `${user.user_position}: ${user.user_firstname} ${user.user_lastname}`,
-          }));
-          // หลังจากกำหนดค่า availableUsers ให้กำหนดค่า system_id ด้วย
-          this.systemId = systemId;
-        })
-        .catch((error) => {
-          console.error("Error fetching available users:", error);
-        });
-    },
-
-    async deleteUser(systemId, user_id) {
-      console.log(systemId, user_id)
-  try {
-    if (!user_id) {
-      await Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "User ID is undefined",
-      });
-      console.error("Error deleting user: user_id is undefined");
-      return;
-    }
-
-    // เรียกใช้งาน API ด้วย axios.delete โดยส่ง user_id ไปยังเส้นทางที่ต้องการ
-    const response = await axios.delete(
-      `http://localhost:7777/user_systems/deleteUserID/${user_id}`
-    );
-
-    if (response.status === 200) {
-      // จัดการกรณีที่สำเร็จ
-      await Swal.fire({
-        icon: "success",
-        title: "Success",
-        text: response.data.message,
-      });
-      // เรียกใช้ deleteUser() โดยส่ง user_id ของผู้ใช้ที่ต้องการลบ
-      await this.deleteUser(systemId, user_id);
-
-      console.log(response.data.message);
-      window.location.reload();
-      // อัปเดตข้อมูลผู้ใช้หลังจากที่ลบผู้ใช้เสร็จสิ้น
-      this.fetchAvailableUsersSystem(systemId);
-    } else {
-      // จัดการกรณีที่เกิดข้อผิดพลาด
-      await Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "Failed to delete user",
-      });
-      console.error("Failed to delete user:", response.status);
-    }
-  } catch (error) {
-    // จัดการกรณีที่เกิดข้อผิดพลาดระหว่างการลบผู้ใช้
-    console.error("Error deleting user:", error);
-  }
-},
-
-    async createSystem() {
-      const projectId = this.$route.params.id;
-      if (
-        !this.newSystem.system_id ||
-        !this.newSystem.system_nameTH ||
-        !this.newSystem.system_nameEN ||
-        !this.newSystem.system_shortname
-      ) {
-        await Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: "Please fill in all required fields.",
-        });
-        return;
-      }
-      try {
-        let requestBody = {
-          project_id: projectId,
-          system_id: this.newSystem.system_id,
-          system_nameTH: this.newSystem.system_nameTH,
-          system_nameEN: this.newSystem.system_nameEN,
-          system_shortname: this.newSystem.system_shortname,
-          selectedUsers: this.selectedUsers.map((user) => user.user_id), // แปลงเป็นรูปแบบของ user_id เพื่อส่งไปยังเซิร์ฟเวอร์
-        };
-
-        const response = await fetch(
-          "http://localhost:7777/systems/createSystem",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(requestBody),
-          }
-        );
-        const data = await response.json();
-        if (!response.ok) {
-          throw new Error(data.message || "Failed to create System");
-        }
-        await Swal.fire({
-          icon: "success",
-          title: "Success",
-          text: data.message || "New System created successfully",
-        });
-        // Clear the newSystem object and selectedUsers
-        this.newSystem = {
-          system_id: "",
-          system_nameTH: "",
-          system_nameEN: "",
-          system_shortname: "",
-        };
-        this.selectedUsers = []; // เมื่อสร้างระบบเสร็จแล้ว ล้างข้อมูลผู้ใช้ที่ถูกเลือก
-        this.fetchSystems(); // โหลดข้อมูลระบบใหม่
-      } catch (error) {
-        console.error("Error creating System:", error);
-        await Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: error.message || "Failed to create System",
-        });
-      }
-    },
-
     async goToSystemsDetail(systemId) {
       // Navigate to the Systems/_id.vue page with the systemId parameter
       await this.$router.push({ path: `/systems/${systemId}` });
@@ -505,15 +502,11 @@ export default {
     async fetchProjectNameENG() {
       try {
         const projectId = this.$route.params.id;
-        const response = await fetch(
+        const response = await this.$axios.$get(
           `http://localhost:7777/projects/getOne/${projectId}`
         );
-        if (!response.ok) {
-          throw new Error("Failed to fetch project");
-        }
-        const projectData = await response.json();
-        console.log(projectData); // ตรวจสอบข้อมูลที่ได้รับมา
-        this.projectNameENG = projectData.project_name_ENG; // ใส่ชื่อ field ที่ต้องการแสดง
+        this.project = response;
+        this.projectNameENG = response.project_name_ENG;
       } catch (error) {
         console.error("Error fetching project:", error);
         // Handle error fetching project
@@ -562,8 +555,8 @@ export default {
             "success"
           );
 
-          // เพิ่มบรรทัดนี้เพื่ออัพเดทตารางอัตโนมัติ
-          this.fetchDeletedSystems();
+          // Add this line to update the table automatically
+          this.fetchSystems();
         }
       } catch (error) {
         console.error("Error restoring system:", error);
@@ -574,25 +567,6 @@ export default {
         );
       }
     },
-
-    async mounted() {
-      try {
-        const projectId = this.$route.params.id;
-        const response = await fetch(
-          `http://localhost:7777/projects/getOne/${projectId}`
-        );
-        if (!response.ok) {
-          throw new Error("Failed to fetch project");
-        }
-        const projectData = await response.json();
-        console.log(projectData); // ตรวจสอบข้อมูลที่ได้รับมา
-        this.projectNameENG = projectData.project_name_ENG; // ใส่ชื่อ field ที่ต้องการแสดง
-      } catch (error) {
-        console.error("Error fetching project:", error);
-        // Handle error fetching project
-      }
-    },
-
     async confirmDeleteHistorySystem(item) {
       try {
         const confirmResult = await Swal.fire({
@@ -645,14 +619,60 @@ export default {
           throw new Error("Failed to fetch deleted systems");
         }
         const deletedSystems = await response.json();
-        console.log(deletedSystems); // ตรวจสอบ deleted systems ที่ได้รับมา
+        console.log(deletedSystems); // Check the received deleted systems
         this.deletedSystems = deletedSystems;
       } catch (error) {
         console.error("Error fetching deleted systems:", error);
         // Handle error fetching deleted systems
       }
     },
+    async createSystem() {
+      const projectId = this.$route.params.id;
+      try {
+        const response = await fetch(
+          `http://localhost:7777/systems/createSystem`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              project_id: projectId,
+              ...this.newSystem,
+              selectedUser: this.selectedUsers, // ส่ง selectedUsers ไปด้วย
+            }),
+          }
+        );
+        if (!response.ok) {
+          throw new Error("Failed to create system");
+        }
 
+        // Clear the form and show success message
+        this.newSystem = {
+          system_id: "",
+          system_nameTH: "",
+          system_nameEN: "",
+          system_shortname: "",
+        };
+        const confirmResult = await Swal.fire({
+          icon: "success",
+          title: "Success",
+          text: "New system and users assigned successfully",
+          showConfirmButton: true,
+          allowOutsideClick: false,
+        });
+        if (confirmResult.isConfirmed) {
+          this.fetchSystems();
+        }
+      } catch (error) {
+        console.error("Error creating system:", error);
+        await Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Failed to create system",
+        });
+      }
+    },
     async updateSystem() {
       try {
         const response = await fetch(
@@ -684,37 +704,7 @@ export default {
         });
       }
     },
-
-    async fetchSystems() {
-      const projectId = this.$route.params.id;
-      try {
-        const response = await fetch(
-          `http://localhost:7777/systems/getAll/${projectId}`
-        );
-        if (!response.ok) {
-          throw new Error("Failed to fetch systems");
-        }
-        const data = await response.json();
-        this.systems = data;
-      } catch (error) {
-        console.error("Error fetching systems:", error);
-      }
-    },
-    async goToCreateSystem() {
-      // Open the create system dialog first
-      this.createSystemDialog = true;
-    },
-    openEditDialog(system) {
-      this.editedSystem = { ...system };
-      this.editSystemDialog = true;
-    },
-    async editSystem(system) {
-      // Set the edited system to the selected system
-      this.editedSystem = { ...system };
-      // Open the edit system dialog
-      this.editSystemDialog = true;
-    },
-    async confirmDeleteSystem(system) {
+    async confirmDeleteSystem(item) {
       try {
         const confirmResult = await Swal.fire({
           title: "Are you sure?",
@@ -724,47 +714,26 @@ export default {
           confirmButtonColor: "#3085d6",
           cancelButtonColor: "#d33",
           confirmButtonText: "Yes, delete it!",
-          showClass: {
-            popup: "animate__animated animate__fadeInDown", // กำหนด animation เมื่อแสดง SweetAlert
-          },
-          hideClass: {
-            popup: "animate__animated animate__fadeOutUp", // กำหนด animation เมื่อซ่อน SweetAlert
-          },
         });
         if (confirmResult.isConfirmed) {
-          // If user confirms deletion, call deleteSystem method
-          await this.deleteSystem(system);
-          // อัพเดทข้อมูลโดยอัตโนมัติหลังจากลบข้อมูล
+          const response = await fetch(
+            `http://localhost:7777/systems/delete/${item.id}`,
+            {
+              method: "DELETE",
+            }
+          );
+          if (!response.ok) {
+            throw new Error("Failed to delete system");
+          }
+          await Swal.fire({
+            icon: "success",
+            title: "Success",
+            text: "System deleted successfully",
+          });
           this.fetchSystems();
         }
       } catch (error) {
         console.error("Error confirming delete system:", error);
-      }
-    },
-
-    async deleteSystem(system) {
-      const systemId = system.id;
-      try {
-        // Send a DELETE request to the API to delete the system
-        const response = await fetch(
-          `http://localhost:7777/systems/delete/${systemId}`,
-          {
-            method: "DELETE",
-          }
-        );
-        if (!response.ok) {
-          throw new Error("Failed to delete system");
-        }
-        // If deletion is successful, show success message and update systems data
-        await Swal.fire({
-          icon: "success",
-          title: "Success",
-          text: "System deleted successfully",
-        });
-        this.fetchDeletedSystems(); // Refresh the deleted systems data
-      } catch (error) {
-        console.error("Error deleting system:", error);
-        // If an error occurs during deletion, show error message
         await Swal.fire({
           icon: "error",
           title: "Error",
@@ -772,99 +741,69 @@ export default {
         });
       }
     },
+    async openEditDialog(item) {
+      this.editedSystem = { ...item };
+      this.editSystemDialog = true;
+    },
+    async fetchSystems() {
+      try {
+        const projectId = this.$route.params.id;
+        const response = await fetch(
+          `http://localhost:7777/systems/searchByProjectId/${projectId}`
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch systems");
+        }
+        const systems = await response.json();
+        this.systems = systems;
+      } catch (error) {
+        console.error("Error fetching systems:", error);
+        // Handle error fetching systems
+      }
+    },
+    filterSystems() {
+      const query = this.searchQuery.toLowerCase();
+      return this.systems.filter(
+        (system) =>
+          system.system_id.toLowerCase().includes(query) ||
+          system.system_nameTH.toLowerCase().includes(query) ||
+          system.system_nameEN.toLowerCase().includes(query) ||
+          system.system_shortname.toLowerCase().includes(query)
+      );
+    },
   },
   computed: {
-    // userOptions() {
-    //   // แปลงข้อมูลผู้ใช้ให้อยู่ในรูปแบบที่ v-select ต้องการ
-    //   return this.selectedUsers.map((user) => ({ text: user.name, value: user.id }));
-    // },
-
-    filteredUserProjects() {
-      return this.userProjects.filter((item) => {
-        return (
-          item.id
-            .toString()
-            .toLowerCase()
-            .includes(this.search.toLowerCase()) ||
-          item.user_firstname
-            .toLowerCase()
-            .includes(this.search.toLowerCase()) ||
-          item.user_lastname
-            .toLowerCase()
-            .includes(this.search.toLowerCase()) ||
-          item.user_position.toLowerCase().includes(this.search.toLowerCase())
-        );
-      });
-    },
-
-    filteredUserSystems() {
-      return this.userSystems.filter((item) => {
-        return (
-          item.id
-            .toString()
-            .toLowerCase()
-            .includes(this.search.toLowerCase()) ||
-          item.user_firstname
-            .toLowerCase()
-            .includes(this.search.toLowerCase()) ||
-          item.user_lastname
-            .toLowerCase()
-            .includes(this.search.toLowerCase()) ||
-          item.user_position.toLowerCase().includes(this.search.toLowerCase())
-        );
-      });
-    },
     filteredSystems() {
-      return this.systems.filter((system) => {
-        const searchText = this.searchQuery.toLowerCase();
-        return (
-          system.system_id.toLowerCase().includes(searchText) ||
-          system.system_nameTH.toLowerCase().includes(searchText) ||
-          system.system_nameEN.toLowerCase().includes(searchText) ||
-          system.system_shortname.toLowerCase().includes(searchText)
-        );
-      });
-    },
-
-    filteredProjects() {
-      return this.projects
-        .map((project) => ({
-          ...project,
-          project_progress: project.project_progress || 0,
-          project_plan_start: project.project_plan_start || "Not determined",
-          project_plan_end: project.project_plan_end || "Not determined",
-        }))
-        .filter((project) => {
-          const searchText = this.searchQuery.toLowerCase();
-          return (
-            (project.project_id &&
-              project.project_id.toLowerCase().includes(searchText)) ||
-            (project.project_name_ENG &&
-              project.project_name_ENG.toLowerCase().includes(searchText)) ||
-            (project.project_name_TH &&
-              project.project_name_TH.toLowerCase().includes(searchText))
-          );
-        });
+      return this.filterSystems();
     },
   },
-
-  mounted() {
-    // ตรวจสอบว่ามี project_id ก่อนที่จะเรียกใช้ fetchAvailableUsers
-    if (this.project_id) {
-      this.fetchAvailableUsers(this.project_id);
-    }
-    const projectId = this.$route.params.id; // ดึง project id จากพารามิเตอร์ URL
-    this.fetchUserProjectsByProjectId(projectId); // เรียกใช้เมื่อคอมโพเนนต์โหลด
-    // console.log(this.userProjects)
-
-    // this.fetchUserProjects(this.project_id);
-    this.project_id = this.$route.params.id;
-    this.fetchSystems();
+  watch: {
+    $route(to, from) {
+      this.fetchProjectNameENG();
+      this.fetchProjectUsers();
+      this.fetchSystems();
+    },
+  },
+  created() {
     this.fetchProjectNameENG();
+    this.fetchProjectUsers();
+    this.fetchSystems();
   },
 };
 </script>
 
+
 <style scoped>
-/* Add your scoped styles here */
+.v-data-table > .v-data-footer {
+  padding-top: 0;
+}
+
+.systems-data-table .v-progress-linear__background {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.custom-btn {
+  width: 100%;
+  height: 50%;
+}
 </style>

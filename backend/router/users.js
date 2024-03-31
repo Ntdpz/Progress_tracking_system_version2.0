@@ -177,4 +177,27 @@ router.post("/login", async (req, res) => { // เข้าสู่ระบบ
     return res.status(500).json({ message: "Server error" }); // ส่งรหัสสถานะ 500 (Internal Server Error) พร้อมกับข้อความแสดงข้อผิดพลาดกลับไปยัง client
   }
 });
+
+// Define API endpoint to get users by position and project
+router.get("/getUserByPositionAndProject", async (req, res) => {
+    const { user_position, project_id } = req.query;
+
+    try {
+        // Query database to get users by position and project
+        connection.query(
+            "SELECT * FROM users WHERE user_position = ? AND project_id = ?",
+            [user_position, project_id],
+            (err, results, fields) => {
+                if (err) {
+                    console.log(err);
+                    return res.status(500).send();
+                }
+                res.status(200).json(results);
+            }
+        );
+    } catch (err) {
+        console.log(err);
+        return res.status(500).send();
+    }
+});
 module.exports = router;
