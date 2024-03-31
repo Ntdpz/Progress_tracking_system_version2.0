@@ -42,7 +42,7 @@ router.get("/getAll", async (req, res) => {
       }
 
       // Filter out deleted projects
-      const filteredResults = results.filter(project => !project.is_deleted);
+      const filteredResults = results.filter((project) => !project.is_deleted);
 
       // Update project data in the database
       for (const project of filteredResults) {
@@ -84,11 +84,11 @@ router.get("/getOne/:id", async (req, res) => {
           return res.status(400).send();
         }
         if (results.length === 0) {
-          return res.status(404).json({ error: 'Project not found' });
+          return res.status(404).json({ error: "Project not found" });
         }
         // Check if project is deleted
         if (results[0].is_deleted) {
-          return res.status(404).json({ error: 'Project not found' });
+          return res.status(404).json({ error: "Project not found" });
         }
         // Update project data in the database
         const updatedProject = await updateProject(results[0]);
@@ -102,7 +102,7 @@ router.get("/getOne/:id", async (req, res) => {
 });
 
 // Route to fetch deleted projects
-router.get('/getHistoryProject', async (req, res) => {
+router.get("/getHistoryProject", async (req, res) => {
   try {
     // Query to fetch projects that are marked as deleted
     const query = `
@@ -139,12 +139,25 @@ async function updateProject(project) {
       WHERE id = ?
     `;
 
-    const { project_progress, system_count, project_plan_start, project_plan_end, project_manday } = project;
+    const {
+      project_progress,
+      system_count,
+      project_plan_start,
+      project_plan_end,
+      project_manday,
+    } = project;
 
     await new Promise((resolve, reject) => {
       connection.query(
         updateQuery,
-        [project_progress, system_count, project_plan_start, project_plan_end, project_manday, project.id],
+        [
+          project_progress,
+          system_count,
+          project_plan_start,
+          project_plan_end,
+          project_manday,
+          project.id,
+        ],
         (err, result) => {
           if (err) reject(err);
           resolve(project);
@@ -159,38 +172,72 @@ async function updateProject(project) {
 }
 
 router.post("/createProject", async (req, res) => {
-  const { project_id, project_name_TH, project_name_ENG, selectedSA, selectedDEV, selectedIMP } = req.body;
+  const {
+    project_id,
+    project_name_TH,
+    project_name_ENG,
+    selectedSA,
+    selectedDEV,
+    selectedIMP,
+  } = req.body;
 
   const id = generateId(); // Generate ID using generateId() function
 
   try {
     connection.query(
       "INSERT INTO projects (id, project_id, project_name_TH, project_name_ENG, project_shortname, project_agency, project_progress, project_manday, system_count, project_plan_start, project_plan_end, is_deleted) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-      [id, project_id, project_name_TH, project_name_ENG, "", 0, 0, 0, 0, null, null, false],
+      [
+        id,
+        project_id,
+        project_name_TH,
+        project_name_ENG,
+        "",
+        0,
+        0,
+        0,
+        0,
+        null,
+        null,
+        false,
+      ],
       (err, results, fields) => {
         if (err) {
-          console.error("Error while inserting a project into the database", err);
+          console.error(
+            "Error while inserting a project into the database",
+            err
+          );
           return res.status(400).send();
         }
 
         // Create user_project relations if TeamMembers are provided
         if (selectedSA || selectedDEV || selectedIMP) {
-          const users = [...(selectedSA || []), ...(selectedDEV || []), ...(selectedIMP || [])];
-          const userProjectValues = users.map(user_id => [user_id, id]);
+          const users = [
+            ...(selectedSA || []),
+            ...(selectedDEV || []),
+            ...(selectedIMP || []),
+          ];
+          const userProjectValues = users.map((user_id) => [user_id, id]);
 
           connection.query(
             "INSERT INTO user_projects (user_id, project_id) VALUES ?",
             [userProjectValues],
             (error, results, fields) => {
               if (error) {
-                console.error("Error while inserting users into the project", error);
+                console.error(
+                  "Error while inserting users into the project",
+                  error
+                );
                 return res.status(400).send();
               }
-              return res.status(201).json({ message: "New project successfully created!" });
+              return res
+                .status(201)
+                .json({ message: "New project successfully created!" });
             }
           );
         } else {
-          return res.status(201).json({ message: "New project successfully created!" });
+          return res
+            .status(201)
+            .json({ message: "New project successfully created!" });
         }
       }
     );
@@ -200,12 +247,11 @@ router.post("/createProject", async (req, res) => {
   }
 });
 
-
-
 // Route to update project
 router.put("/updateProject/:id", async (req, res) => {
   const id = req.params.id;
-  const { project_id, project_name_TH, project_name_ENG, is_deleted } = req.body;
+  const { project_id, project_name_TH, project_name_ENG, is_deleted } =
+    req.body;
 
   try {
     const previousProjectData = await new Promise((resolve, reject) => {
@@ -219,7 +265,12 @@ router.put("/updateProject/:id", async (req, res) => {
       );
     });
 
-    if (!project_id && !project_name_TH && !project_name_ENG && is_deleted === undefined) {
+    if (
+      !project_id &&
+      !project_name_TH &&
+      !project_name_ENG &&
+      is_deleted === undefined
+    ) {
       return res.status(200).json(previousProjectData);
     }
 
@@ -227,8 +278,12 @@ router.put("/updateProject/:id", async (req, res) => {
       "UPDATE projects SET project_id = ?, project_name_TH = ?, project_name_ENG = ?, is_deleted = ? WHERE id = ?",
       [
         project_id || req.body.project_id || previousProjectData.project_id,
-        project_name_TH || req.body.project_name_TH || previousProjectData.project_name_TH,
-        project_name_ENG || req.body.project_name_ENG || previousProjectData.project_name_ENG,
+        project_name_TH ||
+          req.body.project_name_TH ||
+          previousProjectData.project_name_TH,
+        project_name_ENG ||
+          req.body.project_name_ENG ||
+          previousProjectData.project_name_ENG,
         is_deleted !== undefined ? is_deleted : previousProjectData.is_deleted,
         id,
       ],
@@ -237,7 +292,9 @@ router.put("/updateProject/:id", async (req, res) => {
           console.error(err);
           return res.status(400).send();
         }
-        return res.status(200).json({ message: "Project updated successfully!" });
+        return res
+          .status(200)
+          .json({ message: "Project updated successfully!" });
       }
     );
   } catch (err) {
@@ -245,7 +302,6 @@ router.put("/updateProject/:id", async (req, res) => {
     return res.status(500).send();
   }
 });
-
 
 // Route to soft delete a project
 router.delete("/delete/:id", async (req, res) => {
@@ -263,7 +319,9 @@ router.delete("/delete/:id", async (req, res) => {
         if (results.affectedRows === 0) {
           return res.status(404).json({ message: "No project with that id!" });
         }
-        return res.status(200).json({ message: "Project deleted successfully!" });
+        return res
+          .status(200)
+          .json({ message: "Project deleted successfully!" });
       }
     );
   } catch (err) {
@@ -276,79 +334,21 @@ router.delete("/deleteHistoryProject/:id", async (req, res) => {
   const id = req.params.id;
 
   try {
-    // Delete tasks related to screens with the given project_id
+    // Execute the delete history project trigger
     connection.query(
       `
-      DELETE FROM tasks
-      WHERE screen_id IN (SELECT id FROM screens WHERE project_id = ?)
+      DELETE FROM projects
+      WHERE id = ?
       `,
       [id],
-      async (err, results, fields) => {
+      (err, results, fields) => {
         if (err) {
           console.error(err);
           return res.status(500).send();
         }
-
-        // Now, delete screens related to the project_id
-        connection.query(
-          `
-          DELETE FROM screens
-          WHERE project_id = ?
-          `,
-          [id],
-          async (err, results, fields) => {
-            if (err) {
-              console.error(err);
-              return res.status(500).send();
-            }
-
-            // Now, delete systems related to the project_id
-            connection.query(
-              `
-              DELETE FROM systems
-              WHERE project_id = ?
-              `,
-              [id],
-              async (err, results, fields) => {
-                if (err) {
-                  console.error(err);
-                  return res.status(500).send();
-                }
-
-                // Now, delete user_projects related to the project_id
-                connection.query(
-                  `
-                  DELETE FROM user_projects
-                  WHERE project_id = ?
-                  `,
-                  [id],
-                  async (err, results, fields) => {
-                    if (err) {
-                      console.error(err);
-                      return res.status(500).send();
-                    }
-
-                    // Now, delete the project itself
-                    connection.query(
-                      `
-                      DELETE FROM projects
-                      WHERE id = ?
-                      `,
-                      [id],
-                      (err, results, fields) => {
-                        if (err) {
-                          console.error(err);
-                          return res.status(500).send();
-                        }
-                        return res.status(200).json({ message: "Project and related data deleted successfully!" });
-                      }
-                    );
-                  }
-                );
-              }
-            );
-          }
-        );
+        return res
+          .status(200)
+          .json({ message: "Project and related data deleted successfully!" });
       }
     );
   } catch (err) {
@@ -356,7 +356,6 @@ router.delete("/deleteHistoryProject/:id", async (req, res) => {
     return res.status(500).send();
   }
 });
-
 
 // Route to add user-project mappings
 router.post("/addUserProject", async (req, res) => {
