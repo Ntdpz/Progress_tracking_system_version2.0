@@ -317,11 +317,9 @@
           ></v-select>
         </v-card-text>
         <v-card-actions>
-          <v-btn color="blue darken-1" text @click="closeNestedDialog"
-            >Cancel</v-btn
-          >
           <!-- Button to assign selected users -->
-          <v-btn color="blue darken-1" text @click="assignUserAF">Assign</v-btn>
+          <v-btn color="primary" @click="assignUserAF">Assign</v-btn>
+          <v-btn color="error" @click="closeNestedDialog">Cancel</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -490,6 +488,8 @@ export default {
           console.log(response.data.message);
           // อัปเดตตารางผู้ใช้หลังจากลบผู้ใช้เสร็จสิ้น
           this.fetchAvailableUsers(project_id);
+          this.fetchTeamMembers();
+          this.dialogUserProjects = false;
         } else {
           // Handle error
           await Swal.fire({
@@ -576,6 +576,7 @@ export default {
         this.fetchAvailableUsers(project_id);
         // ปิด Dialog หลังจากกำหนดผู้ใช้เสร็จสิ้น
         this.dialogAssignUser = false;
+        this.dialogUserProjects = false;
       } catch (error) {
         await Swal.fire({
           icon: "error",
