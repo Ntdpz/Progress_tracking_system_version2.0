@@ -145,7 +145,7 @@
             ></v-select>
 
             <v-btn type="submit">Create</v-btn>
-            <v-btn @click="createSystemDialog = false">Cancel</v-btn>
+            <v-btn @click="closeCreateSystemDialog">Cancel</v-btn>
           </v-form>
         </v-card-text>
       </v-card>
@@ -229,9 +229,9 @@
                 <td>{{ item.user_firstname }}</td>
                 <td>{{ item.user_lastname }}</td>
                 <td>{{ item.user_position }}</td>
-                <td>
+                <!-- <td>
                   <v-img :src="item.user_pic" height="50" contain></v-img>
-                </td>
+                </td> -->
                 <td>
                   <!-- Add trash icon here -->
                   <v-icon
@@ -304,7 +304,7 @@
           ></v-select>
         </v-card-text>
         <v-card-actions>
-          <v-btn color="blue darken-1" text @click="assinguserDalog = false"
+          <v-btn color="blue darken-1" text @click="closeAssignUserDialog"
             >Close</v-btn
           >
           <v-btn color="blue darken-1" text @click="assignUser">Assign</v-btn>
@@ -335,7 +335,7 @@ export default {
         { text: "First Name", value: "user_firstname" },
         { text: "Last Name", value: "user_lastname" },
         { text: "Position", value: "user_position" },
-        { text: "Picture", value: "user_pic" },
+        // { text: "Picture", value: "user_pic" },
       ],
       search: "",
       manageUserDialog: false,
@@ -403,12 +403,19 @@ export default {
         );
         console.log(response.data.message); // พิมพ์ข้อความจากการสร้างผู้ใช้ระบบใหม่
         // ปิด Dialog หลังจากที่สร้างผู้ใช้ระบบเรียบร้อย
-        this.assinguserDalog = false;
+        this.closeAssignUserDialog();
         // สามารถดำเนินการอื่นๆ ตามต้องการ เช่น รีเฟรชรายการผู้ใช้หรืออื่นๆ
       } catch (error) {
         console.error("Error assigning user:", error);
         // จัดการข้อผิดพลาดหากมีปัญหาในการสร้างผู้ใช้ระบบ
+        // ปิด Dialog และเคลียร์ข้อมูลที่เลือกใน v-select ในกรณีที่มีข้อผิดพลาด
+        this.closeAssignUserDialog();
       }
+    },
+
+    async closeAssignUserDialog() {
+      this.selectedUsers = []; // เคลียร์ข้อมูลที่เลือกใน v-select
+      this.assinguserDalog = false;
     },
 
     async fetchUsersBySystemAndProject(systemId, projectId) {
@@ -448,6 +455,8 @@ export default {
         this.assinguserDalog = true;
       } catch (error) {
         console.error(error);
+        // ปิด Dialog และเคลียร์ข้อมูลที่เลือกใน v-select ในกรณีที่มีข้อผิดพลาด
+         
       }
     },
 
@@ -654,6 +663,8 @@ export default {
           system_nameEN: "",
           system_shortname: "",
         };
+        this.selectedUsers = []; // เคลียร์ selectedUsers
+
         const confirmResult = await Swal.fire({
           icon: "success",
           title: "Success",
@@ -663,6 +674,7 @@ export default {
         });
         if (confirmResult.isConfirmed) {
           this.fetchSystems();
+          this.createSystemDialog = false; // เมื่อปิด dialog ให้เคลียร์ค่า createSystemDialog เพื่อปิด dialog
         }
       } catch (error) {
         console.error("Error creating system:", error);
@@ -673,6 +685,22 @@ export default {
         });
       }
     },
+    async closeCreateSystemDialog() {
+    // เปลี่ยนค่า createSystemDialog เป็น false เพื่อปิด dialog
+    this.createSystemDialog = false;
+
+    // เคลียร์ค่าข้อมูลในฟิลด์ทั้งหมดใน newSystem
+    this.newSystem = {
+      system_id: "",
+      system_nameTH: "",
+      system_nameEN: "",
+      system_shortname: "",
+    };
+
+    // เคลียร์ค่าข้อมูลใน selectedUsers
+    this.selectedUsers = [];
+  },
+
     async updateSystem() {
       try {
         const response = await fetch(
