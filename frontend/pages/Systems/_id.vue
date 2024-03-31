@@ -215,7 +215,7 @@ export default {
         { text: "Screen Level", value: "screen_level" },
         { text: "Actions", value: "actions", sortable: false },
       ],
-
+      
       watch: {
         // Watch for changes in the selected screen ID and fetch details accordingly
         selectedScreenId: "fetchScreenDetails",
@@ -357,6 +357,8 @@ export default {
 
         if (confirmResult.isConfirmed) {
           const screenId = item.id;
+          console.log("Restoring screen with ID:", screenId);
+
           const response = await fetch(
             `http://localhost:7777/screens/updateScreen/${screenId}`,
             {
@@ -365,15 +367,14 @@ export default {
                 "Content-Type": "application/json",
               },
               body: JSON.stringify({
-                screenId: screenId,
-                screen_id: item.screen_id,
+                screenId: item.screen_id, 
                 screen_name: item.screen_name,
                 screen_plan_start: item.screen_plan_start,
                 screen_plan_end: item.screen_plan_end,
                 screen_manday: item.screen_manday,
                 screen_level: item.screen_level,
                 screen_pic: item.screen_pic,
-                is_deleted: 0, // Update is_deleted to 0 for restoration
+                is_deleted: 0,
               }),
             }
           );
@@ -395,11 +396,11 @@ export default {
             "success"
           );
 
-          // Assuming you emit an event to handle the restoration in the parent component
           this.$emit("restore-screen", item);
         }
       } catch (error) {
         console.error("Error restoring screen:", error);
+
         await Swal.fire(
           "Error",
           "An error occurred during the screen restoration process.",
