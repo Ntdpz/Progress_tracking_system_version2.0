@@ -3,115 +3,59 @@
     <!-- Search bar -->
     <v-row no-gutters>
       <v-col cols="12">
-        <input
-          type="text"
-          v-model="searchQuery"
-          placeholder="Search..."
-          style="
+        <input type="text" v-model="searchQuery" placeholder="Search..." style="
             margin-bottom: 10px;
             width: 100%;
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
             font-size: 16px;
-          "
-        />
+          " />
       </v-col>
     </v-row>
 
     <!--data table -->
-    <v-data-table
-      :headers="headers"
-      :items="filteredScreens"
-      :items-per-page="5"
-      class="elevation-1"
-    >
+    <v-data-table :headers="headers" :items="filteredScreens" :items-per-page="5" class="elevation-1">
       <template v-slot:top>
         <v-toolbar flat>
-          <v-toolbar-title
-            >Screen Management - System : {{ systemNameENG }}</v-toolbar-title
-          >
+          <v-toolbar-title>Screen Management - System : {{ systemNameENG }}</v-toolbar-title>
           <v-divider class="mx-4" inset vertical></v-divider>
           <v-spacer></v-spacer>
-          <v-btn color="primary" dark @click="goToCreateScreen"
-            >New Screen</v-btn
-          >
-          <v-btn
-            color="primary"
-            dark
-            @click="goToHistoryScreens"
-            style="margin-left: 10px"
-            >Show History Screen</v-btn
-          >
+          <v-btn color="primary" dark @click="goToCreateScreen">New Screen</v-btn>
+          <v-btn color="primary" dark @click="goToHistoryScreens" style="margin-left: 10px">Show History Screen</v-btn>
           <!-- <v-btn color="primary" dark @click="goToHistoryScreen"
             >Show HistoryScreen</v-btn> -->
         </v-toolbar>
 
         <!-- Create Screen Dialog -->
-        <v-dialog
-          v-model="createScreenDialog"
-          max-width="600"
-          ref="createScreenDialog"
-        >
+        <v-dialog v-model="createScreenDialog" max-width="600" ref="createScreenDialog">
           <v-card>
             <v-card-title>Create New Screen</v-card-title>
             <v-card-text>
               <!-- Form to create a new screen -->
               <v-form>
-                <v-text-field
-                  v-model="newScreen.screen_id"
-                  label="Screen ID"
-                ></v-text-field>
-                <v-text-field
-                  v-model="newScreen.screen_name"
-                  label="Screen Name"
-                ></v-text-field>
-                <v-text-field
-                  v-model="newScreen.screen_plan_start"
-                  label="Plant Start"
-                  type="date"
-                ></v-text-field>
-                <v-text-field
-                  v-model="newScreen.screen_plan_end"
-                  label="Plant End"
-                  type="date"
-                ></v-text-field>
-                <v-text-field
-                  v-model="newScreen.screen_manday"
-                  label="Manday"
-                  type="float"
-                ></v-text-field>
-                <v-select
-                  v-model="newScreen.screen_level"
-                  label="Screen Level"
-                  :items="[
-                    'Very Difficult',
-                    'Hard',
-                    'Moderate',
-                    'Easy',
-                    'Simple',
-                  ]"
-                ></v-select>
+                <v-text-field v-model="newScreen.screen_id" label="Screen ID"></v-text-field>
+                <v-text-field v-model="newScreen.screen_name" label="Screen Name"></v-text-field>
+                <v-text-field v-model="newScreen.screen_plan_start" label="Plant Start" type="date"></v-text-field>
+                <v-text-field v-model="newScreen.screen_plan_end" label="Plant End" type="date"></v-text-field>
+                <v-text-field v-model="newScreen.screen_manday" label="Manday" type="float"></v-text-field>
+                <v-select v-model="newScreen.screen_level" label="Screen Level" :items="[
+          'Very Difficult',
+          'Hard',
+          'Moderate',
+          'Easy',
+          'Simple',
+        ]"></v-select>
 
                 <!-- File input for photo -->
-                <v-file-input
-                  :rules="rules"
-                  accept="image/png, image/jpeg, image/bmp"
-                  label="Photo"
-                  placeholder="Pick an photo"
-                  prepend-icon="mdi-camera"
-                  v-model="newScreen.photo"
-                >
+                <v-file-input :rules="rules" accept="image/png, image/jpeg, image/bmp" label="New Picture"
+                  placeholder="Select a picture" prepend-icon="mdi-camera" v-model="newScreen.photo">
                 </v-file-input>
 
-                <v-btn
-                  type="submit"
-                  @click="
-                    createScreenDialog = false;
-                    createScreen();
-                  "
-                  >Create</v-btn
-                >
+                <v-btn type="submit" @click="
+          createScreenDialog = false;
+        createScreen();
+        ">Create</v-btn>
                 <v-btn @click="createScreenDialog = false">Cancel</v-btn>
               </v-form>
             </v-card-text>
@@ -119,55 +63,30 @@
         </v-dialog>
 
         <!-- Edit Screen Dialog -->
-        <v-dialog
-          v-model="editScreenDialog"
-          max-width="600"
-          ref="editScreenDialog"
-        >
+        <v-dialog v-model="editScreenDialog" max-width="600" ref="editScreenDialog">
           <v-card>
             <v-card-title>Edit Screen</v-card-title>
             <v-card-text>
               <!-- Form to edit screen -->
               <v-form @submit.prevent="updateScreen">
-                <v-text-field
-                  v-model="editScreen.screen_id"
-                  label="Screen ID"
-                  readonly
-                ></v-text-field>
-                <v-text-field
-                  v-model="editScreen.screen_name"
-                  label="Screen Name"
-                ></v-text-field>
-                <v-select
-                  v-model="editScreen.screen_level"
-                  label="Screen Level"
-                  :items="[
-                    'Very Difficult',
-                    'Hard',
-                    'Moderate',
-                    'Easy',
-                    'Simple',
-                  ]"
-                ></v-select>
+                <v-text-field v-model="editScreen.screen_id" label="Screen ID" readonly></v-text-field>
+                <v-text-field v-model="editScreen.screen_name" label="Screen Name"></v-text-field>
+                <v-select v-model="editScreen.screen_level" label="Screen Level" :items="[
+          'Very Difficult',
+          'Hard',
+          'Moderate',
+          'Easy',
+          'Simple',
+        ]"></v-select>
+                <v-text-field v-model="editScreen.screen_pic" label="Screen Picture" readonly></v-text-field>
 
                 <!-- File input for photo -->
-                <v-file-input
-                  :rules="rules"
-                  accept="image/png, image/jpeg, image/bmp"
-                  label="Photo"
-                  placeholder="Pick a photo"
-                  prepend-icon="mdi-camera"
-                  v-model="editScreen.photo"
-                >
+                <v-file-input :rules="rules" accept="image/png, image/jpeg, image/bmp" label="New Picture"
+                  placeholder="Select a picture" prepend-icon="mdi-camera" v-model="editScreen.photo">
                 </v-file-input>
 
                 <!-- Display current photo -->
-                <v-img
-                  v-if="editScreen.photo"
-                  :src="editScreen.photo"
-                  height="100"
-                  contain
-                ></v-img>
+                <v-img v-if="editScreen.photo" :src="editScreen.photo" height="100" contain></v-img>
 
                 <v-btn type="submit" @click="updateScreen">Update</v-btn>
                 <v-btn @click="editScreenDialog = false">Cancel</v-btn>
@@ -178,8 +97,27 @@
 
         <v-dialog v-model="showHistoryDialog" max-width="800">
           <v-data-table :headers="headers" :items="deletedScreens">
-            <!-- Define headers for the table -->
-
+            <!-- Data Rows -->
+            <template v-slot:item="{ item }">
+              <tr>
+                <td>{{ item.screen_id }}</td>
+                <td>{{ item.screen_name }}</td>
+                <td>{{ item.screen_task_count }}</td>
+                <td>{{ formattedScreensPlanStart(item.screen_plan_start) }}</td>
+                <td>{{ formattedScreenPlanEnd(item.screen_plan_end) }}</td>
+                <td>{{ item.screen_man_day }}</td>
+                <td>{{ item.screen_level }}</td>
+                <td class="actions-column">
+                  <!-- Define actions for each row -->
+                  <v-btn color="primary" @click="restoreScreen(item)">
+                    Restore
+                  </v-btn>
+                  <v-btn color="error" @click="confirmDeleteHistoryScreen(item)">
+                    Delete
+                  </v-btn>
+                </td>
+              </tr>
+            </template>
             <template v-slot:top>
               <v-toolbar flat>
                 <v-toolbar-title>Deleted Screens History</v-toolbar-title>
@@ -187,18 +125,9 @@
                 <v-spacer></v-spacer>
               </v-toolbar>
             </template>
-
-            <!-- Define actions for each row -->
-            <template v-slot:item.actions="{ item }">
-              <v-btn color="primary" @click="restoreScreen(item)">
-                Restore
-              </v-btn>
-              <v-btn color="error" @click="confirmDeleteHistoryScreen(item)">
-                Delete
-              </v-btn>
-            </template>
           </v-data-table>
         </v-dialog>
+
       </template>
 
       <!-- Data Rows -->
@@ -206,7 +135,6 @@
         <tr>
           <td>{{ item.screen_id }}</td>
           <td>{{ item.screen_name }}</td>
-          <!-- <td>{{ item.screen_type }}</td> -->
           <td>{{ item.screen_task_count }}</td>
           <td>{{ formattedScreensPlanStart(item.screen_plan_start) }}</td>
           <td>{{ formattedScreenPlanEnd(item.screen_plan_end) }}</td>
@@ -215,15 +143,9 @@
           <!-- <td>{{ item.screen_progress }}</td> -->
           <td>
             <!-- Actions -->
-            <v-icon class="me-2" size="20" px @click="openEditDialog(item)"
-              >mdi-pencil-circle</v-icon
-            >
-            <v-icon size="20" px @click="confirmDeleteScreen(item)"
-              >mdi-delete-empty</v-icon
-            >
-            <v-btn @click="goToScreensDetail(item.id)" style="margin-left: 10px"
-              >Tasks</v-btn
-            >
+            <v-icon class="me-2" size="20" px @click="openEditDialog(item)">mdi-pencil-circle</v-icon>
+            <v-icon size="20" px @click="confirmDeleteScreen(item)">mdi-delete-empty</v-icon>
+            <v-btn @click="goToScreensDetail(item.id)" style="margin-left: 10px">Tasks</v-btn>
           </td>
         </tr>
       </template>
@@ -259,6 +181,7 @@ export default {
       editScreenDialog: false,
       formattedPlanStart: "",
       formattedPlanEnd: "",
+      photo: null,
       newScreen: {
         screen_id: "",
         screen_name: "",
@@ -266,6 +189,7 @@ export default {
         screen_type: "",
         screen_level: "",
         screen_pic: "",
+        photo: null,
         screen_plan_start: "",
         screen_plan_end: "",
       },
@@ -274,6 +198,7 @@ export default {
         screen_name: "",
         screen_type: "",
         screen_level: "",
+        photo: null,
       },
       screens: [],
       searchQuery: "", // Search query for filtering systems
@@ -300,7 +225,7 @@ export default {
         { text: "Screen Level", value: "screen_level" },
         { text: "Actions", value: "actions", sortable: false },
       ],
-
+      
       watch: {
         // Watch for changes in the selected screen ID and fetch details accordingly
         selectedScreenId: "fetchScreenDetails",
@@ -314,6 +239,7 @@ export default {
     this.fetchSystemNameENG();
   },
   methods: {
+    
     async checkUsers() {
       try {
         const systemId = this.$route.params.id;
@@ -351,6 +277,7 @@ export default {
         console.error("Error fetching user systems:", error);
       }
     },
+    
     async createScreen() {
       const systemId = this.$route.params.id;
 
@@ -383,6 +310,7 @@ export default {
           screen_plan_start: this.newScreen.screen_plan_start || null, // Use null if empty
           screen_plan_end: this.newScreen.screen_plan_end || null, // Use null if empty
           project_id: projectId, // Use the fetched project_id
+          photo: this.newScreen.photo, // New photo data
         };
 
         // Make the request to create a new screen
@@ -439,6 +367,8 @@ export default {
 
         if (confirmResult.isConfirmed) {
           const screenId = item.id;
+          console.log("Restoring screen with ID:", screenId);
+
           const response = await fetch(
             `http://localhost:7777/screens/updateScreen/${screenId}`,
             {
@@ -447,15 +377,14 @@ export default {
                 "Content-Type": "application/json",
               },
               body: JSON.stringify({
-                screenId: screenId,
-                screen_id: item.screen_id,
+                screenId: item.screen_id, 
                 screen_name: item.screen_name,
                 screen_plan_start: item.screen_plan_start,
                 screen_plan_end: item.screen_plan_end,
                 screen_manday: item.screen_manday,
                 screen_level: item.screen_level,
                 screen_pic: item.screen_pic,
-                is_deleted: 0, // Update is_deleted to 0 for restoration
+                is_deleted: 0,
               }),
             }
           );
@@ -477,11 +406,11 @@ export default {
             "success"
           );
 
-          // Assuming you emit an event to handle the restoration in the parent component
           this.$emit("restore-screen", item);
         }
       } catch (error) {
         console.error("Error restoring screen:", error);
+
         await Swal.fire(
           "Error",
           "An error occurred during the screen restoration process.",
@@ -572,19 +501,29 @@ export default {
         // Handle error fetching Screen
       }
     },
+    
     async goToScreensDetail(screenId) {
       await this.$router.push({ path: `/screens/${screenId}` });
     },
 
     async updateScreen() {
       try {
-
-        // Prepare data to send
+        // Prepare the data to send
         const requestData = {
           screen_id: this.editScreen.screen_id,
           screen_name: this.editScreen.screen_name,
           screen_level: this.editScreen.screen_level,
+          screen_pic: "", // Initialize as an empty string to prepare for base64
+          photo: this.editScreen.photo, // Edit photo data
         };
+
+        // Check if a new image is selected
+        if (this.newScreenPic) {
+          // Convert the image to base64
+          const base64Image = await this.imageToBase64(this.newScreenPic);
+          // Set screen_pic to the base64 of the image
+          requestData.screen_pic = base64Image;
+        }
 
         // Make the request to update the screen
         const response = await fetch(
@@ -606,7 +545,7 @@ export default {
             text: "Screen updated successfully",
           });
           this.editScreenDialog = false;
-          this.fetchScreens(); // Assuming fetchScreens() fetches updated screen data
+          this.fetchScreens(); // Fetch the updated screen data
         } else {
           throw new Error("Failed to update screen");
         }
@@ -626,22 +565,10 @@ export default {
         params: { selectedScreen: screen },
       });
     },
+    
     async goToHistoryScreens() {
-      try {
-        // Fetch deleted screens data
-        await this.fetchDeletedScreens();
-
-        // Show history dialog to display deleted screens
-        this.showHistoryDialog = true;
-      } catch (error) {
-        console.error("Error fetching deleted screens:", error);
-        // Handle error fetching deleted screens
-        await Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: "Failed to fetch deleted screens",
-        });
-      }
+      await this.fetchDeletedScreens();
+      this.showHistoryDialog = true;
     },
 
     async fetchDeletedScreens() {
@@ -673,6 +600,7 @@ export default {
       this.editScreen = { ...screen };
       this.editScreenDialog = true;
     },
+    
     async softDeleteScreen(screen) {
       try {
         const confirmResult = await Swal.fire({
@@ -713,10 +641,12 @@ export default {
         );
       }
     },
+    
     async goToCreateScreen() {
       // Open the create system dialog first
       this.createScreenDialog = true;
     },
+    
     async saveEditedScreen() {
       try {
         const response = await fetch(
@@ -730,6 +660,7 @@ export default {
               screen_id: this.editedScreen.screen_id,
               screen_name: this.editedScreen.screen_name,
               screen_level: this.editedScreen.screen_level,
+              photo: this.editScreen.photo, // Edit photo data
             }),
           }
         );
@@ -884,6 +815,7 @@ export default {
       // Open the edit system dialog
       this.editScreenDialog = true;
     },
+    
     async confirmDeleteScreen(screen) {
       try {
         const confirmResult = await Swal.fire({
@@ -912,6 +844,7 @@ export default {
         console.error("Error confirming delete screen:", error);
       }
     },
+    
     async deleteScreen(screen) {
       const screenId = screen.id;
       try {
@@ -942,6 +875,18 @@ export default {
         });
       }
     },
+
+    async fetchScreenPhoto(screenId) {
+      try {
+        const response = await fetch(`http://localhost:7777/screens/getScreenPhoto/${screenId}`);
+        const data = await response.json();
+        return data.photoUrl; // แปลงให้อยู่ในรูปแบบ URL ของรูปภาพ
+      } catch (error) {
+        console.error('Error fetching screen photo:', error);
+        return null;
+      }
+    },
+
   },
   computed: {
     filteredScreens() {
@@ -982,6 +927,10 @@ export default {
 </script>
 
 <style>
+.actions-column {
+  text-align: left;
+}
+
 /* CSS for the table */
 .system-details {
   overflow-x: auto;
