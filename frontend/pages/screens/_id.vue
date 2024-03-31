@@ -5,16 +5,11 @@
     <!-- Search bar -->
     <v-row no-gutters>
       <v-col cols="12">
-        <input type="text" v-model="searchQuery" placeholder="Search..." style="
-            margin-bottom: 10px;
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 16px;
-          " />
+        <input type="text" v-model="searchQuery" placeholder="Search..." class="search-input" />
       </v-col>
     </v-row>
+
+    <!-- Task list -->
     <div class="task-list">
       <!-- ScreenName and Progress -->
       <div class="topper">
@@ -24,25 +19,22 @@
         <v-btn color="primary" @click="openCreateTaskDialog">Add Task</v-btn>
       </div>
       <v-divider></v-divider>
-      <!-- Display Task in Card -->
+
       <!-- Display Task in Card -->
       <v-row>
         <v-col v-for="(task, index) in filteredTasks" :key="index" cols="12" md="6" lg="4">
-          <TaskCard :task="task" class="task-card" @edit-task="openEditTaskDialog" @delete-task="deleteTask"></TaskCard>
+          <TaskCard :task="task" class="task-card" @edit-task="openEditTaskDialog" @delete-task="deleteTask" />
         </v-col>
       </v-row>
-      <!-- Edit task dialog -->
-      <div>
-        <EditTaskDialog v-model="dialogEditTaskForm" :edited-task="editedTask">
-        </EditTaskDialog>
 
-        <!-- Create task dialog -->
-        <CreateTaskDialog v-model="dialogAddTaskForm" @save-task="handleSaveTask"></CreateTaskDialog>
-      </div>
+      <!-- Edit task dialog -->
+      <EditTaskDialog v-model="dialogEditTaskForm" :edited-task="editedTask" />
+
+      <!-- Create task dialog -->
+      <CreateTaskDialog v-model="dialogAddTaskForm" @save-task="handleSaveTask" />
     </div>
   </div>
 </template>
-
 <script>
 import Swal from "sweetalert2";
 import TaskCard from "../../components/TaskComponent/TaskCard.vue";
@@ -62,7 +54,7 @@ export default {
       dialogAddTaskForm: false,
       dialogEditTaskForm: false,
       dialogUpdateTaskForm: false,
-
+      
       // Task
       editedTask: {},
       ScreenName: "",
@@ -74,8 +66,9 @@ export default {
         task_id: "",
         task_name: "",
         task_manday: "",
-        tasks_detail: "",
+        task_detail: "",
         task_status: "",
+        task_member_id: "",
         task_plan_start: "",
         task_plan_end: "",
       },
@@ -203,7 +196,6 @@ export default {
         task_name: taskData.task_name,
         task_id: taskData.task_id,
         task_manday: taskData.task_manday,
-        person_in_charge: taskData.person_in_charge,
         task_detail: taskData.task_detail,
         task_plan_start: formattedStartDate,
         task_plan_end: formattedEndDate,
@@ -291,6 +283,10 @@ export default {
 </script>
 
 <style scoped>
+.status-filter {
+  margin-bottom: 10px;
+  max-width: 120px;
+}
 .topper {
   display: flex;
   justify-content: space-between;

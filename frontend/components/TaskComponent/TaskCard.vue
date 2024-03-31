@@ -15,7 +15,7 @@
             </div>
             <div>
                 <v-icon>mdi-account</v-icon>
-                <strong>Assignee:</strong> {{ assignee }}
+                <strong>Assignee:</strong> {{ teammemberName }}
             </div>
             <div>
                 <v-icon>mdi-timer-sand</v-icon>
@@ -23,7 +23,7 @@
             </div>
         </v-card-text>
         <v-card-actions>
-            <v-btn text @click="DeleteTask">
+            <v-btn text color="red" @click="DeleteTask">
                 Delete
             </v-btn>
             <v-spacer></v-spacer>
@@ -41,7 +41,7 @@
                     <strong>Plan End:</strong> {{ formattedTaskPlanEnd }}
                 </div>
                 <div>
-                    <strong>Task Detail:</strong> {{ tasksDetail }}
+                    <strong>Task Detail:</strong> {{ taskDetail }}
                 </div>
             </v-card-text>
         </v-expand-transition>
@@ -70,11 +70,14 @@ export default {
         taskName() {
             return this.task.task_name;
         },
-        tasksDetail() {
-            return this.task.tasks_detail;
+        taskDetail() {
+            return this.task.task_detail;
         },
         taskManday() {
             return this.task.task_manday;
+        },
+        teammemberName() {
+            return this.task.task_member;
         },
         // Compute the formatted planStart date
         formattedTaskPlanStart() {
