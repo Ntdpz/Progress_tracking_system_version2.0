@@ -18,32 +18,41 @@
                     </v-row>
                     <v-row>
                         <v-col cols="12">
-                            <v-select v-model="newTasks.assignee" :items="assigneeOptions" label="Assignee"></v-select>
+                            <!-- Change label from "Assignee" to "Teammember" -->
+                            <v-select v-model="newTasks.task_member_id" :items="teammemberOptions"
+                                label="Teammember"></v-select>
                         </v-col>
                     </v-row>
-                    <v-row>
-                        <v-col cols="12">
-                            <v-text-field v-model="newTasks.task_manday" label="Estimate Working Hours" type="number"
-                                step="0.1"></v-text-field>
-                        </v-col>
-                    </v-row>
-                    <v-row>
-                        <v-col cols="12">
-                            <v-text-field v-model="newTasks.task_plan_start" label="Task Plan Start"
-                                type="date"></v-text-field>
-                        </v-col>
-                    </v-row>
-                    <v-row>
-                        <v-col cols="12">
-                            <v-text-field v-model="newTasks.task_plan_end" label="Task Plan End"
-                                type="date"></v-text-field>
-                        </v-col>
-                    </v-row>
-                    <v-row>
-                        <v-col cols="12">
-                            <v-textarea v-model="newTasks.task_detail" label="Task Detail"></v-textarea>
-                        </v-col>
-                    </v-row>
+                        <v-row>
+                            <v-col cols="12">
+                                <v-text-field v-model="newTasks.task_manday" label="Estimate Working Days"
+                                    type="number" step="0.1"></v-text-field>
+                            </v-col>
+                        </v-row>
+                        <v-row>
+                            <v-col cols="12">
+                                <v-text-field v-model="newTasks.task_plan_start" label="Task Plan Start"
+                                    type="date"></v-text-field>
+                            </v-col>
+                        </v-row>
+                        <v-row>
+                            <v-col cols="12">
+                                <v-text-field v-model="newTasks.task_plan_end" label="Task Plan End"
+                                    type="date"></v-text-field>
+                            </v-col>
+                        </v-row>
+                        <!-- task status -->
+                        <v-row>
+                            <v-col cols="12">
+                                <v-select v-model="newTasks.task_status"
+                                    :items="['Not Started', 'In Progress', 'Completed']" label="Task Status"></v-select>
+                            </v-col>
+                        </v-row>
+                        <v-row>
+                            <v-col cols="12">
+                                <v-textarea v-model="newTasks.task_detail" label="Task Detail"></v-textarea>
+                            </v-col>
+                        </v-row>
                 </v-container>
             </v-card-text>
             <v-card-actions>
@@ -63,7 +72,7 @@ export default {
     data() {
         return {
             dialog: false,
-            assigneeOptions: ["John Doe", "Jane Smith", "Tom Brown", "Alice Green"],
+           teammemberOptions:[],
             newTasks: {
                 task_id: "",
                 task_name: "",
@@ -72,6 +81,7 @@ export default {
                 task_status: "",
                 task_plan_start: "",
                 task_plan_end: "",
+                task_member_id: "",
             },
         };
     },
@@ -84,6 +94,17 @@ export default {
         },
     },
     methods: {
+        async fetchUsersByScreenID(screenId) {
+            try {
+                const response = await axios.get(`http://localhost:7777/user_screens/getUsersByScreenID/${screenId}`);
+                this.teammemberOptions = response.data.map(user => ({
+                    id: user.id,
+                    name: `${user.user_firstname} (${user.user_position})`
+                }));
+            } catch (error) {
+                console.error('Error fetching users:', error);
+            }
+        },
         saveTask() {
             if (!this.newTasks.task_plan_start || !this.newTasks.task_plan_end) {
                 console.error('Plan start or end date is not set.');

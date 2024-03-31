@@ -15,7 +15,7 @@
             </div>
             <div>
                 <v-icon>mdi-account</v-icon>
-                <strong>Assignee:</strong> {{ assignee }}
+                <strong>Assignee:</strong> {{ teammemberName }}
             </div>
             <div>
                 <v-icon>mdi-timer-sand</v-icon>
@@ -23,7 +23,7 @@
             </div>
         </v-card-text>
         <v-card-actions>
-            <v-btn text @click="DeleteTask">
+            <v-btn text color="red" @click="DeleteTask">
                 Delete
             </v-btn>
             <v-spacer></v-spacer>
@@ -75,6 +75,9 @@ export default {
         },
         taskManday() {
             return this.task.task_manday;
+        },
+        teammemberName() {
+            return this.task.task_member;
         },
         // Compute the formatted planStart date
         formattedTaskPlanStart() {
