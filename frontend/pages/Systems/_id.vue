@@ -228,6 +228,16 @@
         </tr>
       </template>
     </v-data-table>
+
+ <div>
+      <h1>Check Users in Project</h1>
+      <button @click="checkUsers">Check Users</button>
+      <div v-if="usersLoaded">
+        <p v-if="users.length > 0">มีผู้ใช้ในโปรเจกต์</p>
+        <p v-else>ไม่มีผู้ใช้ในโปรเจกต์</p>
+      </div>
+    </div>
+    
   </div>
 </template>
 

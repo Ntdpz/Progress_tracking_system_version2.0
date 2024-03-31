@@ -88,6 +88,31 @@
                     </v-list-item>
                   </template>
                 </v-select>
+                
+            <v-select v-model="selectedSA" :items="formatTeamMembers(teamMembersSA)" label="Select SA" multiple>
+  <template v-slot:prepend-item>
+    <v-list-item @click="selectAllSA">
+      <v-list-item-content>Select All</v-list-item-content>
+    </v-list-item>
+  </template>
+</v-select>
+
+<v-select v-model="selectedDEV" :items="formatTeamMembers(teamMembersDEV)" label="Select DEV" multiple>
+  <template v-slot:prepend-item>
+    <v-list-item @click="selectAllDEV">
+      <v-list-item-content>Select All</v-list-item-content>
+    </v-list-item>
+  </template>
+</v-select>
+
+<v-select v-model="selectedIMP" :items="formatTeamMembers(teamMembersIMP)" label="Select IMP" multiple>
+  <template v-slot:prepend-item>
+    <v-list-item @click="selectAllIMP">
+      <v-list-item-content>Select All</v-list-item-content>
+    </v-list-item>
+  </template>
+</v-select>
+
 
                 <v-btn type="submit">Create</v-btn>
                 <v-btn @click="createSystemDialog = false">Cancel</v-btn>
@@ -243,6 +268,14 @@ export default {
       system_id: null,
       dialogUserSystems: false,
 
+      teamMembersSA: [],
+      teamMembersDEV: [],
+      teamMembersIMP: [],
+      teamMembers_id: [],
+      teamMembers_name: [],
+      teamMembers_position: [],
+      
+
       userSystemHeader: [
         { text: "ID", value: "id" },
         { text: "First Name", value: "user_firstname" },
@@ -294,6 +327,9 @@ export default {
     };
   },
   methods: {
+    created() {
+  this.fetchUserProjectsByProjectId(this.$route.params.id); // เรียกใช้เมื่อ component ถูกสร้างขึ้น
+},
     async fetchUserProjectsByProjectId(projectId) {
       try {
         const response = await axios.get(
@@ -317,6 +353,36 @@ export default {
         value: user.user_id,
       }));
     },
+    formatTeamMembers(teamMembers) {
+      return teamMembers.map((member) => ({
+        text: `${member.user_position}: ${member.user_firstname} ${member.user_lastname}`,
+        value: member,
+      }));
+    },
+
+    async fetchTeamMembers() {
+  try {
+    const response = await fetch("http://localhost:7777/users/getAll");
+    if (!response.ok) {
+      throw new Error("Failed to fetch team members");
+    }
+    const allUsers = await response.json();
+    
+    // Separate users by user_position
+    this.teamMembersSA = allUsers.filter(user => user.user_position === 'System Analyst');
+    this.teamMembersDEV = allUsers.filter(user => user.user_position === 'Developer');
+    this.teamMembersIMP = allUsers.filter(user => user.user_position === 'Implementer');
+
+    // Extract specific data for each user_position if needed
+    this.teamMembers_id = allUsers.map(user => user.id);
+    this.teamMembers_name = allUsers.map(user => `${user.user_firstname} ${user.user_lastname}`);
+    this.teamMembers_position = allUsers.map(user => user.user_position);
+
+  } catch (error) {
+    console.error("Error fetching team members:", error);
+  }
+},
+
 
     selectAll() {
       // สร้าง array ใหม่ที่มีค่าเท่ากับ items ทั้งหมด
@@ -435,6 +501,46 @@ export default {
   }
 },
 
+// async getPosition_Developer() {
+//       await this.$axios
+//         .get("/users/getAll?user_position=Developer")
+//         .then((data) => {
+//           this.data_position_Developer = data.data;
+//         });
+//     },
+//     async getPosition_Implementer() {
+//       await this.$axios
+//         .get("/users/getAll?user_position=Implementer")
+//         .then((data) => {
+//           this.data_position_Implementer = data.data;
+//         });
+//     },
+//     async getPosition_Sa() {
+//       await this.$axios
+//         .get("/users/getAll?user_position=System%20Analyst")
+//         .then((data) => {
+//           this.data_position_Sa = data.data;
+//         });
+//     },
+
+// async addUser_system(systemId) {
+//       try {
+//         await this.$axios.post("/user_systems/createUser_system", {
+//           user_id: this.choose_user_id,
+//           system_id: systemId,
+//           project_id: this.projectIds,
+//         });
+//            // เพิ่มผู้ใช้ในระบบเรียบร้อยแล้ว อัปเดตข้อมูลผู้ใช้ใน dialog การสร้างระบบ
+//     await this.getPosition_Developer();
+//     await this.getPosition_Implementer();
+//     await this.getPosition_Sa();
+      
+//       } catch (error) {
+//         console.log(error);
+//         alert("user_system: " + error);
+//       }
+//     },
+
     async createSystem() {
       const projectId = this.$route.params.id;
       if (
@@ -457,7 +563,6 @@ export default {
           system_nameTH: this.newSystem.system_nameTH,
           system_nameEN: this.newSystem.system_nameEN,
           system_shortname: this.newSystem.system_shortname,
-          selectedUsers: this.selectedUsers.map((user) => user.user_id), // แปลงเป็นรูปแบบของ user_id เพื่อส่งไปยังเซิร์ฟเวอร์
         };
 
         const response = await fetch(
@@ -488,6 +593,13 @@ export default {
         };
         this.selectedUsers = []; // เมื่อสร้างระบบเสร็จแล้ว ล้างข้อมูลผู้ใช้ที่ถูกเลือก
         this.fetchSystems(); // โหลดข้อมูลระบบใหม่
+
+        // อัปเดตข้อมูลผู้ใช้ใน dialog การสร้างระบบ
+    await this.getPosition_Developer();
+    await this.getPosition_Implementer();
+    await this.getPosition_Sa();
+
+
       } catch (error) {
         console.error("Error creating System:", error);
         await Swal.fire({

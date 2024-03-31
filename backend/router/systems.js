@@ -347,6 +347,98 @@ router.post('/createSystem', async (req, res) => {
   }
 });
 
+// router.post("/createSystem", async (req, res) => {
+//   const {
+//     project_id,
+//     system_id,
+//     system_nameTH,
+//     system_nameEN,
+//     system_shortname,
+//     selectedUsers, // รับข้อมูลผู้ใช้ที่ถูกเลือกมาเพื่อเพิ่มเข้าในระบบ
+//   } = req.body;
+
+//   try {
+//     // เริ่มต้น Transaction
+//     connection.beginTransaction(async function (err) {
+//       if (err) {
+//         console.error("Error while starting a transaction", err);
+//         return res.status(500).send();
+//       }
+
+//       // สร้างรหัสระบบ
+//       const id = generateId();
+
+//       // เพิ่มข้อมูลระบบลงในตาราง systems
+//       connection.query(
+//         "INSERT INTO systems (id, project_id, system_id, system_nameTH, system_nameEN, system_shortname, is_deleted) VALUES (?, ?, ?, ?, ?, ?, ?)",
+//         [
+//           id,
+//           project_id,
+//           system_id,
+//           system_nameTH,
+//           system_nameEN,
+//           system_shortname,
+//           false,
+//         ],
+//         async (err, results, fields) => {
+//           if (err) {
+//             console.error(
+//               "Error while inserting a system into the database",
+//               err
+//             );
+//             // Rollback Transaction ในกรณีเกิดข้อผิดพลาด
+//             connection.rollback(function () {
+//               return res.status(400).send();
+//             });
+//           }
+
+//           // เพิ่มผู้ใช้เข้าระบบ (user_systems) หากมีผู้ใช้ที่ถูกเลือก
+//           if (selectedUsers && selectedUsers.length > 0) {
+//             const userSystemValues = selectedUsers.map((user_id) => [
+//               user_id,
+//               id, // ใช้รหัสระบบที่สร้างไว้
+//               project_id,
+//             ]);
+
+//             try {
+//               await connection.query(
+//                 "INSERT INTO user_systems (user_id, system_id, project_id) VALUES ?",
+//                 [userSystemValues]
+//               );
+//             } catch (error) {
+//               console.error(
+//                 "Error while inserting users into the system",
+//                 error
+//               );
+//               // Rollback Transaction ในกรณีเกิดข้อผิดพลาด
+//               connection.rollback(function () {
+//                 return res.status(400).send();
+//               });
+//             }
+//           }
+
+//           // Commit Transaction หลังจากทุกอย่างเสร็จสิ้น
+//           connection.commit(function (err) {
+//             if (err) {
+//               console.error("Error while committing transaction", err);
+//               return res.status(500).send();
+//             }
+//             // ส่งข้อความแจ้งเตือนเมื่อสร้างระบบเสร็จสิ้น
+//             return res
+//               .status(201)
+//               .json({ message: "New system successfully created!" });
+//           });
+//         }
+//       );
+//     });
+//   } catch (err) {
+//     console.error(err);
+//     return res.status(500).send();
+//   }
+// });
+
+
+
 // Route to update system details
 router.put('/updateSystem/:id', async (req, res) => {
   const id = req.params.id;
@@ -548,3 +640,4 @@ router.post('/addUserSystem', async (req, res) => {
 
 
 module.exports = router;
+
