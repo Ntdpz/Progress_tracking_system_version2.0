@@ -8,12 +8,14 @@
           <v-list-item-title class="text-h6">
             <v-layout align-center justify-center>
               <!-- Main logo -->
-              <v-img
-                lazy-src="/mainlogo.png"
-                max-height="150"
-                max-width="100"
-                src="/mainlogo.png"
-              ></v-img>
+              <nuxt-link to="/">
+                <v-img
+                  lazy-src="/mainlogo.png"
+                  max-height="150"
+                  max-width="100"
+                  src="/mainlogo.png"
+                ></v-img>
+              </nuxt-link>
             </v-layout>
           </v-list-item-title>
         </v-list-item-content>
@@ -39,7 +41,7 @@
       </v-list>
 
       <!-- Admin menu items -->
-      <!-- <v-list class="pa-0" v-show="user_role == 'Admin'" dense rounded>
+      <v-list class="pa-0" v-show="user_role == 'Admin'" dense rounded>
         <v-list-group
           v-for="(project, index) in items3"
           :key="index"
@@ -63,12 +65,12 @@
               <v-list-item-title
                 ><v-icon color="primary" class="mr-2"
                   >mdi mdi-format-list-bulleted</v-icon
-                >{{ child?.project_name }}</v-list-item-title
+                >{{ child?.project_name_ENG }}</v-list-item-title
               >
             </v-list-item-content>
           </v-list-item>
         </v-list-group>
-      </v-list> -->
+      </v-list>
 
       <!-- User menu items -->
       <v-list class="pt-0 pb-0" v-show="user_role == 'User'" dense rounded>
@@ -94,7 +96,7 @@
               <v-list-item-title
                 ><v-icon color="primary" class="mr-2"
                   >mdi mdi-format-list-bulleted</v-icon
-                >{{ child[0]?.project_name }}</v-list-item-title
+                >{{ child?.project_name_ENG }}</v-list-item-title
               >
             </v-list-item-content>
           </v-list-item>
@@ -193,20 +195,11 @@
         class="mb-3"
       />
 
-     <!-- Forward and Backward buttons -->
-    <v-btn icon class="mb-3" @click="goBackward">
-      <v-icon v-icon>mdi-arrow-left</v-icon>
-    </v-btn>
-    <v-btn icon class="mb-3" @click="goForward">
-      <v-icon>mdi-arrow-right</v-icon>
-    </v-btn>
-
       <!-- App title -->
       <v-toolbar-title class="mb-3">
         <h4>Progress Tracking</h4>
       </v-toolbar-title>
 
-    
       <!-- Logout button -->
       <v-spacer></v-spacer>
       <v-btn icon class="mb-3" color="error" @click="logout">
@@ -296,11 +289,11 @@ export default {
             item.title !== "Manage Project" &&
             item.title !== "Dashboard"
         );
-        // items.splice(0, 0, {
-        //   icon: "mdi-view-dashboard",
-        //   title: "แดชบอร์ด",
-        //   to: "/dashboard",
-        // });
+        items.splice(0, 0, {
+          icon: "mdi-view-dashboard",
+          title: "แดชบอร์ด",
+          to: "/dashboard",
+        });
         items.splice(0, 0, {
           icon: "mdi-account",
           title: "จัดการผู้ใช้งานระบบ",
@@ -310,6 +303,11 @@ export default {
           icon: "mdi-border-all",
           title: "จัดการโครงการ",
           to: "/manageProject",
+        });
+        items.splice(0, 0, {
+          icon: "mdi-table",
+          title: "Dashbord Project",
+          to: "/Dashbord_Project",
         });
         items.splice(0, 0, {
           icon: "mdi-calendar-month",
@@ -333,6 +331,11 @@ export default {
           icon: "mdi-border-all",
           title: "จัดการโครงการ",
           to: "/manageProject",
+        });
+        items.splice(0, 0, {
+          icon: "mdi-border-all",
+          title: "จัดการงาน",
+          to: "/task_management",
         });
 
         return items;
@@ -370,16 +373,6 @@ export default {
       await this.$auth.logout();
       this.$router.push("/login");
     },
-    goBackward() {
-    // Add logic for moving backward
-    // For example, you can use router to navigate
-    this.$router.go(-1); // Go back one step
-  },
-  goForward() {
-    // Add logic for moving forward
-    // For example, you can use router to navigate
-    this.$router.go(1); // Go forward one step
-  },
   },
 };
 </script>

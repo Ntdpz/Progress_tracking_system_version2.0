@@ -138,19 +138,24 @@ router.get("/getOne/:id", async (req, res) => { // เรียกดูข้�
 });
 router.delete("/deleteUser/:id", (req, res) => { // ลบข้อมูลผู้ใช้โดยใช้ ID
   const id = req.params.id; // รับค่า ID จากพารามิเตอร์ใน URL
-  const deleteSql = `DELETE FROM users WHERE id = ${id}`; // สร้างคำสั่ง SQL สำหรับการลบข้อมูลผู้ใช้
-  connection.query(deleteSql, (error, results2, fields) => { // ส่งคำสั่ง SQL ไปยังฐานข้อมูลและรับผลลัพธ์
+
+  const deleteUserSql = `DELETE FROM users WHERE id = ${id}`; // สร้างคำสั่ง SQL สำหรับการลบข้อมูลผู้ใช้
+
+  connection.query(deleteUserSql, (error, results, fields) => { // ส่งคำสั่ง SQL ไปยังฐานข้อมูลและรับผลลัพธ์
     if (error) { // หากเกิดข้อผิดพลาดในการลบข้อมูล
       res.status(500).send(`Error deleting user database: ${error}`); // ส่งรหัสสถานะ 500 (Internal Server Error) พร้อมกับข้อความแสดงข้อผิดพลาดกลับไปยัง client
       return;
     }
-    if (results2.affectedRows === 0) { // หากไม่มีการอัปเดตข้อมูลในฐานข้อมูล
+
+    if (results.affectedRows === 0) { // หากไม่มีการอัปเดตข้อมูลในฐานข้อมูล
       return res.status(404).json({ message: "No user with that id!" }); // ส่งรหัสสถานะ 404 (Not Found) พร้อมกับข้อความแสดงว่าไม่พบผู้ใช้ด้วย ID นั้นในฐานข้อมูลกลับไปยัง client
     }
+
     res.status(200).json({ message: "user_id deleted successfully!" }); // ส่งข้อความแสดงว่าลบผู้ใช้สำเร็จแล้วกลับไปยัง client พร้อมกำหนดสถานะการตอบกลับเป็น 200 (OK)
     console.log(`Database entry with id ${id} deleted successfully.`);
   });
 });
+
 router.post("/login", async (req, res) => { // เข้าสู่ระบบ
   const { user_id, user_password } = req.body; // รับค่า user_id และ user_password จาก body ของ request
 
@@ -176,28 +181,5 @@ router.post("/login", async (req, res) => { // เข้าสู่ระบบ
     console.error(error);
     return res.status(500).json({ message: "Server error" }); // ส่งรหัสสถานะ 500 (Internal Server Error) พร้อมกับข้อความแสดงข้อผิดพลาดกลับไปยัง client
   }
-});
-
-// Define API endpoint to get users by position and project
-router.get("/getUserByPositionAndProject", async (req, res) => {
-    const { user_position, project_id } = req.query;
-
-    try {
-        // Query database to get users by position and project
-        connection.query(
-            "SELECT * FROM users WHERE user_position = ? AND project_id = ?",
-            [user_position, project_id],
-            (err, results, fields) => {
-                if (err) {
-                    console.log(err);
-                    return res.status(500).send();
-                }
-                res.status(200).json(results);
-            }
-        );
-    } catch (err) {
-        console.log(err);
-        return res.status(500).send();
-    }
 });
 module.exports = router;

@@ -28,56 +28,59 @@
           type="text"
           v-model="searchQuery"
           placeholder="Search..."
-          style="
-            margin-bottom: 10px;
-            width: 70%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 16px;
-          "
+          :style="searchBarStyle"
         />
 
         <v-btn
+          v-if="user.user_role === 'Admin'"
           color="primary"
           class="text-none mb-4"
           @click="goToCreateProject"
           style="margin-left: 50px; width: 10%; height: 70%"
         >
-          Create Project
+          <v-icon>mdi-plus</v-icon>
         </v-btn>
         <v-btn
+          v-if="user.user_role === 'Admin'"
           color="error"
           @click="goToHistoryProject"
           style="margin-left: 10px; width: 10%; height: 70%"
           class="text-none mb-4"
         >
-          <v-icon>mdi-delete</v-icon> &nbsp;Bin
+          <v-icon>mdi-delete</v-icon> &nbsp;
         </v-btn>
       </v-col>
     </v-row>
 
     <!-- Project data table -->
     <v-data-table
-      :headers="headers"
+      :headers="filteredHeaders"
       :items="filteredProjects"
-      :sort-by="[{ key: 'project_id', order: 'asc' }]"
+      :sort-by="[{ key: 'project_id', order: 'desc' }]"
     >
       <template v-slot:item="{ item }">
-        <tr>
+        <tr @click="viewProjectDetails(item)">
           <td>{{ item.project_id }}</td>
           <td>{{ item.project_name_TH }}</td>
           <td>{{ item.project_name_ENG }}</td>
-          <td
-            :style="{
-              color: getProgressColor(item.project_progress),
-            }"
-          >
-            {{ item.project_progress }}
-          </td>
-          <td>{{ item.project_plan_start }}</td>
-          <td>{{ item.project_plan_end }}</td>
           <td>
+            <v-progress-linear
+              :color="getProgressColorProject(parseInt(item.project_progress))"
+              height="20"
+              :value="parseInt(item.project_progress)"
+              :style="{ width: '100%' }"
+              striped
+            >
+              <strong :style="{ color: 'white' }"
+                >{{ parseInt(item.project_progress) }}%</strong
+              ></v-progress-linear
+            >
+          </td>
+
+          <td>{{ formatDate(item.project_plan_start) }}</td>
+          <td>{{ formatDate(item.project_plan_end) }}</td>
+
+          <td v-if="user.user_role === 'Admin'">
             <!-- Dropdown menu for other actions -->
             <v-menu offset-y>
               <template v-slot:activator="{ on, attrs }">
@@ -88,29 +91,32 @@
               <v-list>
                 <!-- Edit action -->
                 <v-list-item @click="manageUserProjects(item)">
+                  <v-list-item-icon>
+                    <v-icon>mdi-account-edit</v-icon>
+                  </v-list-item-icon>
                   <v-list-item-content>Assign</v-list-item-content>
                 </v-list-item>
                 <v-list-item @click="openEditDialog(item)">
+                  <v-list-item-icon>
+                    <v-icon>mdi-pencil</v-icon>
+                  </v-list-item-icon>
                   <v-list-item-content>Edit</v-list-item-content>
                 </v-list-item>
                 <!-- Delete action -->
                 <v-list-item @click="softDeleteProject(item)">
+                  <v-list-item-icon>
+                    <v-icon class="red--text">mdi-delete</v-icon>
+                  </v-list-item-icon>
                   <v-list-item-content class="red--text"
                     >Delete</v-list-item-content
                   >
                 </v-list-item>
               </v-list>
             </v-menu>
-
-            <!-- Icon for "Manage User Projects" -->
-            <v-btn @click="viewProjectDetails(item)" icon>
-              <v-icon>mdi-menu-right</v-icon>
-            </v-btn>
           </td>
         </tr>
       </template>
     </v-data-table>
-
     <!-- Create Project Dialog -->
     <v-dialog
       v-model="createProjectDialog"
@@ -145,7 +151,7 @@
             <v-select
               v-model="selectedSA"
               :items="formatTeamMembers(teamMembersSA)"
-              label="Select SA"
+              label="Select System Analyst"
               multiple
             >
               <template v-slot:prepend-item>
@@ -158,7 +164,7 @@
             <v-select
               v-model="selectedDEV"
               :items="formatTeamMembers(teamMembersDEV)"
-              label="Select DEV"
+              label="Select Developer"
               multiple
             >
               <template v-slot:prepend-item>
@@ -171,7 +177,7 @@
             <v-select
               v-model="selectedIMP"
               :items="formatTeamMembers(teamMembersIMP)"
-              label="Select IMP"
+              label="Select Implementer"
               multiple
             >
               <template v-slot:prepend-item>
@@ -206,6 +212,7 @@
               v-model="editProject.project_id"
               label="Project ID"
               readonly
+              disabled
             ></v-text-field>
             <v-text-field
               v-model="editProject.project_name_TH"
@@ -228,7 +235,7 @@
     </v-dialog>
 
     <!-- Manage project users dialog -->
-    <v-dialog v-model="dialogUserProjects" max-width="800px">
+    <v-dialog v-model="dialogUserProjects" max-width="600px">
       <v-card>
         <v-card-title>User Projects</v-card-title>
         <v-card-text>
@@ -239,9 +246,20 @@
             hide-details
             solo
             flat
+            outlined
+            color="primary"
+            hint="Search here"
           ></v-text-field>
+
           <v-list>
             <v-list-item v-for="item in displayedUserProjects" :key="item.id">
+              <v-list-item-avatar>
+                <v-img
+                  :src="getBase64Image(item.user_pic)"
+                  height="50"
+                  contain
+                ></v-img>
+              </v-list-item-avatar>
               <v-list-item-content>
                 <v-list-item-title
                   >{{ item.user_firstname }}
@@ -252,16 +270,8 @@
                 }}</v-list-item-subtitle>
               </v-list-item-content>
 
-              <v-list-item-avatar>
-                <v-img
-                  :src="getBase64Image(item.user_pic)"
-                  height="50"
-                  contain
-                ></v-img>
-              </v-list-item-avatar>
-
               <v-list-item-action>
-                <v-btn icon @click="deleteUser(project_id, item)">
+                <v-btn color="error" icon @click="deleteUser(project_id, item)">
                   <v-icon>mdi-delete</v-icon>
                 </v-btn>
               </v-list-item-action>
@@ -290,31 +300,58 @@
         <v-card-text>
           <!-- New field for selecting users -->
           <v-select
-            v-model="selectedUsersAF"
+            v-model="selectedSystemAnalysts"
             :items="systemAnalysts"
-            label="Select SA"
+            label="Select System Analyst"
             item-text="displayText"
             item-value="id"
             multiple
-          ></v-select>
+          >
+            <template v-slot:prepend-item>
+              <v-list-item
+                v-if="systemAnalysts.length"
+                @click="selectAllSystemAnalysts"
+              >
+                <v-list-item-content>Select All</v-list-item-content>
+              </v-list-item>
+            </template>
+          </v-select>
 
           <v-select
-            v-model="selectedUsersAF"
+            v-model="selectedDevelopers"
             :items="developers"
-            label="Select DEV"
+            label="Select Developer"
             item-text="displayText"
             item-value="id"
             multiple
-          ></v-select>
+          >
+            <template v-slot:prepend-item>
+              <v-list-item
+                v-if="developers.length"
+                @click="selectAllDevelopers"
+              >
+                <v-list-item-content>Select All</v-list-item-content>
+              </v-list-item>
+            </template>
+          </v-select>
 
           <v-select
-            v-model="selectedUsersAF"
+            v-model="selectedImplementers"
             :items="implementers"
-            label="Select IMP"
+            label="Select Implementer"
             item-text="displayText"
             item-value="id"
             multiple
-          ></v-select>
+          >
+            <template v-slot:prepend-item>
+              <v-list-item
+                v-if="implementers.length"
+                @click="selectAllImplementers"
+              >
+                <v-list-item-content>Select All</v-list-item-content>
+              </v-list-item>
+            </template>
+          </v-select>
         </v-card-text>
         <v-card-actions>
           <!-- Button to assign selected users -->
@@ -336,6 +373,9 @@ export default {
   layout: "admin",
   data() {
     return {
+      selectedSystemAnalysts: [],
+      selectedDevelopers: [],
+      selectedImplementers: [],
       user: this.$auth.user,
       loggedIn: this.$auth.loggedIn,
 
@@ -410,17 +450,51 @@ export default {
     };
   },
   methods: {
-    getProgressColor(progress) {
-      if (progress >= 0 && progress <= 40) {
-        return "red"; // สีแดงสำหรับค่า progress 0-40
-      } else if (progress > 40 && progress <= 80) {
-        return "yellow"; // สีเหลืองสำหรับค่า progress 41-80
-      } else if (progress > 80 && progress <= 100) {
-        return "green"; // สีเขียวสำหรับค่า progress 80-100
-      } else {
-        return ""; // สีเริ่มต้นหรือสีที่ไม่ได้กำหนด
+    async fetchAllScreens() {
+      try {
+        const response = await axios.get(
+          "http://localhost:7777/screens/getAll"
+        );
+        return response.data;
+      } catch (error) {
+        console.error("Error fetching screens:", error);
+        throw error;
       }
     },
+    async fetchAllSystems() {
+      try {
+        const response = await axios.get(
+          "http://localhost:7777/systems/getAll"
+        );
+        return response.data;
+      } catch (error) {
+        console.error("Error fetching systems:", error);
+        throw error;
+      }
+    },
+    async fetchAllProjects() {
+      try {
+        const response = await axios.get(
+          "http://localhost:7777/projects/getAll"
+        );
+        return response.data;
+      } catch (error) {
+        console.error("Error fetching projects:", error);
+        throw error;
+      }
+    },
+    formatDate(dateString) {
+      if (!dateString) {
+        return "Not determined";
+      }
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) {
+        return "Not determined";
+      }
+      const options = { day: "2-digit", month: "2-digit", year: "numeric" };
+      return date.toLocaleDateString("en-GB", options);
+    },
+
     updateDisplayedUserProjects() {
       // อัปเดตหน้าที่แสดงข้อมูลผู้ใช้เมื่อเปลี่ยนหน้า
       const startIndex = (this.currentPage - 1) * this.itemsPerPage;
@@ -463,41 +537,52 @@ export default {
 
     async deleteUser(project_id, item) {
       try {
-        // const projectId = project_id; // ไม่จำเป็นต้องทำเช่นนี้
         if (!project_id) {
           await Swal.fire({
-            icon: "error",
-            title: "Error",
+            icon: "warning",
+            title: "Warning",
             text: "Project ID is undefined",
           });
           console.error("Error deleting user: project_id is undefined");
           return;
         }
 
-        const response = await axios.delete(
-          `http://localhost:7777/user_projects/deleteUserProjectById/${project_id}/${item.user_id}`
-        );
+        // แสดงกล่องข้อความยืนยันก่อนทำการลบผู้ใช้
+        const confirmResult = await Swal.fire({
+          icon: "warning",
+          title: "Are you sure?",
+          text: "Are you sure you want to delete this user?",
+          showCancelButton: true,
+          confirmButtonText: "Yes",
+          cancelButtonText: "No",
+        });
 
-        if (response.status === 200) {
-          // Handle success
-          await Swal.fire({
-            icon: "success",
-            title: "Success",
-            text: response.data.message,
-          });
-          console.log(response.data.message);
-          // อัปเดตตารางผู้ใช้หลังจากลบผู้ใช้เสร็จสิ้น
-          this.fetchAvailableUsers(project_id);
-          this.fetchTeamMembers();
-          this.dialogUserProjects = false;
-        } else {
-          // Handle error
-          await Swal.fire({
-            icon: "error",
-            title: "Error",
-            text: "Failed to delete user",
-          });
-          console.error("Failed to delete user:", response.status);
+        if (confirmResult.isConfirmed) {
+          // ทำการลบผู้ใช้เมื่อผู้ใช้ยืนยันการลบ
+          const response = await axios.delete(
+            `http://localhost:7777/user_projects/deleteUserProjectById/${project_id}/${item.user_id}`
+          );
+
+          if (response.status === 200) {
+            // Handle success
+            await Swal.fire({
+              icon: "success",
+              title: "Success",
+              text: response.data.message,
+            });
+            console.log(response.data.message);
+            // อัปเดตตารางผู้ใช้หลังจากลบผู้ใช้เสร็จสิ้น
+            await this.manageUserProjects({ project_id }); // เรียกใช้ฟังก์ชัน manageUserProjects เพื่ออัพเดทตารางผู้ใช้
+            await this.fetchAvailableUsers(project_id);
+          } else {
+            // Handle error
+            await Swal.fire({
+              icon: "error",
+              title: "Error",
+              text: "Failed to delete user",
+            });
+            console.error("Failed to delete user:", response.status);
+          }
         }
       } catch (error) {
         await Swal.fire({
@@ -530,63 +615,69 @@ export default {
           console.error("Error fetching available users:", error);
         });
     },
-
+    selectAllSystemAnalysts() {
+      if (this.selectedSystemAnalysts.length === this.systemAnalysts.length) {
+        this.selectedSystemAnalysts = [];
+      } else {
+        this.selectedSystemAnalysts = this.systemAnalysts.map(
+          (item) => item.id
+        );
+      }
+    },
+    // Select All สำหรับ Developers
+    selectAllDevelopers() {
+      if (this.selectedDevelopers.length === this.developers.length) {
+        this.selectedDevelopers = [];
+      } else {
+        this.selectedDevelopers = this.developers.map((item) => item.id);
+      }
+    },
+    selectAllImplementers() {
+      if (this.selectedImplementers.length === this.implementers.length) {
+        this.selectedImplementers = [];
+      } else {
+        this.selectedImplementers = this.implementers.map((item) => item.id);
+      }
+    },
     async assignUserAF() {
-      // ตรวจสอบว่ามีผู้ใช้ที่ถูกเลือกหรือไม่
-      if (this.selectedUsersAF.length === 0) {
-        await Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: "No users selected to assign.",
-        });
-        return;
-      }
-
-      // ดึง project_id จากภายนอก Dialog โดยเรียกใช้ฟังก์ชัน fetchAvailableUsers(project_id)
-      const project_id = this.project_id;
-
-      // ตรวจสอบว่า project_id มีค่าหรือไม่
-      if (!project_id) {
-        await Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: "No project_id available.",
-        });
-        return;
-      }
-
-      // ส่งข้อมูลผู้ใช้ที่ถูกเลือกไปยัง API
-      const user_ids = this.selectedUsersAF;
+      const user_ids = [
+        ...this.selectedSystemAnalysts,
+        ...this.selectedDevelopers,
+        ...this.selectedImplementers,
+      ];
+      const project_id = this.project_id; // ใส่ ID ของโปรเจคที่ต้องการสร้าง user_projects
 
       try {
         const response = await axios.post(
           "http://localhost:7777/user_projects/createUser_project",
           {
-            project_id,
             user_ids,
+            project_id,
           }
         );
+        // สำเร็จ: แสดง SweetAlert2 แจ้งเตือน
         await Swal.fire({
           icon: "success",
-          title: "Success",
+          title: "Success!",
           text: "Users assigned successfully!",
+          confirmButtonColor: "#009933",
         });
-        console.log("Users assigned successfully:", response.data);
-        // เมื่อกำหนดผู้ใช้เสร็จสิ้น ให้เรียก fetchAvailableUsers เพื่ออัพเดตตารางผู้ใช้
-        this.fetchAvailableUsers(project_id);
+        // เรียกใช้ฟังก์ชัน manageUserProjects เพื่ออัปเดตตารางผู้ใช้
+        await this.manageUserProjects({ id: project_id });
+        // ดึงข้อมูลผู้ใช้ที่พร้อมใช้งานสำหรับโปรเจคนั้นๆ
+        await this.fetchAvailableUsers(project_id);
         // ปิด Dialog หลังจากกำหนดผู้ใช้เสร็จสิ้น
         this.dialogAssignUser = false;
-        this.dialogUserProjects = false;
       } catch (error) {
-        await Swal.fire({
+        // ข้อผิดพลาด: แสดง SweetAlert2 แจ้งเตือน
+        Swal.fire({
           icon: "error",
-          title: "Error",
-          text: "Error assigning users.",
+          title: "Error!",
+          text: "Error creating user_projects: " + error.message,
         });
-        console.error("Error assigning users:", error);
+        console.error("Error creating user_projects:", error);
       }
     },
-
     closeNestedDialog() {
       this.dialogAssignUser = false;
     },
@@ -768,13 +859,25 @@ export default {
       }
     },
     async fetchProjects() {
+      let url;
+      if (this.$auth.user.user_role === "Admin") {
+        url = "http://localhost:7777/projects/getAll";
+      } else {
+        url = `http://localhost:7777/user_projects/getProjectByUser_id/${this.$auth.user.id}`;
+      }
+
       try {
-        const response = await fetch("http://localhost:7777/projects/getAll");
+        const response = await fetch(url);
         if (!response.ok) {
           throw new Error("Failed to fetch projects");
         }
         const data = await response.json();
-        this.projects = data;
+
+        if (Array.isArray(data)) {
+          this.projects = data;
+        } else {
+          this.projects = [data];
+        }
       } catch (error) {
         console.error("Error fetching projects:", error);
       }
@@ -899,6 +1002,51 @@ export default {
     },
   },
   computed: {
+    getProgressColorProject() {
+      return function (progress) {
+        if (progress >= 61) {
+          return "green"; // สีเขียว
+        } else if (progress >= 40) {
+          return "#FC8705"; // สีเหลือง
+        } else {
+          return "red"; // สีแดง
+        }
+      };
+    },
+    searchBarStyle() {
+      if (this.user.user_role === "Admin") {
+        // ถ้าผู้ใช้เป็น Admin ให้ความกว้างเต็มหน้าจอ
+        return {
+          marginBottom: "10px",
+          width: "70%", // กำหนดความกว้างเต็มหน้าจอ
+          height: "70%",
+          padding: "10px",
+          border: "1px solid #ccc",
+          borderRadius: "5px",
+          fontSize: "16px",
+        };
+      } else {
+        // ถ้าผู้ใช้ไม่ใช่ Admin ให้ความกว้างเป็น 70%
+        return {
+          marginBottom: "10px",
+          width: "100%", // ความกว้าง 70%
+          height: "70%",
+          padding: "10px",
+          border: "1px solid #ccc",
+          borderRadius: "5px",
+          fontSize: "16px",
+        };
+      }
+    },
+    filteredHeaders() {
+      if (this.user.user_role === "Admin") {
+        // If user role is Admin, include Action column
+        return this.headers;
+      } else {
+        // If user role is not Admin, exclude Action column
+        return this.headers.filter((header) => header.value !== "actions");
+      }
+    },
     totalPages() {
       return Math.ceil(this.filteredUserProjects.length / this.itemsPerPage);
     },
@@ -965,14 +1113,23 @@ export default {
   },
 
   mounted() {
-    // ตรวจสอบว่ามี project_id ก่อนที่จะเรียกใช้ fetchAvailableUsers
-    if (this.project_id) {
-      this.fetchAvailableUsers(this.project_id);
-    }
-    this.fetchTeamMembers();
-    this.updateDateTime();
-    this.fetchProjects();
-    setInterval(this.updateDateTime, 1000);
+    this.fetchAllScreens()
+      .then(() => this.fetchAllSystems())
+      .then(() => this.fetchAllProjects())
+      .then(() => {
+        // ตรวจสอบว่ามี project_id ก่อนที่จะเรียกใช้ fetchAvailableUsers
+        if (this.project_id) {
+          this.fetchAvailableUsers(this.project_id);
+        }
+        this.fetchTeamMembers();
+        this.updateDateTime();
+        this.fetchProjects();
+        setInterval(this.updateDateTime, 1000);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        // Handle error here
+      });
   },
 };
 </script>

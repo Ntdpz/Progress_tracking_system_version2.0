@@ -1,9 +1,9 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const connection = require("../db"); // Import database connection
-const path = require("path");
-const { db, connectToDatabase } = require(path.join(__dirname, "../db")); // Import database utilities
-const moment = require("moment"); // Import moment library for date manipulation
+const connection = require('../db'); // Import database connection
+const path = require('path');
+const { db, connectToDatabase } = require(path.join(__dirname, '../db')); // Import database utilities
+const moment = require('moment'); // Import moment library for date manipulation
 
 // Function to generate a random ID
 function generateId() {
@@ -13,8 +13,7 @@ function generateId() {
   return id;
 }
 
-// Route to get all systems
-router.get("/getAll", async (req, res) => {
+router.get('/getAll', async (req, res) => {
   try {
     const systemIdFilter = req.query.system_id;
     const projectFilter = req.query.project_id;
@@ -25,12 +24,12 @@ router.get("/getAll", async (req, res) => {
              Systems.system_nameTH,
              Systems.system_nameEN,
              Systems.system_shortname,
-             Systems.is_deleted, /* Include the 'is_deleted' field */
-             COUNT(Screens.screen_id) AS screen_count, 
-             AVG(screens.screen_progress) AS system_progress,
-             DATE_FORMAT(MIN(Screens.screen_plan_start), '%Y-%m-%d') AS system_plan_start,
-             DATE_FORMAT(MAX(Screens.screen_plan_end), '%Y-%m-%d') AS system_plan_end,
-             DATEDIFF(MAX(Screens.screen_plan_end), MIN(Screens.screen_plan_start)) AS system_manday,
+             Systems.is_deleted,
+             COUNT(CASE WHEN Screens.is_deleted = 0 THEN Screens.screen_id ELSE NULL END) AS screen_count, 
+             IFNULL(SUM(CASE WHEN Screens.is_deleted = 0 THEN IFNULL(screens.screen_progress, 0) ELSE 0 END) / NULLIF(COUNT(CASE WHEN Screens.is_deleted = 0 THEN screens.screen_progress END), 0), 0) AS system_progress,
+             DATE_FORMAT(MIN(CASE WHEN Screens.is_deleted = 0 THEN Screens.screen_plan_start END), '%Y-%m-%d') AS system_plan_start,
+             DATE_FORMAT(MAX(CASE WHEN Screens.is_deleted = 0 THEN Screens.screen_plan_end END), '%Y-%m-%d') AS system_plan_end,
+             DATEDIFF(MAX(CASE WHEN Screens.is_deleted = 0 THEN Screens.screen_plan_end END), MIN(CASE WHEN Screens.is_deleted = 0 THEN Screens.screen_plan_start END)) AS system_manday,
              Systems.is_deleted
       FROM Systems 
       LEFT JOIN Screens ON Systems.id = Screens.system_id 
@@ -38,16 +37,16 @@ router.get("/getAll", async (req, res) => {
     const queryParams = [];
 
     if (projectFilter) {
-      query += " WHERE Systems.project_id = ? AND Systems.is_deleted = false"; // Add condition for 'is_deleted = false'
+      query += ' WHERE Systems.project_id = ? AND Systems.is_deleted = false';
       queryParams.push(projectFilter);
     } else if (systemIdFilter) {
-      query += " WHERE Systems.id = ? AND Systems.is_deleted = false"; // Add condition for 'is_deleted = false'
+      query += ' WHERE Systems.id = ? AND Systems.is_deleted = false';
       queryParams.push(systemIdFilter);
     } else {
-      query += " WHERE Systems.is_deleted = false"; // Add condition for 'is_deleted = false'
+      query += ' WHERE Systems.is_deleted = false';
     }
 
-    query += " GROUP BY Systems.id";
+    query += ' GROUP BY Systems.id';
 
     // Execute the query
     connection.query(query, queryParams, async (err, results, fields) => {
@@ -68,8 +67,134 @@ router.get("/getAll", async (req, res) => {
   }
 });
 
+router.get('/getOne/:id', async (req, res) => {
+  const id = req.params.id;
+  try {
+    connection.query(
+      `SELECT 
+          Systems.*, 
+          COUNT(CASE WHEN Screens.is_deleted = 0 THEN Screens.screen_id ELSE NULL END) AS screen_count, 
+          IFNULL(SUM(CASE WHEN Screens.is_deleted = 0 THEN IFNULL(Screens.screen_progress, 0) ELSE 0 END) / NULLIF(COUNT(CASE WHEN Screens.is_deleted = 0 THEN Screens.screen_progress END), 0), 0) AS system_progress,
+          DATE_FORMAT(MIN(CASE WHEN Screens.is_deleted = 0 THEN Screens.screen_plan_start END), '%Y-%m-%d') AS system_plan_start,
+          DATE_FORMAT(MAX(CASE WHEN Screens.is_deleted = 0 THEN Screens.screen_plan_end END), '%Y-%m-%d') AS system_plan_end,
+          DATEDIFF(MAX(CASE WHEN Screens.is_deleted = 0 THEN Screens.screen_plan_end END), MIN(CASE WHEN Screens.is_deleted = 0 THEN Screens.screen_plan_start END)) AS system_manday,
+          Systems.is_deleted
+      FROM Systems 
+      LEFT JOIN Screens ON Systems.id = Screens.system_id
+      WHERE Systems.id = ?
+      GROUP BY Systems.id`,
+      [id],
+      (err, results, fields) => {
+        if (err) {
+          console.error(err);
+          return res.status(400).send();
+        }
+        if (results.length === 0) {
+          return res.status(404).json({ message: 'System not found!' });
+        }
+        const system = results[0];
+        if (system.is_deleted === 1) {
+          return res.status(200).json({ message: 'This system has been deleted.' });
+        }
+        res.status(200).json(system);
+      }
+    );
+  } catch (err) {
+    console.error(err);
+    return res.status(500).send();
+  }
+});
+
+
+router.get('/searchByProjectId/:project_id', async (req, res) => {
+  try {
+    const { project_id } = req.params;
+
+    let query = `
+      SELECT Systems.id, 
+             Systems.project_id,
+             Systems.system_id,
+             Systems.system_nameTH,
+             Systems.system_nameEN,
+             Systems.system_shortname,
+             Systems.is_deleted,
+             COUNT(CASE WHEN Screens.is_deleted = 0 THEN Screens.screen_id ELSE NULL END) AS screen_count, 
+             IFNULL(SUM(CASE WHEN Screens.is_deleted = 0 THEN IFNULL(screens.screen_progress, 0) ELSE 0 END) / NULLIF(COUNT(CASE WHEN Screens.is_deleted = 0 THEN screens.screen_progress END), 0), 0) AS system_progress,
+             DATE_FORMAT(MIN(CASE WHEN Screens.is_deleted = 0 THEN Screens.screen_plan_start END), '%Y-%m-%d') AS system_plan_start,
+             DATE_FORMAT(MAX(CASE WHEN Screens.is_deleted = 0 THEN Screens.screen_plan_end END), '%Y-%m-%d') AS system_plan_end,
+             DATEDIFF(MAX(CASE WHEN Screens.is_deleted = 0 THEN Screens.screen_plan_end END), MIN(CASE WHEN Screens.is_deleted = 0 THEN Screens.screen_plan_start END)) AS system_manday
+      FROM Systems 
+      LEFT JOIN Screens ON Systems.id = Screens.system_id 
+      WHERE Systems.project_id = ? AND Systems.is_deleted = false
+      GROUP BY Systems.id
+    `;
+
+    // Execute the query
+    connection.query(query, [project_id], async (err, results, fields) => {
+      if (err) {
+        console.error(err);
+        return res.status(400).send();
+      }
+      // Format system_plan_start and system_plan_end to contain only date
+      for (const system of results) {
+        const updatedSystem = await updateSystem(system); // Update system data
+        Object.assign(system, updatedSystem);
+      }
+      res.status(200).json(results);
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).send();
+  }
+});
+
+
+// Function to update system data
+async function updateSystem(system) {
+  try {
+    const updateQuery = `
+      UPDATE systems 
+      SET 
+        screen_count = ?,
+        system_progress = ?,
+        system_plan_start = ?, 
+        system_plan_end = ?,
+        system_manday = ?
+      WHERE id = ?
+    `;
+
+    // Prepare updated system data
+    const updatedSystem = {
+      screen_count: system.screen_count,
+      // Check if system_progress is null, then set it to 0
+      system_progress: system.system_progress !== null ? system.system_progress : 0,
+      // Check if screen_progress is null, then set it to 0
+      screen_progress: system.screen_progress || 0,
+      // Check if system_plan_start and system_plan_end are null, then keep them as null
+      system_plan_start: system.system_plan_start ? new Date(system.system_plan_start).toISOString().split('T')[0] : null,
+      system_plan_end: system.system_plan_end ? new Date(system.system_plan_end).toISOString().split('T')[0] : null,
+      system_manday: system.system_manday,
+      id: system.id
+    };
+
+    // Execute the update query
+    await new Promise((resolve, reject) => {
+      connection.query(updateQuery, [updatedSystem.screen_count, updatedSystem.system_progress, updatedSystem.system_plan_start, updatedSystem.system_plan_end, updatedSystem.system_manday, updatedSystem.id], (err, result) => {
+        if (err) reject(err);
+        resolve(updatedSystem);
+      });
+    });
+
+    return updatedSystem;
+  } catch (err) {
+    throw err;
+  }
+}
+
+
+
 // Route to get all systems by project_id
-router.get("/getAll/:project_id", async (req, res) => {
+router.get('/getAll/:project_id', async (req, res) => {
   const projectId = req.params.project_id;
   try {
     const query = `
@@ -110,7 +235,7 @@ router.get("/getAll/:project_id", async (req, res) => {
 });
 
 // Route to get all historical systems
-router.get("/getAllHistorySystem", async (req, res) => {
+router.get('/getAllHistorySystem', async (req, res) => {
   try {
     let query = `
       SELECT Systems.id, 
@@ -151,135 +276,8 @@ router.get("/getAllHistorySystem", async (req, res) => {
   }
 });
 
-// Function to update system data
-async function updateSystem(system) {
-  try {
-    const updateQuery = `
-      UPDATE systems 
-      SET 
-        screen_count = ?,
-        system_progress = ?,
-        system_plan_start = ?, 
-        system_plan_end = ?,
-        system_manday = ?
-      WHERE id = ?
-    `;
-
-    // Prepare updated system data
-    const updatedSystem = {
-      screen_count: system.screen_count,
-      system_progress: system.system_progress,
-      // Check if system_plan_start and system_plan_end are null, then keep them as null
-      system_plan_start: system.system_plan_start
-        ? new Date(system.system_plan_start).toISOString().split("T")[0]
-        : null,
-      system_plan_end: system.system_plan_end
-        ? new Date(system.system_plan_end).toISOString().split("T")[0]
-        : null,
-      system_manday: system.system_manday,
-      id: system.id,
-    };
-
-    // Execute the update query
-    await new Promise((resolve, reject) => {
-      connection.query(
-        updateQuery,
-        [
-          updatedSystem.screen_count,
-          updatedSystem.system_progress,
-          updatedSystem.system_plan_start,
-          updatedSystem.system_plan_end,
-          updatedSystem.system_manday,
-          updatedSystem.id,
-        ],
-        (err, result) => {
-          if (err) reject(err);
-          resolve(updatedSystem);
-        }
-      );
-    });
-
-    return updatedSystem;
-  } catch (err) {
-    throw err;
-  }
-}
-
-// Route to get one system by id
-router.get("/getOne/:id", async (req, res) => {
-  const id = req.params.id;
-  try {
-    connection.query(
-      "SELECT * FROM systems WHERE id = ?",
-      [id],
-      (err, results, fields) => {
-        if (err) {
-          console.error(err);
-          return res.status(400).send();
-        }
-        if (results.length === 0) {
-          return res.status(404).json({ message: "System not found!" });
-        }
-        const system = results[0];
-        if (system.is_deleted === 1) {
-          return res
-            .status(200)
-            .json({ message: "This system has been deleted." });
-        }
-        res.status(200).json(system);
-      }
-    );
-  } catch (err) {
-    console.error(err);
-    return res.status(500).send();
-  }
-});
-
-// Route to search systems by project_id
-router.get("/searchByProjectId/:project_id", async (req, res) => {
-  try {
-    const { project_id } = req.params;
-
-    let query = `
-      SELECT Systems.id, 
-             Systems.project_id,
-             Systems.system_id,
-             Systems.system_nameTH,
-             Systems.system_nameEN,
-             Systems.system_shortname,
-             Systems.is_deleted,
-             COUNT(Screens.screen_id) AS screen_count, 
-             AVG(screens.screen_progress) AS system_progress,
-             DATE_FORMAT(MIN(Screens.screen_plan_start), '%Y-%m-%d') AS system_plan_start,
-             DATE_FORMAT(MAX(Screens.screen_plan_end), '%Y-%m-%d') AS system_plan_end,
-             DATEDIFF(MAX(Screens.screen_plan_end), MIN(Screens.screen_plan_start)) AS system_manday
-      FROM Systems 
-      LEFT JOIN Screens ON Systems.id = Screens.system_id 
-      WHERE Systems.project_id = ? AND Systems.is_deleted = false
-      GROUP BY Systems.id
-    `;
-
-    // Execute the query
-    connection.query(query, [project_id], async (err, results, fields) => {
-      if (err) {
-        console.error(err);
-        return res.status(400).send();
-      }
-      // Format system_plan_start and system_plan_end to contain only date
-      for (const system of results) {
-        const updatedSystem = await updateSystem(system); // Update system data
-        Object.assign(system, updatedSystem);
-      }
-      res.status(200).json(results);
-    });
-  } catch (err) {
-    console.error(err);
-    return res.status(500).send();
-  }
-});
-
 // Route to search deleted systems by project_id
-router.get("/searchByProjectId_delete/:project_id", async (req, res) => {
+router.get('/searchByProjectId_delete/:project_id', async (req, res) => {
   try {
     const { project_id } = req.params;
 
@@ -330,6 +328,7 @@ router.post("/createSystem", async (req, res) => {
     system_nameEN,
     system_shortname,
     selectedUser,
+    screen_progress // เพิ่มการรับค่า screen_progress จากข้อมูลที่ส่งมา
   } = req.body;
 
   const id = generateId(); // Generate a valid ID using generateId() function
@@ -337,14 +336,7 @@ router.post("/createSystem", async (req, res) => {
   try {
     connection.query(
       "INSERT INTO systems (id, project_id, system_id, system_nameTH, system_nameEN, system_shortname) VALUES (?, ?, ?, ?, ?, ?)",
-      [
-        id,
-        project_id,
-        system_id,
-        system_nameTH,
-        system_nameEN,
-        system_shortname,
-      ], // Use the generated ID
+      [id, project_id, system_id, system_nameTH, system_nameEN, system_shortname], // Use the generated ID
       (err, results, fields) => {
         if (err) {
           console.error(
@@ -375,19 +367,13 @@ router.post("/createSystem", async (req, res) => {
               }
               return res
                 .status(201)
-                .json({
-                  message: "New system and users assigned successfully!",
-                  system_id: id,
-                }); // Return the system_id
+                .json({ message: "New system and users assigned successfully!", system_id: id }); // Return the system_id
             }
           );
         } else {
           return res
             .status(201)
-            .json({
-              message: "New system created successfully!",
-              system_id: id,
-            }); // Return the system_id
+            .json({ message: "New system created successfully!", system_id: id }); // Return the system_id
         }
       }
     );
@@ -397,15 +383,16 @@ router.post("/createSystem", async (req, res) => {
   }
 });
 
+
 // Route to update system details
-router.put("/updateSystem/:id", async (req, res) => {
+router.put('/updateSystem/:id', async (req, res) => {
   const id = req.params.id;
   const {
     system_nameTH,
     system_nameEN,
     system_shortname,
     project_id,
-    is_deleted, // เพิ่ม is_deleted เข้ามาในการรับค่า
+    is_deleted // เพิ่ม is_deleted เข้ามาในการรับค่า
   } = req.body;
 
   const updatedSystemFields = {};
@@ -426,25 +413,24 @@ router.put("/updateSystem/:id", async (req, res) => {
     updatedSystemFields.project_id = project_id;
   }
 
-  if (is_deleted !== undefined) {
-    // เพิ่มเงื่อนไขสำหรับ is_deleted
+  if (is_deleted !== undefined) { // เพิ่มเงื่อนไขสำหรับ is_deleted
     updatedSystemFields.is_deleted = is_deleted;
   }
 
   if (Object.keys(updatedSystemFields).length === 0) {
-    return res.status(400).json({ error: "No fields to update" });
+    return res.status(400).json({ error: 'No fields to update' });
   }
 
   try {
     connection.query(
-      "UPDATE systems SET ? WHERE id = ?",
+      'UPDATE systems SET ? WHERE id = ?',
       [updatedSystemFields, id],
       (err, results, fields) => {
         if (err) {
           console.error(err);
           return res.status(400).send();
         }
-        res.status(200).json({ message: "System updated successfully!" });
+        res.status(200).json({ message: 'System updated successfully!' });
       }
     );
   } catch (err) {
@@ -452,6 +438,7 @@ router.put("/updateSystem/:id", async (req, res) => {
     return res.status(500).send();
   }
 });
+
 
 // Route to delete a system by id
 router.delete("/delete/:id", async (req, res) => {
@@ -469,9 +456,7 @@ router.delete("/delete/:id", async (req, res) => {
         if (results.affectedRows === 0) {
           return res.status(404).json({ message: "No system with that id!" });
         }
-        return res
-          .status(200)
-          .json({ message: "System deleted successfully!" });
+        return res.status(200).json({ message: "System deleted successfully!" });
       }
     );
   } catch (err) {
@@ -497,9 +482,7 @@ router.delete("/deleteHistorySystems/:id", async (req, res) => {
           console.error(err);
           return res.status(500).send();
         }
-        return res
-          .status(200)
-          .json({ message: "System and related data deleted successfully!" });
+        return res.status(200).json({ message: "System and related data deleted successfully!" });
       }
     );
   } catch (err) {
@@ -508,22 +491,28 @@ router.delete("/deleteHistorySystems/:id", async (req, res) => {
   }
 });
 
+
+
+
+
+
+
 // Route to add user to systems
-router.post("/addUserSystem", async (req, res) => {
+router.post('/addUserSystem', async (req, res) => {
   const { user_id, system_ids } = req.body;
   try {
     const createUserSystemMappings = async (user_id, system_ids) => {
       // Check that system_ids is an array
       if (!Array.isArray(system_ids)) {
-        console.error("Error: system_ids is not an array");
-        return res.status(400).send("system_ids must be an array");
+        console.error('Error: system_ids is not an array');
+        return res.status(400).send('system_ids must be an array');
       }
 
       // Map over the system IDs and insert a new row into the user_systems table for each one
       for (const system_id of system_ids) {
         try {
           await connection.query(
-            "INSERT INTO user_systems (user_id, system_id) VALUES (?, ?)",
+            'INSERT INTO user_systems (user_id, system_id) VALUES (?, ?)',
             [user_id, system_id]
           );
         } catch (error) {
@@ -539,12 +528,12 @@ router.post("/addUserSystem", async (req, res) => {
         }
       }
 
-      return res.status(200).send("User-system mappings created successfully");
+      return res.status(200).send('User-system mappings created successfully');
     };
     await createUserSystemMappings(user_id, system_ids);
   } catch (err) {
-    console.error("Error while creating user-system mappings", err);
-    return res.status(500).send("Internal Server Error");
+    console.error('Error while creating user-system mappings', err);
+    return res.status(500).send('Internal Server Error');
   }
 });
 
