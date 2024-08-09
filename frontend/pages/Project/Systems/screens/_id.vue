@@ -2,6 +2,11 @@
   <!-- Show screen detel -->
   <div class="screen-details">
     <v-row style="margin-bottom: 20px" align="center">
+      <div>
+        <div>
+          <Breadcrumbs />
+        </div>
+      </div>
       <v-col cols="12" v-if="screenId">
         <!-- Card แสดงข้อมูล Screen -->
         <v-card class="mx-auto align-start" max-width="none" hover>
@@ -1269,7 +1274,6 @@
       </v-card>
     </v-dialog>
 
-    <!-- Create task dialog -->
     <v-dialog v-model="dialogAddTaskForm" max-width="600px">
       <v-card>
         <v-card-title>
@@ -1299,7 +1303,6 @@
             <v-text-field
               v-model="newTask.task_detail"
               label="Detail"
-              required
             ></v-text-field>
 
             <!-- Status -->
@@ -1307,7 +1310,6 @@
               v-model="newTask.task_status"
               :items="statusOptions"
               label="Status"
-              required
             ></v-select>
 
             <!-- Plan Start -->
@@ -1325,7 +1327,6 @@
                   prepend-icon="mdi-calendar"
                   readonly
                   v-on="on"
-                  required
                   :value="formatDate(newTask.task_plan_start)"
                 ></v-text-field>
               </template>
@@ -1352,7 +1353,6 @@
                   prepend-icon="mdi-calendar"
                   readonly
                   v-on="on"
-                  required
                   :min="newTask.task_plan_start"
                   :value="formatDate(newTask.task_plan_end)"
                 ></v-text-field>
@@ -1365,10 +1365,10 @@
                 :min="newTask.task_plan_start"
               ></v-date-picker>
             </v-menu>
+
             <v-text-field
               v-model="newTask.task_manday"
               label="Manday"
-              required
               :readonly="true"
             ></v-text-field>
 
@@ -1379,7 +1379,6 @@
               item-value="user_id"
               item-text="user_name"
               label="Member ID"
-              required
             >
               <template v-slot:item="{ item }">
                 <v-list-item-avatar>
@@ -1411,12 +1410,15 @@
 <script>
 import axios from "axios";
 import Swal from "sweetalert2";
+import Breadcrumbs from "~/components/project/Breadcrumbs.vue";
 
 export default {
   middleware: "auth",
   layout: "admin",
   layout: "admin",
-
+  components: {
+    Breadcrumbs,
+  },
   data() {
     return {
       loggedIn: this.$auth.loggedIn,
@@ -1480,7 +1482,7 @@ export default {
       tasks: [],
       currentPage: 1,
       perPage: 12,
-      statusOptions: ["start", "stop", "correct", "mistake", "Not started yet"],
+      statusOptions: ["In Progress", "Completed", "Not started yet"],
       showImageDialog: false,
       screen_plan_start: "",
       screen_plan_end: "",
@@ -2295,13 +2297,17 @@ export default {
         const {
           task_id,
           task_name,
-          task_detail,
-          task_status,
-          task_plan_start,
-          task_plan_end,
+          task_detail = "",
+          task_status = "",
+          task_plan_start = "",
+          task_plan_end = "",
           task_member_id,
-          task_manday,
-        } = this.newTask; // ตรวจสอบว่า task_plan_start, task_plan_end, และ task_manday ไม่ว่างเปล่าหรือไม่
+          task_manday = "",
+        } = this.newTask;
+
+        if (!task_id || !task_name) {
+          throw new Error("Task ID and Task Name are required.");
+        }
 
         const response = await fetch(
           `http://localhost:7777/tasks/createTasks`,
@@ -2335,7 +2341,7 @@ export default {
           this.fetchTasks();
           this.fetchScreenDetail();
 
-          // รีเซ็ตฟอร์มหลังจากสร้างงานเสร็จสิ้น
+          // Reset form after creating the task
           this.newTask = {
             task_id: "",
             task_name: "",

@@ -9,18 +9,13 @@
       margin-right: 30px;
     "
   >
+    <div>
+      <!-- <Breadcrumbs /> -->
+    </div>
     <!-- Greeting and current date/time -->
-    <v-row no-gutters class="mt-4">
-      <v-col class="text-left" style="margin-right: 16px">
-        <h1 class="text-01">{{ greeting }}</h1>
-        <h1>
-          {{ this.$auth.user.user_position }} :
-          {{ this.$auth.user.user_firstname }}
-        </h1>
-        <p class="text-01">{{ currentDateTime }}</p>
-      </v-col>
-    </v-row>
-
+    <div>
+      <Greeting />
+    </div>
     <!-- Search bar -->
     <v-row no-gutters justify-content="flex-end" align-items="flex-end">
       <v-col cols="12">
@@ -364,10 +359,16 @@
 </template>
 
 <script>
+import Breadcrumbs from "~/components/project/Breadcrumbs.vue";
+import Greeting from "~/components/project/Greeting.vue";
 import Swal from "sweetalert2";
 import axios from "axios";
 
 export default {
+  components: {
+    // Breadcrumbs,
+    Greeting,
+  },
   middleware: "auth",
   name: "ProjectManagement",
   layout: "admin",
@@ -846,6 +847,7 @@ export default {
           icon: "success",
           title: "Success",
           text: data.message || "New Project created successfully",
+          confirmButtonColor: "#009933",
         });
         this.createProjectDialog = false;
         this.fetchProjects();
@@ -901,6 +903,7 @@ export default {
           icon: "success",
           title: "Success",
           text: "Project updated successfully",
+          confirmButtonColor: "#009933",
         });
         this.editProjectDialog = false;
         this.fetchProjects();
@@ -910,6 +913,7 @@ export default {
           icon: "error",
           title: "Error",
           text: "Failed to update project",
+          confirmButtonColor: "#009933",
         });
       }
     },
@@ -933,7 +937,7 @@ export default {
           text: "You won't be able to revert this!",
           icon: "warning",
           showCancelButton: true,
-          confirmButtonColor: "#3085d6",
+          confirmButtonColor: "#009933",
           cancelButtonColor: "#d33",
           confirmButtonText: "Yes, delete it!",
         });
@@ -986,19 +990,7 @@ export default {
         hour12: false,
       };
 
-      this.greeting = this.getGreeting(now);
       this.currentDateTime = now.toLocaleDateString("en-US", options);
-    },
-    getGreeting(date) {
-      const hour = date.getHours();
-
-      if (hour >= 0 && hour < 12) {
-        return "Good Morning";
-      } else if (hour >= 12 && hour < 18) {
-        return "Good Afternoon";
-      } else {
-        return "Good Evening";
-      }
     },
   },
   computed: {
