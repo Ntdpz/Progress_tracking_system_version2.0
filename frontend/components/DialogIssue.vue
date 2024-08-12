@@ -3,7 +3,7 @@
     <v-form ref="form">
       <v-dialog v-model="dialog" persistent max-width="750">
         <v-card>
-          <v-card-title class="pt-3 mb-2" style="background-color: primary">
+          <v-card-title class="pt-3 mb-2" style="background-color: #009933">
             <h5 style="color: white">
               สร้างปัญหาใหม่ | {{ systemName }} ({{ systemShortname }})
             </h5>

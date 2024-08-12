@@ -298,7 +298,7 @@ export default {
         );
         items.splice(0, 0, {
           icon: "mdi-view-dashboard",
-          title: "แดชบอร์ด",
+          title: "แดชบอร์ดรายงานปัญหา",
           to: "/dashboard",
         });
         items.splice(0, 0, {
@@ -313,7 +313,7 @@ export default {
         });
         items.splice(0, 0, {
           icon: "mdi-table",
-          title: "Dashbord Project",
+          title: "แดชบอร์ดติดตามความคืบหน้า",
           to: "/Dashbord_Project",
         });
         items.splice(0, 0, {
