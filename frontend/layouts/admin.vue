@@ -76,7 +76,7 @@
         <v-list-group :prepend-icon="'mdi-alert-circle'" no-action class="pl-2">
           <template v-slot:activator>
             <v-list-item-content>
-              <v-list-item-title>รายงานปัญหา</v-list-item-title>
+              <v-list-item-title>ระบบรายงานปัญหา</v-list-item-title>
             </v-list-item-content>
           </template>
 
@@ -96,6 +96,15 @@
               <v-list-item-title>
                 <v-icon color="primary" class="mr-2">mdi-pencil</v-icon>
                 แจ้งรายงานปัญหา
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+
+          <v-list-item @click="navigateTo('/Note_Management/dashboard')">
+            <v-list-item-content>
+              <v-list-item-title>
+                <v-icon color="primary" class="mr-2">mdi-table</v-icon>
+                Dashbord
               </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
@@ -156,6 +165,15 @@
               <v-list-item-title>
                 <v-icon color="primary" class="mr-2">mdi-pencil</v-icon>
                 แจ้งรายงานปัญหา
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+
+          <v-list-item @click="navigateTo('/custom/reportCreate')">
+            <v-list-item-content>
+              <v-list-item-title>
+                <v-icon color="primary" class="mr-2">mdi-pencil</v-icon>
+                Dashbord รายงานปัญหา
               </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
