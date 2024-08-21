@@ -52,7 +52,7 @@
         >
           <template v-slot:activator>
             <v-list-item-content>
-              <v-list-item-title>ระบบรายงานปัญหาเก่า</v-list-item-title>
+              <v-list-item-title>รายงานปัญหาเก่า</v-list-item-title>
             </v-list-item-content>
           </template>
 
@@ -76,7 +76,7 @@
         <v-list-group :prepend-icon="'mdi-alert-circle'" no-action class="pl-2">
           <template v-slot:activator>
             <v-list-item-content>
-              <v-list-item-title>ระบบรายงานปัญหา</v-list-item-title>
+              <v-list-item-title>รายงานปัญหา</v-list-item-title>
             </v-list-item-content>
           </template>
 
