@@ -108,6 +108,24 @@
               </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
+
+          <v-list-item @click="navigateTo('/schedule')">
+            <v-list-item-content>
+              <v-list-item-title>
+                <v-icon color="primary" class="mr-2">mdi-calendar-month</v-icon>
+                ตารางงาน
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+
+          <v-list-item @click="navigateTo('/dashboard')">
+            <v-list-item-content>
+              <v-list-item-title>
+                <v-icon color="primary" class="mr-2">mdi-view-dashboard</v-icon>
+                แดชบอร์ดรายงานปัญหา
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
         </v-list-group>
       </v-list>
 
@@ -398,11 +416,7 @@ export default {
             item.title !== "Manage Project" &&
             item.title !== "Dashboard"
         );
-        items.splice(0, 0, {
-          icon: "mdi-view-dashboard",
-          title: "แดชบอร์ดรายงานปัญหา",
-          to: "/dashboard",
-        });
+
         items.splice(0, 0, {
           icon: "mdi-account",
           title: "จัดการผู้ใช้งานระบบ",
@@ -418,11 +432,7 @@ export default {
           title: "แดชบอร์ดติดตามความคืบหน้า",
           to: "/Dashbord_Project",
         });
-        items.splice(0, 0, {
-          icon: "mdi-calendar-month",
-          title: "ตารางงาน",
-          to: "/schedule",
-        });
+
         return items;
       } else if (this.user_role === "User") {
         const items = this.menuOption.filter(

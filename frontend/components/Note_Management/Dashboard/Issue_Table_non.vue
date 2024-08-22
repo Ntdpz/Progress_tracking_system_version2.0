@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-tabs v-model="tab" background-color="primary" dark slider-color="yellow">
-      <v-tab>NON MU ISSUE</v-tab>
+      <v-tab>NON MY ISSUE</v-tab>
       <v-tab>NON PNI</v-tab>
       <v-tab>NON PNC</v-tab>
       <v-tab>NON NewREQTable</v-tab>
@@ -56,24 +56,8 @@ export default {
       EditingCompletedTable: [],
     };
   },
-  created() {
-    this.getData();
-  },
-  methods: {
-    async getData() {
-      try {
-        // ดึงข้อมูลสำหรับ Admin
-        const adminRes = await this.$axios.get(`/users/getAdminData`);
-        this.AllTable = adminRes.data;
-
-        // ดึงข้อมูลสำหรับ User
-        const userRes = await this.$axios.get(`/users/getUserData`);
-        this.PNITable = userRes.data;
-      } catch (error) {
-        console.error(error);
-      }
-    },
-  },
+  created() {},
+  methods: {},
 };
 </script>
 
