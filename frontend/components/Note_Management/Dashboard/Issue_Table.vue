@@ -33,11 +33,11 @@
 </template>
 
 <script>
-import AllTable from "/components/Note_Management/Dashbord_Table/AllTable.vue";
-import PNITable from "/components/Note_Management/Dashbord_Table/PNITable.vue";
-import PNCTable from "/components/Note_Management/Dashbord_Table/PNCTable.vue";
-import NewREQTable from "/components/Note_Management/Dashbord_Table/NewREQTable.vue";
-import EditingCompletedTable from "/components/Note_Management/Dashbord_Table/EditingCompletedTable.vue";
+import AllTable from "/components/Note_Management/Dashboard/Dashbord_Table/AllTable.vue";
+import PNITable from "/components/Note_Management/Dashboard/Dashbord_Table/PNITable.vue";
+import PNCTable from "/components/Note_Management/Dashboard/Dashbord_Table/PNCTable.vue";
+import NewREQTable from "/components/Note_Management/Dashboard/Dashbord_Table/NewREQTable.vue";
+import EditingCompletedTable from "/components/Note_Management/Dashboard/Dashbord_Table/EditingCompletedTable.vue";
 export default {
   components: {
     AllTable,
