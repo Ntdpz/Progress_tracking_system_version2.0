@@ -32,25 +32,9 @@ export default {
     return {
       loggedIn: this.$auth.loggedIn,
       //   userdata: [],
-      userdata: this.$auth.user || {}, // Default value if no user data
     };
   },
-  created() {
-    this.getUser();
-  },
-  methods: {
-    async getUser() {
-      try {
-        const res = await this.$axios.get(
-          `/users/getOne/${this.$auth.user.id}`
-        );
-        this.userdata = res.data[0];
-      } catch (error) {
-        console.error(error);
-      }
-    },
-  },
+  created() {},
+  methods: {},
 };
 </script>
-
-<style scoped></style>
