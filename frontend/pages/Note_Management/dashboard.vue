@@ -1,5 +1,6 @@
 <template>
   <div>
+    <Loader v-if="isLoading" />
     <Greeting />
     <div>
       <Dashbord_ResponsibleScreen />
@@ -18,6 +19,7 @@ import Greeting from "/components/project/Greeting.vue";
 import Issue_Table from "/components/Note_Management/Issue_Table.vue";
 import Issue_Table_non from "/components/Note_Management/Issue_Table_non.vue";
 import Dashbord_ResponsibleScreen from "/components/Note_Management/Dashbord_ResponsibleScreen.vue";
+import Loader from "/components/Loader.vue";
 
 export default {
   middleware: "auth",
@@ -27,14 +29,15 @@ export default {
     Issue_Table,
     Issue_Table_non,
     Dashbord_ResponsibleScreen,
+    Loader,
   },
   data() {
     return {
+      isLoading: true,
       loggedIn: this.$auth.loggedIn,
       //   userdata: [],
     };
   },
-  created() {},
   methods: {},
 };
 </script>

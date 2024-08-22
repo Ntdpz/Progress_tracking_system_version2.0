@@ -13,9 +13,7 @@
             >Responsible Screen</v-toolbar-title
           >
           <v-spacer></v-spacer>
-          <v-btn  @click="openSettings" class="my-toolbar-btn">
-           see all
-          </v-btn>
+          <v-btn class="my-toolbar-btn"> see all </v-btn>
         </v-toolbar>
       </template>
 
