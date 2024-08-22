@@ -2,8 +2,6 @@
   <div>
     <Greeting />
     <div>
-      <h2>งาน</h2>
-      หน้าจอที่รับผิดชอบ
       <Dashbord_ResponsibleScreen />
 
       <h3>ปัญหาที่มีคนรับผิดชอบ</h3>
@@ -32,6 +30,7 @@ export default {
   },
   data() {
     return {
+      loggedIn: this.$auth.loggedIn,
       //   userdata: [],
       userdata: this.$auth.user || {}, // Default value if no user data
     };
@@ -54,6 +53,4 @@ export default {
 };
 </script>
 
-<style>
-/* Add your page styles here */
-</style>
+<style scoped></style>
