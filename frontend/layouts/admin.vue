@@ -236,7 +236,7 @@
       <!-- Navigation drawer toggle button -->
       <v-app-bar-nav-icon
         color="primary"
-        @click.stop="drawer = !drawer"
+        @click.stop="toggleDrawer"
         class="mb-3"
       />
 
@@ -282,6 +282,7 @@ export default {
       loggedIn: this.$auth.loggedIn,
       clipped: false,
       drawerState: false,
+      drawer: false,
       user_role: "",
       ownProject: [],
       projectIds: [],
@@ -348,7 +349,7 @@ export default {
     await this.getOwnProject();
   },
   computed: {
-    drawer() {
+    drawerStatus() {
       return this.$store.state.drawer;
     },
     filteredItems() {
@@ -381,7 +382,7 @@ export default {
   },
   methods: {
     toggleDrawer() {
-      this.$store.dispatch("setDrawer", !this.drawerState);
+      this.$store.dispatch("setDrawer", !this.drawerStatus);
     },
     goBack() {
       this.$router.back();

@@ -2,3 +2,13 @@
     text-align: center;
     margin: 0;
 }
+
+.full-width-card {
+    display: flex;
+    justify-content: center;
+}
+
+.full-card {
+    width: 100%;
+    max-width: 100%;
+}

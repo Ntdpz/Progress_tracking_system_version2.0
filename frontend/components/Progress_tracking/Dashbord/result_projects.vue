@@ -38,6 +38,3 @@ export default {
 };
 </script>
 
-<style>
-/* สไตล์ที่ต้องการ */
-</style>
