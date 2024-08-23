@@ -6,6 +6,12 @@
       :items="tasks"
       class="elevation-1"
     >
+      <template v-slot:top>
+        <v-toolbar flat>
+          <v-toolbar-title>จำนวนงาน: {{ taskCount }}</v-toolbar-title>
+          <v-spacer></v-spacer>
+        </v-toolbar>
+      </template>
     </v-data-table>
   </div>
 </template>
@@ -28,6 +34,11 @@ export default {
         { text: "Due Date", value: "due_date" },
       ],
     };
+  },
+  computed: {
+    taskCount() {
+      return this.tasks.length; // นับจำนวน tasks
+    },
   },
   async mounted() {
     await this.fetchTasks();
