@@ -1,7 +1,7 @@
 <template>
   <v-app dark>
     <!-- Navigation drawer -->
-    <v-navigation-drawer v-model="drawer" :clipped="clipped" app>
+    <v-navigation-drawer v-model="drawer" app>
       <!-- Logo -->
       <v-list-item class="pt-1 pb-5">
         <v-list-item-content>
@@ -394,6 +394,8 @@ export default {
     };
   },
   async mounted() {
+    this.$store.dispatch("setDrawer", true);
+
     await this.$axios.get("/projects/getAll").then((res) => {
       res.data.forEach((project) => {
         project.active = false; // Initialize active property to false
@@ -403,11 +405,17 @@ export default {
     await this.getUser();
     await this.getOwnProject();
   },
+  async beforeDestroy() {
+    this.$store.dispatch("setDrawer", false); // ปิด drawer เมื่อ component ถูกทำลาย
+  },
   async created() {
     await this.getUser();
     await this.getOwnProject();
   },
   computed: {
+    drawer() {
+      return this.$store.state.drawer;
+    },
     filteredItems() {
       if (this.user_role === "Admin") {
         const items = this.menuOption.filter(
@@ -464,6 +472,15 @@ export default {
     },
   },
   methods: {
+    toggleDrawer() {
+      this.$store.dispatch("setDrawer", !this.drawer);
+    },
+    goBack() {
+      this.$router.back();
+    },
+    goForward() {
+      this.$router.forward();
+    },
     navigateTo(path) {
       window.location.href = path;
     },
