@@ -10,7 +10,7 @@
 
 <script>
 export default {
-  name: 'Loader',
+  name: "Loader",
   data() {
     return {
       isLoading: true, // เริ่มต้นเป็น true เพื่อแสดง loader
@@ -22,16 +22,12 @@ export default {
       await this.loadData(); // ฟังก์ชันนี้ควรทำให้การโหลดข้อมูลเสร็จสิ้น
       this.isLoading = false; // เปลี่ยนเป็น false เมื่อโหลดเสร็จ
     } catch (error) {
-      console.error('Error loading data:', error);
+      console.error("Error loading data:", error);
       this.isLoading = false; // เปลี่ยนเป็น false ในกรณีที่เกิดข้อผิดพลาด
     }
   },
   methods: {
-    async loadData() {
-      // จำลองการโหลดข้อมูลจริงจาก API หรือการดำเนินการที่ใช้เวลา
-      const response = await this.$axios.$get('/api/data');
-      // การดำเนินการอื่นๆ ที่เกี่ยวข้อง
-    }
+    async loadData() {},
   },
 };
 </script>
