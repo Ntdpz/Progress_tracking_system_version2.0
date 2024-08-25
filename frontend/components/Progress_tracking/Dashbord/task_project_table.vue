@@ -38,6 +38,21 @@
 
     <!-- กรณีไม่มี Tasks -->
     <p v-else>No tasks found for this project.</p>
+
+    <!-- Dialog -->
+    <v-dialog v-model="EditTask_dialog" max-width="500px">
+      <v-card>
+        <v-card-title>
+          Update Task
+        </v-card-title>
+        <v-card-subtitle>
+          {{ selectedTask.task_name }} <!-- สามารถแสดงข้อมูลเพิ่มเติมเกี่ยวกับ task ได้ที่นี่ -->
+        </v-card-subtitle>
+        <v-card-actions>
+          <v-btn color="primary" @click="EditTask_dialog = false">Close</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -56,7 +71,8 @@ export default {
       completedTaskCount: 0,
       tasks: [],
       today: this.formatDate(new Date()), // เก็บข้อมูล Tasks ที่ดึงมาจาก API
-
+      EditTask_dialog: false, // ใช้สำหรับควบคุมการแสดงของ v-dialog
+      selectedTask: {}, // ใช้สำหรับเก็บ task ที่ถูกเลือก
       headers: [
         { text: "System", value: "system_nameEN" },
         { text: "Screen", value: "screen_name" },
@@ -133,8 +149,8 @@ export default {
 
     // ฟังก์ชันที่เรียกใช้เมื่อคลิกไอคอน Edit
     editTask(task) {
-      console.log("Editing task:", task);
-      // เพิ่มโค้ดเพื่อแก้ไข task
+      this.selectedTask = task; // เก็บ task ที่ถูกเลือก
+      this.EditTask_dialog = true; // เปิด dialog
     },
 
     // ฟังก์ชันที่เรียกใช้เมื่อคลิกไอคอน Delete
