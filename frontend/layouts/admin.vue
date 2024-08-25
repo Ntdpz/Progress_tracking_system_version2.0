@@ -1,7 +1,7 @@
 <template>
   <v-app dark>
     <!-- Navigation drawer -->
-    <v-navigation-drawer v-model="drawer" app>
+    <v-navigation-drawer persistent app>
       <!-- Logo -->
       <v-list-item class="pt-1 pb-5">
         <v-list-item-content>
@@ -233,13 +233,6 @@
       elevation="1"
       outlined
     >
-      <!-- Navigation drawer toggle button -->
-      <v-app-bar-nav-icon
-        color="primary"
-        @click.stop="toggleDrawer"
-        class="mb-3"
-      />
-
       <!-- Back button -->
       <v-btn icon class="mb-3" color="primary" @click="goBack">
         <v-icon>mdi-chevron-left</v-icon>
@@ -281,8 +274,7 @@ export default {
       user: this.$auth.user,
       loggedIn: this.$auth.loggedIn,
       clipped: false,
-      drawerState: false,
-      drawer: false,
+
       user_role: "",
       ownProject: [],
       projectIds: [],
@@ -349,9 +341,6 @@ export default {
     await this.getOwnProject();
   },
   computed: {
-    drawerStatus() {
-      return this.$store.state.drawer;
-    },
     filteredItems() {
       if (this.user_role === "Admin") {
       } else if (this.user_role === "User") {
@@ -381,9 +370,6 @@ export default {
     },
   },
   methods: {
-    toggleDrawer() {
-      this.$store.dispatch("setDrawer", !this.drawerStatus);
-    },
     goBack() {
       this.$router.back();
     },
