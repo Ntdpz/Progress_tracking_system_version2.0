@@ -16,15 +16,8 @@
             class="full-width-card"
           >
             <v-card class="full-card">
-              <v-card-title>
-                All your tasks in Project :
-                {{ project.project_name_ENG }} Today's Date:
-                {{ today }}
-              </v-card-title>
-              <task_project_table
-                :projectId="project.id"
-                @no-tasks="removeProjectTasks(project.id)"
-              />
+             
+              <task_project_table :projectId="project.id" />
             </v-card>
           </v-col>
         </v-row>
@@ -46,7 +39,7 @@ export default {
   layout: "admin",
   data() {
     return {
-      today: this.formatDate(new Date()),
+      
       isLoading: true,
       user: this.$auth.user,
       loggedIn: this.$auth.loggedIn,
@@ -62,12 +55,7 @@ export default {
     this.fetchProjects();
   },
   methods: {
-    formatDate(date) {
-      const day = String(date.getDate()).padStart(2, "0");
-      const month = String(date.getMonth() + 1).padStart(2, "0");
-      const year = date.getFullYear();
-      return `${day}/${month}/${year}`;
-    },
+    
     async fetchProjects() {
       try {
         const { data: projectIds } = await this.$axios.get(
@@ -88,10 +76,6 @@ export default {
       } finally {
         this.isLoading = false;
       }
-    },
-    removeProjectTasks(projectId) {
-      const project = this.projects.find((p) => p.id === projectId);
-      if (project) project.hasTasks = false;
     },
   },
 };
