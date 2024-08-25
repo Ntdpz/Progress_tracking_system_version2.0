@@ -31,9 +31,8 @@
 
       <!-- แสดงไอคอนในคอลัมน์ Action -->
       <template v-slot:item.action="{ item }">
-        <v-icon @click="viewTask(item)" color="primary">mdi-eye</v-icon>
-        <v-icon @click="editTask(item)" color="warning">mdi-pencil</v-icon>
-        <v-icon @click="deleteTask(item)" color="red">mdi-delete</v-icon>
+        <v-icon @click.stop="editTask(item)" color="warning">mdi-pencil</v-icon>
+        <!-- <v-icon @click.stop="deleteTask(item)" color="red">mdi-delete</v-icon> -->
       </template>
     </v-data-table>
 
@@ -123,19 +122,13 @@ export default {
         this.filteredTaskCount = filteredTasks.length; // อัปเดตจำนวน tasks ที่กรองแล้ว
         this.completedTaskCount = completedTasks.length; // อัปเดตจำนวน tasks ที่เสร็จสมบูรณ์
       } catch (error) {
-        console.error("Error fetching tasks:");
+        // แสดงข้อความข้อผิดพลาดที่กำหนดเอง
+        console.error("Error fetching tasks, No task data");
       }
     },
 
     handleRowClick(item) {
-      // แสดง screen_id ของแถวที่ถูกคลิก
-      console.log("Clicked row screen_id:", item.screen_id);
-    },
-
-    // ฟังก์ชันที่เรียกใช้เมื่อคลิกไอคอน View
-    viewTask(task) {
-      console.log("Viewing task:", task);
-      // เพิ่มโค้ดเพื่อแสดงรายละเอียด task
+      this.$router.push(`/Project/Systems/screens/${item.screen_id}`);
     },
 
     // ฟังก์ชันที่เรียกใช้เมื่อคลิกไอคอน Edit
