@@ -25,6 +25,12 @@
       <template v-slot:item.task_plan_end="{ item }">
         {{ formatDate(item.task_plan_end) }}
       </template>
+
+      <template v-slot:item.action="{ item }">
+        <v-icon @click="viewTask(item)" color="primary">mdi-eye</v-icon>
+        <v-icon @click="editTask(item)" color="warning">mdi-pencil</v-icon>
+        <v-icon @click="deleteTask(item)" color="red">mdi-delete</v-icon>
+      </template>
     </v-data-table>
 
     <!-- กรณีไม่มี Tasks -->
@@ -54,7 +60,7 @@ export default {
         { text: "Progress", value: "task_progress" },
         { text: "Plan Start Date", value: "task_plan_start" },
         { text: "Plan End Date", value: "task_plan_end" },
-        { text: "Action" },
+        { text: "Action", value: "action" },
       ], // กำหนดส่วนหัวของตาราง
     };
   },
@@ -106,7 +112,7 @@ export default {
         this.tasks = filteredTasks;
         this.filteredTaskCount = filteredTasks.length; // อัปเดตจำนวน tasks ที่กรองแล้ว
       } catch (error) {
-        console.error("Error fetching tasks:", error);
+        console.error("Error fetching tasks:");
       }
     },
   },

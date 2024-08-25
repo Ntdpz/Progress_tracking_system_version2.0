@@ -160,7 +160,11 @@ router.get('/searchByProjectId/:project_id', async (req, res) => {
                 Tasks.task_plan_end, 
                 Projects.project_name_ENG, 
                 Systems.system_nameEN, 
-                Screens.screen_name
+                Screens.screen_name,
+                Tasks.project_id,
+                Tasks.system_id,
+                Tasks.screen_id
+
             FROM Tasks
             JOIN Projects ON Tasks.project_id = Projects.id
             JOIN Systems ON Tasks.system_id = Systems.id
