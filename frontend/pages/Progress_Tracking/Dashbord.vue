@@ -16,7 +16,7 @@
             class="full-width-card"
           >
             <v-card class="full-card">
-             
+
               <task_project_table :projectId="project.id" />
             </v-card>
           </v-col>
@@ -39,7 +39,6 @@ export default {
   layout: "admin",
   data() {
     return {
-      
       isLoading: true,
       user: this.$auth.user,
       loggedIn: this.$auth.loggedIn,
@@ -55,7 +54,6 @@ export default {
     this.fetchProjects();
   },
   methods: {
-    
     async fetchProjects() {
       try {
         const { data: projectIds } = await this.$axios.get(

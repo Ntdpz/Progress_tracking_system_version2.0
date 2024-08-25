@@ -42,22 +42,25 @@
     <!-- Dialog -->
     <v-dialog v-model="EditTask_dialog" max-width="500px">
       <v-card>
-        <v-card-title>
-          Update Task
-        </v-card-title>
+        <v-card-title> Update Task </v-card-title>
         <v-card-subtitle>
-          {{ selectedTask.task_name }} <!-- สามารถแสดงข้อมูลเพิ่มเติมเกี่ยวกับ task ได้ที่นี่ -->
+          <!-- ส่ง selectedTask ไปยัง update_task component -->
+          <update_task
+            :task="selectedTask"
+            @close-dialog="EditTask_dialog = false"
+          />
         </v-card-subtitle>
-        <v-card-actions>
-          <v-btn color="primary" @click="EditTask_dialog = false">Close</v-btn>
-        </v-card-actions>
       </v-card>
     </v-dialog>
   </div>
 </template>
 
 <script>
+import update_task from "./update_task.vue";
 export default {
+  components: {
+    update_task,
+  },
   props: {
     projectId: {
       type: Number,
@@ -151,6 +154,7 @@ export default {
     editTask(task) {
       this.selectedTask = task; // เก็บ task ที่ถูกเลือก
       this.EditTask_dialog = true; // เปิด dialog
+      console.log("Editing task:", task.task_name);
     },
 
     // ฟังก์ชันที่เรียกใช้เมื่อคลิกไอคอน Delete
