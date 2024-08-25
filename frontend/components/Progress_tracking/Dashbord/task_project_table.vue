@@ -1,31 +1,35 @@
 <template>
   <div>
     <!-- ตารางสำหรับแสดง Tasks -->
-    <!-- ตารางสำหรับแสดง Tasks -->
     <v-card-title>
       All your tasks in Project : Today's Date: {{ today }}
     </v-card-title>
 
-    <!-- แสดงจำนวน tasks ที่กรองแล้ว -->
+    <!-- แสดงจำนวน tasks ที่กรองแล้ว และจำนวนที่เสร็จสมบูรณ์ -->
     <v-card-subtitle>
-      Number of tasks displayed: {{ filteredTaskCount }}
+      Number of tasks displayed: {{ filteredTaskCount }} (Completed:
+      {{ completedTaskCount }} / {{ filteredTaskCount }})
     </v-card-subtitle>
+
     <v-data-table
       v-if="tasks.length > 0"
       :headers="headers"
       :items="tasks"
       class="elevation-1"
       item-key="task_id"
+      @click:row="handleRowClick"
     >
-      <!-- คุณสามารถเพิ่มการปรับแต่งเพิ่มเติมได้ใน slot item -->
+      <!-- แสดงวันที่เริ่มต้น -->
       <template v-slot:item.task_plan_start="{ item }">
         {{ formatDate(item.task_plan_start) }}
       </template>
 
+      <!-- แสดงวันที่สิ้นสุด -->
       <template v-slot:item.task_plan_end="{ item }">
         {{ formatDate(item.task_plan_end) }}
       </template>
 
+      <!-- แสดงไอคอนในคอลัมน์ Action -->
       <template v-slot:item.action="{ item }">
         <v-icon @click="viewTask(item)" color="primary">mdi-eye</v-icon>
         <v-icon @click="editTask(item)" color="warning">mdi-pencil</v-icon>
@@ -50,6 +54,7 @@ export default {
   data() {
     return {
       filteredTaskCount: 0,
+      completedTaskCount: 0,
       tasks: [],
       today: this.formatDate(new Date()), // เก็บข้อมูล Tasks ที่ดึงมาจาก API
 
@@ -109,11 +114,40 @@ export default {
           return startDate <= endOfToday && endDate >= startOfToday;
         });
 
+        // คำนวณจำนวน tasks ที่เสร็จสมบูรณ์
+        const completedTasks = filteredTasks.filter(
+          (task) => task.task_progress == 100
+        );
+
         this.tasks = filteredTasks;
         this.filteredTaskCount = filteredTasks.length; // อัปเดตจำนวน tasks ที่กรองแล้ว
+        this.completedTaskCount = completedTasks.length; // อัปเดตจำนวน tasks ที่เสร็จสมบูรณ์
       } catch (error) {
         console.error("Error fetching tasks:");
       }
+    },
+
+    handleRowClick(item) {
+      // แสดง screen_id ของแถวที่ถูกคลิก
+      console.log("Clicked row screen_id:", item.screen_id);
+    },
+
+    // ฟังก์ชันที่เรียกใช้เมื่อคลิกไอคอน View
+    viewTask(task) {
+      console.log("Viewing task:", task);
+      // เพิ่มโค้ดเพื่อแสดงรายละเอียด task
+    },
+
+    // ฟังก์ชันที่เรียกใช้เมื่อคลิกไอคอน Edit
+    editTask(task) {
+      console.log("Editing task:", task);
+      // เพิ่มโค้ดเพื่อแก้ไข task
+    },
+
+    // ฟังก์ชันที่เรียกใช้เมื่อคลิกไอคอน Delete
+    deleteTask(task) {
+      console.log("Deleting task:", task);
+      // เพิ่มโค้ดเพื่อทำการลบ task
     },
   },
 };
