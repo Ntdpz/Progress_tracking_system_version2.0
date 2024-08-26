@@ -1,42 +1,62 @@
 <template>
-  <div>
-    <p>task name : {{ task.task }}</p>
+  <div class="update-task-dialog">
+    <h1 class="dialog-title">Update Task</h1>
+    <p class="dialog-subtitle">task name : {{ task.task_name }}</p>
 
     <v-form>
+      <v-row>
+        <!-- Title Row -->
+        <v-col cols="12">
+          <h3 class="task-progress-title">Task Progress</h3>
+        </v-col>
+
+        <!-- Input and Slider Rows -->
+        <v-col cols="12" class="d-flex">
+          <v-row class="flex-grow-1">
+            <v-col cols="12" sm="4" class="task-progress-col">
+              <v-text-field
+                v-model="formattedTaskProgress"
+                type="text"
+                min="0"
+                max="100"
+                required
+                @input="updateProgress"
+                class="task-text-field"
+                solo
+                placeholder="Enter progress here"
+              ></v-text-field>
+            </v-col>
+
+            <v-col cols="12" sm="8" class="task-slider-col">
+              <v-slider
+                v-model="taskData.task_progress"
+                min="0"
+                max="100"
+                step="1"
+                thumb-label="always"
+                required
+              ></v-slider>
+            </v-col>
+          </v-row>
+        </v-col>
+      </v-row>
+
+      <style scoped>
+        .custom-col {
+          width: 100%; /* หรือกำหนดความกว้างที่ต้องการ เช่น 300px */
+        }
+      </style>
+
       <v-row>
         <v-col cols="12">
           <v-text-field
             v-model="task.task_detail"
             name="Remark"
-            label="Task Detail"
+            label="Remark"
             placeholder="Enter task details"
             outlined
             required
           ></v-text-field>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col cols="6">
-          <v-text-field
-            v-model="taskData.task_progress"
-            label="Task Progress (%)"
-            type="number"
-            min="0"
-            max="100"
-            required
-            @input="calculateTaskStatus"
-          ></v-text-field>
-        </v-col>
-
-        <v-col cols="6">
-          <v-slider
-            v-model="taskData.task_progress"
-            min="0"
-            max="100"
-            step="1"
-            thumb-label="always"
-            required
-          ></v-slider>
         </v-col>
       </v-row>
 
@@ -168,14 +188,17 @@
     </v-form>
     <history_task_table ref="historyTaskTable" :taskId="task.id" />
 
-    <v-btn color="primary" @click="updateTask">Save</v-btn>
-    <v-btn color="secondary" @click="$emit('close-dialog')">Close</v-btn>
+    <v-row>
+      <v-btn color="primary" @click="updateTask">Save</v-btn>
+      <v-btn color="secondary" @click="$emit('close-dialog')">Close</v-btn>
+    </v-row>
   </div>
 </template>
 
 <script>
 import Swal from "sweetalert2";
 import history_task_table from "./history_task_table.vue";
+import "./css/update_task.css";
 
 export default {
   middleware: "auth",
@@ -211,6 +234,21 @@ export default {
         task_manday: 0,
       },
     };
+  },
+
+  computed: {
+    formattedTaskProgress: {
+      get() {
+        // ตรวจสอบว่า task_progress มีค่าหรือไม่ ถ้ามีให้แปลงเป็นรูปแบบที่มี "%"
+        return this.taskData.task_progress
+          ? `${this.taskData.task_progress}%`
+          : "";
+      },
+      set(value) {
+        // ลบ "%" ออกจากค่าและอัปเดต task_progress
+        this.taskData.task_progress = value.replace("%", "").trim();
+      },
+    },
   },
   mounted() {
     this.calculateTaskStatus();
@@ -251,6 +289,9 @@ export default {
   },
 
   methods: {
+    updateProgress() {
+      this.calculateTaskStatus();
+    },
     countBusinessDays(startDate, endDate) {
       let count = 0;
       let currentDate = new Date(startDate);

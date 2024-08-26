@@ -94,9 +94,9 @@
     </div>
 
     <!-- Dialog -->
-    <v-dialog v-model="EditTask_dialog" max-width="1200px">
+    <v-dialog v-model="EditTask_dialog" max-width="1000px">
       <v-card>
-        <v-card-title> Update Task </v-card-title>
+        <v-card-title>   </v-card-title>
         <v-card-subtitle>
           <!-- ส่ง selectedTask ไปยัง update_task component -->
           <update_task
