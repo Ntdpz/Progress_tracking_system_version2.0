@@ -2,10 +2,12 @@
   <div>
     <!-- แสดงข้อความต้อนรับ เวลา และจำนวนโปรเจกต์ที่ผู้ใช้มี -->
     <p class="text-01">
-      {{ greeting }}, {{ currentDateTime }} ,  You Currently have 
+      {{ greeting }}, ,  You Currently have 
       {{ projects.length }} Projects
     </p>
   </div>
+
+  <!-- {{ currentDateTime }}  -->
 </template>
 
 <script>

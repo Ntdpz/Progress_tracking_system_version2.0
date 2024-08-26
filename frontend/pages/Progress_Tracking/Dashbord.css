@@ -12,3 +12,10 @@
     width: 100%;
     max-width: 100%;
 }
+
+.full-card {
+    box-shadow: none !important;
+    /* เอาเงาออกจาก v-card */
+    border: none !important;
+    /* เอาเส้นขอบออกจาก v-card */
+}
