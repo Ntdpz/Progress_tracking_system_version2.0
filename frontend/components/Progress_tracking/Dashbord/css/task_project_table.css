@@ -157,3 +157,8 @@
     margin: 0;
     /* ลบระยะห่างบนและล่าง */
 }
+
+.custom-dialog .v-card {
+    max-height: 100px;
+    /* หรือ height: 500px; ตามความต้องการ */
+}

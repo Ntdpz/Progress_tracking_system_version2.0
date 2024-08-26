@@ -53,10 +53,26 @@
 }
 
 .task-text-field .v-text-field__slot {
-    padding: 0 18px !important;
+    padding: 0 40px !important;
     /* กำหนดการเว้นวรรคภายในกรอบ */
 }
 
+.button-row {
+    margin-top: 16px;
+    gap: 16px;
+    /* ปรับระยะห่างระหว่างปุ่มตามที่ต้องการ */
+}
 
+.save-btn {
+    background-color: #629859 !important;
+    /* สีปุ่ม Save */
+    color: white !important;
+    /* สีข้อความในปุ่ม */
+}
 
-
+.close-btn {
+    background-color: #F67878 !important;
+    /* สีปุ่ม Close */
+    color: white !important;
+    /* สีข้อความในปุ่ม */
+}
