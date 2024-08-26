@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p>task name : {{ task.task_name }}</p>
+    <p>task name : {{ task.task }}</p>
 
     <v-form>
       <v-row>
@@ -166,7 +166,7 @@
         </v-col>
       </v-row>
     </v-form>
-    <history_task_table :taskId="task.id" />
+    <history_task_table ref="historyTaskTable" :taskId="task.id" />
 
     <v-btn color="primary" @click="updateTask">Save</v-btn>
     <v-btn color="secondary" @click="$emit('close-dialog')">Close</v-btn>
@@ -341,7 +341,9 @@ export default {
           confirmButtonText: "OK",
         }).then((result) => {
           if (result.isConfirmed) {
+            this.$emit("task-updated");
             this.$emit("close-dialog"); // ปิด Dialog เมื่อผู้ใช้กด OK
+            this.$refs.historyTaskTable.refreshTable();
           }
         });
       } catch (error) {

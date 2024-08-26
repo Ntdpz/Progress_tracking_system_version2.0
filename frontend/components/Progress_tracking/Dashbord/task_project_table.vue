@@ -48,6 +48,7 @@
           <update_task
             :task="selectedTask"
             @close-dialog="EditTask_dialog = false"
+            @task-updated="refreshTable"
           />
         </v-card-subtitle>
       </v-card>
@@ -100,6 +101,10 @@ export default {
   },
 
   methods: {
+    refreshTable() {
+      // Logic to refresh the table, e.g., re-fetch data
+      this.fetchTasks(); // Replace with actual method to refresh data
+    },
     formatDate(date) {
       const options = { year: "numeric", month: "2-digit", day: "2-digit" };
       return new Date(date).toLocaleDateString("en-GB", options);

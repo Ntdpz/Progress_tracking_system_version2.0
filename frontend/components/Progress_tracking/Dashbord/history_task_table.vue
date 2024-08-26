@@ -49,14 +49,18 @@ export default {
   },
 
   watch: {
-    taskId: 'fetchHistoryTasks',
+    taskId: "fetchHistoryTasks",
   },
 
-  async mounted() {
+  async created() {
     await this.fetchHistoryTasks();
   },
 
   methods: {
+    refreshTable() {
+      // Logic to refresh the table, e.g., re-fetch data
+      this.fetchHistoryTasks(); // Replace with actual method to refresh data
+    },
     async fetchHistoryTasks() {
       try {
         const response = await this.$axios.$get(
