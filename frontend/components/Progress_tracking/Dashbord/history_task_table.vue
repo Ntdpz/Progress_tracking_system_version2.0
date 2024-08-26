@@ -1,8 +1,8 @@
 <template>
   <v-card>
-    <v-card-title>
+    <!-- <v-card-title>
       <span class="headline">Task id: {{ taskId }}</span>
-    </v-card-title>
+    </v-card-title> -->
     <v-data-table
       :headers="headers"
       :items="historyTasks"

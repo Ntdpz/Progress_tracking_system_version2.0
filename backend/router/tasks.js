@@ -164,7 +164,9 @@ router.get('/searchByProjectId/:project_id', async (req, res) => {
                 Tasks.project_id,
                 Tasks.system_id,
                 Tasks.screen_id,
-                Tasks.id
+                Tasks.id,
+                task_actual_start,
+                task_actual_end
 
             FROM Tasks
             JOIN Projects ON Tasks.project_id = Projects.id
