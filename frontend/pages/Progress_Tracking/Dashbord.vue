@@ -16,7 +16,6 @@
             class="full-width-card"
           >
             <v-card class="full-card">
-
               <task_project_table :projectId="project.id" />
             </v-card>
           </v-col>
@@ -27,7 +26,7 @@
 </template>
 
 <script>
-import Greeting from "../../components/project/Greeting.vue";
+import Greeting from "../../components/Progress_tracking/Dashbord/Greeting.vue";
 import Loader from "../../components/Loader.vue";
 import result_projects from "../../components/Progress_tracking/Dashbord/result_projects.vue";
 import task_project_table from "../../components/Progress_tracking/Dashbord/task_project_table.vue";
