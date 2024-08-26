@@ -1,29 +1,53 @@
 <template>
   <v-card>
-    <!-- <v-card-title>
-      <span class="headline">Task id: {{ taskId }}</span>
-    </v-card-title> -->
+    <!-- กรณีมี tasks -->
     <v-data-table
+      v-if="historyTasks.length > 0"
       :headers="headers"
       :items="historyTasks"
       item-key="id"
-      class="elevation-1"
+      class="custom-table"
     >
       <template v-slot:top>
-        <v-toolbar flat>
-          <v-toolbar-title>History Tasks</v-toolbar-title>
+        <v-toolbar flat class="toolbar-centered">
+          <v-toolbar-title>History</v-toolbar-title>
         </v-toolbar>
       </template>
+      <template v-slot:item.update_date="{ item }">
+        {{ formatDate(item.update_date) }}
+      </template>
+      <template v-slot:item.task_plan_start="{ item }">
+        {{ formatDate(item.task_plan_start) }}
+      </template>
+      <template v-slot:item.task_plan_end="{ item }">
+        {{ formatDate(item.task_plan_end) }}
+      </template>
+      <template v-slot:item.task_actual_start="{ item }">
+        {{ formatDate(item.task_actual_start) }}
+      </template>
+      <template v-slot:item.task_actual_end="{ item }">
+        {{ formatDate(item.task_actual_end) }}
+      </template>
       <template v-slot:item.task_progress="{ item }">
-        <v-chip :color="getProgressColor(item.task_progress)" dark>
-          {{ item.task_progress }}%
-        </v-chip>
+        <div class="progress-cell">{{ item.task_progress }}%</div>
       </template>
     </v-data-table>
+
+    <!-- กรณีไม่มี history tasks -->
+    <div v-else class="no-tasks-container">
+      <p class="no-tasks-message">
+        <img
+          src="../../../static/fetching_tasks,_No_task_data.gif"
+          alt="No tasks found"
+        />
+        No tasks History
+      </p>
+    </div>
   </v-card>
 </template>
 
 <script>
+import "./css/history_task_table.css";
 export default {
   props: {
     taskId: {
@@ -36,14 +60,13 @@ export default {
     return {
       historyTasks: [],
       headers: [
-        { text: "ID", value: "id" },
-        { text: "Task Code", value: "task_Code" },
-        { text: "Task Name", value: "task_name" },
-        { text: "Details", value: "task_detail" },
-        { text: "Status", value: "task_status" },
+        { text: "Date", value: "update_date" },
         { text: "Progress", value: "task_progress" },
-        { text: "Start Date", value: "task_plan_start" },
-        { text: "End Date", value: "task_plan_end" },
+        { text: "Plan Start", value: "task_plan_start" },
+        { text: "Plan End", value: "task_plan_end" },
+        { text: "Actual Start", value: "task_actual_start" },
+        { text: "Actual End", value: "task_actual_end" },
+        { text: "Remark", value: "task_detail" },
       ],
     };
   },
@@ -52,15 +75,11 @@ export default {
     taskId: "fetchHistoryTasks",
   },
 
-  async created() {
+  async mounted() {
     await this.fetchHistoryTasks();
   },
 
   methods: {
-    refreshTable() {
-      // Logic to refresh the table, e.g., re-fetch data
-      this.fetchHistoryTasks(); // Replace with actual method to refresh data
-    },
     async fetchHistoryTasks() {
       try {
         const response = await this.$axios.$get(
@@ -72,11 +91,17 @@ export default {
       }
     },
 
-    getProgressColor(progress) {
-      if (progress < 50) return "red";
-      if (progress < 75) return "orange";
-      return "green";
+    formatDate(dateString) {
+      if (!dateString) return "";
+      const date = new Date(dateString);
+      const day = String(date.getDate()).padStart(2, "0");
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const year = date.getFullYear();
+      return `${day}-${month}-${year}`;
     },
   },
 };
 </script>
+
+<style scoped>
+</style>
