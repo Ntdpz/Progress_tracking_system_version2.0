@@ -251,6 +251,55 @@ export default {
   },
 
   methods: {
+    countBusinessDays(startDate, endDate) {
+      let count = 0;
+      let currentDate = new Date(startDate);
+
+      while (currentDate <= endDate) {
+        const dayOfWeek = currentDate.getDay();
+        if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+          count++;
+        }
+        currentDate.setDate(currentDate.getDate() + 1);
+      }
+
+      return count;
+    },
+    updateActualDates() {
+      const startDate = new Date(this.taskData.task_actual_start);
+      const endDate = new Date(this.taskData.task_actual_end);
+
+      // ตรวจสอบวันเริ่มต้นและวันสิ้นสุด
+      if (startDate > endDate) {
+        this.taskData.task_actual_start = this.taskData.task_actual_end;
+      } else if (endDate < startDate) {
+        this.taskData.task_actual_end = this.taskData.task_actual_start;
+      }
+
+      // คำนวณ Actual Manday (วันทำการ)
+      if (this.taskData.task_actual_start && this.taskData.task_actual_end) {
+        const businessDays = this.countBusinessDays(startDate, endDate);
+        this.taskData.Actual_manday = Math.max(1, businessDays); // ถ้าวันเดียวกันให้เป็น 1 วัน
+      }
+    },
+
+    updatePlanDates(type) {
+      const startDate = new Date(this.taskData.task_plan_start);
+      const endDate = new Date(this.taskData.task_plan_end);
+
+      // ตรวจสอบวันเริ่มต้นและวันสิ้นสุด
+      if (type === "start" && startDate > endDate) {
+        this.taskData.task_plan_start = this.taskData.task_plan_end;
+      } else if (type === "end" && endDate < startDate) {
+        this.taskData.task_plan_end = this.taskData.task_plan_start;
+      }
+
+      // คำนวณ Plan Manday (วันทำการ)
+      if (this.taskData.task_plan_start && this.taskData.task_plan_end) {
+        const businessDays = this.countBusinessDays(startDate, endDate);
+        this.taskData.plan_manday = Math.max(1, businessDays); // ถ้าวันเดียวกันให้เป็น 1 วัน
+      }
+    },
     calculateTaskStatus() {
       const progress = this.taskData.task_progress;
 
@@ -260,50 +309,6 @@ export default {
         this.taskData.task_status = "In Progress";
       } else if (progress === 100) {
         this.taskData.task_status = "Completed";
-      }
-    },
-    updatePlanDates(type) {
-      const start = new Date(this.taskData.task_plan_start);
-      const end = new Date(this.taskData.task_plan_end);
-
-      // ตรวจสอบวันเริ่มต้นและวันสิ้นสุด
-      if (type === "start" && start > end) {
-        this.taskData.task_plan_start = this.taskData.task_plan_end;
-      } else if (type === "end" && end < start) {
-        this.taskData.task_plan_end = this.taskData.task_plan_start;
-      }
-
-      // คำนวณ Plan Manday
-      if (this.taskData.task_plan_start && this.taskData.task_plan_end) {
-        const startDate = new Date(this.taskData.task_plan_start);
-        const endDate = new Date(this.taskData.task_plan_end);
-        const diffTime = endDate - startDate;
-        this.taskData.plan_manday = Math.max(
-          1,
-          Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-        ); // ถ้าวันเดียวกันให้นับเป็น 1 วัน
-      }
-    },
-    updateActualDates() {
-      const start = new Date(this.taskData.task_actual_start);
-      const end = new Date(this.taskData.task_actual_end);
-
-      // ตรวจสอบวันเริ่มต้นและวันสิ้นสุด
-      if (start > end) {
-        this.taskData.task_actual_start = this.taskData.task_actual_end;
-      } else if (end < start) {
-        this.taskData.task_actual_end = this.taskData.task_actual_start;
-      }
-
-      // คำนวณ Actual Manday
-      if (this.taskData.task_actual_start && this.taskData.task_actual_end) {
-        const startDate = new Date(this.taskData.task_actual_start);
-        const endDate = new Date(this.taskData.task_actual_end);
-        const diffTime = endDate - startDate;
-        this.taskData.Actual_manday = Math.max(
-          1,
-          Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-        ); // ถ้าวันเดียวกันให้นับเป็น 1 วัน
       }
     },
     formatDate(dateString) {
