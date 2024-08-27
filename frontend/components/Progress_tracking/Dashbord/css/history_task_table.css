@@ -1,12 +1,17 @@
 .toolbar-centered {
     display: flex;
     justify-content: center;
-    color: #000 !important;
+
+
 }
 
 .toolbar-title {
     font-size: 30px !important;
+    color: #666 !important;
+    font-weight: bold !important;
+    /* เพิ่มความหนาของตัวหนังสือ */
 }
+
 .custom-table {
     table-layout: fixed;
     width: 1200px;
@@ -23,7 +28,7 @@
 
 .custom-table th {
 
-    color: #000 !important;
+    color: #666 !important;
     font-size: 16px !important;
 }
 
@@ -81,7 +86,7 @@
 }
 
 .custom-table th:nth-child(7) {
-    text-align: center !important;
+
     vertical-align: middle !important;
 }
 

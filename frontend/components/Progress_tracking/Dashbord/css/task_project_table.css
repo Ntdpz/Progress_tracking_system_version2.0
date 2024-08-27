@@ -1,17 +1,16 @@
 .task-count-card {
-    display: inline-flex;
+
     display: inline-flex;
     /* ใช้ inline-flex แทน inline-block เพื่อใช้ Flexbox */
     justify-content: center;
     /* จัดตำแหน่งในแนวนอน */
     align-items: center;
     /* จัดตำแหน่งในแนวตั้ง */
-    border: 2px solid #565656 !important;
+    border: 1px solid #565656 !important;
     /* กำหนดสีกรอบ */
     border-radius: 4px !important;
     /* กำหนดความโค้งมนของกรอบ */
-    padding: 8px 16px !important;
-    /* กำหนดระยะห่างภายในกรอบ */
+    margin-left: 20px !important;
     color: #565656 !important;
     /* กำหนดสีตัวหนังสือ */
     background-color: #ffffff !important;
@@ -19,7 +18,7 @@
     font-weight: bold !important;
     /* ทำให้ตัวหนังสือเป็นตัวหนา */
     width: 85px !important;
-    height: 40px !important;
+    height: 35px !important;
 
 }
 
@@ -185,7 +184,7 @@
 .project_task_table td:nth-child(3) {
     width: 20%;
     /* กำหนดความกว้างของคอลัมน์ที่สาม */
-  
+
 }
 
 .project_task_table th:nth-child(4),
