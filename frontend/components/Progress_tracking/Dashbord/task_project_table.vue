@@ -118,6 +118,8 @@
 import "./css/task_project_table.css";
 import update_task from "./update_task.vue";
 export default {
+  middleware: "auth",
+  layout: "admin",
   components: {
     update_task,
   },
@@ -130,6 +132,8 @@ export default {
 
   data() {
     return {
+      user: this.$auth.user,
+      loggedIn: this.$auth.loggedIn,
       filteredTaskCount: 0,
       completedTaskCount: 0,
       tasks: [],
@@ -192,7 +196,6 @@ export default {
         .toLocaleDateString("en-GB", options)
         .replace(/\//g, "-");
     },
-
     async fetchTasks() {
       try {
         // เรียก API เพื่อดึง Tasks ตาม projectId
@@ -217,7 +220,12 @@ export default {
           const startDate = new Date(task.task_plan_start);
           const endDate = new Date(task.task_plan_end);
 
-          return startDate <= endOfToday && endDate >= startOfToday;
+          // ตรวจสอบว่า task_member_id ตรงกับ user.id หรือไม่
+          return (
+            task.task_member_id === this.user.id && // ตรวจสอบ task_member_id
+            startDate <= endOfToday &&
+            endDate >= startOfToday
+          );
         });
 
         // คำนวณจำนวน tasks ที่เสร็จสมบูรณ์
