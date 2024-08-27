@@ -78,7 +78,7 @@
                 mdi-file-chart
               </v-icon>
             </template>
-            <span>แก้ไข Task</span>
+            <span>Update Task</span>
           </v-tooltip>
         </div>
       </template>
