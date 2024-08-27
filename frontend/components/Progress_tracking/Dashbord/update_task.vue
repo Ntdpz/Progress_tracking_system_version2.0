@@ -393,6 +393,7 @@ export default {
           text: "Task updated successfully",
           icon: "success",
           confirmButtonText: "OK",
+          confirmButtonColor: "#629859",
         }).then((result) => {
           if (result.isConfirmed) {
             this.$emit("task-updated");
@@ -407,6 +408,7 @@ export default {
           text: "Error updating task",
           icon: "error",
           confirmButtonText: "OK",
+          confirmButtonColor: "#F67878",
         });
       }
     },
