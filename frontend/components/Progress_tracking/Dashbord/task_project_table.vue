@@ -6,8 +6,8 @@
         <v-col>
           <span class="bold-text"> All your tasks in </span>
           <span class="bold-text">
-            Project : (ชื่อโปรเจค)
-            
+            Project :
+            {{ tasks.length > 0 ? tasks[0].project_name_ENG : "No task" }}
           </span>
 
           <!-- {{ projectId }} -->
