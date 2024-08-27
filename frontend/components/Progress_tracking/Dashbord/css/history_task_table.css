@@ -60,8 +60,7 @@
 }
 
 .no-tasks-message img {
-    width: 300px !important;
-    /* ขนาดของภาพ */
+   
     margin-bottom: 20px !important;
     /* ระยะห่างด้านล่างของภาพ */
 }
