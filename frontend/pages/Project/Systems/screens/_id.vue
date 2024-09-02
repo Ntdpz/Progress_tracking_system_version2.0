@@ -1,12 +1,6 @@
 <template>
   <!-- Show screen detel -->
   <div class="screen-details">
-    <v-row style="margin-bottom: 20px" align="center">
-      <div>
-        <div>
-          <Breadcrumbs />
-        </div>
-      </div>
       <v-col cols="12" v-if="screenId">
         <!-- Card แสดงข้อมูล Screen -->
         <v-card class="mx-auto align-start" max-width="none" hover>
@@ -1411,6 +1405,7 @@
 import axios from "axios";
 import Swal from "sweetalert2";
 import Breadcrumbs from "~/components/project/Breadcrumbs.vue";
+import { decodeId } from "~/utils/crypto";
 
 export default {
   middleware: "auth",
@@ -1419,8 +1414,29 @@ export default {
   components: {
     Breadcrumbs,
   },
+  async asyncData({ params, $axios, error }) {
+    const encodedId = params.id;
+    const decodedId = decodeId(encodedId);
+
+    if (!decodedId) {
+      return error({ statusCode: 400, message: "Invalid Screen ID" });
+    }
+
+    try {
+      // ดึงข้อมูลหน้าจอจาก API โดยใช้ decodedId
+      const screen = await $axios.$get(`/tasks/searchByScreenId/${decodedId}`);
+
+      // ส่งค่า screen กลับมาให้ใช้ใน template และ data()
+
+      return { screen, screenid: decodedId };
+    } catch (err) {
+      return error({ statusCode: 404, message: "Screen not found" });
+    }
+  },
   data() {
     return {
+      screen: null,
+      screenid: null,
       loggedIn: this.$auth.loggedIn,
       user: this.$auth.user,
       dialogSaveTaskForm: false, // Dialog status
@@ -2167,7 +2183,7 @@ export default {
     },
     async fetchScreenDetail() {
       try {
-        const screenId = this.$route.params.id;
+        const screenId = this.screenid;
         const response = await fetch(
           `http://localhost:7777/screens/getOne/${screenId}`
         );
@@ -2253,7 +2269,7 @@ export default {
     //fetch task
     async fetchTasks() {
       try {
-        const screenId = this.$route.params.id;
+        const screenId = this.screenid;
         const response = await fetch(
           `http://localhost:7777/tasks/searchByScreenId/${screenId}`
         );
@@ -2288,7 +2304,7 @@ export default {
     openAddTaskForm() {
       this.$router.push({
         name: "task-add",
-        params: { id: this.$route.params.id },
+        params: { id: this.screenid },
       });
     },
     //Create new task

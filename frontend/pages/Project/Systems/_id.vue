@@ -605,13 +605,38 @@
 <script>
 import axios from "axios";
 import Swal from "sweetalert2";
+import { decodeId } from "@/utils/crypto";
+import { encodeId } from "~/utils/crypto";
 
 export default {
+  async asyncData({ params, $axios, error }) {
+    const encodedId = params.id;
+    const decodedId = decodeId(encodedId);
+
+    if (!decodedId) {
+      return error({ statusCode: 400, message: "Invalid Project ID" });
+    }
+
+    try {
+      // ดึงข้อมูลโปรเจกต์จาก API โดยใช้ decodedId
+      const system = await $axios.$get(
+        `/screens/searchBySystemId/${decodedId}`
+      );
+
+      // ส่งค่า project กลับมาให้ใช้ใน template และ data()
+
+      return { system, systemid: decodedId };
+    } catch (err) {
+      return error({ statusCode: 404, message: "Project not found" });
+    }
+  },
   middleware: "auth",
   name: "SystemDetails",
   layout: "admin",
   data() {
     return {
+      systemid: null,
+      system: null,
       system_progress: this.system?.system_progress || 0,
       userHasAccess: false,
       user: this.$auth.user,
@@ -843,7 +868,7 @@ export default {
     },
 
     async createScreen() {
-      const systemId = this.$route.params.id;
+      const systemId = this.systemid;
 
       try {
         // Validate form fields
@@ -1246,7 +1271,7 @@ export default {
     },
 
     async fetchSystem() {
-      const systemId = this.$route.params.id;
+      const systemId = this.systemid;
       try {
         const response = await fetch(
           `http://localhost:7777/systems/getOne/${systemId}`
@@ -1279,7 +1304,7 @@ export default {
 
     async fetchSystemNameENG() {
       try {
-        const systemId = this.$route.params.id;
+        const systemId = this.systemid;
         const response = await fetch(
           `http://localhost:7777/systems/getOne/${systemId}`
         );
@@ -1313,8 +1338,9 @@ export default {
         ) {
           // ตรวจสอบว่า this.$auth.user.id อยู่ใน users หรือเป็น "Admin" หรือไม่
           // ถ้าใช่ให้ทำการเปลี่ยนหน้าไปยังรายละเอียดของหน้าจอ
+          const encodedScreenId = encodeId(screenId); // เข้ารหัส screenId
           await this.$router.push({
-            path: `/Project/Systems/screens/${screenId}`,
+            path: `/Project/Systems/screens/${encodedScreenId}`,
           });
         } else {
           console.log("User does not have access to this screen");
@@ -1325,7 +1351,6 @@ export default {
         // Handle error fetching user screen management data
       }
     },
-
     async goToReportDetail(screenId) {
       try {
         const response = await fetch(
@@ -1762,7 +1787,7 @@ export default {
 
     async fetchDeletedScreens() {
       try {
-        const systemId = this.$route.params.id;
+        const systemId = this.systemId;
         const response = await fetch(
           `http://localhost:7777/screens/searchBySystemId_delete/${systemId}`
         );
@@ -1779,7 +1804,7 @@ export default {
     },
 
     async fetchScreens() {
-      const systemId = this.$route.params.id;
+      const systemId = this.systemid;
       try {
         const response = await fetch(
           `http://localhost:7777/screens/searchBySystemId/${systemId}`
