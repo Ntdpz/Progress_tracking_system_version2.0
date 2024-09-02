@@ -1229,10 +1229,6 @@
                             :dialog.sync="dialogUpdateSuccess"
                             title="อัปเดตเสร็จเรียบร้อยแล้ว"
                           />
-                          <dialog-fail
-                            :dialog.sync="dialogfail"
-                            :title="ไม่สามารถลบผู้ใช้งานได้"
-                          />
                         </v-card>
                       </v-form>
                     </v-col>
@@ -1261,7 +1257,7 @@ export default {
       user: this.$auth.user,
       loggedIn: this.$auth.loggedIn,
       search: "",
-      titleName: "",
+
       titleFirstname: "",
       imageManageUpload: null,
       imageFileUpload: "",
@@ -1484,7 +1480,7 @@ export default {
         this.editedItem.user_firstname = nameParts[0];
       }
       this.dialog_manage = true;
-      console.log(this.imageManage);
+      // console.log(this.imageManage);
     },
 
     async createUser2() {
@@ -1700,7 +1696,8 @@ export default {
     async deleteUserLast() {
       try {
         const response = await this.$axios.delete(
-          "/users/deleteUser/" + this.editedItem.id);
+          "/users/deleteUser/" + this.editedItem.id
+        );
         if (response.status === 200 || response.status === 404) {
           this.dialog_manage = false;
           this.initialize();
@@ -1709,7 +1706,6 @@ export default {
       } catch (error) {
         alert(error + "Error");
       }
-      
     },
 
     async deleteUser_screens() {
@@ -1720,7 +1716,6 @@ export default {
         // console.log("delete success");
         if (response.status === 200) {
           this.initialize();
-
         }
       } catch (err) {
         if (err.response && err.response.status === 404) {
@@ -1768,18 +1763,7 @@ export default {
         console.log(err);
       }
     },
-    titleName() {
-      const regex = /^(Mr\.|Miss\.|นาย|นาง|นางสาว)\s+(.*)$/; // Regular expression to match title and name
-      const matches = this.user_firstname.match(regex);
-      if (matches) {
-        // console.log(matches);
-        this.titleName = matches[1];
-        const name2 = matches[2].trim();
-        const nameParts = name2.split(" ");
-        this.titleFirstname = nameParts[0];
-        // console.log(this.title);
-      }
-    },
+
     clearInfoNewUser() {
       this.photo = "";
       this.name = "";
@@ -1795,7 +1779,7 @@ export default {
       await this.$axios.get("/default_settings/getAll").then((data) => {
         this.dataDefault = data.data;
         console.clear();
-        console.log(this.dataDefault);
+        // console.log(this.dataDefault);
         this.dataDefault.forEach((item) => {
           if (item.role_user) {
             this.dataDefault_role_user.push(item.role_user);

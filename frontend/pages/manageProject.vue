@@ -127,7 +127,7 @@
               v-model="newProject.project_id"
               label="Project ID"
               required
-              :rules="[rules.required, rules.projectId]"
+              :rules="[rules.required]"
             ></v-text-field>
             <v-text-field
               v-model="newProject.project_name_TH"
@@ -382,9 +382,6 @@ export default {
 
       rules: {
         required: (value) => !!value || "Please fill this field.",
-        projectId: (value) =>
-          /^[A-Za-z0-9]+$/.test(value) ||
-          "Project ID can only contain letters and numbers.",
       },
       page: 0,
       currentPage: 1,
@@ -786,7 +783,7 @@ export default {
 
     formatTeamMembers(teamMembers) {
       return teamMembers.map((member) => ({
-        text: `${member.user_position}: ${member.user_firstname} ${member.user_lastname}`,
+        text: `${member.user_firstname} ${member.user_lastname}`,
         value: member,
       }));
     },
