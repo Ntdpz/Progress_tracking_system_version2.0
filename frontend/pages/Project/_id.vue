@@ -4,7 +4,7 @@
     <v-row style="margin-bottom: 20px" align="center">
       <!-- Card detel Project -->
       <v-card class="mx-auto align-start" width="95%" hover>
-        <v-card-item @click.stop="showDetails = !showDetails">
+        <v-card @click.stop="showDetails = !showDetails">
           <v-card-title>
             Project name : {{ project.project_name_ENG }}
             <v-spacer></v-spacer>
@@ -27,7 +27,7 @@
               </template>
             </v-progress-linear>
           </v-card-subtitle>
-        </v-card-item>
+        </v-card>
 
         <v-expand-transition>
           <div v-show="showDetails">
@@ -524,13 +524,14 @@
 <script>
 import Swal from "sweetalert2";
 import axios from "axios";
-import { decodeId } from "@/utils/crypto";
-import { encodeId } from "~/utils/crypto";
-
+import { encodeId, decodeId } from "../../utils/crypto";
 export default {
   async asyncData({ params, $axios, error }) {
     const encodedId = params.id;
     const decodedId = decodeId(encodedId);
+
+    console.log("Encoded ID:", encodedId); // ตรวจสอบค่า encodedId
+    console.log("Decoded ID:", decodedId); // ตรวจสอบค่า decodedId
 
     if (!decodedId) {
       return error({ statusCode: 400, message: "Invalid Project ID" });
@@ -541,8 +542,6 @@ export default {
       const project = await $axios.$get(
         `/systems/searchByProjectId/${decodedId}`
       );
-
-      // ส่งค่า project และ projectId กลับมาให้ใช้ใน template และ data()
       return { project, projectId: decodedId };
     } catch (err) {
       return error({ statusCode: 404, message: "Project not found" });
@@ -937,7 +936,7 @@ export default {
     },
     async goToSystemsDetail(systemId) {
       // เข้ารหัส systemId ก่อนการนำทาง
-      const encodedId = encodeId(systemId);
+      const encodedId = encodeURIComponent(encodeId(systemId));
 
       // นำทางไปยังหน้า Systems/_id.vue ด้วย encodedId
       await this.$router.push({ path: `/Project/systems/${encodedId}` });

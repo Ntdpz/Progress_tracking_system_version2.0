@@ -362,7 +362,7 @@
 import Greeting from "~/components/project/Greeting.vue";
 import Swal from "sweetalert2";
 import axios from "axios";
-import { encodeId, decodeId } from "@/utils/crypto";
+import { encodeId, decodeId } from "../utils/crypto";
 
 export default {
   components: {
@@ -916,13 +916,13 @@ export default {
       }
     },
     viewProjectDetails(project) {
-      const encodedId = encodeId(project.id); // เข้ารหัส ID
+      const encodedId = encodeURIComponent(encodeId(project.id));
+      console.log("Encoded ID:", encodedId); // ตรวจสอบค่า encodedId
       this.$router.push({
-        path: `/Project/${encodedId}`, // ใช้ ID ที่เข้ารหัสแล้วใน URL
-        params: { selectedProject: project }, // ส่งข้อมูล project ผ่าน params เหมือนเดิม
+        path: `/Project/${encodedId}`,
+        params: { selectedProject: project },
       });
     },
-    
     goToHistoryProject() {
       this.$router.push("/Project/HistoryProject");
     },

@@ -1338,7 +1338,7 @@ export default {
         ) {
           // ตรวจสอบว่า this.$auth.user.id อยู่ใน users หรือเป็น "Admin" หรือไม่
           // ถ้าใช่ให้ทำการเปลี่ยนหน้าไปยังรายละเอียดของหน้าจอ
-          const encodedScreenId = encodeId(screenId); // เข้ารหัส screenId
+          const encodedScreenId = encodeURIComponent(encodeId(screenId)); // เข้ารหัส screenId
           await this.$router.push({
             path: `/Project/Systems/screens/${encodedScreenId}`,
           });
