@@ -1314,8 +1314,6 @@ export default {
         const systemData = await response.json();
 
         this.systemNameENG = systemData.system_nameEN; // ใส่ชื่อ field ที่ต้องการแสดง
-
-        console.log(systemData.system_plan_start);
       } catch (error) {
         console.error("Error fetching system:", error);
         // Handle error fetching Screen

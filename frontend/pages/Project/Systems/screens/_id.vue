@@ -851,7 +851,6 @@ export default {
 
     try {
       const screen = await $axios.$get(`/tasks/searchByScreenId/${decodedId}`);
-      console.log("Project Data:", screen);
       return { screen, screenid: decodedId };
     } catch (err) {
       return error({ statusCode: 404, message: "Screen not found" });
@@ -1326,7 +1325,6 @@ export default {
       try {
         // ตรวจสอบค่า manday ที่ได้จากฟังก์ชัน calculateMandaySAVE()
         const manday = parseFloat(this.historyTaskData.task_manday);
-        console.log(manday);
         const start = new Date(this.historyTaskData.task_plan_start);
         const end = new Date(this.historyTaskData.task_plan_end);
         const differenceInTime = end.getTime() - start.getTime();
@@ -1396,9 +1394,6 @@ export default {
           `http://localhost:7777/tasks/save_history_tasks/${this.taskId}`,
           this.historyTaskData
         );
-
-        // จัดการการกระทำหลังจากบันทึกสำเร็จ
-        console.log(response.data);
         // แสดงแจ้งเตือนเรื่องความสำเร็จ
         await Swal.fire({
           icon: "success",

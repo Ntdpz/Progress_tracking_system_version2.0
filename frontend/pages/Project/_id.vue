@@ -530,9 +530,6 @@ export default {
     const encodedId = params.id;
     const decodedId = decodeId(encodedId);
 
-    console.log("Encoded ID:", encodedId); // ตรวจสอบค่า encodedId
-    console.log("Decoded ID:", decodedId); // ตรวจสอบค่า decodedId
-
     if (!decodedId) {
       return error({ statusCode: 400, message: "Invalid Project ID" });
     }

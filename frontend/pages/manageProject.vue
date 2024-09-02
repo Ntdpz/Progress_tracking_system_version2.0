@@ -917,7 +917,6 @@ export default {
     },
     viewProjectDetails(project) {
       const encodedId = encodeURIComponent(encodeId(project.id));
-      console.log("Encoded ID:", encodedId); // ตรวจสอบค่า encodedId
       this.$router.push({
         path: `/Project/${encodedId}`,
         params: { selectedProject: project },
