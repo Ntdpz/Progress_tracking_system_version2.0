@@ -28,7 +28,6 @@
       :items="tasks"
       class="project_task_table"
       item-key="task_id"
-      @click:row="handleRowClick"
       :sort-by="['task_plan_start']"
       :sort-desc="[false]"
     >
@@ -97,7 +96,7 @@
     <!-- Dialog -->
     <v-dialog
       v-model="EditTask_dialog"
-      max-width="1000px"
+      max-width=70%
       class="custom-dialog"
     >
       <v-card>
@@ -246,10 +245,6 @@ export default {
         // แสดงข้อความข้อผิดพลาดที่กำหนดเอง
         console.error("Error fetching tasks, No task data");
       }
-    },
-
-    handleRowClick(item) {
-      this.$router.push(`/Project/Systems/screens/${item.screen_id}`);
     },
 
     // ฟังก์ชันที่เรียกใช้เมื่อคลิกไอคอน Edit

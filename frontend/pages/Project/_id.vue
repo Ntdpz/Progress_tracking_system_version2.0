@@ -542,7 +542,7 @@ export default {
         `/systems/searchByProjectId/${decodedId}`
       );
 
-      // ส่งค่า project กลับมาให้ใช้ใน template และ data()
+      // ส่งค่า project และ projectId กลับมาให้ใช้ใน template และ data()
       return { project, projectId: decodedId };
     } catch (err) {
       return error({ statusCode: 404, message: "Project not found" });

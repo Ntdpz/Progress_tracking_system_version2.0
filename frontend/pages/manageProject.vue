@@ -359,7 +359,6 @@
 </template>
 
 <script>
-import Breadcrumbs from "~/components/project/Breadcrumbs.vue";
 import Greeting from "~/components/project/Greeting.vue";
 import Swal from "sweetalert2";
 import axios from "axios";
@@ -923,7 +922,7 @@ export default {
         params: { selectedProject: project }, // ส่งข้อมูล project ผ่าน params เหมือนเดิม
       });
     },
-
+    
     goToHistoryProject() {
       this.$router.push("/Project/HistoryProject");
     },

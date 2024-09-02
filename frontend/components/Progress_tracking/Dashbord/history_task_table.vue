@@ -10,24 +10,50 @@
     >
       <template v-slot:top>
         <v-toolbar flat class="toolbar-centered">
-          <v-toolbar-title class="toolbar-title" >History</v-toolbar-title>
+          <v-toolbar-title class="toolbar-title">History</v-toolbar-title>
         </v-toolbar>
       </template>
+
+      <!-- คอลัมน์ Date -->
       <template v-slot:item.update_date="{ item }">
-        {{ formatDate(item.update_date) }}
+        {{ item.update_date ? formatDate(item.update_date) : "No determine" }}
       </template>
+
+      <!-- คอลัมน์ Plan Start -->
       <template v-slot:item.task_plan_start="{ item }">
-        {{ formatDate(item.task_plan_start) }}
+        {{
+          item.task_plan_start
+            ? formatDate(item.task_plan_start)
+            : "No determine"
+        }}
       </template>
+
+      <!-- คอลัมน์ Plan End -->
       <template v-slot:item.task_plan_end="{ item }">
-        {{ formatDate(item.task_plan_end) }}
+        {{
+          item.task_plan_end ? formatDate(item.task_plan_end) : "No determine"
+        }}
       </template>
+
+      <!-- คอลัมน์ Actual Start -->
       <template v-slot:item.task_actual_start="{ item }">
-        {{ formatDate(item.task_actual_start) }}
+        {{
+          item.task_actual_start
+            ? formatDate(item.task_actual_start)
+            : "No determine"
+        }}
       </template>
+
+      <!-- คอลัมน์ Actual End -->
       <template v-slot:item.task_actual_end="{ item }">
-        {{ formatDate(item.task_actual_end) }}
+        {{
+          item.task_actual_end
+            ? formatDate(item.task_actual_end)
+            : "No determine"
+        }}
       </template>
+
+      <!-- คอลัมน์ Progress -->
       <template v-slot:item.task_progress="{ item }">
         <div class="progress-cell">{{ item.task_progress }}%</div>
       </template>
