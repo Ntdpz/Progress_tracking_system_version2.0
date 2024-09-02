@@ -74,6 +74,7 @@
 
 <script>
 import "./css/history_task_table.css";
+
 export default {
   props: {
     taskId: {
@@ -101,7 +102,7 @@ export default {
     taskId: "fetchHistoryTasks",
   },
 
-  async mounted() {
+  async created() {
     await this.fetchHistoryTasks();
   },
 
@@ -117,6 +118,10 @@ export default {
       }
     },
 
+    async refreshTable() {
+      await this.fetchHistoryTasks();
+    },
+
     formatDate(dateString) {
       if (!dateString) return "";
       const date = new Date(dateString);
@@ -128,6 +133,7 @@ export default {
   },
 };
 </script>
+
 
 <style scoped>
 </style>

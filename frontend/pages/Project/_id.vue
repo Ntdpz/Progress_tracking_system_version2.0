@@ -1,6 +1,7 @@
 <template>
   <!-- Systems Data Table container -->
   <div v-if="project" class="systems-data-table">
+    <Loader v-if="$store.getters.isLoading" />
     <v-row style="margin-bottom: 20px" align="center">
       <!-- Card detel Project -->
       <v-card class="mx-auto align-start" width="95%" hover>
@@ -522,6 +523,7 @@
 </template>
 
 <script>
+import Loader from "../../components/Loader.vue";
 import Swal from "sweetalert2";
 import axios from "axios";
 import { encodeId, decodeId } from "../../utils/crypto";
@@ -547,6 +549,9 @@ export default {
   middleware: "auth",
   name: "SystemsDataTable",
   layout: "admin",
+  components: {
+    Loader,
+  },
   data() {
     return {
       project: null,
@@ -1351,6 +1356,7 @@ export default {
     this.fetchProjectNameENG();
     this.fetchProjectUsers();
     this.fetchSystems();
+    this.$store.dispatch("setLoading", true);
   },
 
   mounted() {

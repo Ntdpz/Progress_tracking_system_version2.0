@@ -9,6 +9,7 @@
       margin-right: 30px;
     "
   >
+    <Loader v-if="$store.state.isLoading" />
     <div>
       <!-- <Breadcrumbs /> -->
     </div>
@@ -363,11 +364,13 @@ import Greeting from "~/components/project/Greeting.vue";
 import Swal from "sweetalert2";
 import axios from "axios";
 import { encodeId, decodeId } from "../utils/crypto";
+import Loader from "../components/Loader.vue";
 
 export default {
   components: {
     // Breadcrumbs,
     Greeting,
+    Loader,
   },
   middleware: "auth",
   name: "ProjectManagement",
@@ -447,6 +450,9 @@ export default {
         project_name_ENG: "",
       },
     };
+  },
+  created() {
+    this.$store.dispatch("setLoading", true);
   },
   methods: {
     async fetchAllScreens() {
@@ -1121,6 +1127,17 @@ export default {
         console.error("Error:", error);
         // Handle error here
       });
+  },
+  beforeRouteEnter(to, from, next) {
+    // แสดง Loader ก่อนเข้าหน้าใหม่
+    next((vm) => {
+      vm.$store.dispatch("setLoading", true);
+    });
+  },
+  beforeRouteLeave(to, from, next) {
+    // ซ่อน Loader ก่อนออกจากหน้า
+    this.$store.dispatch("setLoading", false);
+    next();
   },
 };
 </script>

@@ -1,16 +1,25 @@
 <template>
   <div>
+    <Loader v-if="$store.getters.isLoading" />
+
     <Greeting />
   </div>
 </template>
 
 <script>
+import Loader from "../components/Loader.vue";
 import Greeting from "../components/project/Greeting.vue";
 export default {
   middleware: "auth",
   layout: "admin",
   components: {
     Greeting,
+    Loader,
+  },
+  watch: {
+    "$route.path": function (newPath) {
+      this.$store.commit("SET_ROUTE_PATH", newPath);
+    },
   },
   data() {
     return {
@@ -23,7 +32,10 @@ export default {
       userdata: [],
     };
   },
+
   created() {
+    // เริ่มต้นการโหลดข้อมูลและแสดง Loader
+    this.$store.dispatch("setLoading", true);
     // เช็คตำแหน่งของ user
     if (this.user.user_role === "Admin") {
       // รีไดเรกไปยัง /Progress_Tracking/Dev

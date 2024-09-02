@@ -1,6 +1,7 @@
 <template>
   <!-- Show screen detel -->
   <div class="screen-details">
+     <Loader v-if="$store.getters.isLoading" />
     <v-col cols="12" v-if="screenId">
       <!-- Card แสดงข้อมูล Screen -->
       <v-card class="mx-auto align-start" max-width="none" hover>
@@ -827,6 +828,7 @@
 </template>
 
 <script>
+import Loader from "../../../../components/Loader.vue";
 import axios from "axios";
 import Swal from "sweetalert2";
 import Breadcrumbs from "~/components/project/Breadcrumbs.vue";
@@ -840,6 +842,7 @@ export default {
   components: {
     Breadcrumbs,
     update_task,
+    Loader,
   },
   async asyncData({ params, $axios, error }) {
     const encodedId = params.id;
@@ -1090,6 +1093,7 @@ export default {
   created() {
     // เรียกใช้ฟังก์ชันเมื่อโหลดหน้า
     this.getTasksToday();
+    this.$store.dispatch("setLoading", true);
   },
   watch: {
     "historyTaskData.task_plan_start": function (newVal, oldVal) {

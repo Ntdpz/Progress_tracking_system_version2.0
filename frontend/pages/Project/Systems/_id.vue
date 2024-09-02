@@ -1,6 +1,7 @@
 <template>
   <div>
     <div>
+      <Loader v-if="$store.getters.isLoading" />
       <v-row style="margin-bottom: 20px" align="center">
         <!-- Card detel Systems -->
         <v-card class="mx-auto align-start" width="95%" hover>
@@ -603,6 +604,7 @@
 </template>
 
 <script>
+import Loader from "../../../components/Loader.vue";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { decodeId } from "@/utils/crypto";
@@ -633,6 +635,9 @@ export default {
   middleware: "auth",
   name: "SystemDetails",
   layout: "admin",
+  components: {
+    Loader,
+  },
   data() {
     return {
       systemid: null,
@@ -756,6 +761,7 @@ export default {
   },
   created() {
     this.fetchSystemUsers(this.systemId, this.projectId);
+    this.$store.dispatch("setLoading", true);
   },
 
   methods: {
