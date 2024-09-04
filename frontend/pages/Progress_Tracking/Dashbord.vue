@@ -20,16 +20,39 @@
       <!-- คอนเทนเนอร์แบบ fluid (ยืดหยุ่น) สำหรับการจัดวางส่วนต่าง ๆ -->
       <v-container fluid>
         <v-row>
-          <!-- แสดงรายการโปรเจกต์ที่มี tasks (ผ่าน computed property projectsWithTasks) -->
           <v-col
             v-for="project in projectsWithTasks"
             :key="project.id"
             cols="12"
             class="full-width-card"
           >
-            <!-- แสดงการ์ดที่มีตาราง tasks ของแต่ละโปรเจกต์ -->
+            <!-- แสดง Tabs -->
             <v-card class="full-card">
-              <task_project_table :projectId="project.id" />
+              <v-row>
+                <v-tabs
+                  v-model="tab"
+                  color="primary"
+                  slider-color="primary"
+                  class="tabs"
+                >
+                  <v-tab class="custom-tab">ToDay</v-tab>
+                  <v-tab class="custom-tab">All</v-tab>
+                </v-tabs>
+              </v-row>
+              <v-tabs-items v-model="tab">
+                <!-- แถบ ToDay -->
+                <v-tab-item>
+                  <v-card class="full-card">
+                    <task_project_table :projectId="project.id" />
+                  </v-card>
+                </v-tab-item>
+                <!-- แถบ All -->
+                <v-tab-item>
+                  <v-card class="full-card">
+                    <all_task_user :projectId="project.id" />
+                  </v-card>
+                </v-tab-item>
+              </v-tabs-items>
             </v-card>
           </v-col>
         </v-row>
@@ -42,10 +65,11 @@
 import Loader from "../../components/Loader.vue";
 import result_projects from "../../components/Progress_tracking/Dashbord/result_projects.vue";
 import task_project_table from "../../components/Progress_tracking/Dashbord/task_project_table.vue";
+import all_task_user from "../../components/Progress_tracking/Dashbord/all_task_user.vue";
 import "./Dashbord.css";
 
 export default {
-  components: { Loader, result_projects, task_project_table },
+  components: { Loader, result_projects, task_project_table, all_task_user },
   middleware: "auth",
   layout: "admin",
   data() {
@@ -53,6 +77,7 @@ export default {
       user: this.$auth.user,
       loggedIn: this.$auth.loggedIn,
       projects: [],
+      tab: 0, // ใช้เพื่อควบคุมแถบที่เลือก
     };
   },
   computed: {
@@ -62,7 +87,7 @@ export default {
   },
   async created() {
     // เริ่มต้นการโหลดข้อมูลและแสดง Loader
-    this.$store.dispatch('setLoading', true);
+    this.$store.dispatch("setLoading", true);
 
     try {
       // ดึงข้อมูลโปรเจกต์ของผู้ใช้
@@ -87,20 +112,20 @@ export default {
       console.error("Error fetching projects:", error);
     } finally {
       // ปิด Loader เมื่อข้อมูลโหลดเสร็จ
-      this.$store.dispatch('setLoading', false);
+      this.$store.dispatch("setLoading", false);
     }
   },
   beforeRouteEnter(to, from, next) {
     // แสดง Loader ก่อนเข้าหน้าใหม่
-    next(vm => {
-      vm.$store.dispatch('setLoading', true);
+    next((vm) => {
+      vm.$store.dispatch("setLoading", true);
     });
   },
   beforeRouteLeave(to, from, next) {
     // ซ่อน Loader ก่อนออกจากหน้า
-    this.$store.dispatch('setLoading', false);
+    this.$store.dispatch("setLoading", false);
     next();
-  }
+  },
 };
 </script>
 
@@ -108,5 +133,9 @@ export default {
 .centered-heading {
   color: #374aab;
   text-align: center;
+}
+
+.tabs {
+  margin-bottom: 16px;
 }
 </style>

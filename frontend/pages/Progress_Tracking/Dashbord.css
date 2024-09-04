@@ -12,6 +12,7 @@
 .full-card {
     width: 100%;
     max-width: 100%;
+    margin: 0 auto;
 }
 
 .full-card {
@@ -20,3 +21,38 @@
     border: none !important;
     /* เอาเส้นขอบออกจาก v-card */
 }
+
+.tabs {
+
+    width: 100% !important
+}
+
+.custom-tab {
+    font-size: 20px !important;
+    /* ขนาดตัวหนังสือ */
+    color: #009933 !important;
+    background-color: #ffffff !important;
+    /* สีตัวหนังสือ */
+    width: 3000px !important;
+    /* ความกว้างขั้นต่ำของแถบ */
+    height: 50px !important;
+    /* ความสูงของแถบ */
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 20px !important;
+    /* Padding รอบตัวหนังสือ */
+    font-weight: bold !important;
+
+    /* ทำให้มุมของแถบโค้งมน */
+    transition: background-color 0.3s ease !important;
+}
+
+.custom-tab:hover {
+    background-color: #00993331 !important;
+    /* สีพื้นหลังเมื่อ hover */
+    color: #000000 !important;
+    /* สีตัวหนังสือเมื่อ hover */
+}
+
+
