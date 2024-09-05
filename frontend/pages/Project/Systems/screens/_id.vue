@@ -4,66 +4,9 @@
     <v-row style="margin-bottom: 20px" align="center">
       <v-col cols="12" v-if="screenId">
         <v-card>
-          <v-card-item class="d-flex">
-            <v-col cols="10" md="6" class="d-flex">
-              <div class="card-title">
-                <v-card-title>
-                  <v-icon class="custom-btn" @click.stop="openUserListDialog" style="margin-right: 5px">
-                    mdi-account-multiple
-                  </v-icon>
-                  Screen name: {{ screen_name }}
-                </v-card-title>
-                <v-card-text class="text--body-6">
-                  Plan Start:
-                  {{
-                    screen_plan_start
-                      ? formatDate(screen_plan_start)
-                      : "Not determined"
-                  }}<br />
-                  Plan End:
-                  {{
-                    screen_plan_end
-                      ? formatDate(screen_plan_end)
-                      : "Not determined"
-                  }}<br />
-                  Screen Manday: {{ screen_manday || 0 }}<br />
-                  <!-- <p>Screen Level: {{ screen_level }}</p> -->
-                  Task Count: {{ task_count || 0 }}
-                </v-card-text>
-              </div>
-            </v-col>
-
-            <div class="text-center">
-              <v-row justify="center" class="progress-row">
-                <v-col cols="auto" class="progress-item">
-                  <v-progress-circular class="my-progress" :rotate="360" :size="100" :width="15"
-                    :value="parseInt(screen_progress_status_design) || 0" color="purple">
-                    {{ parseInt(screen_progress_status_design) || 0 }}%
-                  </v-progress-circular>
-                  <div class="progress-label">Design</div>
-                </v-col>
-
-                <v-col cols="auto" class="progress-item">
-                  <v-progress-circular class="my-progress" :rotate="-90" :size="100" :width="15"
-                    :value="parseInt(screen_progress_status_dev) || 0" color="blue">
-                    {{ parseInt(screen_progress_status_dev) || 0 }}%
-                  </v-progress-circular>
-                  <div class="progress-label">Develop</div>
-                </v-col>
-
-                <v-col cols="auto" class="progress-item">
-                  <v-progress-circular class="my-progress" :rotate="90" :size="100" :width="15"
-                    :value="parseInt(screen_progress) || 0" color="green">
-                    {{ parseInt(screen_progress) || 0 }}%
-                  </v-progress-circular>
-                  <div class="progress-label">Total</div>
-                </v-col>
-              </v-row>
-              <div style="margin-top: 20px"></div>
-              <!-- เพิ่มช่องว่างด้านบน -->
-            </div>
-          </v-card-item>
+          <screenDetail :screenId="screenId" />
         </v-card>
+
       </v-col>
 
       <!-- แสดงรูปภาพ Dialog -->
@@ -483,6 +426,7 @@ import Breadcrumbs from "~/components/project/Breadcrumbs.vue";
 import Loader from "@/components/Loader.vue";
 import { decodeId } from "~/utils/crypto";
 import update_task from "@/components/Progress_tracking/Dashbord/update_task.vue";
+import screenDetail from "@/components/Progress_tracking/Screen/screenDetail.vue";
 
 export default {
   middleware: "auth",
@@ -492,6 +436,7 @@ export default {
     Breadcrumbs,
     update_task,
     Loader,
+    screenDetail,
   },
   async asyncData({ params, $axios, error }) {
     const encodedId = params.id;
