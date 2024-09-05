@@ -1,108 +1,117 @@
 <template>
   <!-- Show screen detel -->
   <div class="screen-details">
-     <Loader v-if="$store.getters.isLoading" />
-    <v-col cols="12" v-if="screenId">
-      <!-- Card แสดงข้อมูล Screen -->
-      <v-card class="mx-auto align-start" max-width="none" hover>
-        <v-img v-if="screen_pic" :src="screen_pic" alt="Screen PIC" width="100%" height="300px"
-          @click="showImageDialog = true"></v-img>
-
-        <v-card-item class="d-flex justify-space-between align-center" @click="showDetails = !showDetails">
-          <div class="card-title">
-            <v-card-title> Screen name : {{ screen_name }}</v-card-title>
-          </div>
-          <div class="icon">
-            <v-icon class="custom-btn" @click.stop="openUserListDialog"
-              style="margin-right: 25px">mdi-account-multiple</v-icon>
-          </div>
-        </v-card-item>
-        <v-card-subtitle @click="showDetails = !showDetails">
-          <span style="font-weight: bold; color: black; font-size: 16px">
-            Screen Progress
-          </span>
-          <v-progress-linear :color="getProgressColor(parseInt(screen_progress))" height="50"
-            :value="parseInt(screen_progress)" striped>
-            <strong :style="{ color: '#5E5E5E', fontSize: '20px' }">{{ Math.floor(screen_progress)
-              }}%</strong></v-progress-linear>
-        </v-card-subtitle>
-
-        <v-expand-transition>
-          <div v-show="showDetails">
-            <v-divider></v-divider>
-            <v-card-text>
-              <p>
-                Plan Start:
-                {{
-                  screen_plan_start
-                    ? formatDate(screen_plan_start)
-                    : "Not determined"
-                }}
-              </p>
-              <p>
-                Plan End:
-                {{
-                  screen_plan_end
-                    ? formatDate(screen_plan_end)
-                    : "Not determined"
-                }}
-              </p>
-
-              <p>Screen Manday: {{ screen_manday || 0 }}</p>
-
-              <p>Screen Level: {{ screen_level }}</p>
-
-              <p>Task Count: {{ task_count || 0 }}</p>
-            </v-card-text>
-          </div>
-        </v-expand-transition>
-      </v-card>
-    </v-col>
-
-    <!-- แสดงรูปภาพ Dialog -->
-    <v-dialog v-model="showImageDialog" max-width="1000" max-height="800" fitscreen hide-overlay>
-      <v-img :src="screen_pic" class="dialog-image" @click="closeImageDialog"></v-img>
-    </v-dialog>
-
-    <!-- แสดง ข้อมูลผู้ใช้ในระบบ Dialog -->
-    <v-dialog v-model="userDialog" max-width="500" @keydown.stop>
-      <v-card>
-        <v-card-title>ข้อมูลผู้ใช้ในระบบ</v-card-title>
-        <!-- เพิ่มช่องค้นหา User -->
-        <v-card-actions>
-          <v-row no-gutters>
-            <v-col cols="12">
-              <v-text-field v-model="searchUser" label="Search" clearable></v-text-field>
+    <v-row style="margin-bottom: 20px" align="center">
+      <v-col cols="12" v-if="screenId">
+        <v-card>
+          <v-card-item class="d-flex">
+            <v-col cols="10" md="6" class="d-flex">
+              <div class="card-title">
+                <v-card-title>
+                  <v-icon class="custom-btn" @click.stop="openUserListDialog" style="margin-right: 5px">
+                    mdi-account-multiple
+                  </v-icon>
+                  Screen name: {{ screen_name }}
+                </v-card-title>
+                <v-card-text class="text--body-6">
+                  Plan Start:
+                  {{
+                    screen_plan_start
+                      ? formatDate(screen_plan_start)
+                      : "Not determined"
+                  }}<br />
+                  Plan End:
+                  {{
+                    screen_plan_end
+                      ? formatDate(screen_plan_end)
+                      : "Not determined"
+                  }}<br />
+                  Screen Manday: {{ screen_manday || 0 }}<br />
+                  <!-- <p>Screen Level: {{ screen_level }}</p> -->
+                  Task Count: {{ task_count || 0 }}
+                </v-card-text>
+              </div>
             </v-col>
-          </v-row>
-        </v-card-actions>
-        <v-card-text>
-          <v-list>
-            <v-list-item v-for="user in paginatedUserList" :key="user.user_id">
-              <v-list-item-avatar>
-                <v-img :src="user.user_pic" alt="User Profile"></v-img>
-              </v-list-item-avatar>
-              <v-list-item-content>
-                <v-list-item-title>
-                  {{ user.user_firstname }} {{ user.user_lastname }}
-                </v-list-item-title>
-                <v-list-item-subtitle>{{
-                  user.user_position
-                }}</v-list-item-subtitle>
-                <v-list-item-subtitle>{{
-                  user.user_department
-                }}</v-list-item-subtitle>
-              </v-list-item-content>
-            </v-list-item>
-          </v-list>
-        </v-card-text>
-        <v-card-actions class="pagination" style="display: flex; justify-content: space-between">
-          <v-pagination v-if="totalPagesUser > 1" v-model="currentPageUser" :length="totalPagesUser"
-            @input="paginateUserList"></v-pagination>
-          <v-btn color="error" @click="closeUserListDialog">ปิด</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+
+            <div class="text-center">
+              <v-row justify="center" class="progress-row">
+                <v-col cols="auto" class="progress-item">
+                  <v-progress-circular class="my-progress" :rotate="360" :size="100" :width="15"
+                    :value="parseInt(screen_progress_status_design) || 0" color="purple">
+                    {{ parseInt(screen_progress_status_design) || 0 }}%
+                  </v-progress-circular>
+                  <div class="progress-label">Design</div>
+                </v-col>
+
+                <v-col cols="auto" class="progress-item">
+                  <v-progress-circular class="my-progress" :rotate="-90" :size="100" :width="15"
+                    :value="parseInt(screen_progress_status_dev) || 0" color="blue">
+                    {{ parseInt(screen_progress_status_dev) || 0 }}%
+                  </v-progress-circular>
+                  <div class="progress-label">Develop</div>
+                </v-col>
+
+                <v-col cols="auto" class="progress-item">
+                  <v-progress-circular class="my-progress" :rotate="90" :size="100" :width="15"
+                    :value="parseInt(screen_progress) || 0" color="green">
+                    {{ parseInt(screen_progress) || 0 }}%
+                  </v-progress-circular>
+                  <div class="progress-label">Total</div>
+                </v-col>
+              </v-row>
+              <div style="margin-top: 20px"></div>
+              <!-- เพิ่มช่องว่างด้านบน -->
+            </div>
+          </v-card-item>
+        </v-card>
+      </v-col>
+
+      <!-- แสดงรูปภาพ Dialog -->
+      <v-dialog v-model="showImageDialog" max-width="1000" max-height="800" fitscreen hide-overlay>
+        <v-img :src="screen_pic" class="dialog-image" @click="closeImageDialog"></v-img>
+      </v-dialog>
+
+      <!-- แสดง ข้อมูลผู้ใช้ในระบบ Dialog -->
+      <v-dialog v-model="userDialog" max-width="500" @keydown.stop>
+        <v-card>
+          <v-card-title>USER IN SCREEN</v-card-title>
+          <!-- เพิ่มช่องค้นหา User -->
+          <v-card-actions>
+            <v-row no-gutters>
+              <v-col cols="12">
+                <v-text-field v-model="searchUser" label="Search" clearable></v-text-field>
+              </v-col>
+            </v-row>
+          </v-card-actions>
+          <v-card-text>
+            <v-list>
+              <v-list-item v-for="user in paginatedUserList" :key="user.user_id">
+                <v-list-item-avatar>
+                  <v-img :src="user.user_pic" alt="User Profile"></v-img>
+                </v-list-item-avatar>
+                <v-list-item-content>
+                  <v-list-item-title>
+                    {{ user.user_firstname }} {{ user.user_lastname }}
+                  </v-list-item-title>
+                  <v-list-item-subtitle>{{
+                    user.user_position
+                  }}</v-list-item-subtitle>
+                  <v-list-item-subtitle>{{
+                    user.user_department
+                  }}</v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list>
+          </v-card-text>
+          <v-card-actions class="pagination" style="display: flex; justify-content: center; align-items: center">
+            <v-spacer></v-spacer>
+            <v-pagination v-if="totalPagesUser > 1" v-model="currentPageUser" :length="totalPagesUser"
+              @input="paginateUserList"></v-pagination>
+            <v-spacer></v-spacer>
+            <v-btn color="error" @click="closeUserListDialog">CLOSE</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </v-row>
 
     <!-- Task list -->
@@ -111,535 +120,104 @@
       <div class="topper">
         <h3>Task Management</h3>
         <v-divider vertical></v-divider>
-        <!-- open add task form -->
-        <v-btn class="rounded-btn" color="primary" @click="dialogAddTaskForm = true">
-          <v-icon>mdi-plus</v-icon>
-        </v-btn>
       </div>
-      <v-divider></v-divider>
 
       <!-- Search bar -->
       <v-row no-gutters>
-        <v-col cols="12">
-          <v-text-field v-model="searchQuery" label="Search" clearable></v-text-field>
+        <v-col cols="7">
+          <v-text-field v-model="searchQuery" label="Search" clearable outlined
+            style="width: 100%; border-radius: 20px">
+          </v-text-field>
+        </v-col>
+        <!-- open add task form -->
+        <v-col cols="4" class="text-right">
+          <v-btn class="rounded-btn" color="primary" @click="dialogAddTaskForm = true" style="width: 30%">
+            Add Task
+          </v-btn>
+          <v-btn class="rounded-btn" color="error" @click="showHistoryDialog = true"
+            style="width: 10%; margin-left: 16px; margin-right: 16px">
+            <v-icon>mdi-history</v-icon>
+          </v-btn>
+
+          <!-- Deleted Tasks History -->
+          <v-dialog v-model="showHistoryDialog" max-width="800">
+            <v-data-table v-model:selected="selectedTasks" :headers="headersDelete" :items="deletedTasks" show-select>
+              <!-- Define headers for the table -->
+              <template v-slot:top>
+                <v-toolbar flat>
+                  <v-toolbar-title>Deleted Tasks History</v-toolbar-title>
+                  <v-divider class="mx-4" inset vertical></v-divider>
+                  <v-spacer></v-spacer>
+                  <v-btn class="mr-3" color="green" @click="restoreSelectedTasks">
+                    <v-icon color="white">mdi-restore</v-icon>
+                  </v-btn>
+                  <v-btn color="error" @click="deleteSelectedHistoryTasks">
+                    <v-icon>mdi-delete</v-icon>
+                  </v-btn>
+                </v-toolbar>
+              </template>
+            </v-data-table>
+          </v-dialog>
         </v-col>
       </v-row>
 
       <v-divider></v-divider>
 
-      <!-- v-tabs for filtering tasks by status -->
-      <v-tabs v-model="selectedStatus">
-        <v-tab>All</v-tab>
-        <v-tab v-for="(status, index) in statusOptions" :key="index">{{
-          status
-        }}</v-tab>
-        <v-tab-item>
-          <v-row>
-            <!-- Dropdown for sorting -->
-            <v-col cols="12" class="text-right">
-              <v-menu offset-y>
-                <template v-slot:activator="{ on, attrs }">
-                  <v-btn text v-bind="attrs" v-on="on" class="text-right">
-                    sort by <v-icon>mdi-menu-down</v-icon>
-                  </v-btn>
-                </template>
-                <v-list>
-                  <v-list-item @click="sortTasks('task_name')">Sort by Task Name A-Z</v-list-item>
-                  <v-list-item @click="sortTasks('-task_name')">Sort by Task Name Z-A</v-list-item>
-                  <v-list-item @click="sortTasks('task_progress')">Sort by Progress (Low to High)</v-list-item>
-                  <v-list-item @click="sortTasks('-task_progress')">Sort by Progress (High to Low)</v-list-item>
-                  <v-list-item @click="sortTasks('task_plan_start')">Sort by Plan Start first date</v-list-item>
-                  <v-list-item @click="sortTasks('task_plan_start_last')">Sort by Plan Start last date</v-list-item>
-                  <v-list-item @click="sortTasks('task_plan_end')">Sort by Plan End first date</v-list-item>
-                  <v-list-item @click="sortTasks('task_plan_end_last')">Sort by Plan End last date</v-list-item>
-                  <!-- Add more sorting options as needed -->
-                </v-list>
-              </v-menu>
-            </v-col>
-
-            <v-col v-for="(task, index) in paginatedTasks" :key="index" cols="12" md="6" lg="4">
-              <v-card class="mb-3" style="overflow-y: auto" @click="openDialog(task)">
-                <v-card-title><span style="margin-right: auto">ชื่องาน: {{ task.task_name }}</span></v-card-title>
-                <v-card-text>
-                  <!-- Row 1: Task Name and Progress -->
-                  <div class="d-flex justify-space-between">
-                    <v-row>
-                      <v-col>
-                        <span style="margin-right: auto; font-size: 17px">Progress :
-                        </span>
-                      </v-col>
-                      <v-col>
-                        <v-progress-linear :color="getProgressColorTask(parseInt(task.task_progress))
-                          " height="15" :value="parseInt(task.task_progress)" striped :style="{ width: '100%' }">
-                          <strong :style="{ color: '#5E5E5E' }">{{ parseInt(task.task_progress) }}%</strong>
-                        </v-progress-linear>
-                      </v-col>
-                    </v-row>
-                  </div>
-
-                  <!-- Row 2: Task Detail -->
-                  <p class="clamp-text">
-                    Task Detail:
-                    {{ task.task_detail ? task.task_detail : "Not determined" }}
-                  </p>
-
-                  <!-- Row 3: User Details -->
-                  <div style="height: 100px">
-                    <v-divider></v-divider>
-                    <v-list v-if="task.memberDetails">
-                      <v-list-item>
-                        <v-list-item-avatar>
-                          <img :src="task.memberDetails.user_pic" alt="User Pic" />
-                        </v-list-item-avatar>
-                        <v-list-item-content>
-                          <v-list-item-title>First Name:
-                            {{
-                              task.memberDetails.user_firstname
-                            }}</v-list-item-title>
-                          <v-list-item-subtitle>Last Name:
-                            {{
-                              task.memberDetails.user_lastname
-                            }}</v-list-item-subtitle>
-                          <v-list-item-subtitle>Position:
-                            {{
-                              task.memberDetails.user_position
-                            }}</v-list-item-subtitle>
-                        </v-list-item-content>
-                      </v-list-item>
-                    </v-list>
-                    <v-card-text v-else>
-                      <div style="text-align: center; height: 70px">
-                        <p>User not determined</p>
-                      </div>
-                    </v-card-text>
-                    <v-divider></v-divider>
-                  </div>
-                </v-card-text>
-                <v-card-actions>
-                  <!-- Row 4: Plan Start, Plan End, Buttons -->
-                  <div style="display: flex; flex-direction: column">
-                    <p>Status : {{ task.task_status }}</p>
-                    <!-- Plan Start -->
-                    <p>
-                      Plan Start:
-                      {{
-                        task.task_plan_start
-                          ? formatDate(task.task_plan_start)
-                          : "Not determined"
-                      }}
-                    </p>
-
-                    <!-- Plan End -->
-                    <p>
-                      Plan End:
-                      {{
-                        task.task_plan_end
-                          ? formatDate(task.task_plan_end)
-                          : "Not determined"
-                      }}
-                    </p>
-
-                    <!-- Buttons -->
-                    <div>
-                      <v-btn v-if="user.user_role === 'Admin'" icon color="primary" @click.stop="
-                        dialogEditTaskForm = true;
-                      editedTask = task;
-                      ">
-                        <v-icon>mdi-pencil</v-icon>
-                      </v-btn>
-                      <v-btn v-if="
-                        (task.memberDetails &&
-                          task.memberDetails.id === user.id) ||
-                        user.user_role === 'Admin'
-                      " icon color="primary" @click.stop="openSaveHistoryDialog(task)">
-                        <v-icon>mdi-content-save</v-icon>
-                      </v-btn>
-                      <v-btn v-if="
-                        (task.memberDetails &&
-                          task.memberDetails.id === user.id) ||
-                        user.user_role === 'Admin'
-                      " icon color="error" @click.stop="deleteTask(task)">
-                        <v-icon>mdi-delete</v-icon>
-                      </v-btn>
-                      <v-btn v-if="!task.memberDetails || !task.memberDetails.id" color="primary"
-                        style="margin-left: 75px" @click.stop="takeTask(task)">
-                        Take this task.
-                      </v-btn>
-                    </div>
-                  </div>
-                </v-card-actions>
-              </v-card>
-            </v-col>
-          </v-row>
-
-          <!-- Pagination -->
-          <v-pagination v-model="currentPage" :length="numberOfPages" @input="changePage" />
-        </v-tab-item>
-
-        <v-tab-item v-for="(status, index) in statusOptions" :key="index">
-          <v-row>
-            <v-col v-for="(task, index) in filteredTasksByStatus(status)" :key="index" cols="12" md="6" lg="4">
-              <v-card class="mb-3" style="overflow-y: auto" @click="openDialog(task)">
-                <v-card-title><span style="margin-right: auto">ชื่องาน: {{ task.task_name }}</span></v-card-title>
-                <v-card-text>
-                  <!-- Row 1: Task Name and Progress -->
-                  <div class="d-flex justify-space-between">
-                    <v-row>
-                      <v-col>
-                        <span style="margin-right: auto; font-size: 17px">Progress :
-                        </span>
-                      </v-col>
-                      <v-col>
-                        <v-progress-linear color="primary" height="15" :value="parseInt(task.task_progress)" striped
-                          :style="{ width: '100%' }">
-                          <strong :style="{ color: 'white' }">{{ parseInt(task.task_progress)
-                            }}%</strong></v-progress-linear>
-                      </v-col>
-                    </v-row>
-                  </div>
-
-                  <!-- Row 2: Task Detail -->
-                  <p style="font-size: 16px; line-height: 1.5em; height: 170px">
-                    Task Detail:
-                    {{ task.task_detail ? task.task_detail : "Not determined" }}
-                  </p>
-
-                  <!-- Row 3: User Details -->
-                  <div style="height: 100px">
-                    <v-divider></v-divider>
-                    <v-list v-if="task.memberDetails">
-                      <v-list-item>
-                        <v-list-item-avatar>
-                          <img :src="task.memberDetails.user_pic" alt="User Pic" />
-                        </v-list-item-avatar>
-                        <v-list-item-content>
-                          <v-list-item-title>First Name:
-                            {{
-                              task.memberDetails.user_firstname
-                            }}</v-list-item-title>
-                          <v-list-item-subtitle>Last Name:
-                            {{
-                              task.memberDetails.user_lastname
-                            }}</v-list-item-subtitle>
-                          <v-list-item-subtitle>Position:
-                            {{
-                              task.memberDetails.user_position
-                            }}</v-list-item-subtitle>
-                        </v-list-item-content>
-                      </v-list-item>
-                    </v-list>
-                    <v-card-text v-else>
-                      <div style="text-align: center; height: 70px">
-                        <p>User not determined</p>
-                      </div>
-                    </v-card-text>
-                    <v-divider></v-divider>
-                  </div>
-                </v-card-text>
-                <v-card-actions>
-                  <!-- Row 4: Plan Start, Plan End, Buttons -->
-                  <div style="display: flex; flex-direction: column">
-                    <p>Status : {{ task.task_status }}</p>
-                    <!-- Plan Start -->
-                    <p>
-                      Plan Start:
-                      {{
-                        task.task_plan_start
-                          ? formatDate(task.task_plan_start)
-                          : "Not determined"
-                      }}
-                    </p>
-
-                    <!-- Plan End -->
-                    <p>
-                      Plan End:
-                      {{
-                        task.task_plan_end
-                          ? formatDate(task.task_plan_end)
-                          : "Not determined"
-                      }}
-                    </p>
-
-                    <!-- Buttons -->
-                    <div>
-                      <v-btn icon color="primary" @click.stop="
-                        dialogEditTaskForm = true;
-                      editedTask = task;
-                      ">
-                        <v-icon>mdi-pencil</v-icon>
-                      </v-btn>
-                      <v-btn icon color="primary" @click.stop="openSaveHistoryDialog(task)">
-                        <v-icon>mdi-account</v-icon>
-                      </v-btn>
-
-                      <v-btn icon color="error" @click.stop="deleteTask(task)">
-                        <v-icon>mdi-delete</v-icon>
-                      </v-btn>
-                    </div>
-                  </div>
-                </v-card-actions>
-              </v-card>
-            </v-col>
-          </v-row>
-        </v-tab-item>
-
-        <v-tab>Task to day</v-tab>
-        <v-tab-item>
-          <v-row>
-            <v-col v-for="(task, index) in tasksToday" :key="index" cols="12" md="6" lg="4">
-              <v-card class="mb-3" style="overflow-y: auto" @click="openDialog(task)">
-                <v-card-title><span style="margin-right: auto">ชื่องาน: {{ task.task_name }}</span></v-card-title>
-                <v-card-text>
-                  <!-- Row 1: Task Name and Progress -->
-                  <div class="d-flex justify-space-between">
-                    <v-row>
-                      <v-col>
-                        <span style="margin-right: auto; font-size: 17px">Progress :
-                        </span>
-                      </v-col>
-                      <v-col>
-                        <v-progress-linear color="primary" height="15" :value="parseInt(task.task_progress)" striped
-                          :style="{ width: '100%' }">
-                          <strong :style="{ color: 'white' }">{{ parseInt(task.task_progress)
-                            }}%</strong></v-progress-linear>
-                      </v-col>
-                    </v-row>
-                  </div>
-
-                  <!-- Row 2: Task Detail -->
-                  <p style="font-size: 16px; line-height: 1.5em; height: 170px">
-                    Task Detail:
-                    {{ task.task_detail ? task.task_detail : "Not determined" }}
-                  </p>
-
-                  <!-- Row 3: User Details -->
-                  <div style="height: 100px">
-                    <v-divider></v-divider>
-                    <v-list v-if="task.memberDetails">
-                      <v-list-item>
-                        <v-list-item-avatar>
-                          <img :src="task.memberDetails.user_pic" alt="User Pic" />
-                        </v-list-item-avatar>
-                        <v-list-item-content>
-                          <v-list-item-title>First Name:
-                            {{
-                              task.memberDetails.user_firstname
-                            }}</v-list-item-title>
-                          <v-list-item-subtitle>Last Name:
-                            {{
-                              task.memberDetails.user_lastname
-                            }}</v-list-item-subtitle>
-                          <v-list-item-subtitle>Position:
-                            {{
-                              task.memberDetails.user_position
-                            }}</v-list-item-subtitle>
-                        </v-list-item-content>
-                      </v-list-item>
-                    </v-list>
-                    <v-card-text v-else>
-                      <div style="text-align: center; height: 70px">
-                        <p>User not determined</p>
-                      </div>
-                    </v-card-text>
-                    <v-divider></v-divider>
-                  </div>
-                </v-card-text>
-                <v-card-actions>
-                  <!-- Row 4: Plan Start, Plan End, Buttons -->
-                  <div style="display: flex; flex-direction: column">
-                    <p>Status : {{ task.task_status }}</p>
-                    <!-- Plan Start -->
-                    <p>
-                      Plan Start:
-                      {{
-                        task.task_plan_start
-                          ? formatDate(task.task_plan_start)
-                          : "Not determined"
-                      }}
-                    </p>
-
-                    <!-- Plan End -->
-                    <p>
-                      Plan End:
-                      {{
-                        task.task_plan_end
-                          ? formatDate(task.task_plan_end)
-                          : "Not determined"
-                      }}
-                    </p>
-
-                    <!-- Buttons -->
-                    <div>
-                      <v-btn icon color="primary" @click.stop="
-                        dialogEditTaskForm = true;
-                      editedTask = task;
-                      ">
-                        <v-icon>mdi-pencil</v-icon>
-                      </v-btn>
-                      <v-btn icon color="primary" @click.stop="openSaveHistoryDialog(task)">
-                        <v-icon>mdi-content-save</v-icon>
-                      </v-btn>
-
-                      <v-btn icon color="error" @click.stop="deleteTask(task)">
-                        <v-icon>mdi-delete</v-icon>
-                      </v-btn>
-                    </div>
-                  </div>
-                </v-card-actions>
-              </v-card>
-            </v-col>
-          </v-row>
-        </v-tab-item>
-      </v-tabs>
-
       <!-- Dialog for Task Details -->
-      <v-dialog v-model="dialog" width="9000px">
+      <!-- <v-dialog v-model="dialog" max-width="600px">
         <v-card class="task-details-card">
           <v-card-title class="task-title">
-            Details of Task : {{ dialogTaskDetails.task_name }}
+            Details of Task: {{ dialogTaskDetails.task_name }}
           </v-card-title>
+          <div style="margin-top: 20px;"></div>
           <v-card-text class="task-details">
             <v-row>
-              <!-- Task Info -->
-              <v-col cols="4">
+              <v-col cols="12" md="6" class="text-left"> 
                 <div class="task-info">
-                  <p>
-                    <strong>Task ID:</strong> {{ dialogTaskDetails.task_id }}
-                  </p>
-                  <p>
-                    <strong>Task Detail:</strong>
-                    {{ dialogTaskDetails.task_detail }}
-                  </p>
-                  <p>
-                    <strong>Status:</strong> {{ dialogTaskDetails.task_status }}
-                  </p>
-                  <p>
-                    <strong>Manday:</strong>
-                    {{ dialogTaskDetails.task_manday || 0 }} Days
-                  </p>
-                  <p>
-                    <strong>Progress:</strong>
-                    {{ dialogTaskDetails.task_progress || 0 }} %
-                  </p>
-                </div>
-              </v-col>
-
-              <!-- Responsible Person -->
-              <v-col cols="4">
-                <div class="responsible-person">
+                  <p><strong>Task ID:</strong> {{ dialogTaskDetails.task_id }}</p>
+                  <p><strong>Task Detail:</strong> {{ dialogTaskDetails.task_detail }}</p>
+                  <p><strong>Type:</strong> {{ dialogTaskDetails.task_type }}</p>
+                  <p><strong>Manday:</strong> {{ dialogTaskDetails.task_manday || 0 }} Days</p>
+                  <p><strong>Progress:</strong> {{ dialogTaskDetails.task_progress || 0 }} %</p>
                   <p><strong>Responsible person:</strong></p>
                   <p v-if="dialogTaskDetails.memberDetails">
+                    <v-avatar>
+                      <v-img :src="dialogTaskDetails.memberDetails.user_pic" alt="User avatar"
+                        v-if="dialogTaskDetails.memberDetails.user_pic" />
+                    </v-avatar>
                     {{ dialogTaskDetails.memberDetails.user_firstname }}
                     {{ dialogTaskDetails.memberDetails.user_lastname }}
                   </p>
-                  <p v-else>Not determined</p>
                 </div>
               </v-col>
 
-              <!-- Task Dates -->
-              <v-col cols="4">
+              <v-col cols="12" md="6" class="text-left">
                 <div class="task-dates">
-                  <p>
-                    <strong>Last updated date:</strong>
-                    {{
-                      formatDate(dialogTaskDetails.task_date_update) ||
-                      "Not determined"
-                    }}
+                  <p><strong>Last updated date:</strong>
+                    {{ formatDate(dialogTaskDetails.task_date_update) || "Not determined" }}
                   </p>
-                  <p>
-                    <strong>Plan Start:</strong>
-                    {{
-                      formatDate(dialogTaskDetails.task_plan_start) ||
-                      "Not determined"
-                    }}
+                  <p><strong>Plan Start:</strong>
+                    {{ formatDate(dialogTaskDetails.task_plan_start) || "Not determined" }}
                   </p>
-                  <p>
-                    <strong>Plan End:</strong>
-                    {{
-                      formatDate(dialogTaskDetails.task_plan_end) ||
-                      "Not determined"
-                    }}
+                  <p><strong>Plan End:</strong>
+                    {{ formatDate(dialogTaskDetails.task_plan_end) || "Not determined" }}
                   </p>
-                  <p>
-                    <strong>Actual Start:</strong>
-                    {{
-                      formatDate(dialogTaskDetails.task_actual_start) ||
-                      "Not determined"
-                    }}
+                  <p><strong>Actual Start:</strong>
+                    {{ formatDate(dialogTaskDetails.task_actual_start) || "Not determined" }}
                   </p>
-                  <p>
-                    <strong>Actual End:</strong>
-                    {{
-                      formatDate(dialogTaskDetails.task_actual_end) ||
-                      "Not determined"
-                    }}
+                  <p><strong>Actual End:</strong>
+                    {{ formatDate(dialogTaskDetails.task_actual_end) || "Not determined" }}
                   </p>
                 </div>
               </v-col>
             </v-row>
           </v-card-text>
-
-          <div>
-            <h3 style="padding-left: 20px">History tasks</h3>
-          </div>
-          <v-data-table :headers="historyHeaders" :items="historyTasks" item-key="id" class="table-with-border"
-            :sort-by="[{ key: 'update_date', order: 'desc' }]">
-            <template v-slot:item.task_detail="{ item }">
-              {{ item.task_detail ? item.task_detail : "No determine" }}
-            </template>
-
-            <!-- โค้ดประสาทีนี้เรียงตาม update_date -->
-            <template v-slot:item.user_update="{ item }">
-              {{ item.user_update ? item.user_update : "No determine" }}
-            </template>
-
-            <!-- โค้ดประสาทีนี้เรียงตาม update_date -->
-            <template v-slot:item.update_date="{ item }">
-              {{
-                item.update_date ? formatDate(item.update_date) : "No determine"
-              }}
-            </template>
-
-            <!-- ส่วนที่เหลือจะใช้ formatDate ตามปกติ -->
-            <template v-slot:item.task_plan_start="{ item }">
-              {{
-                item.task_plan_start
-                  ? formatDate(item.task_plan_start)
-                  : "No determine"
-              }}
-            </template>
-            <template v-slot:item.task_plan_end="{ item }">
-              {{
-                item.task_plan_end
-                  ? formatDate(item.task_plan_end)
-                  : "No determine"
-              }}
-            </template>
-            <template v-slot:item.task_actual_start="{ item }">
-              {{
-                item.task_actual_start
-                  ? formatDate(item.task_actual_start)
-                  : "No determine"
-              }}
-            </template>
-            <template v-slot:item.task_actual_end="{ item }">
-              {{
-                item.task_actual_end
-                  ? formatDate(item.task_actual_end)
-                  : "No determine"
-              }}
-            </template>
-            <!-- โค้ดประสาทีนี้เรียงตาม update_date -->
-            <template v-slot:item.task_manday="{ item }">
-              {{ item.task_manday !== null ? item.task_manday : 0 }} days
-            </template>
-          </v-data-table>
-
           <v-card-actions>
+            <v-spacer></v-spacer>
             <v-btn color="error" @click="dialog = false">Close</v-btn>
           </v-card-actions>
         </v-card>
-      </v-dialog>
+      </v-dialog> -->
     </div>
 
     <!-- Edit task dialog -->
@@ -647,33 +225,22 @@
       <v-card>
         <v-card-title>
           <h2>Edit Task</h2>
+          <v-spacer></v-spacer>
+          <v-btn icon @click="dialogEditTaskForm = false">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
         </v-card-title>
         <v-card-text>
-          <!-- Edit task form -->
           <v-form @submit.prevent="updateTask">
-            <!-- Form fields to edit task details -->
-            <v-text-field v-model="editedTask.task_name" label="Task Name" required></v-text-field>
-            <v-text-field v-model="editedTask.task_detail" label="Detail" required></v-text-field>
-            <v-select v-model="editedTask.task_status" :items="[
-              'start',
-              'stop',
-              'correct',
-              'mistake',
-              'Not started yet',
-            ]" label="Status" required outlined dense></v-select>
-
-            <v-row align="center">
-              <v-col cols="3">
-                <v-text-field v-model="editedTask.task_progress" label="Progress" type="number" min="0" max="100"
-                  outlined dense></v-text-field>
+            <v-row>
+              <v-col cols="6">
+                <v-text-field v-model="editedTask.task_id" label="Task ID" readonly disabled></v-text-field>
               </v-col>
-              <v-col cols="9">
-                <v-slider v-model="editedTask.task_progress" :thumb-label="true" thumb-size="20" ticks="always"
-                  tick-size="2" tick-thickness="2" track-color="primary" :max="100" :min="0" step="1"></v-slider>
+              <v-col cols="6">
+                <v-text-field v-model="editedTask.task_name" label="Task Name" required></v-text-field>
               </v-col>
             </v-row>
 
-            <!-- Plan -->
             <v-row>
               <v-col cols="6">
                 <v-menu v-model="planStartMenu" :close-on-content-click="false" :nudge-right="40"
@@ -699,7 +266,6 @@
               </v-col>
             </v-row>
 
-            <!-- Actual -->
             <v-row>
               <v-col cols="6">
                 <v-menu v-if="editedTask.task_plan_start && editedTask.task_plan_end" v-model="actualStartMenu"
@@ -716,8 +282,8 @@
                   :close-on-content-click="false" :nudge-right="40" transition="scale-transition" offset-y>
                   <template v-slot:activator="{ on }">
                     <v-text-field :value="formatDate(editedTask.task_actual_end, 'DD-MM-YYYY')
-                      " label="Actual End" prepend-icon="mdi-calendar" readonly v-on="on"
-                      :disabled="!editedTask.task_actual_start"></v-text-field>
+                      " label="Actual End" prepend-icon="mdi-calendar" readonly v-on="on">
+                    </v-text-field>
                   </template>
                   <v-date-picker v-model="editedTask.task_actual_end" no-title scrollable
                     :min="editedTask.task_actual_start"></v-date-picker>
@@ -725,115 +291,386 @@
               </v-col>
             </v-row>
 
-            <v-text-field v-model="editedTask.task_manday" label="Manday" required></v-text-field>
+            <v-row>
+              <v-col cols="6">
+                <v-text-field v-model="editedTask.task_manday" label="Plan Manday" required disabled></v-text-field>
+              </v-col>
+              <v-col cols="6">
+                <v-text-field v-model="editedTask.task_type" :items="['Design', 'Develop']" label="Type of Task"
+                  required outlined dense disabled></v-text-field>
+              </v-col>
+            </v-row>
 
-            <!-- Member ID -->
-            <v-select v-model="editedTask.task_member_id" :items="userListCreate" item-value="user_id"
-              item-text="user_name" label="Member ID" required>
-              <template v-slot:item="{ item }">
-                <v-list-item-avatar>
-                  <v-img :src="item.user_pic" />
-                </v-list-item-avatar>
-                <v-list-item-content>
-                  <v-list-item-title>{{ item.user_name }}</v-list-item-title>
-                </v-list-item-content>
-              </template>
-            </v-select>
+            <v-row>
+              <v-col cols="12">
+                <v-select v-model="editedTask.task_member_id" :items="userListCreate" item-value="user_id"
+                  item-text="user_name" label="Assign To" required>
+                  <template v-slot:item="{ item }">
+                    <v-list-item-avatar>
+                      <v-img :src="item.user_pic" />
+                    </v-list-item-avatar>
+                    <v-list-item-content>
+                      <v-list-item-title>{{
+                        item.user_name
+                      }}</v-list-item-title>
+                    </v-list-item-content>
+                  </template>
+                </v-select>
+              </v-col>
+            </v-row>
 
-            <v-btn color="primary" type="submit">Update</v-btn>
-            <v-btn color="error" @click="cancelEdit">Cancel</v-btn>
+            <v-row justify="center">
+              <v-col cols="auto">
+                <v-btn color="success" type="submit">Save</v-btn>
+              </v-col>
+              <v-col cols="auto">
+                <v-btn v-if="
+                  (editedTask.memberDetails &&
+                    editedTask.memberDetails.id === user.id) ||
+                  user.user_role === 'Admin'
+                " color="error" @click.stop="deleteTask(editedTask)">
+                  Delete
+                </v-btn>
+              </v-col>
+            </v-row>
           </v-form>
         </v-card-text>
       </v-card>
     </v-dialog>
 
     <!-- save task dialog -->
-    <v-dialog v-model="dialogSaveTaskForm" max-width=70%>
-      <v-card>
-        <v-card-title> </v-card-title>
-        <v-card-subtitle>
-          <!-- ส่ง selectedTask ไปยัง update_task component -->
-          <update_task :task="selectedTask" @close-dialog="dialogSaveTaskForm = false" @task-updated="refreshTable" />
-        </v-card-subtitle>
-      </v-card>
-    </v-dialog>
-    <v-dialog v-model="dialogAddTaskForm" max-width="600px">
+    <v-dialog v-model="dialogSaveTaskForm" max-width="900px">
       <v-card>
         <v-card-title>
-          <h2>Create New Task</h2>
+          <h2>Update Task</h2>
+          <v-spacer></v-spacer>
+          <v-btn icon @click="dialogSaveTaskForm = false">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
         </v-card-title>
         <v-card-text>
-          <!-- Create task form -->
-          <v-form @submit.prevent="createTask(newTask)">
-            <!-- Task ID -->
-            <v-text-field v-model="newTask.task_id" label="Task ID" required append-icon="mdi-alert-circle"
-              pattern="[A-Za-z0-9@#$%^&*()-_+=!]+"></v-text-field>
+          <v-form @submit.prevent="saveHistory">
+            <v-row align="center" justify="center" class="w-100">
+              <v-col class="text-center">
+                <h2>Task Name:{{ historyTaskData.task_name }}</h2>
+              </v-col>
+            </v-row>
+            <!-- Progress -->
+            <v-row align="center">
+              <v-col cols="4">
+                <v-text-field v-model="historyTaskData.task_progress" label="Task Progress" type="number" min="0"
+                  max="100" outlined dense></v-text-field>
+              </v-col>
+              <v-col cols="8">
+                <v-slider v-model="historyTaskData.task_progress" :thumb-label="true" thumb-size="20" ticks="always"
+                  tick-size="2" tick-thickness="2" track-color="primary" :max="100" :min="0" step="1"></v-slider>
+              </v-col>
+            </v-row>
 
-            <!-- Task Name -->
-            <v-text-field v-model="newTask.task_name" label="Task Name" required
-              append-icon="mdi-alert-circle"></v-text-field>
+            <!-- Remark -->
+            <v-text-field v-model="historyTaskData.task_detail" label="Remark" outlined dense></v-text-field>
 
-            <!-- Detail -->
-            <v-text-field v-model="newTask.task_detail" label="Detail"></v-text-field>
+            <!-- Dates and Mandays -->
+            <v-row>
+              <v-col cols="4">
+                <v-menu v-model="planStartMenu" :close-on-content-click="false" :nudge-right="40"
+                  transition="scale-transition" offset-y>
+                  <template v-slot:activator="{ on }">
+                    <v-text-field :value="formatDate(
+                      historyTaskData.task_plan_start,
+                      'DD/MM/YYYY'
+                    )
+                      " label="Plan Start" prepend-icon="mdi-calendar" readonly v-on="on" disabled></v-text-field>
+                  </template>
+                  <v-date-picker v-model="historyTaskData.task_plan_start" no-title scrollable></v-date-picker>
+                </v-menu>
+              </v-col>
+              <v-col cols="4">
+                <v-menu v-model="planEndMenu" :close-on-content-click="false" :nudge-right="40"
+                  transition="scale-transition" offset-y>
+                  <template v-slot:activator="{ on }">
+                    <v-text-field :value="formatDate(historyTaskData.task_plan_end, 'DD/MM/YYYY')
+                      " label="Plan End" prepend-icon="mdi-calendar" readonly v-on="on" disabled></v-text-field>
+                  </template>
+                  <v-date-picker v-model="historyTaskData.task_plan_end" no-title scrollable
+                    :min="historyTaskData.task_plan_start"></v-date-picker>
+                </v-menu>
+              </v-col>
+              <v-col cols="4">
+                <v-text-field v-model="historyTaskData.task_manday" label="Manday" required disabled></v-text-field>
+              </v-col>
+            </v-row>
 
-            <!-- Status -->
-            <v-select v-model="newTask.task_status" :items="statusOptions" label="Status"></v-select>
+            <v-row>
+              <v-col cols="4">
+                <v-menu v-if="
+                  historyTaskData.task_plan_start &&
+                  historyTaskData.task_plan_end
+                " v-model="actualStartMenu" :close-on-content-click="false" :nudge-right="40"
+                  transition="scale-transition" offset-y>
+                  <template v-slot:activator="{ on }">
+                    <v-text-field :value="formatDate(
+                      historyTaskData.task_actual_start,
+                      'DD/MM/YYYY'
+                    )
+                      " label="Actual Start" prepend-icon="mdi-calendar" readonly v-on="on"></v-text-field>
+                  </template>
+                  <v-date-picker v-model="historyTaskData.task_actual_start" no-title scrollable></v-date-picker>
+                </v-menu>
+              </v-col>
+              <v-col cols="4">
+                <v-menu v-if="
+                  historyTaskData.task_plan_start &&
+                  historyTaskData.task_plan_end
+                " v-model="actualEndMenu" :close-on-content-click="false" :nudge-right="40"
+                  transition="scale-transition" offset-y>
+                  <template v-slot:activator="{ on }">
+                    <v-text-field :value="formatDate(
+                      historyTaskData.task_actual_end,
+                      'DD/MM/YYYY'
+                    )
+                      " label="Actual End" prepend-icon="mdi-calendar" readonly v-on="on"></v-text-field>
+                  </template>
+                  <v-date-picker v-model="historyTaskData.task_actual_end" no-title scrollable
+                    :min="historyTaskData.task_actual_start"></v-date-picker>
+                </v-menu>
+              </v-col>
+              <v-col cols="4">
+                <v-text-field v-model="historyTaskData.actual_manday" label="Actual Manday" required
+                  disabled></v-text-field>
+              </v-col>
+            </v-row>
 
-            <!-- Plan Start -->
-            <v-menu v-model="planStartMenu" :close-on-content-click="false" :nudge-right="40"
-              transition="scale-transition" offset-y max-width="300px">
-              <template v-slot:activator="{ on }">
-                <v-text-field label="Plan Start" prepend-icon="mdi-calendar" readonly v-on="on"
-                  :value="formatDate(newTask.task_plan_start)"></v-text-field>
+            <div>
+              <h3 style="padding-left: 20px">History tasks</h3>
+            </div>
+            <v-data-table :headers="historyHeaders" :items="historyTasks" item-key="id" class="table-with-border"
+              :sort-by="[{ key: 'update_date', order: 'desc' }]">
+              <template v-slot:item.task_detail="{ item }">
+                {{ item.task_detail ? item.task_detail : "No determine" }}
               </template>
-              <v-date-picker v-model="newTask.task_plan_start" no-title scrollable max-width="300px"></v-date-picker>
-            </v-menu>
 
-            <!-- Plan End -->
-            <v-menu v-model="planEndMenu" :close-on-content-click="false" :nudge-right="40"
-              transition="scale-transition" offset-y max-width="300px">
-              <template v-slot:activator="{ on }">
-                <v-text-field label="Plan End" prepend-icon="mdi-calendar" readonly v-on="on"
-                  :min="newTask.task_plan_start" :value="formatDate(newTask.task_plan_end)"></v-text-field>
+              <!-- Template แสดงข้อมูลของ Task Type -->
+              <template v-slot:item.task_type="{ item }">
+                {{ item.task_type ? item.task_type : "No determine" }}
               </template>
-              <v-date-picker v-model="newTask.task_plan_end" no-title scrollable max-width="300px"
-                :min="newTask.task_plan_start"></v-date-picker>
-            </v-menu>
 
-            <v-text-field v-model="newTask.task_manday" label="Manday" :readonly="true"></v-text-field>
-
-            <!-- Member ID -->
-            <v-select v-model="newTask.task_member_id" :items="userListCreate" item-value="user_id"
-              item-text="user_name" label="Member ID">
-              <template v-slot:item="{ item }">
-                <v-list-item-avatar>
-                  <v-img :src="item.user_pic" />
-                </v-list-item-avatar>
-                <v-list-item-content>
-                  <v-list-item-title>{{ item.user_name }}</v-list-item-title>
-                </v-list-item-content>
+              <!-- โค้ดประสาทีนี้เรียงตาม update_date -->
+              <template v-slot:item.user_update="{ item }">
+                {{ item.user_update ? item.user_update : "No determine" }}
               </template>
-            </v-select>
 
-            <!-- Submit button -->
-            <v-btn color="primary" :disabled="!newTask.task_id || !newTask.task_name" type="submit">Create</v-btn>
+              <!-- โค้ดประสาทีนี้เรียงตาม update_date -->
+              <template v-slot:item.update_date="{ item }">
+                {{
+                  item.update_date
+                    ? formatDate(item.update_date)
+                    : "No determine"
+                }}
+              </template>
 
-            <!-- Cancel button -->
-            <v-btn color="error" @click="cancel">Cancel</v-btn>
+              <!-- ส่วนที่เหลือจะใช้ formatDate ตามปกติ -->
+              <template v-slot:item.task_plan_start="{ item }">
+                {{
+                  item.task_plan_start
+                    ? formatDate(item.task_plan_start)
+                    : "No determine"
+                }}
+              </template>
+              <template v-slot:item.task_plan_end="{ item }">
+                {{
+                  item.task_plan_end
+                    ? formatDate(item.task_plan_end)
+                    : "No determine"
+                }}
+              </template>
+              <template v-slot:item.task_actual_start="{ item }">
+                {{
+                  item.task_actual_start
+                    ? formatDate(item.task_actual_start)
+                    : "No determine"
+                }}
+              </template>
+              <template v-slot:item.task_actual_end="{ item }">
+                {{
+                  item.task_actual_end
+                    ? formatDate(item.task_actual_end)
+                    : "No determine"
+                }}
+              </template>
+              <!-- โค้ดประสาทีนี้เรียงตาม update_date -->
+              <template v-slot:item.task_manday="{ item }">
+                {{ item.task_manday !== null ? item.task_manday : 0 }} days
+              </template>
+            </v-data-table>
+
+            <!-- Save and Cancel Buttons -->
+            <v-spacer></v-spacer>
+            <v-row justify="center" class="mt-4">
+              <!-- เพิ่มระยะห่าง -->
+              <v-col cols="auto">
+                <v-btn color="primary" type="submit">Save</v-btn>
+              </v-col>
+              <v-col cols="auto">
+                <v-btn color="error" @click="dialogSaveTaskForm = false">Cancel</v-btn>
+              </v-col>
+            </v-row>
           </v-form>
         </v-card-text>
       </v-card>
     </v-dialog>
+
+    <!-- Create task dialog -->
+    <v-dialog v-model="dialogAddTaskForm" max-width="600px">
+      <v-card>
+        <v-card-title>
+          <h2>Create Task</h2>
+          <v-spacer></v-spacer>
+          <v-btn icon @click="dialogAddTaskForm = false">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </v-card-title>
+        <v-card-text>
+          <!-- Create task form -->
+          <v-form @submit.prevent="createTask(newTask)">
+            <v-row>
+              <!-- Task ID -->
+              <v-col cols="12" md="6">
+                <v-text-field v-model="newTask.task_id" label="Task ID" required append-icon="mdi-alert-circle"
+                  pattern="[A-Za-z0-9@#$%^&*()-_+=!]+"></v-text-field>
+              </v-col>
+              <!-- Task Name -->
+              <v-col cols="12" md="6">
+                <v-text-field v-model="newTask.task_name" label="Task Name" required
+                  append-icon="mdi-alert-circle"></v-text-field>
+              </v-col>
+            </v-row>
+            <v-row>
+              <!-- Plan Start -->
+              <v-col cols="12" md="4">
+                <v-menu v-model="planStartMenu" :close-on-content-click="false" :nudge-right="40"
+                  transition="scale-transition" offset-y max-width="300px">
+                  <template v-slot:activator="{ on }">
+                    <v-text-field label="Plan Start" prepend-icon="mdi-calendar" readonly v-on="on"
+                      :value="formatDate(newTask.task_plan_start)"></v-text-field>
+                  </template>
+                  <v-date-picker v-model="newTask.task_plan_start" no-title scrollable
+                    max-width="300px"></v-date-picker>
+                </v-menu>
+              </v-col>
+              <!-- Plan End -->
+              <v-col cols="12" md="4">
+                <v-menu v-model="planEndMenu" :close-on-content-click="false" :nudge-right="40"
+                  transition="scale-transition" offset-y max-width="300px">
+                  <template v-slot:activator="{ on }">
+                    <v-text-field label="Plan End" prepend-icon="mdi-calendar" readonly v-on="on"
+                      :min="newTask.task_plan_start" :value="formatDate(newTask.task_plan_end)"></v-text-field>
+                  </template>
+                  <v-date-picker v-model="newTask.task_plan_end" no-title scrollable max-width="300px"
+                    :min="newTask.task_plan_start"></v-date-picker>
+                </v-menu>
+              </v-col>
+
+              <v-col cols="12" md="4">
+                <v-text-field v-model="newTask.task_manday" label="Plan Manday" :readonly="true"></v-text-field>
+              </v-col>
+            </v-row>
+
+            <v-row>
+              <!-- Member ID -->
+              <v-col cols="12" md="6">
+                <v-select v-model="newTask.task_member_id" :items="userListCreate" item-value="user_id"
+                  item-text="user_name" label="Assign To">
+                  <template v-slot:item="{ item }">
+                    <v-list-item-avatar>
+                      <v-img :src="item.user_pic" />
+                    </v-list-item-avatar>
+                    <v-list-item-content>
+                      <v-list-item-title>{{
+                        item.user_name
+                      }}</v-list-item-title>
+                    </v-list-item-content>
+                  </template>
+                </v-select>
+              </v-col>
+
+              <!-- Status -->
+              <v-col cols="12" md="6">
+                <v-select v-model="newTask.task_type" :items="statusOptions" label="Type of Task"></v-select>
+              </v-col>
+            </v-row>
+
+            <v-row justify="center">
+              <v-col cols="auto">
+                <!-- Submit button -->
+                <v-btn color="primary" :disabled="!newTask.task_id || !newTask.task_name" type="submit">Create</v-btn>
+                <!-- Cancel button -->
+                <v-btn color="error" @click="cancel">Cancel</v-btn>
+              </v-col>
+            </v-row>
+          </v-form>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+    <v-data-table :headers="taskHeaders" :items="filteredTasks" item-key="task_id" class="elevation-1">
+      <template v-slot:item="{ item }">
+        <tr @click="openDialog(item)">
+          <!-- ข้อมูลต่าง ๆ ของ task -->
+          <td>{{ item.task_id }}</td>
+          <td>{{ item.task_name }}</td>
+          <td>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <!-- แสดงรูปผู้ใช้และเชื่อมต่อกับ tooltip -->
+                <v-list-item-avatar v-bind="attrs" v-on="on">
+                  <v-img :src="getUserPic(item.task_member_id)" alt="User Avatar" />
+                </v-list-item-avatar>
+              </template>
+              <!-- ข้อมูลที่จะแสดงใน tooltip -->
+              <v-card-title class="font-weight" style="font-size: 1rem; text-align: center">
+                {{ getUserName(item.task_member_id) }}
+              </v-card-title>
+            </v-tooltip>
+          </td>
+          <td class="progress-cell">
+            <v-progress-linear :color="getProgressColor(parseInt(item.task_progress))" height="20"
+              :value="parseInt(item.task_progress)">
+              <strong>{{ item.task_progress }}%</strong>
+            </v-progress-linear>
+          </td>
+          <td>{{ formatDate(item.task_plan_start) }}</td>
+          <td>{{ formatDate(item.task_plan_end) }}</td>
+          <td>{{ item.task_type }}</td>
+          <!-- Actions column -->
+          <td>
+            <!-- Existing buttons -->
+            <v-btn v-if="user.user_role === 'Admin'" icon color="primary" @click.stop="
+              dialogEditTaskForm = true;
+            editedTask = item;
+            ">
+              <v-icon>mdi-pencil</v-icon>
+            </v-btn>
+            <v-btn v-if="
+              (item.memberDetails && item.memberDetails.id === user.id) ||
+              user.user_role === 'Admin'
+            " icon color="primary" @click.stop="openSaveHistoryDialog(item)">
+              <v-icon>mdi-content-save</v-icon>
+            </v-btn>
+          </td>
+        </tr>
+      </template>
+    </v-data-table>
   </div>
 </template>
 
 <script>
-import Loader from "../../../../components/Loader.vue";
 import axios from "axios";
 import Swal from "sweetalert2";
 import Breadcrumbs from "~/components/project/Breadcrumbs.vue";
+
+import Loader from "@/components/Loader.vue";
 import { decodeId } from "~/utils/crypto";
-import update_task from "../../../../components/Progress_tracking/Dashbord/update_task.vue";
+import update_task from "@/components/Progress_tracking/Dashbord/update_task.vue";
 
 export default {
   middleware: "auth",
@@ -867,35 +704,49 @@ export default {
       loggedIn: this.$auth.loggedIn,
       user: this.$auth.user,
       dialogSaveTaskForm: false, // Dialog status
-      selectedTask: {},
+      taskHeaders: [
+        { text: "Task ID", value: "task_id" },
+        { text: "Task Name", value: "task_name" },
+        { text: "Task User", value: "user_id" },
+        { text: "Progress", value: "task_progress" },
+        { text: "Plan Start", value: "task_plan_start" },
+        { text: "Plan End", value: "task_plan_end" },
+        { text: "Task Type", value: "task_type" },
+        { text: "Actions", value: "actions", sortable: false },
+      ],
       historyTaskData: {
         task_name: "",
         task_detail: "",
-        task_status: "",
+        task_type: "",
         task_progress: "",
         task_plan_start: "",
         task_plan_end: "",
         task_manday: "",
         task_actual_start: "",
         task_actual_end: "",
-        task_id: "",
-        taskid: "",
+        actual_manday: "",
+        selectedTasks: [],
+        screen_id: null, // กำหนดค่าเริ่มต้นเป็น null หรือ integer ที่ถูกต้อง
+        project_id: null, // กำหนดค่าเริ่มต้นเป็น null หรือ integer ที่ถูกต้อง
+        system_id: null, // กำหนดค่าเริ่มต้นเป็น null หรือ integer ที่ถูกต้อง
+        task_member_id: null, // กำหนดค่าเริ่มต้นเป็น null หรือ integer ที่ถูกต้อง
       },
+
+      value: 0, // กำหนดค่าเริ่มต้นสำหรับ value
+      interval: null, // สำหรับเก็บค่า interval
 
       dialogTaskDetails: {}, // ถ้าต้องการเก็บข้อมูล Task Details ให้ใช้ตัวแปรนี้
       historyTasks: [], // เก็บข้อมูล history tasks ที่ได้จาก API
       historyHeaders: [
         { text: "Update date", value: "update_date" },
         { text: "User update", value: "user_update" },
-        { text: "Task Name", value: "task_name" },
-        { text: "Task Detail", value: "task_detail" },
-        { text: "Status", value: "task_status" },
+        // { text: "Task type", value: "task_type" },
         { text: "Progress", value: "task_progress" },
         { text: "Plan Start", value: "task_plan_start" },
         { text: "Plan End", value: "task_plan_end" },
         { text: "Actual Start", value: "task_actual_start" },
         { text: "Actual End", value: "task_actual_end" },
-        { text: "Manday", value: "task_manday" },
+        { text: "Task Detail", value: "task_detail" },
       ],
       dialog: false,
       dialogTaskDetails: {},
@@ -916,7 +767,8 @@ export default {
       editedTask: {
         task_name: "",
         task_detail: "",
-        task_status: "",
+        // task_status: "",
+        task_type: "",
         task_manday: "",
         task_progress: "",
         task_plan_start: "",
@@ -928,11 +780,14 @@ export default {
       tasks: [],
       currentPage: 1,
       perPage: 12,
-      statusOptions: ["In Progress", "Completed", "Not started yet"],
+      statusOptions: ["Design", "Develop"],
       showImageDialog: false,
+      showHistoryDialog: false,
       screen_plan_start: "",
       screen_plan_end: "",
       screen_progress: "",
+      screen_progress_status_design: 0,
+      screen_progress_status_dev: 0,
       screen_manday: "",
       screen_level: "",
       screen_pic: "",
@@ -945,6 +800,7 @@ export default {
       screenId: "",
       system_id: "",
       project_id: "",
+      deletedTasks: [],
 
       showDetails: false,
       // Dialogs
@@ -952,6 +808,17 @@ export default {
       dialogAddTaskForm: false,
       show: false,
       searchQuery: "",
+      headersDelete: [
+        // Data Deleted Tasks History
+        { text: "Task ID", value: "task_id" },
+        { text: "Task Detail", value: "task_detail" },
+        { text: "Task Type", value: "task_type" },
+        { text: "Plan Start", value: "task_plan_start" },
+        { text: "Plan End", value: "task_plan_end" },
+        { text: "Actual Start", value: "task_actual_start" },
+        { text: "Actual End", value: "task_actual_end" },
+        // { text: "Actions", value: "actions", sortable: false },
+      ],
       //Edited Task data
 
       //Task data
@@ -960,7 +827,7 @@ export default {
       newTask: {
         task_id: "",
         task_name: "",
-        task_status: "Not started yet",
+        task_type: "",
         person_in_charge: "",
         task_plan_start: null,
         task_plan_end: null,
@@ -980,7 +847,23 @@ export default {
           (v && v.length <= 50) ||
           "Task Name must be less than or equal to 50 characters",
       ],
+      value: 0, // ค่าที่จะอัปเดตทุก ๆ 1 วินาที
+      hoveredUser: null,
     };
+  },
+  mounted() {
+    this.interval = setInterval(() => {
+      if (this.value >= 100) {
+        this.value = 0;
+      } else {
+        this.value += 10;
+      }
+    }, 1000);
+  },
+  beforeDestroy() {
+    if (this.interval) {
+      clearInterval(this.interval);
+    }
   },
 
   computed: {
@@ -1093,9 +976,11 @@ export default {
   created() {
     // เรียกใช้ฟังก์ชันเมื่อโหลดหน้า
     this.getTasksToday();
-    this.$store.dispatch("setLoading", true);
   },
   watch: {
+    "historyTaskData.task_actual_start": "calculateActualManday",
+    "historyTaskData.task_actual_end": "calculateActualManday",
+
     "historyTaskData.task_plan_start": function (newVal, oldVal) {
       this.calculateMandaySAVE();
     },
@@ -1125,10 +1010,17 @@ export default {
     // Watcher to update task_manday when task_plan_start or task_plan_end changes
   },
   methods: {
-    refreshTable() {
-      // Logic to refresh the table, e.g., re-fetch data
-      this.fetchTasks(); // Replace with actual method to refresh data
+    getUserPic(userId) {
+      // หา user object โดยใช้ userId และคืนค่าภาพผู้ใช้
+      const user = this.userListCreate.find((user) => user.user_id === userId);
+      return user ? user.user_pic : "";
     },
+    getUserName(userId) {
+      // หา user object โดยใช้ userId และคืนค่าชื่อผู้ใช้
+      const user = this.userListCreate.find((user) => user.user_id === userId);
+      return user ? user.user_name : "Unknown";
+    },
+
     calculateMandays() {
       // Check if both start and end dates are selected
       if (this.newTask.task_plan_start && this.newTask.task_plan_end) {
@@ -1145,6 +1037,152 @@ export default {
         this.newTask.task_manday = null;
       }
     },
+    calculateActualManday() {
+      const start = this.historyTaskData.task_actual_start;
+      const end = this.historyTaskData.task_actual_end;
+
+      if (start && end) {
+        const startDate = new Date(start);
+        const endDate = new Date(end);
+
+        // Calculate difference in time (milliseconds)
+        const diffTime = Math.abs(endDate - startDate);
+
+        // Calculate difference in days (1 day = 1000 * 60 * 60 * 24 milliseconds)
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; // +1 to include the start day
+
+        // Assign the calculated days to actual_manday
+        this.historyTaskData.actual_manday = diffDays;
+      }
+    },
+
+    async deleteSelectedHistoryTasks() {
+      try {
+        // Check if any tasks are selected
+        if (this.selectedTasks.length === 0) {
+          await Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "No tasks selected to delete.",
+          });
+          return;
+        }
+
+        const confirmResult = await Swal.fire({
+          title: "Are you sure?",
+          text: "You won't be able to revert this!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#009933",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, delete them!",
+        });
+
+        if (confirmResult.isConfirmed) {
+          // Loop through selected tasks and delete each one
+          for (const task of this.selectedTasks) {
+            const taskId = task.id; // Get the ID of the task to delete
+            const response = await fetch(
+              `http://localhost:7777/tasks/deleteHistoryTasks/${taskId}`,
+              {
+                method: "DELETE",
+              }
+            );
+            if (!response.ok) {
+              throw new Error("Failed to delete tasks");
+            }
+          }
+
+          await Swal.fire({
+            icon: "success",
+            title: "Success",
+            text: "Selected tasks and related data deleted successfully",
+          });
+
+          // Refresh deleted tasks data after deletion
+          this.fetchDeletedTasks();
+        }
+      } catch (error) {
+        console.error("Error deleting selected history tasks:", error);
+        await Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Failed to delete selected history tasks",
+        });
+      }
+    },
+
+    async restoreSelectedTasks() {
+      try {
+        // Check if any tasks are selected
+        if (this.selectedTasks.length === 0) {
+          await Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "No tasks selected to restore.",
+          });
+          return;
+        }
+
+        const confirmResult = await Swal.fire({
+          title: "Are you sure?",
+          text: "You are about to restore the selected tasks.",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#009933",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, restore them!",
+        });
+
+        if (confirmResult.isConfirmed) {
+          // Loop through selected tasks and restore each one
+          for (const task of this.selectedTasks) {
+            const taskId = task.id;
+            const response = await fetch(
+              `http://localhost:7777/tasks/updateTask/${taskId}`,
+              {
+                method: "PUT",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  task_nameTH: task.task_nameTH,
+                  task_nameEN: task.task_nameEN,
+                  task_shortname: task.task_shortname,
+                  project_id: task.project_id,
+                  is_deleted: 0,
+                }),
+              }
+            );
+
+            if (!response.ok) {
+              throw new Error("Failed to restore tasks");
+            }
+          }
+
+          console.log("Selected tasks restored successfully");
+
+          await Swal.fire(
+            "Success",
+            "Selected tasks restored successfully.",
+            "success"
+          );
+
+          // Refresh data after restoring tasks
+          this.fetchDeletedTasks();
+          this.fetchTasks();
+          this.fetchProjectNameENG();
+        }
+      } catch (error) {
+        console.error("Error restoring selected tasks:", error);
+        await Swal.fire(
+          "Error",
+          "An error occurred during the tasks restoration process.",
+          "error"
+        );
+      }
+    },
+
     async takeTask(task) {
       try {
         // ตรวจสอบว่ามีข้อมูลผู้ใช้ที่เข้าสู่ระบบหรือไม่
@@ -1204,12 +1242,14 @@ export default {
     },
 
     getProgressColor(progress) {
-      if (progress >= 61 && progress <= 100) {
-        return "green";
-      } else if (progress >= 40 && progress <= 60) {
+      if (progress >= 75 && progress <= 100) {
+        return "#4CAF50";
+      } else if (progress >= 51 && progress <= 74) {
+        return "#03A9F4";
+      } else if (progress >= 26 && progress <= 50) {
+        return "#FFD700";
+      } else if (progress >= 0 && progress <= 25) {
         return "#FC8705";
-      } else if (progress >= 0 && progress <= 39) {
-        return "red";
       }
       // เมื่อไม่ตรงกับเงื่อนไขใดๆ ให้คืนค่าเริ่มต้น
       return "primary";
@@ -1247,6 +1287,7 @@ export default {
         throw error;
       }
     },
+
     formatDateHistory(historyTasks) {
       return historyTasks.map((task) => {
         // สร้างวัตถุใหม่ที่มีข้อมูลจาก task และแปลงรูปแบบวันที่
@@ -1257,29 +1298,57 @@ export default {
         };
       });
     },
-    openSaveHistoryDialog(task) {
+
+    async openSaveHistoryDialog(task) {
       // Set task data for the form
       this.historyTaskData = {
         task_name: task.task_name,
         task_detail: task.task_detail,
         task_status: task.task_status,
+        task_type: task.task_type,
         task_progress: task.task_progress,
         task_plan_start: task.task_plan_start,
         task_plan_end: task.task_plan_end,
         task_manday: task.task_manday,
         task_actual_start: task.task_actual_start,
         task_actual_end: task.task_actual_end,
-        taskid: task.id,
-        task_id: task.task_id,
-
         // Set other fields as per your API
       };
       // Set the task ID for the API endpoint
       this.taskId = task.id; // Assign task ID to a component data property
+
+      // กำหนดค่า task_Id จาก task.id ก่อนเรียก API
+      const task_Id = task.id;
+
+      // Fetch history tasks from the API
+      try {
+        const response = await fetch(
+          `http://localhost:7777/tasks/history_tasks/${task_Id}`
+        );
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const data = await response.json();
+        this.historyTasks = data;
+
+        // เพิ่มส่วนนี้เพื่อดึงรายละเอียดของผู้ใช้และแทนที่ id ด้วยข้อมูลผู้ใช้
+        for (let i = 0; i < this.historyTasks.length; i++) {
+          const userId = this.historyTasks[i].user_update;
+          const userDetails = await this.fetchMemberDetails(userId);
+          if (userDetails) {
+            const fullName =
+              userDetails.user_firstname + " " + userDetails.user_lastname;
+            this.historyTasks[i].user_update = fullName;
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching history tasks:", error);
+      }
+
       // Open the save task dialog
       this.dialogSaveTaskForm = true;
-      this.selectedTask = task;
     },
+
     formatDateSAVE(date) {
       // แปลงข้อความวันที่เป็นอ็อบเจ็ค Date
       const d = new Date(date);
@@ -1325,10 +1394,12 @@ export default {
         this.historyTaskData.task_manday = differenceInDays + 1; // เพิ่ม 1 เพื่อให้นับวันเริ่มต้นด้วย
       }
     },
+
     async saveHistory() {
       try {
         // ตรวจสอบค่า manday ที่ได้จากฟังก์ชัน calculateMandaySAVE()
         const manday = parseFloat(this.historyTaskData.task_manday);
+        console.log(manday);
         const start = new Date(this.historyTaskData.task_plan_start);
         const end = new Date(this.historyTaskData.task_plan_end);
         const differenceInTime = end.getTime() - start.getTime();
@@ -1344,18 +1415,6 @@ export default {
             confirmButtonColor: "#009933",
           });
           return; // ออกจากฟังก์ชันหลังจากแสดงข้อความแจ้งเตือน
-        }
-
-        if (this.historyTaskData.task_progress === 100) {
-          // กำหนดค่า task_status เป็น "correct"
-          this.historyTaskData.task_status = "correct";
-        } else if (this.historyTaskData.task_progress === 0) {
-          // ถ้า task_progress เป็น 0% ให้กำหนดค่า task_status เป็น 'Not started yet'
-          this.historyTaskData.task_status = "Not started yet";
-        } else {
-          // ถ้า task_progress ไม่ใช่ 0 หรือ 100% หรือ task_progress ใหญ่กว่า 0 และน้อยกว่า 100%
-          // ไม่ต้องทำอะไรเพิ่มเติม
-          this.historyTaskData.task_status = "start";
         }
 
         // ตรวจสอบค่า task_manday และค่าอื่นๆ และบันทึกข้อมูล
@@ -1386,6 +1445,29 @@ export default {
           this.historyTaskData.task_actual_end = this.formatDateSAVE(
             this.historyTaskData.task_actual_end
           );
+          // ตรวจสอบว่า screen_id ไม่ใช่ค่าว่างเปล่าและกำหนดค่าตั้งต้น
+          if (
+            this.historyTaskData.screen_id === null ||
+            this.historyTaskData.screen_id === undefined
+          ) {
+            this.historyTaskData.screen_id = ""; // หรือกำหนดเป็นค่า default ที่เหมาะสม
+          }
+
+          // ตรวจสอบว่า project_id ไม่ใช่ค่าว่างเปล่าและกำหนดค่าตั้งต้น
+          if (
+            this.historyTaskData.project_id === null ||
+            this.historyTaskData.project_id === undefined
+          ) {
+            this.historyTaskData.project_id = ""; // หรือกำหนดเป็นค่า default ที่เหมาะสม
+          }
+
+          // ตรวจสอบว่า system_id ไม่ใช่ค่าว่างเปล่าและกำหนดค่าตั้งต้น
+          if (
+            this.historyTaskData.system_id === null ||
+            this.historyTaskData.system_id === undefined
+          ) {
+            this.historyTaskData.system_id = ""; // หรือกำหนดเป็นค่า default ที่เหมาะสม
+          }
         } else {
           this.historyTaskData.task_actual_end = null;
         }
@@ -1398,6 +1480,9 @@ export default {
           `http://localhost:7777/tasks/save_history_tasks/${this.taskId}`,
           this.historyTaskData
         );
+
+        // จัดการการกระทำหลังจากบันทึกสำเร็จ
+        console.log(response.data);
         // แสดงแจ้งเตือนเรื่องความสำเร็จ
         await Swal.fire({
           icon: "success",
@@ -1425,6 +1510,7 @@ export default {
       // Cancel save and close the dialog
       this.dialogSaveTaskForm = false;
     },
+
     async openDialog(taskId) {
       this.dialog = true;
       this.dialogTaskDetails = taskId;
@@ -1569,6 +1655,8 @@ export default {
           }
           this.fetchTasks();
           this.fetchScreenDetail();
+          // ปิด dialog หลังจากลบเสร็จ
+          this.dialogEditTaskForm = false;
         }
       } catch (error) {
         console.error("Error deleting task:", error);
@@ -1639,6 +1727,9 @@ export default {
         this.screen_manday = screen.screen_manday; // Set the Screen Manday
         this.screen_pic = await this.convertBase64ToURL(screen.screen_pic); // Convert Base64 to URL
         this.screen_progress = screen.screen_progress; // Set the Screen Progress
+        this.screen_progress_status_design =
+          screen.screen_progress_status_design; // Set the Screen Progress Status
+        this.screen_progress_status_dev = screen.screen_progress_status_dev; // Set the Screen Progress Status
         this.task_count = screen.task_count; // Set the Task Count
         this.screen_plan_start = screen.screen_plan_start; // Set the Plan Start
         this.screen_plan_end = screen.screen_plan_end; // Set the Plan End
@@ -1741,24 +1832,26 @@ export default {
         params: { id: this.screenid },
       });
     },
-    //Create new task
+    // Create new task
     async createTask() {
       try {
         const {
           task_id,
           task_name,
           task_detail = "",
-          task_status = "",
+          task_type = "",
           task_plan_start = "",
           task_plan_end = "",
           task_member_id,
           task_manday = "",
         } = this.newTask;
 
+        // ตรวจสอบว่ามี task_id และ task_name หรือไม่
         if (!task_id || !task_name) {
           throw new Error("Task ID and Task Name are required.");
         }
 
+        // ส่งข้อมูลไปยัง backend เพื่อสร้าง task ใหม่
         const response = await fetch(
           `http://localhost:7777/tasks/createTasks`,
           {
@@ -1770,10 +1863,10 @@ export default {
               task_id,
               task_name,
               task_detail,
-              task_status,
-              screen_id: this.screenId,
-              project_id: this.project_id,
-              system_id: this.system_id,
+              task_type,
+              screen_id: this.screenId, // ควรแน่ใจว่า this.screenId ถูกกำหนดค่าแล้ว
+              project_id: this.project_id, // ควรแน่ใจว่า this.project_id ถูกกำหนดค่าแล้ว
+              system_id: this.system_id, // ควรแน่ใจว่า this.system_id ถูกกำหนดค่าแล้ว
               task_plan_start,
               task_plan_end,
               task_member_id,
@@ -1782,21 +1875,22 @@ export default {
           }
         );
 
+        // ตรวจสอบว่าคำสั่ง HTTP สำเร็จหรือไม่
         if (response.ok) {
           Swal.fire({
             icon: "success",
             title: "Task created successfully",
           });
-          this.dialogAddTaskForm = false;
-          this.fetchTasks();
-          this.fetchScreenDetail();
+          this.dialogAddTaskForm = false; // ปิดฟอร์มการสร้าง task ใหม่
+          this.fetchTasks(); // โหลดรายการ tasks ใหม่
+          this.fetchScreenDetail(); // โหลดข้อมูล screen ใหม่
 
           // Reset form after creating the task
           this.newTask = {
             task_id: "",
             task_name: "",
             task_detail: "",
-            task_status: "",
+            task_type: "",
             task_plan_start: "",
             task_plan_end: "",
             task_member_id: "",
@@ -1813,6 +1907,11 @@ export default {
           text: "Please try again",
         });
       }
+    },
+
+    async goToHistoryTasks() {
+      await this.fetchDeletedTasks();
+      this.showHistoryDialog = true;
     },
 
     formatDisplayDate(dateString) {
@@ -1861,15 +1960,6 @@ export default {
         // ตรวจสอบว่า task_manday มีค่าน้อยกว่าหรือเท่ากับ Manday ที่คำนวณได้
         if (manday > manday + 1) {
           throw new Error(`Task manday must be between 0 and ${manday + 1}`);
-        }
-
-        // เพิ่มเงื่อนไขเพื่อตั้งค่า task_status เป็น "correct" เมื่อ Progress เท่ากับ 100
-        if (taskData.task_progress === 100) {
-          taskData.task_status = "correct";
-        } else if (taskData.task_progress === 0) {
-          taskData.task_status = "Not started yet";
-        } else {
-          taskData.task_status = "start";
         }
 
         taskData.task_manday = manday;
@@ -1935,6 +2025,39 @@ export default {
 </script>
 
 <style scoped>
+.tooltip-content {
+  max-width: 600px;
+  color: white;
+  /* สีข้อความเป็นสีดำ */
+  border: none;
+  /* ลบกรอบออก */
+  border-radius: 4px;
+  /* มุมกรอบมน */
+  box-shadow: none;
+  /* ลบเงาออก */
+  padding: 16px;
+  /* เพิ่ม padding เพื่อจัดระเบียบเนื้อหา */
+}
+
+.progress-row {
+  margin-top: 20px;
+  /* ปรับขนาดตามที่ต้องการ */
+}
+
+.my-progress {
+  margin: 0 1rem;
+  /* เพิ่มระยะห่างด้านซ้ายและขวา */
+}
+
+.progress-item {
+  text-align: center;
+}
+
+.progress-label {
+  margin-top: 0.5rem;
+  font-size: 1rem;
+}
+
 .task-card {
   margin-bottom: 10px;
 }
