@@ -41,7 +41,7 @@ export default {
     },
     async created() {
         try {
-            const screenId = this.screenData.id;
+            const screenId = this.screenData.screenId;
             const response = await this.$axios.$get(
                 `/user_screens/getUserScreenByScreenId/${screenId}`
             );

@@ -62,10 +62,7 @@
     <!-- กรณีไม่มี history tasks -->
     <div v-else class="no-tasks-container">
       <p class="no-tasks-message">
-        <img
-          src="../../../static/fetching_tasks,_No_task_data.gif"
-          alt="No tasks found"
-        />
+        <v-icon class="alert-icon">mdi-alert-circle-outline</v-icon>
         No tasks History
       </p>
     </div>
