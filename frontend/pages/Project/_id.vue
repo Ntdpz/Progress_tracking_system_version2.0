@@ -5,49 +5,9 @@
     <v-row style="margin-bottom: 20px" align="center">
       <!-- Card detel Project -->
       <v-card class="mx-auto align-start" width="95%" hover>
-        <v-card @click.stop="showDetails = !showDetails">
-          <v-card-title>
-            Project name : {{ project.project_name_ENG }}
-            <v-spacer></v-spacer>
-            <v-icon @click.stop="showUserDialog = true">
-              mdi-account-multiple
-            </v-icon>
-          </v-card-title>
-          <v-card-subtitle>
-            Project Progress
-            <v-progress-linear
-              :color="getProgressColor(project.project_progress)"
-              height="50"
-              :value="parseInt(project.project_progress)"
-              striped
-            >
-              <template v-slot:default>
-                <strong :style="{ color: '#5E5E5E', fontSize: '20px' }">
-                  {{ Math.floor(project.project_progress) || 0 }}%
-                </strong>
-              </template>
-            </v-progress-linear>
-          </v-card-subtitle>
-        </v-card>
-
-        <v-expand-transition>
-          <div v-show="showDetails">
-            <v-divider></v-divider>
-            <v-card-text>
-              <p>Project Manday : {{ project.project_manday || 0 }}</p>
-              <p>System Count : {{ project.system_count || 0 }}</p>
-              <p>
-                Project Plan Start :
-                {{ formatDate(project.project_plan_start) || "Not determined" }}
-              </p>
-              <p>
-                Project Plan End :
-                {{ formatDate(project.project_plan_end) || "Not determined" }}
-              </p>
-            </v-card-text>
-          </div>
-        </v-expand-transition>
+        <projectDetail :project="project" />
       </v-card>
+
       <!-- Dialog แสดง User ในโปรเจค -->
       <v-dialog v-model="showUserDialog" max-width="600">
         <v-card>
@@ -515,6 +475,7 @@ import Loader from "../../components/Loader.vue";
 import Swal from "sweetalert2";
 import axios from "axios";
 import { encodeId, decodeId } from "../../utils/crypto";
+import projectDetail from "../../components/Progress_tracking/Project/projectDetail.vue";
 export default {
   async asyncData({ params, $axios, error }) {
     const encodedId = params.id;
@@ -534,15 +495,16 @@ export default {
       return error({ statusCode: 404, message: "Project not found" });
     }
   },
+
   middleware: "auth",
   name: "SystemsDataTable",
   layout: "admin",
   components: {
     Loader,
+    projectDetail,
   },
   data() {
     return {
-      project: null,
       projectId: null,
       user: this.$auth.user,
       loggedIn: this.$auth.loggedIn,
@@ -583,7 +545,7 @@ export default {
       currentPageprojectUser: 1,
       perPageprojectUser: 5,
       showDetails: false,
-      project: {},
+      project: "",
       projectNameENG: "",
       showHistoryDialog: false,
       deletedSystems: [],

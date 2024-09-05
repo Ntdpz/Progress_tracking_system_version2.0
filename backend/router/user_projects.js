@@ -45,26 +45,6 @@ router.get("/getOneUserID/:user_id", async (req, res) => {
     }
 });
 
-//* GET one by project_id
-router.get("/getOneScreenID/:project_id", async (req, res) => {
-    const project_id = req.params.project_id;
-    try {
-        connection.query(
-            "SELECT users.id, users.user_firstname,users.user_position FROM user_projects INNER JOIN users ON user_projects.user_id = users.id INNER JOIN projects ON user_projects.project_id = projects.id WHERE user_projects.project_id = ?",
-            [project_id],
-            (err, results, fields) => {
-                if (err) {
-                    console.log(err);
-                    return res.status(400).send();
-                }
-                res.status(200).json(results);
-            }
-        );
-    } catch (err) {
-        console.log(err);
-        return res.status(500).send();
-    }
-});
 
 // * POST FROM user_projects
 router.post("/createUser_project", async (req, res) => {

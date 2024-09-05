@@ -171,7 +171,7 @@ router.get('/getHistoryProject', async (req, res) => {
 
 
 router.post("/createProject", async (req, res) => {
-  const { project_id, project_name_TH, project_name_ENG, selectedSA, selectedDEV, selectedIMP } = req.body;
+  const { project_name_TH, project_name_ENG, selectedSA, selectedDEV, selectedIMP } = req.body;
 
   const id = generateId(); // Generate ID using generateId() function
 
