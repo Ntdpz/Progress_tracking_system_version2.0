@@ -5,7 +5,7 @@
             <template v-slot:top>
                 <v-toolbar flat class="toolbar">
                     <v-toolbar-title class="toolbar-title">
-                        Screen Name: {{ screenData.id }}
+                        Screen Name: {{ screenData.screen_name }}
                     </v-toolbar-title>
                 </v-toolbar>
             </template>

@@ -379,7 +379,6 @@ router.delete("/deleteHistoryTasks/:id", async (req, res) => {
 });
 
 // Route for saving history tasks and updating tasks
-// Route for saving history tasks and updating tasks
 router.put("/save_history_tasks/:id", async (req, res) => {
   try {
     const taskId = req.params.id;
@@ -409,19 +408,18 @@ router.put("/save_history_tasks/:id", async (req, res) => {
       task_actual_start,
       task_actual_end,
       task_member_id,
-      task_date_update,
       user_update,
     } = req.body;
 
-    // เพิ่มการตรวจสอบค่าว่างและกำหนดค่า default
+    // Use existing values if not provided
+    const updatedTaskType =
+      task_type !== undefined ? task_type : currentTask[0].task_type;
     const updatedScreenId =
       screen_id !== undefined ? screen_id : currentTask[0].screen_id;
     const updatedProjectId =
       project_id !== undefined ? project_id : currentTask[0].project_id;
     const updatedSystemId =
       system_id !== undefined ? system_id : currentTask[0].system_id;
-
-    // Check if task_member_id is provided, if not, use the current task_member_id value
     const updatedTaskMemberId =
       task_member_id !== undefined
         ? task_member_id
@@ -432,35 +430,27 @@ router.put("/save_history_tasks/:id", async (req, res) => {
       `UPDATE tasks 
        SET task_name=?, task_detail=?, task_status=?, task_manday=?, screen_id=?, project_id=?, 
            task_type=?, system_id=?, task_progress=?, task_plan_start=?, task_plan_end=?, 
-           task_actual_start=?, task_actual_end=?, user_update=?, task_date_update=?, task_member_id=? 
+           task_actual_start=?, task_actual_end=?, user_update=?, task_date_update=CURRENT_TIMESTAMP, task_member_id=? 
        WHERE id=?`,
       [
-        task_name,
-        task_detail,
-        task_status,
-        task_manday,
+        task_name || currentTask[0].task_name,
+        task_detail || currentTask[0].task_detail,
+        task_status || currentTask[0].task_status,
+        task_manday || currentTask[0].task_manday,
         updatedScreenId,
         updatedProjectId,
-        task_type,
+        updatedTaskType,
         updatedSystemId,
-        task_progress,
-        task_plan_start,
-        task_plan_end,
-        task_actual_start,
-        task_actual_end,
-        user_update,
-        new Date(),
+        task_progress || currentTask[0].task_progress,
+        task_plan_start || currentTask[0].task_plan_start,
+        task_plan_end || currentTask[0].task_plan_end,
+        task_actual_start || currentTask[0].task_actual_start,
+        task_actual_end || currentTask[0].task_actual_end,
+        user_update || currentTask[0].user_update,
         updatedTaskMemberId,
         taskId,
       ]
     );
-
-    // Get the updated task_type from the updated task record
-    const [updatedTask] = await connection
-      .promise()
-      .query("SELECT task_type FROM tasks WHERE id = ?", [taskId]);
-
-    const taskTypeForHistory = updatedTask[0].task_type;
 
     // Insert into history_tasks table
     await connection.promise().query(
@@ -487,7 +477,7 @@ router.put("/save_history_tasks/:id", async (req, res) => {
         currentTask[0].task_date_update,
         currentTask[0].user_update,
         updatedTaskMemberId,
-        currentTask[0].task_type,
+        updatedTaskType,
         0,
       ]
     );

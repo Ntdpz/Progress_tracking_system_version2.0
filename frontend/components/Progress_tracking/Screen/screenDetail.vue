@@ -14,7 +14,7 @@
                             <span>Show User In Screen</span>
                         </v-tooltip>
 
-                        Screenv Name : {{ screenData.screen_name }}
+                        Screen Name : {{ screenData.screen_name }}
                     </v-card-title>
                     <v-card-subtitle>
 
@@ -37,8 +37,7 @@
                             <div class="custom-progress">
                                 <v-col cols="auto" class="progress-item">
                                     <v-progress-circular class="my-progress" :rotate="360" :size="100" :width="15"
-                                        :value="parseInt(screenData.screen_progress_status_design) || 0"
-                                        :color="getProgressColor(parseInt(screenData.screen_progress_status_design) || 0)">
+                                        :value="parseInt(screenData.screen_progress_status_design) || 0" color="purple">
                                         {{ parseInt(screenData.screen_progress_status_design) || 0 }}%
                                     </v-progress-circular>
                                     <v-card-subtitle>Design</v-card-subtitle>
@@ -47,8 +46,7 @@
 
                             <div class="custom-progress"> <v-col cols="auto" class="progress-item">
                                     <v-progress-circular class="my-progress" :rotate="-90" :size="100" :width="15"
-                                        :value="parseInt(screenData.screen_progress_status_dev) || 0"
-                                        :color="getProgressColor(parseInt(screenData.screen_progress_status_dev) || 0)">
+                                        :value="parseInt(screenData.screen_progress_status_dev) || 0" color="blue">
                                         {{ parseInt(screenData.screen_progress_status_dev) || 0 }}%
                                     </v-progress-circular>
                                     <v-card-subtitle>Develop</v-card-subtitle>
@@ -100,6 +98,7 @@ export default {
         this.fetchScreenData();
     },
     methods: {
+      
         getProgressColor(progress) {
             if (progress >= 75 && progress <= 100) {
                 return "#4CAF50"; // สีเขียว
