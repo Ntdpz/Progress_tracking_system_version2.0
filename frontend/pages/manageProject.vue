@@ -56,7 +56,6 @@
     >
       <template v-slot:item="{ item }">
         <tr @click="viewProjectDetails(item)">
-          <td>{{ item.project_id }}</td>
           <td>{{ item.project_name_TH }}</td>
           <td>{{ item.project_name_ENG }}</td>
           <td>
@@ -124,12 +123,6 @@
         <v-card-text>
           <!-- Form to create new project -->
           <v-form @submit.prevent="createProject">
-            <v-text-field
-              v-model="newProject.project_id"
-              label="Project ID"
-              required
-              :rules="[rules.required]"
-            ></v-text-field>
             <v-text-field
               v-model="newProject.project_name_TH"
               label="Project Name (TH)"
@@ -204,12 +197,6 @@
         <v-card-text>
           <!-- Form to edit system -->
           <v-form @submit.prevent="updateProject">
-            <v-text-field
-              v-model="editProject.project_id"
-              label="Project ID"
-              readonly
-              disabled
-            ></v-text-field>
             <v-text-field
               v-model="editProject.project_name_TH"
               label="Project Name (TH)"
@@ -437,7 +424,6 @@ export default {
         project_name_ENG: "",
       },
       headers: [
-        { text: "Project ID", value: "project_id" },
         { text: "Project Name", value: "project_name_ENG" },
         { text: "Thai Name ", value: "project_name_TH" },
         { text: "Progress (%)", value: "project_progress" },
@@ -796,7 +782,6 @@ export default {
     },
     async createProject() {
       if (
-        !this.newProject.project_id ||
         !this.newProject.project_name_TH ||
         !this.newProject.project_name_ENG
       ) {
@@ -809,7 +794,6 @@ export default {
       }
       try {
         let requestBody = {
-          project_id: this.newProject.project_id,
           project_name_TH: this.newProject.project_name_TH,
           project_name_ENG: this.newProject.project_name_ENG,
         };
