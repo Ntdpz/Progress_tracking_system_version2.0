@@ -106,9 +106,15 @@
           <v-icon>mdi-plus</v-icon></v-btn
         >
         <!-- เพิ่มปุ่ม Show History System -->
-        <v-btn v-if="user.user_role === 'Admin'" color="error" class="text-none mb-4" @click="goToHistorySystems"
-          style="margin-left: 10px; width: 10%; height: 70%">
-          <v-icon>mdi-delete</v-icon> &nbsp;</v-btn>
+        <v-btn
+          v-if="user.user_role === 'Admin'"
+          color="error"
+          class="text-none mb-4"
+          @click="goToHistorySystems"
+          style="margin-left: 10px; width: 10%; height: 70%"
+        >
+          <v-icon>mdi-delete</v-icon> &nbsp;</v-btn
+        >
       </v-col>
     </v-row>
 
@@ -690,17 +696,15 @@ export default {
     },
 
     getProgressColor(progress) {
-      if (progress >= 75 && progress <= 100) {
-        return "#4CAF50";
-      } else if (progress >= 51 && progress <= 74) {
-        return "#03A9F4";
-      } else if (progress >= 26 && progress <= 50) {
-        return "#FFD700";
-      } else if (progress >= 0 && progress <= 25) {
-        return "#FC8705";
+      if (progress >= 0 && progress <= 40) {
+        return "red"; // สีแดงสำหรับค่า progress 0-40
+      } else if (progress > 40 && progress <= 80) {
+        return "yellow"; // สีเหลืองสำหรับค่า progress 41-80
+      } else if (progress > 80 && progress <= 100) {
+        return "green"; // สีเขียวสำหรับค่า progress 80-100
+      } else {
+        return ""; // สีเริ่มต้นหรือสีที่ไม่ได้กำหนด
       }
-      // เมื่อไม่ตรงกับเงื่อนไขใดๆ ให้คืนค่าเริ่มต้น
-      return "primary";
     },
     filteredUsers(position) {
       return this.projectUsers

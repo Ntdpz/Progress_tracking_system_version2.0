@@ -1,7 +1,7 @@
 // Importing required modules
 const express = require("express"); // Import Express module
 const router = express.Router(); // Create router
-const moment = require("moment"); // Import Moment module for date manipulation
+const moment = require('moment'); // Import Moment module for date manipulation
 
 // Import database connection
 const connection = require("../db");
@@ -60,8 +60,6 @@ router.get("/getAll", async (req, res) => {
       SELECT
           Screens.*,
           AVG(tasks.task_progress) AS screen_progress,
-          AVG(CASE WHEN tasks.task_type = 'Design' THEN tasks.task_progress ELSE NULL END) AS screen_progress_status_design,
-          AVG(CASE WHEN tasks.task_type = 'Develop' THEN tasks.task_progress ELSE NULL END) AS screen_progress_status_dev,
           COUNT(tasks.id) AS task_count,
           MIN(tasks.task_plan_start) AS min_task_plan_start,
           MAX(tasks.task_plan_end) AS max_task_plan_end
@@ -74,39 +72,36 @@ router.get("/getAll", async (req, res) => {
 
     const queryParams = [];
 
-    // Add filters to the query based on request parameters
     if (systemIDFilter) {
       query += " AND Screens.system_id = ?";
       queryParams.push(systemIDFilter);
-    }
-    if (screenIDFilter) {
+    } else if (screenIDFilter) {
       query += " AND Screens.screen_id = ?";
       queryParams.push(screenIDFilter);
-    }
-    if (projectIDFilter) {
+    } else if (projectIDFilter) {
       query += " AND Screens.project_id = ?";
       queryParams.push(projectIDFilter);
     }
 
     query += " GROUP BY Screens.id";
 
-    // Execute the query
     connection.query(query, queryParams, async (err, results, fields) => {
       if (err) {
         console.log(err);
         return res.status(400).send();
       }
 
-      // Process results to format dates and update screens
-      results.forEach(async (screen) => {
-        // Format date fields
+      results.forEach(async screen => {
+        // Format dates
         if (screen.min_task_plan_start && screen.max_task_plan_end) {
-          screen.screen_plan_start = new Date(screen.min_task_plan_start)
-            .toISOString()
-            .split("T")[0];
-          screen.screen_plan_end = new Date(screen.max_task_plan_end)
-            .toISOString()
-            .split("T")[0];
+          screen.screen_plan_start = new Date(screen.min_task_plan_start).toISOString().split('T')[0];
+          screen.screen_plan_end = new Date(screen.max_task_plan_end).toISOString().split('T')[0];
+          const startDate = new Date(screen.screen_plan_start);
+          const endDate = new Date(screen.screen_plan_end);
+          startDate.setDate(startDate.getDate());
+          endDate.setDate(endDate.getDate());
+          screen.screen_plan_start = startDate.toISOString().split('T')[0];
+          screen.screen_plan_end = endDate.toISOString().split('T')[0];
         }
 
         // Update screen data in the database
@@ -117,9 +112,9 @@ router.get("/getAll", async (req, res) => {
         }
       });
 
-      // Send the response with the results
       res.status(200).json(results);
     });
+
   } catch (err) {
     console.log(err);
     return res.status(500).send();
@@ -134,8 +129,6 @@ router.get("/getOne/:id", async (req, res) => {
       SELECT
         Screens.*,
         AVG(tasks.task_progress) AS screen_progress,
-        AVG(CASE WHEN tasks.task_type = 'Design' THEN tasks.task_progress ELSE NULL END) AS screen_progress_status_design,
-         AVG(CASE WHEN tasks.task_type = 'Develop' THEN tasks.task_progress ELSE NULL END) AS screen_progress_status_dev,
         COUNT(tasks.id) AS task_count,
         MIN(tasks.task_plan_start) AS min_task_plan_start,
         MAX(tasks.task_plan_end) AS max_task_plan_end
@@ -158,14 +151,10 @@ router.get("/getOne/:id", async (req, res) => {
         return res.status(404).json({ message: "No screen with that ID!" });
       }
 
-      results.forEach(async (screen) => {
+      results.forEach(async screen => {
         if (screen.min_task_plan_start && screen.max_task_plan_end) {
-          screen.screen_plan_start = new Date(screen.min_task_plan_start)
-            .toISOString()
-            .split("T")[0];
-          screen.screen_plan_end = new Date(screen.max_task_plan_end)
-            .toISOString()
-            .split("T")[0];
+          screen.screen_plan_start = new Date(screen.min_task_plan_start).toISOString().split('T')[0];
+          screen.screen_plan_end = new Date(screen.max_task_plan_end).toISOString().split('T')[0];
         }
 
         // Update screen data in the database
@@ -188,10 +177,7 @@ router.get("/getOne/:id", async (req, res) => {
 async function updateScreen(screen) {
   try {
     // Ensure screen_progress is not null
-    if (
-      screen.screen_progress === null ||
-      screen.screen_progress === undefined
-    ) {
+    if (screen.screen_progress === null || screen.screen_progress === undefined) {
       // Provide a default value or handle the case appropriately
       screen.screen_progress = 0; // Default value, change it as needed
     }
@@ -211,7 +197,7 @@ async function updateScreen(screen) {
       screen.screen_plan_start,
       screen.screen_plan_end,
       screen.task_count,
-      screen.id,
+      screen.id
     ];
 
     await new Promise((resolve, reject) => {
@@ -256,8 +242,6 @@ router.get("/searchByProjectId/:project_id", async (req, res) => {
       SELECT
         Screens.*,
         AVG(tasks.task_progress) AS screen_progress,
-        AVG(CASE WHEN tasks.task_type = 'Design' THEN tasks.task_progress ELSE NULL END) AS screen_progress_status_design,
-        AVG(CASE WHEN tasks.task_type = 'Develop' THEN tasks.task_progress ELSE NULL END) AS screen_progress_status_dev,
         DATE(MIN(Screens.screen_plan_start)) AS screen_plan_start,
         DATE(MAX(Screens.screen_plan_end)) AS screen_plan_end,
         DATEDIFF(MAX(tasks.task_plan_end), MIN(tasks.task_plan_start)) AS screen_manday
@@ -278,14 +262,10 @@ router.get("/searchByProjectId/:project_id", async (req, res) => {
         results.map(async (screen) => {
           await updateScreen(screen);
           if (screen.screen_plan_start) {
-            screen.screen_plan_start = new Date(screen.screen_plan_start)
-              .toISOString()
-              .split("T")[0];
+            screen.screen_plan_start = new Date(screen.screen_plan_start).toISOString().split("T")[0];
           }
           if (screen.screen_plan_end) {
-            screen.screen_plan_end = new Date(screen.screen_plan_end)
-              .toISOString()
-              .split("T")[0];
+            screen.screen_plan_end = new Date(screen.screen_plan_end).toISOString().split("T")[0];
           }
           return screen;
         })
@@ -308,8 +288,6 @@ router.get("/searchByProjectId_delete/:project_id", async (req, res) => {
       SELECT
         Screens.*,
         AVG(tasks.task_progress) AS screen_progress,
-        AVG(CASE WHEN tasks.task_type = 'Design' THEN tasks.task_progress ELSE NULL END) AS screen_progress_status_design,
-        AVG(CASE WHEN tasks.task_type = 'Develop' THEN tasks.task_progress ELSE NULL END) AS screen_progress_status_dev,
         DATE(MIN(Screens.screen_plan_start)) AS screen_plan_start,
         DATE(MAX(Screens.screen_plan_end)) AS screen_plan_end,
         DATEDIFF(MAX(tasks.task_plan_end), MIN(tasks.task_plan_start)) AS screen_manday
@@ -326,11 +304,9 @@ router.get("/searchByProjectId_delete/:project_id", async (req, res) => {
         return res.status(400).send();
       }
 
-      await Promise.all(
-        results.map(async (screen) => {
-          await updateScreen(screen);
-        })
-      );
+      await Promise.all(results.map(async (screen) => {
+        await updateScreen(screen);
+      }));
 
       res.status(200).json(results);
     });
@@ -349,8 +325,6 @@ router.get("/searchBySystemId/:system_id", async (req, res) => {
       SELECT
         Screens.*,
         AVG(tasks.task_progress) AS screen_progress,
-        AVG(CASE WHEN tasks.task_type = 'Design' THEN tasks.task_progress ELSE NULL END) AS screen_progress_status_design,
-        AVG(CASE WHEN tasks.task_type = 'Develop' THEN tasks.task_progress ELSE NULL END) AS screen_progress_status_dev,
         DATE(MIN(Screens.screen_plan_start)) AS screen_plan_start,
         DATE(MAX(Screens.screen_plan_end)) AS screen_plan_end,
         DATEDIFF(MAX(tasks.task_plan_end), MIN(tasks.task_plan_start)) AS screen_manday
@@ -371,14 +345,10 @@ router.get("/searchBySystemId/:system_id", async (req, res) => {
         results.map(async (screen) => {
           await updateScreen(screen);
           if (screen.screen_plan_start) {
-            screen.screen_plan_start = new Date(screen.screen_plan_start)
-              .toISOString()
-              .split("T")[0];
+            screen.screen_plan_start = new Date(screen.screen_plan_start).toISOString().split("T")[0];
           }
           if (screen.screen_plan_end) {
-            screen.screen_plan_end = new Date(screen.screen_plan_end)
-              .toISOString()
-              .split("T")[0];
+            screen.screen_plan_end = new Date(screen.screen_plan_end).toISOString().split("T")[0];
           }
           return screen;
         })
@@ -401,8 +371,6 @@ router.get("/searchBySystemId_delete/:system_id", async (req, res) => {
       SELECT
         Screens.*,
         AVG(tasks.task_progress) AS screen_progress,
-          AVG(CASE WHEN tasks.task_type = 'Design' THEN tasks.task_progress ELSE NULL END) AS screen_progress_status_design,
-          AVG(CASE WHEN tasks.task_type = 'Develop' THEN tasks.task_progress ELSE NULL END) AS screen_progress_status_dev,
         DATE(MIN(Screens.screen_plan_start)) AS screen_plan_start,
         DATE(MAX(Screens.screen_plan_end)) AS screen_plan_end,
         DATEDIFF(MAX(tasks.task_plan_end), MIN(tasks.task_plan_start)) AS screen_manday
@@ -419,11 +387,9 @@ router.get("/searchBySystemId_delete/:system_id", async (req, res) => {
         return res.status(400).send();
       }
 
-      await Promise.all(
-        results.map(async (screen) => {
-          await updateScreen(screen);
-        })
-      );
+      await Promise.all(results.map(async (screen) => {
+        await updateScreen(screen);
+      }));
 
       res.status(200).json(results);
     });
@@ -444,7 +410,7 @@ router.post("/createScreen", async (req, res) => {
     screen_plan_start,
     screen_plan_end,
     project_id,
-    assignedUsers,
+    assignedUsers
   } = req.body;
 
   try {
@@ -453,7 +419,7 @@ router.post("/createScreen", async (req, res) => {
 
     // Insert screen data into screens table
     const insertScreenQuery =
-      "INSERT INTO screens (id, screen_id, screen_name, screen_status, screen_level, system_id, screen_progress, screen_plan_start, screen_plan_end, project_id, screen_pic) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+      'INSERT INTO screens (id, screen_id, screen_name, screen_status, screen_level, system_id, screen_progress, screen_plan_start, screen_plan_end, project_id, screen_pic) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
     await new Promise((resolve, reject) => {
       connection.query(
@@ -469,24 +435,24 @@ router.post("/createScreen", async (req, res) => {
           screen_plan_start,
           screen_plan_end,
           project_id,
-          req.body.screen_pic, // Insert Base64 image directly
+          req.body.screen_pic // Insert Base64 image directly
         ],
         async (err, result) => {
           if (err) {
-            console.error("Error inserting screen data:", err);
+            console.error('Error inserting screen data:', err);
             return reject(err);
           }
           try {
             // Insert assigned users into user_screens table
             if (assignedUsers && assignedUsers.length > 0) {
               const insertUserScreenQuery =
-                "INSERT INTO user_screens (user_id, screen_id, system_id, project_id) VALUES ?";
+                'INSERT INTO user_screens (user_id, screen_id, system_id, project_id) VALUES ?';
 
-              const userScreenValues = assignedUsers.map((userId) => [
+              const userScreenValues = assignedUsers.map(userId => [
                 userId,
                 id, // Use the screen_id of the newly created screen
                 system_id,
-                project_id,
+                project_id
               ]);
 
               await new Promise((resolve, reject) => {
@@ -495,7 +461,7 @@ router.post("/createScreen", async (req, res) => {
                   [userScreenValues],
                   (err, result) => {
                     if (err) {
-                      console.error("Error assigning users to screen:", err);
+                      console.error('Error assigning users to screen:', err);
                       return reject(err);
                     }
                     resolve(result);
@@ -514,7 +480,7 @@ router.post("/createScreen", async (req, res) => {
 
     res.sendStatus(200);
   } catch (error) {
-    console.error("Error creating screen:", error);
+    console.error('Error creating screen:', error);
     res.sendStatus(500);
   }
 });
@@ -528,7 +494,7 @@ router.put("/updateScreen/:id", (req, res) => {
     screen_level,
     screen_pic,
     project_id,
-    is_deleted,
+    is_deleted
   } = req.body;
 
   const updatedScreen = {
@@ -538,7 +504,7 @@ router.put("/updateScreen/:id", (req, res) => {
     screen_level,
     screen_pic,
     project_id,
-    is_deleted,
+    is_deleted
   };
 
   try {
@@ -563,8 +529,7 @@ router.put("/updateScreen/:id", (req, res) => {
           screen_level: screen_level || existingScreen.screen_level,
           screen_pic: screen_pic || existingScreen.screen_pic,
           project_id: project_id || existingScreen.project_id,
-          is_deleted:
-            is_deleted !== undefined ? is_deleted : existingScreen.is_deleted, // ใช้ค่า is_deleted ใหม่หรือค่าเดิมขึ้นอยู่กับการรับค่า is_deleted ใน req.body
+          is_deleted: is_deleted !== undefined ? is_deleted : existingScreen.is_deleted // ใช้ค่า is_deleted ใหม่หรือค่าเดิมขึ้นอยู่กับการรับค่า is_deleted ใน req.body
         };
 
         connection.query(
@@ -613,25 +578,20 @@ router.delete("/deleteHistoryScreen/:id", async (req, res) => {
   const id = req.params.id;
 
   try {
-    connection.query(
-      "DELETE FROM screens WHERE id = ?",
-      [id],
-      async (err, results, fields) => {
-        if (err) {
-          console.error(err);
-          return res.status(500).send();
-        }
-
-        return res
-          .status(200)
-          .json({ message: "Screen deleted successfully!" });
+    connection.query("DELETE FROM screens WHERE id = ?", [id], async (err, results, fields) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).send();
       }
-    );
+
+      return res.status(200).json({ message: "Screen deleted successfully!" });
+    });
   } catch (err) {
     console.error(err);
     return res.status(500).send();
   }
 });
+
 
 // Route to add multiple screens to a user
 router.post("/addUserScreen", async (req, res) => {
