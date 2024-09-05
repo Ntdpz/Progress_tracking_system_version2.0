@@ -1,14 +1,11 @@
 <template>
   <!-- Dashboard container -->
-  <div
-    class="dashboard"
-    style="
+  <div class="dashboard" style="
       background-color: #ffffff;
       padding: 10px 70px;
       border-radius: 0;
       margin-right: 30px;
-    "
-  >
+    ">
     <Loader v-if="$store.state.isLoading" />
     <div>
       <!-- <Breadcrumbs /> -->
@@ -20,56 +17,30 @@
     <!-- Search bar -->
     <v-row no-gutters justify-content="flex-end" align-items="flex-end">
       <v-col cols="12">
-        <input
-          type="text"
-          v-model="searchQuery"
-          placeholder="Search..."
-          :style="searchBarStyle"
-        />
+        <input type="text" v-model="searchQuery" placeholder="Search..." :style="searchBarStyle" />
 
-        <v-btn
-          v-if="user.user_role === 'Admin'"
-          color="primary"
-          class="text-none mb-4"
-          @click="goToCreateProject"
-          style="margin-left: 50px; width: 10%; height: 70%"
-        >
+        <v-btn v-if="user.user_role === 'Admin'" color="primary" class="text-none mb-4" @click="goToCreateProject"
+          style="margin-left: 50px; width: 10%; height: 70%">
           <v-icon>mdi-plus</v-icon>
         </v-btn>
-        <v-btn
-          v-if="user.user_role === 'Admin'"
-          color="error"
-          @click="goToHistoryProject"
-          style="margin-left: 10px; width: 10%; height: 70%"
-          class="text-none mb-4"
-        >
-          <v-icon>mdi-delete</v-icon> &nbsp;
+        <v-btn v-if="user.user_role === 'Admin'" color="error" @click="goToHistoryProject"
+          style="margin-left: 10px; width: 10%; height: 70%" class="text-none mb-4">
+          <v-icon>mdi-history</v-icon> &nbsp;
         </v-btn>
       </v-col>
     </v-row>
 
     <!-- Project data table -->
-    <v-data-table
-      :headers="filteredHeaders"
-      :items="filteredProjects"
-      :sort-by="[{ key: 'project_id', order: 'desc' }]"
-    >
+    <v-data-table :headers="filteredHeaders" :items="filteredProjects"
+      :sort-by="[{ key: 'project_id', order: 'desc' }]">
       <template v-slot:item="{ item }">
         <tr @click="viewProjectDetails(item)">
           <td>{{ item.project_name_TH }}</td>
           <td>{{ item.project_name_ENG }}</td>
           <td>
-            <v-progress-linear
-              :color="getProgressColorProject(parseInt(item.project_progress))"
-              height="20"
-              :value="parseInt(item.project_progress)"
-              :style="{ width: '100%' }"
-              striped
-            >
-              <strong :style="{ color: 'white' }"
-                >{{ parseInt(item.project_progress) }}%</strong
-              ></v-progress-linear
-            >
+            <v-progress-linear :color="getProgressColorProject(parseInt(item.project_progress))" height="20"
+              :value="parseInt(item.project_progress)" :style="{ width: '100%' }" striped>
+              <strong :style="{ color: 'white' }">{{ parseInt(item.project_progress) }}%</strong></v-progress-linear>
           </td>
 
           <td>{{ formatDate(item.project_plan_start) }}</td>
@@ -102,9 +73,7 @@
                   <v-list-item-icon>
                     <v-icon class="red--text">mdi-delete</v-icon>
                   </v-list-item-icon>
-                  <v-list-item-content class="red--text"
-                    >Delete</v-list-item-content
-                  >
+                  <v-list-item-content class="red--text">Delete</v-list-item-content>
                 </v-list-item>
               </v-list>
             </v-menu>
@@ -113,36 +82,20 @@
       </template>
     </v-data-table>
     <!-- Create Project Dialog -->
-    <v-dialog
-      v-model="createProjectDialog"
-      max-width="600"
-      ref="createProjectDialog"
-    >
+    <v-dialog v-model="createProjectDialog" max-width="600" ref="createProjectDialog">
       <v-card>
         <v-card-title>Create New Project</v-card-title>
         <v-card-text>
           <!-- Form to create new project -->
           <v-form @submit.prevent="createProject">
-            <v-text-field
-              v-model="newProject.project_name_TH"
-              label="Project Name (TH)"
-              required
-              :rules="[rules.required]"
-            ></v-text-field>
-            <v-text-field
-              v-model="newProject.project_name_ENG"
-              label="Project Name (EN)"
-              required
-              :rules="[rules.required]"
-            ></v-text-field>
+            <v-text-field v-model="newProject.project_name_TH" label="Project Name (TH)" required
+              :rules="[rules.required]"></v-text-field>
+            <v-text-field v-model="newProject.project_name_ENG" label="Project Name (EN)" required
+              :rules="[rules.required]"></v-text-field>
 
             <!-- New fields for SA, DEV, IMP selection -->
-            <v-select
-              v-model="selectedSA"
-              :items="formatTeamMembers(teamMembersSA)"
-              label="Select System Analyst"
-              multiple
-            >
+            <v-select v-model="selectedSA" :items="formatTeamMembers(teamMembersSA)" label="Select System Analyst"
+              multiple>
               <template v-slot:prepend-item>
                 <v-list-item @click="selectAllSA">
                   <v-list-item-content>Select All</v-list-item-content>
@@ -150,12 +103,8 @@
               </template>
             </v-select>
 
-            <v-select
-              v-model="selectedDEV"
-              :items="formatTeamMembers(teamMembersDEV)"
-              label="Select Developer"
-              multiple
-            >
+            <v-select v-model="selectedDEV" :items="formatTeamMembers(teamMembersDEV)" label="Select Developer"
+              multiple>
               <template v-slot:prepend-item>
                 <v-list-item @click="selectAllDEV">
                   <v-list-item-content>Select All</v-list-item-content>
@@ -163,12 +112,8 @@
               </template>
             </v-select>
 
-            <v-select
-              v-model="selectedIMP"
-              :items="formatTeamMembers(teamMembersIMP)"
-              label="Select Implementer"
-              multiple
-            >
+            <v-select v-model="selectedIMP" :items="formatTeamMembers(teamMembersIMP)" label="Select Implementer"
+              multiple>
               <template v-slot:prepend-item>
                 <v-list-item @click="selectAllIMP">
                   <v-list-item-content>Select All</v-list-item-content>
@@ -178,40 +123,26 @@
 
             <!-- Button to submit -->
             <v-btn color="primary" type="submit">Create</v-btn>
-            <v-btn color="error" @click="createProjectDialog = false"
-              >Cancel</v-btn
-            >
+            <v-btn color="error" @click="createProjectDialog = false">Cancel</v-btn>
           </v-form>
         </v-card-text>
       </v-card>
     </v-dialog>
 
     <!-- Edit Project Dialog -->
-    <v-dialog
-      v-model="editProjectDialog"
-      max-width="600"
-      ref="editProjectDialog"
-    >
+    <v-dialog v-model="editProjectDialog" max-width="600" ref="editProjectDialog">
       <v-card>
         <v-card-title>Edit Project</v-card-title>
         <v-card-text>
           <!-- Form to edit system -->
           <v-form @submit.prevent="updateProject">
-            <v-text-field
-              v-model="editProject.project_name_TH"
-              label="Project Name (TH)"
-            ></v-text-field>
-            <v-text-field
-              v-model="editProject.project_name_ENG"
-              label="Project Name (EN)"
-            ></v-text-field>
+            <v-text-field v-model="editProject.project_name_TH" label="Project Name (TH)"></v-text-field>
+            <v-text-field v-model="editProject.project_name_ENG" label="Project Name (EN)"></v-text-field>
             <!-- Add more fields as needed -->
             <!-- You can also add selection fields for system analyst and member -->
             <!-- Add buttons to submit and cancel -->
             <v-btn color="primary" type="submit">Update</v-btn>
-            <v-btn color="error" @click="editProjectDialog = false"
-              >Cancel</v-btn
-            >
+            <v-btn color="error" @click="editProjectDialog = false">Cancel</v-btn>
           </v-form>
         </v-card-text>
       </v-card>
@@ -222,35 +153,20 @@
       <v-card>
         <v-card-title>User Projects</v-card-title>
         <v-card-text>
-          <v-text-field
-            v-model="search"
-            label="Search"
-            dense
-            hide-details
-            solo
-            flat
-            outlined
-            color="primary"
-            hint="Search here"
-          ></v-text-field>
+          <v-text-field v-model="search" label="Search" dense hide-details solo flat outlined color="primary"
+            hint="Search here"></v-text-field>
 
           <v-list>
             <v-list-item v-for="item in displayedUserProjects" :key="item.id">
               <v-list-item-avatar>
-                <v-img
-                  :src="getBase64Image(item.user_pic)"
-                  height="50"
-                  contain
-                ></v-img>
+                <v-img :src="getBase64Image(item.user_pic)" height="50" contain></v-img>
               </v-list-item-avatar>
               <v-list-item-content>
-                <v-list-item-title
-                  >{{ item.user_firstname }}
-                  {{ item.user_lastname }}</v-list-item-title
-                >
+                <v-list-item-title>{{ item.user_firstname }}
+                  {{ item.user_lastname }}</v-list-item-title>
                 <v-list-item-subtitle>{{
                   item.user_position
-                }}</v-list-item-subtitle>
+                  }}</v-list-item-subtitle>
               </v-list-item-content>
 
               <v-list-item-action>
@@ -260,18 +176,12 @@
               </v-list-item-action>
             </v-list-item>
           </v-list>
-          <v-pagination
-            v-model="currentPage"
-            :length="totalPages"
-            @input="updateDisplayedUserProjects"
-          ></v-pagination>
+          <v-pagination v-model="currentPage" :length="totalPages" @input="updateDisplayedUserProjects"></v-pagination>
         </v-card-text>
         <v-card-actions>
           <!-- Button to open nested dialog -->
           <v-btn color="primary" @click="openNestedDialog()">Assign User</v-btn>
-          <v-btn color="error" @click="dialogUserProjects = false"
-            >Cancel</v-btn
-          >
+          <v-btn color="error" @click="dialogUserProjects = false">Cancel</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -282,55 +192,28 @@
         <v-card-title>Assign User</v-card-title>
         <v-card-text>
           <!-- New field for selecting users -->
-          <v-select
-            v-model="selectedSystemAnalysts"
-            :items="systemAnalysts"
-            label="Select System Analyst"
-            item-text="displayText"
-            item-value="id"
-            multiple
-          >
+          <v-select v-model="selectedSystemAnalysts" :items="systemAnalysts" label="Select System Analyst"
+            item-text="displayText" item-value="id" multiple>
             <template v-slot:prepend-item>
-              <v-list-item
-                v-if="systemAnalysts.length"
-                @click="selectAllSystemAnalysts"
-              >
+              <v-list-item v-if="systemAnalysts.length" @click="selectAllSystemAnalysts">
                 <v-list-item-content>Select All</v-list-item-content>
               </v-list-item>
             </template>
           </v-select>
 
-          <v-select
-            v-model="selectedDevelopers"
-            :items="developers"
-            label="Select Developer"
-            item-text="displayText"
-            item-value="id"
-            multiple
-          >
+          <v-select v-model="selectedDevelopers" :items="developers" label="Select Developer" item-text="displayText"
+            item-value="id" multiple>
             <template v-slot:prepend-item>
-              <v-list-item
-                v-if="developers.length"
-                @click="selectAllDevelopers"
-              >
+              <v-list-item v-if="developers.length" @click="selectAllDevelopers">
                 <v-list-item-content>Select All</v-list-item-content>
               </v-list-item>
             </template>
           </v-select>
 
-          <v-select
-            v-model="selectedImplementers"
-            :items="implementers"
-            label="Select Implementer"
-            item-text="displayText"
-            item-value="id"
-            multiple
-          >
+          <v-select v-model="selectedImplementers" :items="implementers" label="Select Implementer"
+            item-text="displayText" item-value="id" multiple>
             <template v-slot:prepend-item>
-              <v-list-item
-                v-if="implementers.length"
-                @click="selectAllImplementers"
-              >
+              <v-list-item v-if="implementers.length" @click="selectAllImplementers">
                 <v-list-item-content>Select All</v-list-item-content>
               </v-list-item>
             </template>
@@ -589,7 +472,7 @@ export default {
       axios
         .get(
           "http://localhost:7777/user_projects/getUsersNotInProject/" +
-            project_id
+          project_id
         )
         .then((response) => {
           this.availableUsers = response.data.map((user) => ({
@@ -985,12 +868,14 @@ export default {
   computed: {
     getProgressColorProject() {
       return function (progress) {
-        if (progress >= 61) {
-          return "green"; // สีเขียว
-        } else if (progress >= 40) {
-          return "#FC8705"; // สีเหลือง
+        if (progress >= 75) {
+          return "#4CAF50"; // สีเขียวเข้ม
+        } else if (progress >= 51) {
+          return "#03A9F4"; // สีฟ้าอ่อน
+        } else if (progress >= 26) {
+          return "#FFD700"; // สีทอง
         } else {
-          return "red"; // สีแดง
+          return "#FC8705"; // สีส้ม
         }
       };
     },

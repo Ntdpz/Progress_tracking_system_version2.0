@@ -134,7 +134,7 @@
           <v-btn class="rounded-btn" color="primary" @click="dialogAddTaskForm = true" style="width: 30%">
             Add Task
           </v-btn>
-         
+
 
 
         </v-col>
@@ -317,187 +317,7 @@
       </v-card>
     </v-dialog>
 
-    <!-- save task dialog -->
-    <v-dialog v-model="dialogSaveTaskForm" max-width="900px">
-      <v-card>
-        <v-card-title>
-          <h2>Update Task</h2>
-          <v-spacer></v-spacer>
-          <v-btn icon @click="dialogSaveTaskForm = false">
-            <v-icon>mdi-close</v-icon>
-          </v-btn>
-        </v-card-title>
-        <v-card-text>
-          <v-form @submit.prevent="saveHistory">
-            <v-row align="center" justify="center" class="w-100">
-              <v-col class="text-center">
-                <h2>Task Name:{{ historyTaskData.task_name }}</h2>
-              </v-col>
-            </v-row>
-            <!-- Progress -->
-            <v-row align="center">
-              <v-col cols="4">
-                <v-text-field v-model="historyTaskData.task_progress" label="Task Progress" type="number" min="0"
-                  max="100" outlined dense></v-text-field>
-              </v-col>
-              <v-col cols="8">
-                <v-slider v-model="historyTaskData.task_progress" :thumb-label="true" thumb-size="20" ticks="always"
-                  tick-size="2" tick-thickness="2" track-color="primary" :max="100" :min="0" step="1"></v-slider>
-              </v-col>
-            </v-row>
 
-            <!-- Remark -->
-            <v-text-field v-model="historyTaskData.task_detail" label="Remark" outlined dense></v-text-field>
-
-            <!-- Dates and Mandays -->
-            <v-row>
-              <v-col cols="4">
-                <v-menu v-model="planStartMenu" :close-on-content-click="false" :nudge-right="40"
-                  transition="scale-transition" offset-y>
-                  <template v-slot:activator="{ on }">
-                    <v-text-field :value="formatDate(
-                      historyTaskData.task_plan_start,
-                      'DD/MM/YYYY'
-                    )
-                      " label="Plan Start" prepend-icon="mdi-calendar" readonly v-on="on" disabled></v-text-field>
-                  </template>
-                  <v-date-picker v-model="historyTaskData.task_plan_start" no-title scrollable></v-date-picker>
-                </v-menu>
-              </v-col>
-              <v-col cols="4">
-                <v-menu v-model="planEndMenu" :close-on-content-click="false" :nudge-right="40"
-                  transition="scale-transition" offset-y>
-                  <template v-slot:activator="{ on }">
-                    <v-text-field :value="formatDate(historyTaskData.task_plan_end, 'DD/MM/YYYY')
-                      " label="Plan End" prepend-icon="mdi-calendar" readonly v-on="on" disabled></v-text-field>
-                  </template>
-                  <v-date-picker v-model="historyTaskData.task_plan_end" no-title scrollable
-                    :min="historyTaskData.task_plan_start"></v-date-picker>
-                </v-menu>
-              </v-col>
-              <v-col cols="4">
-                <v-text-field v-model="historyTaskData.task_manday" label="Manday" required disabled></v-text-field>
-              </v-col>
-            </v-row>
-
-            <v-row>
-              <v-col cols="4">
-                <v-menu v-if="
-                  historyTaskData.task_plan_start &&
-                  historyTaskData.task_plan_end
-                " v-model="actualStartMenu" :close-on-content-click="false" :nudge-right="40"
-                  transition="scale-transition" offset-y>
-                  <template v-slot:activator="{ on }">
-                    <v-text-field :value="formatDate(
-                      historyTaskData.task_actual_start,
-                      'DD/MM/YYYY'
-                    )
-                      " label="Actual Start" prepend-icon="mdi-calendar" readonly v-on="on"></v-text-field>
-                  </template>
-                  <v-date-picker v-model="historyTaskData.task_actual_start" no-title scrollable></v-date-picker>
-                </v-menu>
-              </v-col>
-              <v-col cols="4">
-                <v-menu v-if="
-                  historyTaskData.task_plan_start &&
-                  historyTaskData.task_plan_end
-                " v-model="actualEndMenu" :close-on-content-click="false" :nudge-right="40"
-                  transition="scale-transition" offset-y>
-                  <template v-slot:activator="{ on }">
-                    <v-text-field :value="formatDate(
-                      historyTaskData.task_actual_end,
-                      'DD/MM/YYYY'
-                    )
-                      " label="Actual End" prepend-icon="mdi-calendar" readonly v-on="on"></v-text-field>
-                  </template>
-                  <v-date-picker v-model="historyTaskData.task_actual_end" no-title scrollable
-                    :min="historyTaskData.task_actual_start"></v-date-picker>
-                </v-menu>
-              </v-col>
-              <v-col cols="4">
-                <v-text-field v-model="historyTaskData.actual_manday" label="Actual Manday" required
-                  disabled></v-text-field>
-              </v-col>
-            </v-row>
-
-            <div>
-              <h3 style="padding-left: 20px">History tasks</h3>
-            </div>
-            <v-data-table :headers="historyHeaders" :items="historyTasks" item-key="id" class="table-with-border"
-              :sort-by="[{ key: 'update_date', order: 'desc' }]">
-              <template v-slot:item.task_detail="{ item }">
-                {{ item.task_detail ? item.task_detail : "No determine" }}
-              </template>
-
-              <!-- Template แสดงข้อมูลของ Task Type -->
-              <template v-slot:item.task_type="{ item }">
-                {{ item.task_type ? item.task_type : "No determine" }}
-              </template>
-
-              <!-- โค้ดประสาทีนี้เรียงตาม update_date -->
-              <template v-slot:item.user_update="{ item }">
-                {{ item.user_update ? item.user_update : "No determine" }}
-              </template>
-
-              <!-- โค้ดประสาทีนี้เรียงตาม update_date -->
-              <template v-slot:item.update_date="{ item }">
-                {{
-                  item.update_date
-                    ? formatDate(item.update_date)
-                    : "No determine"
-                }}
-              </template>
-
-              <!-- ส่วนที่เหลือจะใช้ formatDate ตามปกติ -->
-              <template v-slot:item.task_plan_start="{ item }">
-                {{
-                  item.task_plan_start
-                    ? formatDate(item.task_plan_start)
-                    : "No determine"
-                }}
-              </template>
-              <template v-slot:item.task_plan_end="{ item }">
-                {{
-                  item.task_plan_end
-                    ? formatDate(item.task_plan_end)
-                    : "No determine"
-                }}
-              </template>
-              <template v-slot:item.task_actual_start="{ item }">
-                {{
-                  item.task_actual_start
-                    ? formatDate(item.task_actual_start)
-                    : "No determine"
-                }}
-              </template>
-              <template v-slot:item.task_actual_end="{ item }">
-                {{
-                  item.task_actual_end
-                    ? formatDate(item.task_actual_end)
-                    : "No determine"
-                }}
-              </template>
-              <!-- โค้ดประสาทีนี้เรียงตาม update_date -->
-              <template v-slot:item.task_manday="{ item }">
-                {{ item.task_manday !== null ? item.task_manday : 0 }} days
-              </template>
-            </v-data-table>
-
-            <!-- Save and Cancel Buttons -->
-            <v-spacer></v-spacer>
-            <v-row justify="center" class="mt-4">
-              <!-- เพิ่มระยะห่าง -->
-              <v-col cols="auto">
-                <v-btn color="primary" type="submit">Save</v-btn>
-              </v-col>
-              <v-col cols="auto">
-                <v-btn color="error" @click="dialogSaveTaskForm = false">Cancel</v-btn>
-              </v-col>
-            </v-row>
-          </v-form>
-        </v-card-text>
-      </v-card>
-    </v-dialog>
 
     <!-- Create task dialog -->
     <v-dialog v-model="dialogAddTaskForm" max-width="600px">
@@ -635,10 +455,23 @@
             " icon color="primary" @click.stop="openSaveHistoryDialog(item)">
               <v-icon>mdi-content-save</v-icon>
             </v-btn>
+
+
           </td>
         </tr>
       </template>
     </v-data-table>
+
+    <!-- save task dialog -->
+    <v-dialog v-model="dialogSaveTaskForm" max-width=70%>
+      <v-card>
+        <v-card-title> </v-card-title>
+        <v-card-subtitle>
+          <!-- ส่ง selectedTask ไปยัง update_task component -->
+          <update_task :task="selectedTask" @close-dialog="dialogSaveTaskForm = false" @task-updated="refreshTable" />
+        </v-card-subtitle>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -677,7 +510,9 @@ export default {
   },
   data() {
     return {
+      selectedTask: {},
       taskId: "",
+      task_id: "",
       screen: null,
       screenid: null,
       loggedIn: this.$auth.loggedIn,
@@ -709,6 +544,9 @@ export default {
         project_id: null, // กำหนดค่าเริ่มต้นเป็น null หรือ integer ที่ถูกต้อง
         system_id: null, // กำหนดค่าเริ่มต้นเป็น null หรือ integer ที่ถูกต้อง
         task_member_id: null, // กำหนดค่าเริ่มต้นเป็น null หรือ integer ที่ถูกต้อง
+        taskid: "",
+        task_id: "",
+
       },
 
       value: 0, // กำหนดค่าเริ่มต้นสำหรับ value
@@ -989,6 +827,10 @@ export default {
     // Watcher to update task_manday when task_plan_start or task_plan_end changes
   },
   methods: {
+    refreshTable() {
+      // Logic to refresh the table, e.g., re-fetch data
+      this.fetchTasks(); // Replace with actual method to refresh data
+    },
     getUserPic(userId) {
       // หา user object โดยใช้ userId และคืนค่าภาพผู้ใช้
       const user = this.userListCreate.find((user) => user.user_id === userId);
@@ -1035,7 +877,7 @@ export default {
       }
     },
 
-   
+
 
 
     async takeTask(task) {
@@ -1167,6 +1009,8 @@ export default {
         task_manday: task.task_manday,
         task_actual_start: task.task_actual_start,
         task_actual_end: task.task_actual_end,
+        taskid: task.id,
+        task_id: task.task_id,
         // Set other fields as per your API
       };
       // Set the task ID for the API endpoint
@@ -1202,6 +1046,7 @@ export default {
 
       // Open the save task dialog
       this.dialogSaveTaskForm = true;
+      this.selectedTask = task;
     },
 
     formatDateSAVE(date) {

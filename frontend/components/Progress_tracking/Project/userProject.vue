@@ -73,7 +73,7 @@ export default {
 
 .styled-table thead th,
 .styled-table tbody td {
-  border: 1px solid #00993325; /* สีของเส้นขอบ */
+  height: 75px !important;
 }
 
 .picture-img {
