@@ -771,12 +771,14 @@ export default {
     },
 
     getProgressColor(progress) {
-      if (progress >= 61 && progress <= 100) {
-        return "green";
-      } else if (progress >= 40 && progress <= 60) {
+      if (progress >= 75 && progress <= 100) {
+        return "#4CAF50";
+      } else if (progress >= 51 && progress <= 74) {
+        return "#03A9F4";
+      } else if (progress >= 26 && progress <= 50) {
+        return "#FFD700";
+      } else if (progress >= 0 && progress <= 25) {
         return "#FC8705";
-      } else if (progress >= 0 && progress <= 39) {
-        return "red";
       }
       // เมื่อไม่ตรงกับเงื่อนไขใดๆ ให้คืนค่าเริ่มต้น
       return "primary";
