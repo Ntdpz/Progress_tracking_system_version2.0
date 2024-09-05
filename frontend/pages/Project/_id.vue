@@ -168,7 +168,7 @@
       <template v-slot:item="{ item }">
         <tr @click="goToSystemsDetail(item.id)">
           <!-- แสดงข้อมูลต่าง ๆ -->
-          <td>{{ item.system_id }}</td>
+
           <td>{{ item.system_nameTH }}</td>
           <td>{{ item.system_nameEN }}</td>
           <td>{{ item.system_shortname }}</td>
@@ -246,12 +246,6 @@
         <v-card-text>
           <!-- Form to create new system -->
           <v-form @submit.prevent="createSystem">
-            <v-text-field
-              v-model="newSystem.system_id"
-              label="System ID"
-              required
-              :rules="[(v) => !!v || 'System ID is required']"
-            ></v-text-field>
             <v-text-field
               v-model="newSystem.system_nameTH"
               label="System Name (TH)"
@@ -342,15 +336,9 @@
         <v-card-text>
           <!-- Form to edit system -->
           <v-form @submit.prevent="updateSystem">
-            <v-lable> Systems ID </v-lable>
-            <v-text-field
-              v-model="editedSystem.system_id"
-              readonly
-              disabled
-            ></v-text-field>
-            <v-lable> Ststems Name Thai </v-lable>
+            <v-lable> System Name Thai </v-lable>
             <v-text-field v-model="editedSystem.system_nameTH"></v-text-field>
-            <v-lable> Ststems Name English </v-lable>
+            <v-lable> System Name English </v-lable>
             <v-text-field v-model="editedSystem.system_nameEN"></v-text-field>
             <v-lable> System Shortname </v-lable>
             <v-text-field
@@ -603,13 +591,12 @@ export default {
       editSystemDialog: false,
       newSystem: {
         id: "",
-        system_id: "",
+
         system_nameTH: "",
         system_nameEN: "",
         system_shortname: "",
       },
       editedSystem: {
-        system_id: "",
         system_nameTH: "",
         system_nameEN: "",
         system_shortname: "",
@@ -617,7 +604,6 @@ export default {
       systems: [],
       searchQuery: "",
       headers: [
-        { text: "System ID", value: "system_id" },
         { text: "System Name (TH)", value: "system_nameTH" },
         { text: "System Name (EN)", value: "system_nameEN" },
         { text: "Short Name", value: "system_shortname" },
@@ -629,7 +615,6 @@ export default {
         { text: "Actions", value: "actions", sortable: false },
       ],
       headersDelete: [
-        { text: "System ID", value: "system_id" },
         { text: "System Name (TH)", value: "system_nameTH" },
         { text: "System Name (EN)", value: "system_nameEN" },
         { text: "Short Name", value: "system_shortname" },
@@ -1121,11 +1106,10 @@ export default {
         console.error("Project ID is null");
         return;
       }
-      const { system_id, system_nameTH, system_nameEN, system_shortname } =
-        this.newSystem;
+      const { system_nameTH, system_nameEN, system_shortname } = this.newSystem;
 
       // Check if any required fields are empty
-      if (!system_id || !system_nameTH || !system_nameEN || !system_shortname) {
+      if (!system_nameTH || !system_nameEN || !system_shortname) {
         await Swal.fire({
           icon: "error",
           title: "Error",
@@ -1144,7 +1128,6 @@ export default {
             },
             body: JSON.stringify({
               project_id: projectId,
-              system_id,
               system_nameTH,
               system_nameEN,
               system_shortname,
@@ -1172,7 +1155,6 @@ export default {
         });
         // Clear the form
         this.newSystem = {
-          system_id: "",
           system_nameTH: "",
           system_nameEN: "",
           system_shortname: "",
@@ -1299,7 +1281,6 @@ export default {
       const query = this.searchQuery.toLowerCase();
       return this.systems.filter(
         (system) =>
-          system.system_id.toLowerCase().includes(query) ||
           system.system_nameTH.toLowerCase().includes(query) ||
           system.system_nameEN.toLowerCase().includes(query) ||
           system.system_shortname.toLowerCase().includes(query)

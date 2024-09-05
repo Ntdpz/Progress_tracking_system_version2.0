@@ -323,7 +323,7 @@ router.get('/searchByProjectId_delete/:project_id', async (req, res) => {
 router.post("/createSystem", async (req, res) => {
   const {
     project_id,
-    system_id,
+    
     system_nameTH,
     system_nameEN,
     system_shortname,
@@ -335,8 +335,8 @@ router.post("/createSystem", async (req, res) => {
 
   try {
     connection.query(
-      "INSERT INTO systems (id, project_id, system_id, system_nameTH, system_nameEN, system_shortname) VALUES (?, ?, ?, ?, ?, ?)",
-      [id, project_id, system_id, system_nameTH, system_nameEN, system_shortname], // Use the generated ID
+      "INSERT INTO systems (id, project_id, system_nameTH, system_nameEN, system_shortname) VALUES (?, ?, ?, ?, ?)",
+      [id, project_id, system_nameTH, system_nameEN, system_shortname], // Use the generated ID
       (err, results, fields) => {
         if (err) {
           console.error(
