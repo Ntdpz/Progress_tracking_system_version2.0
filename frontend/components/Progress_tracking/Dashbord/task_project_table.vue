@@ -89,7 +89,7 @@
     <div v-else class="no-tasks-container">
       <p class="no-tasks-message">
         <v-icon class="alert-icon">mdi-alert-circle-outline</v-icon>
-        No tasks found for this project.
+        No tasks for this project today.
       </p>
     </div>
 
