@@ -1,16 +1,28 @@
-<!-- userProject.vue -->
 <template>
   <div>
-    <v-data-table :headers="headers" :items="user_projects" item-key="id">
+    <v-data-table
+      :headers="headers"
+      :items="user_projects"
+      item-key="id"
+      class="styled-table"
+      :items-per-page="5"
+      align="center"
+    >
       <template v-slot:top>
-        <v-toolbar flat>
-          <v-toolbar-title
-            >User Projects : {{ project.project_name_ENG }}</v-toolbar-title
-          >
+        <v-toolbar flat class="toolbar">
+          <v-toolbar-title class="toolbar-title">
+            User Projects : {{ project.project_name_ENG }}
+          </v-toolbar-title>
         </v-toolbar>
       </template>
+
       <template v-slot:item.user_pic="{ item }">
-        <v-img :src="item.user_pic" max-width="100" max-height="100"></v-img>
+        <v-img
+          :src="item.user_pic"
+          max-width="75"
+          max-height="75"
+          class="picture-img"
+        ></v-img>
       </template>
     </v-data-table>
   </div>
@@ -20,25 +32,25 @@
 export default {
   props: {
     project: {
-      type: Object, // เปลี่ยนเป็น Object
+      type: Object,
       required: true,
     },
   },
   data() {
     return {
       headers: [
-        { text: "Picture", value: "user_pic" },
+        { text: "Picture", value: "user_pic", align: `center` },
         { text: "First Name", value: "user_firstname" },
         { text: "Last Name", value: "user_lastname" },
-        { text: "Position", value: "user_position" },
-        { text: "Department", value: "user_department" },
+        { text: "Position", value: "user_position", align: `center` },
+        { text: "Department", value: "user_department", align: `center` },
       ],
       user_projects: [],
     };
   },
   async created() {
     try {
-      const projectId = this.project.id; // ดึง project_id จาก URL
+      const projectId = this.project.id;
       const response = await this.$axios.$get(
         `/user_projects/getUserProjectsByProjectId/${projectId}`
       );
@@ -49,3 +61,57 @@ export default {
   },
 };
 </script>
+
+<style>
+.styled-table thead th {
+  background-color: #ffffff;
+  color: #009933 !important;
+  font-weight: bold !important;
+  border-bottom: 2px solid black;
+  font-size: 18px !important;
+}
+
+.styled-table thead th,
+.styled-table tbody td {
+  border: 1px solid #00993325; /* สีของเส้นขอบ */
+}
+
+.picture-img {
+  border: 3px solid #009933; /* กำหนดสีและความหนาของขอบ */
+  border-radius: 300px; /* ปรับความโค้งมนของมุมขอบ */
+}
+
+.styled-table thead th:nth-child(2) {
+  text-align: center !important; /* จัดชิดขวาสำหรับคอลัมน์ 'First Name' */
+}
+
+.styled-table thead th:nth-child(3) {
+  text-align: center !important; /* จัดชิดขวาสำหรับคอลัมน์ 'Last Name' */
+}
+
+.styled-table thead th:nth-child(4) {
+  text-align: center !important; /* จัดชิดขวาสำหรับคอลัมน์ 'Position' */
+}
+
+.styled-table tbody td {
+  padding: 8px;
+}
+
+/* CSS สำหรับคอลัมน์ 'First Name' */
+.styled-table tbody td:nth-child(2) {
+  text-align: left !important; /* จัดชิดขวาสำหรับ First Name */
+}
+
+/* CSS สำหรับคอลัมน์ 'Last Name' */
+.styled-table tbody td:nth-child(3) {
+  text-align: left !important; /* จัดชิดขวาสำหรับ Last Name */
+}
+
+.picture-img {
+  border: 3px solid #009933; /* กำหนดสีและความหนาของขอบ */
+  border-radius: 300px; /* ปรับความโค้งมนของมุมขอบ */
+}
+.toolbar-title {
+  color: #009933 !important;
+}
+</style>

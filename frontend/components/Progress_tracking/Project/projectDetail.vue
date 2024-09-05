@@ -10,7 +10,8 @@
                 v-bind="attrs"
                 v-on="on"
                 @click.stop="showUserDialog = true"
-                color="red"
+                color="#009933"
+                size="45px"
               >
                 mdi-account-multiple
               </v-icon>
@@ -39,7 +40,7 @@
         <div class="custom-progress">
           <v-progress-circular
             :value="parseInt(project.project_progress)"
-            color="blue-grey"
+            :color="getProgressColor(parseInt(project.project_progress))"
             :size="100"
             :rotate="360"
             :width="15"
@@ -51,7 +52,7 @@
       </v-col>
     </v-row>
 
-    <v-dialog v-model="showUserDialog" max-width="50%">
+    <v-dialog v-model="showUserDialog" max-width="40%">
       <v-card>
         <userProject :project="project" />
       </v-card>
@@ -84,6 +85,18 @@ export default {
       const month = String(date.getMonth() + 1).padStart(2, "0");
       const year = date.getFullYear();
       return `${day}-${month}-${year}`;
+    },
+    getProgressColor(progress) {
+      if (progress >= 75 && progress <= 100) {
+        return "#4CAF50"; // สีเขียว
+      } else if (progress >= 51 && progress <= 74) {
+        return "#03A9F4"; // สีฟ้า
+      } else if (progress >= 26 && progress <= 50) {
+        return "#FFD700"; // สีเหลืองทอง
+      } else if (progress >= 0 && progress <= 25) {
+        return "#FC8705"; // สีส้ม
+      }
+      return "#000000"; // สีดำเป็นค่าเริ่มต้นถ้าค่าผิดพลาด
     },
   },
 };
