@@ -13,39 +13,25 @@
         <v-card>
           <v-card-title>User Projects</v-card-title>
           <v-card-text>
-            <v-text-field
-              v-model="searchprojectUser"
-              label="Search"
-              dense
-              hide-details
-              solo
-              flat
-              outlined
-              color="primary"
-              hint="Search here"
-            ></v-text-field>
+            <v-text-field v-model="searchprojectUser" label="Search" dense hide-details solo flat outlined
+              color="primary" hint="Search here"></v-text-field>
             <v-list>
-              <v-list-item
-                v-for="(user, index) in displayedUsersprojectUser"
-                :key="index"
-              >
+              <v-list-item v-for="(user, index) in displayedUsersprojectUser" :key="index">
                 <!-- ตรงนี้คือการเพิ่มเงื่อนไขในการกรองผู้ใช้งาน -->
-                <template
-                  v-if="
-                    user.user_position
-                      .toLowerCase()
-                      .includes(searchprojectUser.toLowerCase()) ||
-                    user.user_firstname
-                      .toLowerCase()
-                      .includes(searchprojectUser.toLowerCase()) ||
-                    user.user_lastname
-                      .toLowerCase()
-                      .includes(searchprojectUser.toLowerCase()) ||
-                    user.user_department
-                      .toLowerCase()
-                      .includes(searchprojectUser.toLowerCase())
-                  "
-                >
+                <template v-if="
+                  user.user_position
+                    .toLowerCase()
+                    .includes(searchprojectUser.toLowerCase()) ||
+                  user.user_firstname
+                    .toLowerCase()
+                    .includes(searchprojectUser.toLowerCase()) ||
+                  user.user_lastname
+                    .toLowerCase()
+                    .includes(searchprojectUser.toLowerCase()) ||
+                  user.user_department
+                    .toLowerCase()
+                    .includes(searchprojectUser.toLowerCase())
+                ">
                   <v-list-item-avatar>
                     <img :src="user.user_pic" alt="User Picture" />
                   </v-list-item-avatar>
@@ -66,11 +52,8 @@
               </v-list-item>
             </v-list>
 
-            <v-pagination
-              v-model="currentPageprojectUser"
-              :length="numberOfPagesprojectUser"
-              @input="changePageprojectUser"
-            ></v-pagination>
+            <v-pagination v-model="currentPageprojectUser" :length="numberOfPagesprojectUser"
+              @input="changePageprojectUser"></v-pagination>
           </v-card-text>
           <v-card-actions>
             <v-btn color="error" @click="showUserDialog = false">Close</v-btn>
@@ -82,48 +65,27 @@
     <!-- Search bar -->
     <v-row no-gutters>
       <v-col cols="12">
-        <input
-          type="text"
-          v-model="searchQuery"
-          placeholder="Search..."
-          :style="{
-            'margin-bottom': '10px',
-            width: user.user_role === 'Admin' ? '70%' : '100%', // เพิ่มเงื่อนไขในการกำหนด width
-            padding: '10px',
-            border: '1px solid #ccc',
-            'border-radius': '5px',
-            'font-size': '16px',
-          }"
-        />
+        <input type="text" v-model="searchQuery" placeholder="Search..." :style="{
+          'margin-bottom': '10px',
+          width: user.user_role === 'Admin' ? '70%' : '100%', // เพิ่มเงื่อนไขในการกำหนด width
+          padding: '10px',
+          border: '1px solid #ccc',
+          'border-radius': '5px',
+          'font-size': '16px',
+        }" />
 
-        <v-btn
-          v-if="user.user_role === 'Admin'"
-          color="primary"
-          class="text-none mb-4"
-          @click="goToCreateSystem"
-          style="margin-left: 50px; width: 10%; height: 70%"
-        >
-          <v-icon>mdi-plus</v-icon></v-btn
-        >
+        <v-btn v-if="user.user_role === 'Admin'" color="primary" class="text-none mb-4" @click="goToCreateSystem"
+          style="margin-left: 50px; width: 10%; height: 70%">
+          <v-icon>mdi-plus</v-icon></v-btn>
         <!-- เพิ่มปุ่ม Show History System -->
-        <v-btn
-          v-if="user.user_role === 'Admin'"
-          color="error"
-          class="text-none mb-4"
-          @click="goToHistorySystems"
-          style="margin-left: 10px; width: 10%; height: 70%"
-        >
-          <v-icon>mdi-delete</v-icon> &nbsp;</v-btn
-        >
+        <v-btn v-if="user.user_role === 'Admin'" color="error" class="text-none mb-4" @click="goToHistorySystems"
+          style="margin-left: 10px; width: 10%; height: 70%">
+          <v-icon>mdi-history</v-icon> &nbsp;</v-btn>
       </v-col>
     </v-row>
 
     <!-- Data Table -->
-    <v-data-table
-      :headers="filteredHeaders"
-      :items="filteredSystems"
-      :sort-by="[{ key: 'system_id', order: 'desc' }]"
-    >
+    <v-data-table :headers="filteredHeaders" :items="filteredSystems" :sort-by="[{ key: 'system_id', order: 'desc' }]">
       <!-- ส่วนแสดงข้อมูล -->
       <template v-slot:item="{ item }">
         <tr @click="goToSystemsDetail(item.id)">
@@ -135,18 +97,11 @@
           <td>{{ item.screen_count ? item.screen_count : "0" }}</td>
 
           <td>
-            <v-progress-linear
-              :color="getProgressColor(parseInt(item.system_progress))"
-              height="20"
-              :value="parseInt(item.system_progress)"
-              :style="{ width: '100%' }"
-              striped
-            >
-              <strong :style="{ color: 'white' }"
-                >{{
-                  item.system_progress ? parseInt(item.system_progress) : 0
-                }}%</strong
-              >
+            <v-progress-linear :color="getProgressColor(parseInt(item.system_progress))" height="20"
+              :value="parseInt(item.system_progress)" :style="{ width: '100%' }" striped>
+              <strong :style="{ color: 'white' }">{{
+                item.system_progress ? parseInt(item.system_progress) : 0
+              }}%</strong>
             </v-progress-linear>
           </td>
           <td>{{ formatDate(item.system_plan_start) }}</td>
@@ -183,9 +138,7 @@
                   <v-list-item-icon>
                     <v-icon class="red--text">mdi-delete</v-icon>
                   </v-list-item-icon>
-                  <v-list-item-content class="red--text"
-                    >Delete</v-list-item-content
-                  >
+                  <v-list-item-content class="red--text">Delete</v-list-item-content>
                 </v-list-item>
                 <!-- Systems Detail action -->
               </v-list>
@@ -196,47 +149,23 @@
     </v-data-table>
 
     <!-- Create System Dialog -->
-    <v-dialog
-      v-model="createSystemDialog"
-      max-width="600"
-      ref="createSystemDialog"
-    >
+    <v-dialog v-model="createSystemDialog" max-width="600" ref="createSystemDialog">
       <v-card>
         <v-card-title>Create New System</v-card-title>
         <v-card-text>
           <!-- Form to create new system -->
           <v-form @submit.prevent="createSystem">
-            <v-text-field
-              v-model="newSystem.system_nameTH"
-              label="System Name (TH)"
-              required
-              :rules="[(v) => !!v || 'System Name (TH) is required']"
-            ></v-text-field>
-            <v-text-field
-              v-model="newSystem.system_nameEN"
-              label="System Name (EN)"
-              required
-              :rules="[(v) => !!v || 'System Name (EN) is required']"
-            ></v-text-field>
-            <v-text-field
-              v-model="newSystem.system_shortname"
-              label="Short Name"
-              required
-              :rules="[(v) => !!v || 'Short Name is required']"
-            ></v-text-field>
+            <v-text-field v-model="newSystem.system_nameTH" label="System Name (TH)" required
+              :rules="[(v) => !!v || 'System Name (TH) is required']"></v-text-field>
+            <v-text-field v-model="newSystem.system_nameEN" label="System Name (EN)" required
+              :rules="[(v) => !!v || 'System Name (EN) is required']"></v-text-field>
+            <v-text-field v-model="newSystem.system_shortname" label="Short Name" required
+              :rules="[(v) => !!v || 'Short Name is required']"></v-text-field>
             <!-- Add v-select for selecting users -->
-            <v-select
-              v-model="selectedCreateSystemAnalysts"
-              :items="filteredUsers('System Analyst')"
-              label="Select System Analyst"
-              item-value="user_id"
-              item-text="displayName"
-              multiple
-              required
-              :rules="[
+            <v-select v-model="selectedCreateSystemAnalysts" :items="filteredUsers('System Analyst')"
+              label="Select System Analyst" item-value="user_id" item-text="displayName" multiple required :rules="[
                 (v) => !!v || 'At least one System Analyst must be selected',
-              ]"
-            >
+              ]">
               <template v-slot:prepend-item>
                 <v-list-item @click="selectAllSystemAnalysts">
                   <v-list-item-content>Select All</v-list-item-content>
@@ -244,34 +173,19 @@
               </template>
             </v-select>
 
-            <v-select
-              v-model="selectedCreateDevelopers"
-              :items="filteredUsers('Developer')"
-              label="Select Developer"
-              item-value="user_id"
-              item-text="displayName"
-              multiple
-              required
-              :rules="[(v) => !!v || 'At least one Developer must be selected']"
-            >
+            <v-select v-model="selectedCreateDevelopers" :items="filteredUsers('Developer')" label="Select Developer"
+              item-value="user_id" item-text="displayName" multiple required
+              :rules="[(v) => !!v || 'At least one Developer must be selected']">
               <template v-slot:prepend-item>
                 <v-list-item @click="selectAllDevelopers">
                   <v-list-item-content>Select All</v-list-item-content>
                 </v-list-item>
               </template>
             </v-select>
-            <v-select
-              v-model="selectedCreateImplementers"
-              :items="filteredUsers('Implementer')"
-              label="Select Implementer"
-              item-value="user_id"
-              item-text="displayName"
-              multiple
-              required
-              :rules="[
+            <v-select v-model="selectedCreateImplementers" :items="filteredUsers('Implementer')"
+              label="Select Implementer" item-value="user_id" item-text="displayName" multiple required :rules="[
                 (v) => !!v || 'At least one Implementer must be selected',
-              ]"
-            >
+              ]">
               <template v-slot:prepend-item>
                 <v-list-item @click="selectAllImplementers">
                   <v-list-item-content>Select All</v-list-item-content>
@@ -281,9 +195,7 @@
 
             <!-- Buttons to submit -->
             <v-btn color="primary" type="submit">Create</v-btn>
-            <v-btn color="error" @click="createSystemDialog = false"
-              >Cancel</v-btn
-            >
+            <v-btn color="error" @click="createSystemDialog = false">Cancel</v-btn>
           </v-form>
         </v-card-text>
       </v-card>
@@ -301,14 +213,10 @@
             <v-lable> System Name English </v-lable>
             <v-text-field v-model="editedSystem.system_nameEN"></v-text-field>
             <v-lable> System Shortname </v-lable>
-            <v-text-field
-              v-model="editedSystem.system_shortname"
-            ></v-text-field>
+            <v-text-field v-model="editedSystem.system_shortname"></v-text-field>
 
             <v-btn color="primary" type="submit">Update</v-btn>
-            <v-btn color="error" @click="editSystemDialog = false"
-              >Cancel</v-btn
-            >
+            <v-btn color="error" @click="editSystemDialog = false">Cancel</v-btn>
           </v-form>
         </v-card-text>
       </v-card>
@@ -316,24 +224,17 @@
 
     <!-- Show deleted systems history -->
     <v-dialog v-model="showHistoryDialog" max-width="800">
-      <v-data-table
-        v-model:selected="selectedSystems"
-        :headers="headersDelete"
-        :items="deletedSystems"
-        show-select
-      >
+      <v-data-table v-model:selected="selectedSystems" :headers="headersDelete" :items="deletedSystems" show-select>
         <!-- Define headers for the table -->
         <template v-slot:top>
           <v-toolbar flat>
             <v-toolbar-title>Deleted Systems History</v-toolbar-title>
             <v-divider class="mx-4" inset vertical></v-divider>
             <v-spacer></v-spacer>
-            <v-btn class="mr-3" color="green" @click="restoreSelectedSystems"
-              ><v-icon color="white">mdi-restore</v-icon></v-btn
-            >
+            <v-btn class="mr-3" color="green" @click="restoreSelectedSystems"><v-icon
+                color="white">mdi-restore</v-icon></v-btn>
             <v-btn color="error" @click="deleteSelectedHistorySystems">
-              <v-icon>mdi-delete</v-icon></v-btn
-            >
+              <v-icon>mdi-delete</v-icon></v-btn>
           </v-toolbar>
         </template>
       </v-data-table>
@@ -344,16 +245,8 @@
       <v-card>
         <v-card-title>Manage User Systems</v-card-title>
         <v-card-text>
-          <v-text-field
-            v-model="searchUser"
-            label="Search"
-            dense
-            hide-details
-            solo
-            flat
-            outlined
-            color="primary"
-          ></v-text-field>
+          <v-text-field v-model="searchUser" label="Search" dense hide-details solo flat outlined
+            color="primary"></v-text-field>
           <v-list>
             <v-list-item v-for="user in filteredUsersList" :key="user.id">
               <v-list-item-avatar>
@@ -369,28 +262,16 @@
                 }}</v-list-item-subtitle>
               </v-list-item-content>
               <v-list-item-action>
-                <v-icon
-                  color="error"
-                  @click="
-                    deleteUser(selectedSystemId, selectedProjectId, user.id)
-                  "
-                  >mdi-delete</v-icon
-                >
+                <v-icon color="error" @click="
+                  deleteUser(selectedSystemId, selectedProjectId, user.id)
+                  ">mdi-delete</v-icon>
               </v-list-item-action>
             </v-list-item>
           </v-list>
-          <v-pagination
-            v-model="currentPage"
-            :length="numberOfPages"
-            @input="changePage"
-          ></v-pagination>
+          <v-pagination v-model="currentPage" :length="numberOfPages" @input="changePage"></v-pagination>
         </v-card-text>
         <v-card-actions>
-          <v-btn
-            color="primary"
-            @click="openNestedDialog(selectedSystemId, selectedProjectId)"
-            >Assign User</v-btn
-          >
+          <v-btn color="primary" @click="openNestedDialog(selectedSystemId, selectedProjectId)">Assign User</v-btn>
           <v-btn color="error" @click="manageUserDialog = false">Close</v-btn>
         </v-card-actions>
       </v-card>
@@ -402,18 +283,10 @@
         <v-card-title>Assign User</v-card-title>
         <v-card-text>
           <!-- Select System Analyst -->
-          <v-select
-            v-model="selectedSystemAnalysts"
-            :items="
-              availableUsers.filter(
-                (user) => user.user_position === 'System Analyst'
-              )
-            "
-            label="Select System Analyst"
-            item-text="displayName"
-            item-value="id"
-            multiple
-          >
+          <v-select v-model="selectedSystemAnalysts" :items="availableUsers.filter(
+            (user) => user.user_position === 'System Analyst'
+          )
+            " label="Select System Analyst" item-text="displayName" item-value="id" multiple>
             <template v-slot:prepend-item>
               <v-list-item @click="selectAllSystemAnalystAF">
                 <v-list-item-content>Select All</v-list-item-content>
@@ -422,18 +295,10 @@
           </v-select>
 
           <!-- Select Developer -->
-          <v-select
-            v-model="selectedDevelopers"
-            :items="
-              availableUsers.filter(
-                (user) => user.user_position === 'Developer'
-              )
-            "
-            label="Select Developer"
-            item-text="displayName"
-            item-value="id"
-            multiple
-          >
+          <v-select v-model="selectedDevelopers" :items="availableUsers.filter(
+            (user) => user.user_position === 'Developer'
+          )
+            " label="Select Developer" item-text="displayName" item-value="id" multiple>
             <template v-slot:prepend-item>
               <v-list-item @click="selectAllDevelopersAF">
                 <v-list-item-content>Select All</v-list-item-content>
@@ -442,18 +307,10 @@
           </v-select>
 
           <!-- Select Implementer -->
-          <v-select
-            v-model="selectedImplementers"
-            :items="
-              availableUsers.filter(
-                (user) => user.user_position === 'Implementer'
-              )
-            "
-            label="Select Implementer"
-            item-text="displayName"
-            item-value="id"
-            multiple
-          >
+          <v-select v-model="selectedImplementers" :items="availableUsers.filter(
+            (user) => user.user_position === 'Implementer'
+          )
+            " label="Select Implementer" item-text="displayName" item-value="id" multiple>
             <template v-slot:prepend-item>
               <v-list-item @click="selectAllImplementersAF">
                 <v-list-item-content>Select All</v-list-item-content>
@@ -471,11 +328,11 @@
 </template>
 
 <script>
-import Loader from "../../components/Loader.vue";
+import Loader from "@/components/Loader.vue";
 import Swal from "sweetalert2";
 import axios from "axios";
 import { encodeId, decodeId } from "../../utils/crypto";
-import projectDetail from "../../components/Progress_tracking/Project/projectDetail.vue";
+import projectDetail from "@/components/Progress_tracking/Project/projectDetail.vue";
 export default {
   async asyncData({ params, $axios, error }) {
     const encodedId = params.id;
@@ -587,12 +444,14 @@ export default {
 
   methods: {
     getProgressColor(progress) {
-      if (progress >= 61 && progress <= 100) {
-        return "green";
-      } else if (progress >= 40 && progress <= 60) {
+      if (progress >= 75 && progress <= 100) {
+        return "#4CAF50";
+      } else if (progress >= 51 && progress <= 74) {
+        return "#03A9F4";
+      } else if (progress >= 26 && progress <= 50) {
+        return "#FFD700";
+      } else if (progress >= 0 && progress <= 25) {
         return "#FC8705";
-      } else if (progress >= 0 && progress <= 39) {
-        return "red";
       }
       // เมื่อไม่ตรงกับเงื่อนไขใดๆ ให้คืนค่าเริ่มต้น
       return "primary";
@@ -692,18 +551,6 @@ export default {
         this.selectedCreateSystemAnalysts = [];
       } else {
         this.selectedCreateSystemAnalysts = systemAnalysts;
-      }
-    },
-
-    getProgressColor(progress) {
-      if (progress >= 0 && progress <= 40) {
-        return "red"; // สีแดงสำหรับค่า progress 0-40
-      } else if (progress > 40 && progress <= 80) {
-        return "yellow"; // สีเหลืองสำหรับค่า progress 41-80
-      } else if (progress > 80 && progress <= 100) {
-        return "green"; // สีเขียวสำหรับค่า progress 80-100
-      } else {
-        return ""; // สีเริ่มต้นหรือสีที่ไม่ได้กำหนด
       }
     },
     filteredUsers(position) {
@@ -1319,7 +1166,7 @@ export default {
 
 
 <style scoped>
-.v-data-table > .v-data-footer {
+.v-data-table>.v-data-footer {
   padding-top: 0;
 }
 

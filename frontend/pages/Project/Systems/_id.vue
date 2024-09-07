@@ -10,22 +10,15 @@
               System name : {{ system.system_nameEN }}
               <v-spacer></v-spacer>
               <v-icon @click.stop="showUserDialog = true">
-                mdi-account-multiple</v-icon
-              >
+                mdi-account-multiple</v-icon>
             </v-card-title>
 
             <v-card-subtitle>
               Systems Progress
-              <v-progress-linear
-                :color="getProgressColor(parseInt(system.system_progress))"
-                height="50"
-                :value="parseInt(system.system_progress)"
-                striped
-              >
-                <strong :style="{ color: '#5E5E5E', fontSize: '20px' }"
-                  >{{ Math.floor(system_progress) || 0 }}%</strong
-                ></v-progress-linear
-              >
+              <v-progress-linear :color="getProgressColor(parseInt(system.system_progress))" height="50"
+                :value="parseInt(system.system_progress)" striped>
+                <strong :style="{ color: '#5E5E5E', fontSize: '20px' }">{{ Math.floor(system_progress) || 0
+                  }}%</strong></v-progress-linear>
             </v-card-subtitle>
           </v-card-item>
 
@@ -61,24 +54,12 @@
             <v-card-title>User Systems</v-card-title>
             <!-- เพิ่มช่องค้นหา -->
             <v-card-text>
-              <v-text-field
-                v-model="searchprojectUser"
-                label="Search"
-                dense
-                hide-details
-                solo
-                flat
-                outlined
-                color="primary"
-                hint="Search here"
-              ></v-text-field>
+              <v-text-field v-model="searchprojectUser" label="Search" dense hide-details solo flat outlined
+                color="primary" hint="Search here"></v-text-field>
             </v-card-text>
             <v-card-text>
               <v-list>
-                <v-list-item
-                  v-for="(user, index) in filteredsearchprojectUser"
-                  :key="index"
-                >
+                <v-list-item v-for="(user, index) in filteredsearchprojectUser" :key="index">
                   <v-list-item-avatar>
                     <img :src="user.user_pic" alt="User Picture" />
                   </v-list-item-avatar>
@@ -87,22 +68,14 @@
                       {{ user.user_position }}: {{ user.user_firstname }}
                       {{ user.user_lastname }}
                     </v-list-item-title>
-                    <v-list-item-subtitle
-                      >ตำแหน่ง: {{ user.user_position }}</v-list-item-subtitle
-                    >
-                    <v-list-item-subtitle
-                      >แผนก: {{ user.user_department }}</v-list-item-subtitle
-                    >
+                    <v-list-item-subtitle>ตำแหน่ง: {{ user.user_position }}</v-list-item-subtitle>
+                    <v-list-item-subtitle>แผนก: {{ user.user_department }}</v-list-item-subtitle>
                     <!-- เพิ่มข้อมูลเพิ่มเติมตามต้องการ -->
                   </v-list-item-content>
                 </v-list-item>
               </v-list>
-              <v-pagination
-                v-model="paginationPageUserSystems"
-                :length="totalPagesUserSystems"
-                @input="changePageUserSystems"
-                color="primary"
-              ></v-pagination>
+              <v-pagination v-model="paginationPageUserSystems" :length="totalPagesUserSystems"
+                @input="changePageUserSystems" color="primary"></v-pagination>
             </v-card-text>
             <!-- เพิ่ม pagination -->
             <v-card-actions>
@@ -118,34 +91,20 @@
       <!-- Search bar -->
       <v-row no-gutters>
         <v-col cols="12">
-          <input
-            type="text"
-            v-model="searchQuery"
-            placeholder="Search..."
-            :style="{
-              'margin-bottom': '10px',
-              width: '70%', // เพิ่มเงื่อนไขในการกำหนด width
-              padding: '10px',
-              border: '1px solid #ccc',
-              'border-radius': '5px',
-              'font-size': '16px',
-            }"
-          />
+          <input type="text" v-model="searchQuery" placeholder="Search..." :style="{
+            'margin-bottom': '10px',
+            width: '70%', // เพิ่มเงื่อนไขในการกำหนด width
+            padding: '10px',
+            border: '1px solid #ccc',
+            'border-radius': '5px',
+            'font-size': '16px',
+          }" />
 
-          <v-btn
-            color="primary"
-            class="text-none mb-4 mr-2"
-            @click="goToCreateScreen"
-            style="margin-left: 50px; width: 10%; height: 40px"
-          >
+          <v-btn color="primary" class="text-none mb-4 mr-2" @click="goToCreateScreen"
+            style="margin-left: 50px; width: 10%; height: 40px">
             <v-icon>mdi-plus</v-icon>
           </v-btn>
-          <v-btn
-            color="error"
-            class="text-none mb-4"
-            @click="showSystemIdDialog"
-            style="width: 10%; height: 40px"
-          >
+          <v-btn color="error" class="text-none mb-4" @click="showSystemIdDialog" style="width: 10%; height: 40px">
             <v-icon>mdi-delete</v-icon>
           </v-btn>
         </v-col>
@@ -156,24 +115,9 @@
           <v-tab-item v-for="(tab, index) in tabs" :key="index">
             <v-container>
               <v-row class="full-width">
-                <v-col
-                  cols="12"
-                  md="6"
-                  lg="4"
-                  v-for="(screen, index) in filteredScreensByStatus(tab)"
-                  :key="index"
-                >
-                  <v-card
-                    class="mx-auto full-width"
-                    max-width="400"
-                    @click="goToScreensDetail(screen.id)"
-                  >
-                    <v-img
-                      class="align-end text-white"
-                      height="200"
-                      :src="getBase64Image(screen.screen_pic)"
-                      cover
-                    >
+                <v-col cols="12" md="6" lg="4" v-for="(screen, index) in filteredScreensByStatus(tab)" :key="index">
+                  <v-card class="mx-auto full-width" max-width="400" @click="goToScreensDetail(screen.id)">
+                    <v-img class="align-end text-white" height="200" :src="getBase64Image(screen.screen_pic)" cover>
                       <v-card-title class="card-title">
                         <div>
                           {{ screen.screen_name }}
@@ -182,31 +126,20 @@
                     </v-img>
 
                     <v-card-subtitle class="pt-4" style="width: 100%">
-                      <span
-                        style="
+                      <span style="
                           font-weight: bold;
                           display: flex;
                           align-items: center;
-                        "
-                      >
+                        ">
                         Progress :
-                        <div
-                          style="
+                        <div style="
                             display: flex;
                             align-items: center;
                             justify-content: flex-end;
                             flex-grow: 1;
-                          "
-                        >
-                          <v-progress-linear
-                            :color="
-                              getProgressColor(parseInt(screen.screen_progress))
-                            "
-                            height="15"
-                            :value="parseInt(screen.screen_progress)"
-                            :style="{ width: '95%' }"
-                            striped
-                          >
+                          ">
+                          <v-progress-linear :color="getProgressColor(parseInt(screen.screen_progress))
+                            " height="15" :value="parseInt(screen.screen_progress)" :style="{ width: '95%' }" striped>
                             <strong :style="{ color: 'white' }">
                               {{
                                 screen.screen_progress
@@ -244,41 +177,25 @@
                     </v-card-text>
 
                     <v-card-actions>
-                      <v-btn
-                        color="primary"
-                        class="small"
-                        @click.stop="openEditDialog(screen)"
-                      >
+                      <v-btn color="primary" class="small" @click.stop="openEditDialog(screen)">
                         <v-icon>mdi-pencil</v-icon>
                       </v-btn>
 
-                      <v-btn
-                        color="primary"
-                        class="small"
-                        @click.stop="
-                          getUserScreenManagement(
-                            projectId,
-                            systemId,
-                            screen.id
-                          )
-                        "
-                      >
+                      <v-btn color="primary" class="small" @click.stop="
+                        getUserScreenManagement(
+                          projectId,
+                          systemId,
+                          screen.id
+                        )
+                        ">
                         <v-icon>mdi-account-multiple</v-icon>
                       </v-btn>
 
-                      <v-btn
-                        color="error"
-                        class="small"
-                        @click.stop="confirmDeleteScreen(screen)"
-                      >
+                      <v-btn color="error" class="small" @click.stop="confirmDeleteScreen(screen)">
                         <v-icon>mdi-delete</v-icon>
                       </v-btn>
 
-                      <v-btn
-                        color="primary"
-                        class="small"
-                        @click.stop="goToReportDetail(screen.id)"
-                      >
+                      <v-btn color="primary" class="small" @click.stop="goToReportDetail(screen.id)">
                         <v-icon>mdi-information-outline</v-icon>
                       </v-btn>
                     </v-card-actions>
@@ -291,66 +208,34 @@
       </v-container>
 
       <!-- เพิ่ม Pagination ที่นี่ -->
-      <v-pagination
-        v-model="currentPage"
-        :length="Math.ceil(filteredScreens.length / perPage)"
-        @input="onPageChange"
-      ></v-pagination>
+      <v-pagination v-model="currentPage" :length="Math.ceil(filteredScreens.length / perPage)"
+        @input="onPageChange"></v-pagination>
     </div>
 
     <!-- Create Screen Dialog -->
-    <v-dialog
-      v-model="createScreenDialog"
-      max-width="600"
-      ref="createScreenDialog"
-    >
+    <v-dialog v-model="createScreenDialog" max-width="600" ref="createScreenDialog">
       <v-card>
         <v-card-title>Create New Screen</v-card-title>
         <v-card-text>
           <v-form ref="screenForm" @submit.prevent="createScreen()">
             <!-- Existing fields -->
-            <v-text-field
-              v-model="newScreen.screen_id"
-              :rules="[(v) => !!v || 'Screen ID is required']"
-              label="Screen ID"
-            ></v-text-field>
-            <v-text-field
-              v-model="newScreen.screen_name"
-              :rules="[(v) => !!v || 'Screen Name is required']"
-              label="Screen Name"
-            ></v-text-field>
+            <v-text-field v-model="newScreen.screen_id" :rules="[(v) => !!v || 'Screen ID is required']"
+              label="Screen ID"></v-text-field>
+            <v-text-field v-model="newScreen.screen_name" :rules="[(v) => !!v || 'Screen Name is required']"
+              label="Screen Name"></v-text-field>
 
-            <v-select
-              v-model="newScreen.screen_level"
-              label="Screen Level"
-              :items="['Hard', 'Moderate', 'Easy', 'Simple']"
-            ></v-select>
-            <v-file-input
-              accept="image/png, image/jpeg, image/bmp"
-              label="Select screen image"
-              placeholder="Select screen image"
-              prepend-icon="mdi-camera"
-              v-model="avatarFile"
-            ></v-file-input>
+            <v-select v-model="newScreen.screen_level" label="Screen Level"
+              :items="['Hard', 'Moderate', 'Easy', 'Simple']"></v-select>
+            <v-file-input accept="image/png, image/jpeg, image/bmp" label="Select screen image"
+              placeholder="Select screen image" prepend-icon="mdi-camera" v-model="avatarFile"></v-file-input>
 
-            <v-select
-              v-model="newScreen.screen_status"
-              label="Screen Status"
-              :items="['Not started yet', 'design', 'develop', 'finish']"
-            ></v-select>
+            <v-select v-model="newScreen.screen_status" label="Screen Status"
+              :items="['Not started yet', 'design', 'develop', 'finish']"></v-select>
 
-            <v-select
-              v-model="selectedSystemAnalysts"
-              :items="filteredUsers('System Analyst')"
-              label="Select System Analyst"
-              item-value="id"
-              item-text="userText"
-              multiple
-              required
-              :rules="[
+            <v-select v-model="selectedSystemAnalysts" :items="filteredUsers('System Analyst')"
+              label="Select System Analyst" item-value="id" item-text="userText" multiple required :rules="[
                 (v) => !!v || 'At least one System Analyst must be selected',
-              ]"
-            >
+              ]">
               <template v-slot:prepend-item>
                 <v-list-item @click="selectAllSystemAnalysts">
                   <v-list-item-content>Select All</v-list-item-content>
@@ -358,16 +243,9 @@
               </template>
             </v-select>
 
-            <v-select
-              v-model="selectedDevelopers"
-              :items="filteredUsers('Developer')"
-              label="Select Developer"
-              item-value="id"
-              item-text="userText"
-              multiple
-              required
-              :rules="[(v) => !!v || 'At least one Developer must be selected']"
-            >
+            <v-select v-model="selectedDevelopers" :items="filteredUsers('Developer')" label="Select Developer"
+              item-value="id" item-text="userText" multiple required
+              :rules="[(v) => !!v || 'At least one Developer must be selected']">
               <template v-slot:prepend-item>
                 <v-list-item @click="selectAllDevelopers">
                   <v-list-item-content>Select All</v-list-item-content>
@@ -375,18 +253,10 @@
               </template>
             </v-select>
 
-            <v-select
-              v-model="selectedImplementers"
-              :items="filteredUsers('Implementer')"
-              label="Select Implementer"
-              item-value="id"
-              item-text="userText"
-              multiple
-              required
-              :rules="[
+            <v-select v-model="selectedImplementers" :items="filteredUsers('Implementer')" label="Select Implementer"
+              item-value="id" item-text="userText" multiple required :rules="[
                 (v) => !!v || 'At least one Implementer must be selected',
-              ]"
-            >
+              ]">
               <template v-slot:prepend-item>
                 <v-list-item @click="selectAllImplementers">
                   <v-list-item-content>Select All</v-list-item-content>
@@ -397,9 +267,7 @@
             <!-- Buttons -->
             <v-btn color="primary" type="submit">Create</v-btn>
 
-            <v-btn color="error" @click="createScreenDialog = false"
-              >Cancel</v-btn
-            >
+            <v-btn color="error" @click="createScreenDialog = false">Cancel</v-btn>
           </v-form>
         </v-card-text>
       </v-card>
@@ -412,41 +280,20 @@
         <v-card-text>
           <!-- Form to edit screen -->
           <v-form @submit.prevent="updateScreen">
-            <v-text-field
-              v-model="editScreen.screen_id"
-              label="Screen ID"
-              readonly
-              disabled
-            ></v-text-field>
-            <v-text-field
-              v-model="editScreen.screen_name"
-              label="Screen Name"
-            ></v-text-field>
-            <v-select
-              v-model="editScreen.screen_level"
-              label="Screen Level"
-              :items="['Hard', 'Moderate', 'Easy', 'Simple']"
-            ></v-select>
-            <v-select
-              v-model="editScreen.screen_status"
-              label="Screen Status"
-              :items="['Not started yet', 'design', 'develop', 'finish']"
-            ></v-select>
+            <v-text-field v-model="editScreen.screen_id" label="Screen ID" readonly disabled></v-text-field>
+            <v-text-field v-model="editScreen.screen_name" label="Screen Name"></v-text-field>
+            <v-select v-model="editScreen.screen_level" label="Screen Level"
+              :items="['Hard', 'Moderate', 'Easy', 'Simple']"></v-select>
+            <v-select v-model="editScreen.screen_status" label="Screen Status"
+              :items="['Not started yet', 'design', 'develop', 'finish']"></v-select>
             <!-- Input for selecting image file -->
-            <v-file-input
-              label="Select screen image"
-              accept="image/png, image/jpeg, image/bmp"
-              placeholder="Select screen image"
-              prepend-icon="mdi-camera"
-              v-model="editScreen.screen_pic"
-              @change="onFileChange"
-            ></v-file-input>
+            <v-file-input label="Select screen image" accept="image/png, image/jpeg, image/bmp"
+              placeholder="Select screen image" prepend-icon="mdi-camera" v-model="editScreen.screen_pic"
+              @change="onFileChange"></v-file-input>
 
             <!-- Add more fields as needed -->
             <v-btn color="primary" type="submit">Update</v-btn>
-            <v-btn color="error" @click="editScreenDialog = false"
-              >Cancel</v-btn
-            >
+            <v-btn color="error" @click="editScreenDialog = false">Cancel</v-btn>
           </v-form>
         </v-card-text>
       </v-card>
@@ -455,35 +302,23 @@
     <!-- Dialog for displaying SystemId -->
     <v-dialog v-model="systemIdDialog" max-width="800">
       <v-card>
-        <v-data-table
-          v-model="selectedDeletedScreens"
-          :headers="tableHeaders"
-          :items="deletedScreens"
-          item-key="id"
-          show-select
-        >
+        <v-data-table v-model="selectedDeletedScreens" :headers="tableHeaders" :items="deletedScreens" item-key="id"
+          show-select>
           <!-- Define headers for the table -->
           <template v-slot:top>
             <v-toolbar flat>
               <v-toolbar-title>Deleted Screen History</v-toolbar-title>
               <v-divider class="mx-4" inset vertical></v-divider>
               <v-spacer></v-spacer>
-              <v-btn class="mr-3" color="green" @click="restoreSelectedScreen"
-                ><v-icon color="white">mdi-restore</v-icon></v-btn
-              >
+              <v-btn class="mr-3" color="green" @click="restoreSelectedScreen"><v-icon
+                  color="white">mdi-restore</v-icon></v-btn>
               <v-btn color="error" @click="deleteSelectedHistoryScreen">
-                <v-icon>mdi-delete</v-icon></v-btn
-              >
+                <v-icon>mdi-delete</v-icon></v-btn>
             </v-toolbar>
           </template>
 
           <template v-slot:item.screen_pic="{ item }">
-            <v-img
-              :src="getBase64Image(item.screen_pic)"
-              max-width="50px"
-              max-height="50px"
-              contain
-            ></v-img>
+            <v-img :src="getBase64Image(item.screen_pic)" max-width="50px" max-height="50px" contain></v-img>
           </template>
         </v-data-table>
 
@@ -499,22 +334,11 @@
         <v-card-title> Manage User Screens </v-card-title>
         <v-card-text>
           <!-- Search field -->
-          <v-text-field
-            v-model="searchUser"
-            label="Search"
-            dense
-            hide-details
-            solo
-            flat
-            outlined
-            color="primary"
-          ></v-text-field>
+          <v-text-field v-model="searchUser" label="Search" dense hide-details solo flat outlined
+            color="primary"></v-text-field>
 
           <v-list>
-            <v-list-item
-              v-for="(user, index) in paginatedScreenUsers"
-              :key="user.id"
-            >
+            <v-list-item v-for="(user, index) in paginatedScreenUsers" :key="user.id">
               <v-list-item-avatar>
                 <v-img :src="user.user_pic" width="40" height="40"></v-img>
               </v-list-item-avatar>
@@ -536,34 +360,21 @@
           </v-list>
 
           <!-- Pagination -->
-          <v-pagination
-            v-model="paginationPageUserScreen"
-            :length="totalPagesUserScreen"
-            @input="changePageUserScreen"
-          ></v-pagination>
+          <v-pagination v-model="paginationPageUserScreen" :length="totalPagesUserScreen"
+            @input="changePageUserScreen"></v-pagination>
         </v-card-text>
         <v-card-actions>
-          <v-btn
-            v-if="this.$auth.user.user_role === 'Admin'"
-            color="primary"
-            @click="
-              openAssignUserDialog(projectId, systemId, screenId), assignUser
-            "
-          >
+          <v-btn v-if="this.$auth.user.user_role === 'Admin'" color="primary" @click="
+            openAssignUserDialog(projectId, systemId, screenId), assignUser
+            ">
             Assign User
           </v-btn>
 
-          <v-btn
-            v-if="!isUserInScreen()"
-            color="primary"
-            @click="assignCurrentUserToScreen"
-          >
+          <v-btn v-if="!isUserInScreen()" color="primary" @click="assignCurrentUserToScreen">
             Take Screen
           </v-btn>
 
-          <v-btn color="error" @click="showUserManagementDialog = false"
-            >Close</v-btn
-          >
+          <v-btn color="error" @click="showUserManagementDialog = false">Close</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -573,29 +384,12 @@
       <v-card>
         <v-card-title>Assign User</v-card-title>
         <v-card-text>
-          <v-select
-            v-model="selectedUsers"
-            :items="implementers"
-            label="Select Implementers"
-            multiple
-          ></v-select>
-          <v-select
-            v-model="selectedUsers"
-            :items="developers"
-            label="Select Developers"
-            multiple
-          ></v-select>
-          <v-select
-            v-model="selectedUsers"
-            :items="systemAnalysts"
-            label="Select System Analysts"
-            multiple
-          ></v-select>
+          <v-select v-model="selectedUsers" :items="implementers" label="Select Implementers" multiple></v-select>
+          <v-select v-model="selectedUsers" :items="developers" label="Select Developers" multiple></v-select>
+          <v-select v-model="selectedUsers" :items="systemAnalysts" label="Select System Analysts" multiple></v-select>
         </v-card-text>
         <v-card-actions>
-          <v-btn color="primary" @click="assignUsersToScreen"
-            >Assign User</v-btn
-          >
+          <v-btn color="primary" @click="assignUsersToScreen">Assign User</v-btn>
           <v-btn color="error" @click="closeAssignUserDialog">Close</v-btn>
         </v-card-actions>
       </v-card>
@@ -604,7 +398,7 @@
 </template>
 
 <script>
-import Loader from "../../../components/Loader.vue";
+import Loader from "@/components/Loader.vue";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { decodeId } from "@/utils/crypto";
@@ -1999,6 +1793,7 @@ export default {
   display: flex;
   flex-wrap: wrap;
 }
+
 .custom-btn {
   width: 100%;
   height: 50%;
@@ -2008,14 +1803,19 @@ export default {
   padding: 1.4px;
   background-color: rgba(0, 0, 0, 0.4);
   color: white;
-  display: grid; /* เปลี่ยนเป็น grid layout */
-  place-items: center; /* ให้อยู่ตรงกลางทั้งแนวนอนและแนวตั้ง */
+  display: grid;
+  /* เปลี่ยนเป็น grid layout */
+  place-items: center;
+  /* ให้อยู่ตรงกลางทั้งแนวนอนและแนวตั้ง */
 }
 
 .title-text {
-  width: 100%; /* กำหนดความกว้างของตัวหนังสือให้เท่ากับความกว้างของพื้นที่ในการแสดงรูปภาพ */
-  text-align: center; /* จัดตำแหน่งตัวหนังสือให้อยู่กลาง */
+  width: 100%;
+  /* กำหนดความกว้างของตัวหนังสือให้เท่ากับความกว้างของพื้นที่ในการแสดงรูปภาพ */
+  text-align: center;
+  /* จัดตำแหน่งตัวหนังสือให้อยู่กลาง */
 }
+
 .topper {
   display: flex;
   justify-content: space-between;
