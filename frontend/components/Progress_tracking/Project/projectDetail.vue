@@ -39,13 +39,13 @@
       <v-col class="progress-container">
         <div class="custom-progress">
           <v-progress-circular
-            :value="parseInt(project.project_progress)"
-            :color="getProgressColor(parseInt(project.project_progress))"
+            :value="parseInt(project.project_progress) || 0"
+            :color="getProgressColor(parseInt(project.project_progress) || 0)"
             :size="100"
             :rotate="360"
             :width="15"
           >
-            {{ parseInt(project.project_progress) }} %
+            {{ parseInt(project.project_progress) || 0 }} %
           </v-progress-circular>
           <v-card-subtitle>Project Progress</v-card-subtitle>
         </div>
