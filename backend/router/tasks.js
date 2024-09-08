@@ -430,7 +430,7 @@ router.put("/save_history_tasks/:id", async (req, res) => {
       `UPDATE tasks 
        SET task_name=?, task_detail=?, task_status=?, task_manday=?, screen_id=?, project_id=?, 
            task_type=?, system_id=?, task_progress=?, task_plan_start=?, task_plan_end=?, 
-           task_actual_start=?, task_actual_end=?, user_update=?, task_date_update=CURRENT_TIMESTAMP, task_member_id=? 
+           task_actual_start=?, task_actual_end=?, user_update=?,task_member_id=?
        WHERE id=?`,
       [
         task_name || currentTask[0].task_name,
@@ -474,7 +474,6 @@ router.put("/save_history_tasks/:id", async (req, res) => {
         currentTask[0].task_actual_start,
         currentTask[0].task_actual_end,
         currentTask[0].task_manday,
-        currentTask[0].task_date_update,
         currentTask[0].user_update,
         updatedTaskMemberId,
         updatedTaskType,
@@ -488,6 +487,7 @@ router.put("/save_history_tasks/:id", async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 });
+
 
 // Route for getting history tasks by task_id
 router.get("/history_tasks/:task_id", async (req, res) => {

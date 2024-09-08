@@ -7,6 +7,9 @@
       :items="historyTasks"
       item-key="id"
       class="custom-table"
+      :items-per-page="5"
+      :sort-by="sortBy"
+      :sort-desc="sortDesc"
     >
       <template v-slot:top>
         <v-toolbar flat class="toolbar-centered">
@@ -16,7 +19,9 @@
 
       <!-- คอลัมน์ Date -->
       <template v-slot:item.update_date="{ item }">
-        {{ item.update_date ? formatDate(item.update_date) : "No determine" }}
+        {{
+          item.update_date ? formatDateTime(item.update_date) : "No determine"
+        }}
       </template>
 
       <!-- คอลัมน์ Plan Start -->
@@ -82,9 +87,11 @@ export default {
 
   data() {
     return {
+      sortBy: ["update_date"],
+      sortDesc: [true],
       historyTasks: [],
       headers: [
-        { text: "Date", value: "update_date" },
+        { text: "Date Update", value: "update_date" },
         { text: "Progress", value: "task_progress" },
         { text: "Plan Start", value: "task_plan_start" },
         { text: "Plan End", value: "task_plan_end" },
@@ -126,6 +133,20 @@ export default {
       const month = String(date.getMonth() + 1).padStart(2, "0");
       const year = date.getFullYear();
       return `${day}-${month}-${year}`;
+    },
+    formatDateTime(dateTime) {
+      if (!dateTime) return "No determine";
+
+      // เปลี่ยน format ตามที่คุณต้องการ เช่น YYYY-MM-DD HH:mm:ss
+      const date = new Date(dateTime);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      const hours = String(date.getHours()).padStart(2, "0");
+      const minutes = String(date.getMinutes()).padStart(2, "0");
+      const seconds = String(date.getSeconds()).padStart(2, "0");
+
+      return `${day}-${month}-${year} ${hours}:${minutes}:${seconds} น.`;
     },
   },
 };

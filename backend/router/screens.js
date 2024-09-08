@@ -53,7 +53,7 @@ function generateId() {
 router.get("/getAll", async (req, res) => {
   try {
     const systemIDFilter = req.query.system_id;
-    const screenIDFilter = req.query.screen_id;
+    const screenIDFilter = req.query.screen_code;
     const projectIDFilter = req.query.project_id;
 
     let query = `
@@ -80,7 +80,7 @@ router.get("/getAll", async (req, res) => {
       queryParams.push(systemIDFilter);
     }
     if (screenIDFilter) {
-      query += " AND Screens.screen_id = ?";
+      query += " AND Screens.screen_code = ?";
       queryParams.push(screenIDFilter);
     }
     if (projectIDFilter) {
@@ -435,7 +435,7 @@ router.get("/searchBySystemId_delete/:system_id", async (req, res) => {
 
 router.post("/createScreen", async (req, res) => {
   const {
-    screen_id,
+    screen_code,
     screen_name,
     screen_status,
     screen_level,
@@ -448,19 +448,19 @@ router.post("/createScreen", async (req, res) => {
   } = req.body;
 
   try {
-    // Generate random screen_id
+    // Generate random screen_code
     const id = generateId(); // Assume this function generates a unique screen ID
 
     // Insert screen data into screens table
     const insertScreenQuery =
-      "INSERT INTO screens (id, screen_id, screen_name, screen_status, screen_level, system_id, screen_progress, screen_plan_start, screen_plan_end, project_id, screen_pic) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+      "INSERT INTO screens (id, screen_code, screen_name, screen_status, screen_level, system_id, screen_progress, screen_plan_start, screen_plan_end, project_id, screen_pic) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     await new Promise((resolve, reject) => {
       connection.query(
         insertScreenQuery,
         [
           id,
-          screen_id,
+          screen_code,
           screen_name,
           screen_status,
           screen_level,
@@ -484,7 +484,7 @@ router.post("/createScreen", async (req, res) => {
 
               const userScreenValues = assignedUsers.map((userId) => [
                 userId,
-                id, // Use the screen_id of the newly created screen
+                id,
                 system_id,
                 project_id,
               ]);
@@ -522,7 +522,7 @@ router.post("/createScreen", async (req, res) => {
 router.put("/updateScreen/:id", (req, res) => {
   const id = req.params.id;
   const {
-    screen_id,
+    screen_code,
     screen_name,
     screen_status,
     screen_level,
@@ -532,7 +532,7 @@ router.put("/updateScreen/:id", (req, res) => {
   } = req.body;
 
   const updatedScreen = {
-    screen_id,
+    screen_code,
     screen_name,
     screen_status,
     screen_level,
@@ -557,7 +557,7 @@ router.put("/updateScreen/:id", (req, res) => {
 
         const existingScreen = results[0];
         const finalScreen = {
-          screen_id: screen_id || existingScreen.screen_id,
+          screen_code: screen_code || existingScreen.screen_code,
           screen_name: screen_name || existingScreen.screen_name,
           screen_status: screen_status || existingScreen.screen_status,
           screen_level: screen_level || existingScreen.screen_level,

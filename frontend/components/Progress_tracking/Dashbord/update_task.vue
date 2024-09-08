@@ -2,6 +2,9 @@
   <div class="update-task-dialog">
     <h1 class="dialog-title">Update Task</h1>
     <p class="dialog-subtitle">task name : {{ task.task_name }}</p>
+    <p class="dialog-subtitle">
+      Last Update : {{ formatDateTime(task.task_date_update) }}
+    </p>
 
     <v-form>
       <v-row>
@@ -300,6 +303,20 @@ export default {
   },
 
   methods: {
+    formatDateTime(dateTime) {
+      if (!dateTime) return "No determine";
+
+      // เปลี่ยน format ตามที่คุณต้องการ เช่น YYYY-MM-DD HH:mm:ss
+      const date = new Date(dateTime);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      const hours = String(date.getHours()).padStart(2, "0");
+      const minutes = String(date.getMinutes()).padStart(2, "0");
+      const seconds = String(date.getSeconds()).padStart(2, "0");
+
+      return `${day}-${month}-${year} ${hours}:${minutes}:${seconds} น.`;
+    },
     updateProgress() {
       this.taskData.task_progress =
         parseInt(this.taskData.task_progress, 10) || 0;
