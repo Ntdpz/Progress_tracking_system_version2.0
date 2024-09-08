@@ -109,7 +109,7 @@
 
           <td>{{ item.system_manday ? item.system_manday : "0" }}</td>
           <!-- เพิ่มปุ่ม manage user systems -->
-          <td>
+          <td  v-if="user.user_role === 'Admin'">
             <!-- Dropdown menu for other actions -->
             <v-menu offset-y>
               <template v-slot:activator="{ on, attrs }">
@@ -887,7 +887,7 @@ export default {
     },
     async fetchDeletedSystems() {
       try {
-        const projectId = this.$route.params.id;
+        const projectId = this.projectId;
         const response = await fetch(
           `http://localhost:7777/systems/searchByProjectId_delete/${projectId}`
         );
