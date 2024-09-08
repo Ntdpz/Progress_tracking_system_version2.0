@@ -59,6 +59,11 @@ import all_task_user from "../../components/Progress_tracking/Dashbord/all_task_
 import "./Dashbord.css";
 
 export default {
+  head() {
+    return {
+      title: "Dashbord",
+    };
+  },
   components: { Loader, result_projects, task_project_table, all_task_user },
   middleware: "auth",
   layout: "admin",
