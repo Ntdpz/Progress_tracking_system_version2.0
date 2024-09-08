@@ -178,7 +178,8 @@ router.get("/searchByProjectId/:project_id", async (req, res) => {
                 Tasks.id,
                 task_actual_start,
                 task_actual_end,
-                task_member_id
+                task_member_id,
+                Tasks.task_date_update 
 
             FROM Tasks
             JOIN Projects ON Tasks.project_id = Projects.id
@@ -209,6 +210,7 @@ router.get("/searchByProjectId/:project_id", async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 });
+
 
 router.get("/searchBySystemId/:system_id", async (req, res) => {
   try {
