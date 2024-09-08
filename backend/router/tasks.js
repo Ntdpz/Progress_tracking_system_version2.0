@@ -441,7 +441,7 @@ router.put("/save_history_tasks/:id", async (req, res) => {
         updatedProjectId,
         updatedTaskType,
         updatedSystemId,
-        task_progress || currentTask[0].task_progress,
+        task_progress !== undefined ? task_progress : currentTask[0].task_progress,
         task_plan_start || currentTask[0].task_plan_start,
         task_plan_end || currentTask[0].task_plan_end,
         task_actual_start || currentTask[0].task_actual_start,
@@ -478,7 +478,7 @@ router.put("/save_history_tasks/:id", async (req, res) => {
         currentTask[0].user_update,
         updatedTaskMemberId,
         updatedTaskType,
-        0,
+        0,  // Set is_deleted to 0
       ]
     );
 

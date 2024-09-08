@@ -9,13 +9,26 @@
         <v-col cols="12" class="d-flex">
           <v-row class="flex-grow-1">
             <v-col cols="12" sm="4" class="task-progress-col">
-              <v-text-field v-model="formattedTaskProgress" required @input="updateProgress" class="task-text-field"
-                label="Task Progress" outlined></v-text-field>
+              <v-text-field
+                v-model="formattedTaskProgress"
+                required
+                @input="updateProgress"
+                class="task-text-field"
+                label="Task Progress"
+                outlined
+              ></v-text-field>
             </v-col>
 
             <v-col cols="12" sm="8" class="task-slider-col">
-              <v-slider v-model="taskData.task_progress" min="0" max="100" step="1" thumb-label="always"
-                required></v-slider>
+              <v-slider
+                v-model="taskData.task_progress"
+                min="0"
+                max="100"
+                step="1"
+                thumb-label="always"
+                required
+                @input="updateProgress"
+              ></v-slider>
             </v-col>
           </v-row>
         </v-col>
@@ -23,76 +36,154 @@
 
       <v-row class="row-Remark">
         <v-col cols="12">
-          <v-textarea v-model="taskData.task_detail" outlined clearable label="Remark"></v-textarea>
+          <v-textarea
+            v-model="taskData.task_detail"
+            outlined
+            clearable
+            label="Remark"
+          ></v-textarea>
         </v-col>
       </v-row>
 
       <v-row class="row-Plan">
         <!-- Task Plan Start -->
         <v-col cols="12" sm="6" md="4">
-          <v-menu v-model="menu.task_plan_start" :close-on-content-click="false" transition="scale-transition" offset-y>
+          <v-menu
+            v-model="menu.task_plan_start"
+            :close-on-content-click="false"
+            transition="scale-transition"
+            offset-y
+          >
             <template v-slot:activator="{ on, attrs }">
-              <v-text-field v-model="taskData.task_plan_start" label="Task Plan Start" v-bind="attrs" v-on="on"
-                prepend-icon="mdi-calendar" class="custom-text-field" outlined />
+              <v-text-field
+                v-model="taskData.task_plan_start"
+                label="Task Plan Start"
+                v-bind="attrs"
+                v-on="on"
+                prepend-icon="mdi-calendar"
+                class="custom-text-field"
+                outlined
+              />
             </template>
-            <v-date-picker v-model="taskData.task_plan_start" :max="taskData.task_plan_end || undefined"
-              @input="updatePlanDates('start')" />
+            <v-date-picker
+              v-model="taskData.task_plan_start"
+              :max="taskData.task_plan_end || undefined"
+              @input="updatePlanDates('start')"
+            />
           </v-menu>
         </v-col>
 
         <!-- Task Plan End -->
         <v-col cols="12" sm="6" md="4">
-          <v-menu v-model="menu.task_plan_end" :close-on-content-click="false" transition="scale-transition" offset-y>
+          <v-menu
+            v-model="menu.task_plan_end"
+            :close-on-content-click="false"
+            transition="scale-transition"
+            offset-y
+          >
             <template v-slot:activator="{ on, attrs }">
-              <v-text-field v-model="taskData.task_plan_end" label="Task Plan End" v-bind="attrs" v-on="on"
-                prepend-icon="mdi-calendar" outlined />
+              <v-text-field
+                v-model="taskData.task_plan_end"
+                label="Task Plan End"
+                v-bind="attrs"
+                v-on="on"
+                prepend-icon="mdi-calendar"
+                outlined
+              />
             </template>
-            <v-date-picker v-model="taskData.task_plan_end" :min="taskData.task_plan_start || undefined"
-              @input="updatePlanDates('end')" />
+            <v-date-picker
+              v-model="taskData.task_plan_end"
+              :min="taskData.task_plan_start || undefined"
+              @input="updatePlanDates('end')"
+            />
           </v-menu>
         </v-col>
 
         <!-- Plan Manday -->
         <v-col cols="12" sm="6" md="4">
-          <v-text-field v-model="taskData.plan_manday" label="Plan Manday" type="number" min="0" disabled outlined />
+          <v-text-field
+            v-model="taskData.plan_manday"
+            label="Plan Manday"
+            type="number"
+            min="0"
+            disabled
+            outlined
+          />
         </v-col>
       </v-row>
 
       <v-row class="row-Actual">
         <!-- Task Actual Start -->
         <v-col cols="12" sm="4">
-          <v-menu v-model="menu.task_actual_start" :close-on-content-click="false" transition="scale-transition"
-            offset-y>
+          <v-menu
+            v-model="menu.task_actual_start"
+            :close-on-content-click="false"
+            transition="scale-transition"
+            offset-y
+          >
             <template v-slot:activator="{ on, attrs }">
-              <v-text-field v-model="taskData.task_actual_start" label="Task Actual Start" v-bind="attrs" v-on="on"
-                prepend-icon="mdi-calendar" outlined />
+              <v-text-field
+                v-model="taskData.task_actual_start"
+                label="Task Actual Start"
+                v-bind="attrs"
+                v-on="on"
+                prepend-icon="mdi-calendar"
+                outlined
+              />
             </template>
-            <v-date-picker v-model="taskData.task_actual_start" @input="menu.task_actual_start = false"
-              :max="taskData.task_actual_end" />
+            <v-date-picker
+              v-model="taskData.task_actual_start"
+              @input="menu.task_actual_start = false"
+              :max="taskData.task_actual_end"
+            />
           </v-menu>
         </v-col>
 
         <!-- Task Actual End -->
         <v-col cols="12" sm="4">
-          <v-menu v-model="menu.task_actual_end" :close-on-content-click="false" transition="scale-transition" offset-y>
+          <v-menu
+            v-model="menu.task_actual_end"
+            :close-on-content-click="false"
+            transition="scale-transition"
+            offset-y
+          >
             <template v-slot:activator="{ on, attrs }">
-              <v-text-field v-model="taskData.task_actual_end" label="Task Actual End" v-bind="attrs" v-on="on"
-                prepend-icon="mdi-calendar" outlined />
+              <v-text-field
+                v-model="taskData.task_actual_end"
+                label="Task Actual End"
+                v-bind="attrs"
+                v-on="on"
+                prepend-icon="mdi-calendar"
+                outlined
+              />
             </template>
-            <v-date-picker v-model="taskData.task_actual_end" @input="menu.task_actual_end = false"
-              :min="taskData.task_actual_start" />
+            <v-date-picker
+              v-model="taskData.task_actual_end"
+              @input="menu.task_actual_end = false"
+              :min="taskData.task_actual_start"
+            />
           </v-menu>
         </v-col>
 
         <!-- Actual Manday -->
         <v-col cols="12" sm="4">
-          <v-text-field v-model="taskData.Actual_manday" label="Actual Manday" type="number" min="0" disabled
-            outlined />
+          <v-text-field
+            v-model="taskData.Actual_manday"
+            label="Actual Manday"
+            type="number"
+            min="0"
+            disabled
+            outlined
+          />
         </v-col>
       </v-row>
     </v-form>
 
-    <history_task_table ref="historyTaskTable" :taskId="task.id" class="history_task_table-table" />
+    <history_task_table
+      ref="historyTaskTable"
+      :taskId="task.id"
+      class="history_task_table-table"
+    />
 
     <v-row class="button-row">
       <v-btn class="save-btn" @click="updateTask">Save</v-btn>
@@ -145,9 +236,9 @@ export default {
   computed: {
     formattedTaskProgress: {
       get() {
-        return this.taskData.task_progress
+        return this.taskData.task_progress !== undefined
           ? `${this.taskData.task_progress}%`
-          : "";
+          : "0%"; // Default to "0%" if task_progress is undefined
       },
       set(value) {
         this.taskData.task_progress = value.replace("%", "").trim();
@@ -210,6 +301,8 @@ export default {
 
   methods: {
     updateProgress() {
+      this.taskData.task_progress =
+        parseInt(this.taskData.task_progress, 10) || 0;
       this.calculateTaskStatus();
     },
     countBusinessDays(startDate, endDate) {
@@ -280,10 +373,14 @@ export default {
       try {
         const formatDateValue = (value) => (value === "" ? null : value);
 
+        const taskProgressValue =
+          parseInt(this.taskData.task_progress, 10) || 0;
+        console.log("Task Progress Value:", this.taskData.task_progress);
+
         await this.$axios.put(`/tasks/save_history_tasks/${this.task.id}`, {
           task_name: this.task.task_name,
           task_detail: this.taskData.task_detail,
-          task_progress: this.taskData.task_progress,
+          task_progress: taskProgressValue,
           task_plan_start: formatDateValue(this.taskData.task_plan_start),
           task_plan_end: formatDateValue(this.taskData.task_plan_end),
           task_actual_start: formatDateValue(this.taskData.task_actual_start),
