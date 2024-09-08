@@ -20,7 +20,7 @@ router.get('/getAll', async (req, res) => {
     let query = `
       SELECT Systems.id, 
              Systems.project_id,
-             Systems.system_id,
+           
              Systems.system_nameTH,
              Systems.system_nameEN,
              Systems.system_shortname,
@@ -113,7 +113,7 @@ router.get('/searchByProjectId/:project_id', async (req, res) => {
     let query = `
       SELECT Systems.id, 
              Systems.project_id,
-             Systems.system_id,
+          
              Systems.system_nameTH,
              Systems.system_nameEN,
              Systems.system_shortname,
@@ -200,7 +200,7 @@ router.get('/getAll/:project_id', async (req, res) => {
     const query = `
       SELECT Systems.id, 
              Systems.project_id,
-             Systems.system_id,
+            
              Systems.system_nameTH,
              Systems.system_nameEN,
              Systems.system_shortname,
@@ -240,7 +240,7 @@ router.get('/getAllHistorySystem', async (req, res) => {
     let query = `
       SELECT Systems.id, 
              Systems.project_id,
-             Systems.system_id,
+            
              Systems.system_nameTH,
              Systems.system_nameEN,
              Systems.system_shortname,
@@ -284,7 +284,6 @@ router.get('/searchByProjectId_delete/:project_id', async (req, res) => {
     let query = `
       SELECT Systems.id, 
              Systems.project_id,
-             Systems.system_id,
              Systems.system_nameTH,
              Systems.system_nameEN,
              Systems.system_shortname,
@@ -323,7 +322,7 @@ router.get('/searchByProjectId_delete/:project_id', async (req, res) => {
 router.post("/createSystem", async (req, res) => {
   const {
     project_id,
-    
+
     system_nameTH,
     system_nameEN,
     system_shortname,
