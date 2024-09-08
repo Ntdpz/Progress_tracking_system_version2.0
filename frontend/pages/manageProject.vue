@@ -237,6 +237,11 @@ import { encodeId, decodeId } from "../utils/crypto";
 import Loader from "../components/Loader.vue";
 
 export default {
+  head() {
+    return {
+      title: "ManageProject",
+    };
+  },
   components: {
     // Breadcrumbs,
     Greeting,

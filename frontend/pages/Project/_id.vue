@@ -334,6 +334,11 @@ import axios from "axios";
 import { encodeId, decodeId } from "../../utils/crypto";
 import projectDetail from "@/components/Progress_tracking/Project/projectDetail.vue";
 export default {
+   head() {
+    return {
+      title: "ManageSystems",
+    };
+  },
   async asyncData({ params, $axios, error }) {
     const encodedId = params.id;
     const decodedId = decodeId(encodedId);

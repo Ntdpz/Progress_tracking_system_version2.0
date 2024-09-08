@@ -1249,6 +1249,11 @@
 import DialogFail from "../components/DialogFail.vue";
 import Searchbar from "../components/Searchbar.vue";
 export default {
+  head() {
+    return {
+      title: "ManageUser",
+    };
+  },
   components: { Searchbar, DialogFail },
   layout: "admin",
   data() {

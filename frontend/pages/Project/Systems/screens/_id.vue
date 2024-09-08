@@ -567,6 +567,11 @@ import update_task from "@/components/Progress_tracking/Dashbord/update_task.vue
 import screenDetail from "@/components/Progress_tracking/Screen/screenDetail.vue";
 
 export default {
+   head() {
+    return {
+      title: "ManageTask",
+    };
+  },
   middleware: "auth",
   layout: "admin",
   layout: "admin",

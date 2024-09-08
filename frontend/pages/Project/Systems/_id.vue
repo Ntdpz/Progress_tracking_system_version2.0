@@ -144,6 +144,11 @@ import { decodeId } from "@/utils/crypto";
 import { encodeId } from "@/utils/crypto";
 
 export default {
+   head() {
+    return {
+      title: "ManageScreen",
+    };
+  },
   components: {
     CircularProgress,
     ScreenCard,
