@@ -240,7 +240,7 @@ export default {
       this.addScreenDialog = true;
     },
     navigateToScreen(screenId) {
-      const encodedScreenId = encodeId(screenId); // เข้ารหัส screenId
+      const encodedScreenId = encodeURIComponent(encodeId(screenId)); // เข้ารหัส screenId
       this.$router.push(`/Project/Systems/screens/${encodedScreenId}`);
     },
     handleUpdate() {
