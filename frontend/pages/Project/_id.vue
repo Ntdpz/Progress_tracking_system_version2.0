@@ -620,6 +620,7 @@ export default {
           icon: "error",
           title: "Error",
           text: "Failed to assign user",
+          confirmButtonColor: "#009933",
         });
       }
     },
@@ -671,7 +672,7 @@ export default {
           text: "You are about to delete this user from the system.",
           icon: "warning",
           showCancelButton: true,
-          confirmButtonColor: "#009933",
+          confirmButtonColor: "#009933", // ปรับสีปุ่ม Yes เป็นสีเขียว
           cancelButtonColor: "#d33",
           confirmButtonText: "Yes, delete it!",
         });
@@ -690,23 +691,25 @@ export default {
               title: "Deleted!",
               text: "The user has been deleted from the system.",
               icon: "success",
-              confirmButtonColor: "#009933",
+              confirmButtonColor: "#009933", // ปรับสีปุ่ม OK เป็นสีเขียว
             });
           } else {
-            await Swal.fire(
-              "Error!",
-              "Failed to delete the user from the system.",
-              "error"
-            );
+            await Swal.fire({
+              title: "Error!",
+              text: "Failed to delete the user from the system.",
+              icon: "error",
+              confirmButtonColor: "#009933", // ปรับสีปุ่ม OK ในกรณีเกิดข้อผิดพลาด
+            });
           }
         }
       } catch (error) {
         console.error("Error deleting user system:", error);
-        await Swal.fire(
-          "Error!",
-          "An error occurred while deleting the user from the system.",
-          "error"
-        );
+        await Swal.fire({
+          title: "Error!",
+          text: "An error occurred while deleting the user from the system.",
+          icon: "error",
+          confirmButtonColor: "#009933", // ปรับสีปุ่ม OK เป็นสีเขียวเมื่อเกิดข้อผิดพลาด
+        });
       }
     },
 
@@ -762,12 +765,13 @@ export default {
 
     async restoreSelectedSystems() {
       try {
-        // Check if any systems are selected
+        // ตรวจสอบว่ามีการเลือก systems หรือไม่
         if (this.selectedSystems.length === 0) {
           await Swal.fire({
             icon: "error",
             title: "Error",
             text: "No systems selected to restore.",
+            confirmButtonColor: "#009933", // ปรับสีปุ่ม OK เป็นสีเขียวเมื่อเกิดข้อผิดพลาด
           });
           return;
         }
@@ -777,13 +781,13 @@ export default {
           text: "You are about to restore the selected systems.",
           icon: "warning",
           showCancelButton: true,
-          confirmButtonColor: "#009933",
+          confirmButtonColor: "#009933", // ปรับสีปุ่ม Yes เป็นสีเขียว
           cancelButtonColor: "#d33",
           confirmButtonText: "Yes, restore them!",
         });
 
         if (confirmResult.isConfirmed) {
-          // Loop through selected systems and restore each one
+          // วนลูปผ่านระบบที่เลือกและกู้คืนแต่ละระบบ
           for (const system of this.selectedSystems) {
             const systemId = system.id;
             const response = await fetch(
@@ -810,34 +814,37 @@ export default {
 
           console.log("Selected systems restored successfully");
 
-          await Swal.fire(
-            "Success",
-            "Selected systems restored successfully.",
-            "success"
-          );
+          await Swal.fire({
+            title: "Success",
+            text: "Selected systems restored successfully.",
+            icon: "success",
+            confirmButtonColor: "#009933", // ปรับสีปุ่ม OK เป็นสีเขียวเมื่อสำเร็จ
+          });
 
-          // Refresh data after restoring systems
+          // โหลดข้อมูลใหม่หลังจากกู้คืนระบบ
           this.fetchDeletedSystems();
           this.fetchSystems();
           this.fetchProjectNameENG();
         }
       } catch (error) {
         console.error("Error restoring selected systems:", error);
-        await Swal.fire(
-          "Error",
-          "An error occurred during the systems restoration process.",
-          "error"
-        );
+        await Swal.fire({
+          title: "Error",
+          text: "An error occurred during the systems restoration process.",
+          icon: "error",
+          confirmButtonColor: "#009933", // ปรับสีปุ่ม OK เป็นสีเขียวเมื่อเกิดข้อผิดพลาด
+        });
       }
     },
     async deleteSelectedHistorySystems() {
       try {
-        // Check if any systems are selected
+        // ตรวจสอบว่ามีการเลือก systems หรือไม่
         if (this.selectedSystems.length === 0) {
           await Swal.fire({
             icon: "error",
             title: "Error",
             text: "No systems selected to delete.",
+            confirmButtonColor: "#009933", // ปรับสีปุ่ม OK เป็นสีเขียว
           });
           return;
         }
@@ -847,15 +854,15 @@ export default {
           text: "You won't be able to revert this!",
           icon: "warning",
           showCancelButton: true,
-          confirmButtonColor: "#009933",
+          confirmButtonColor: "#009933", // ปรับสีปุ่ม Yes เป็นสีเขียว
           cancelButtonColor: "#d33",
           confirmButtonText: "Yes, delete them!",
         });
 
         if (confirmResult.isConfirmed) {
-          // Loop through selected systems and delete each one
+          // วนลูปผ่านระบบที่เลือกและลบแต่ละระบบ
           for (const system of this.selectedSystems) {
-            const systemId = system.id; // Get the ID of the system to delete
+            const systemId = system.id; // รับ ID ของระบบที่ต้องการลบ
             const response = await fetch(
               `http://localhost:7777/systems/deleteHistorySystems/${systemId}`,
               {
@@ -871,9 +878,10 @@ export default {
             icon: "success",
             title: "Success",
             text: "Selected systems and related data deleted successfully",
+            confirmButtonColor: "#009933", // ปรับสีปุ่ม OK เป็นสีเขียว
           });
 
-          // Refresh deleted systems data after deletion
+          // โหลดข้อมูลระบบที่ถูกลบใหม่หลังจากการลบ
           this.fetchDeletedSystems();
         }
       } catch (error) {
@@ -882,6 +890,7 @@ export default {
           icon: "error",
           title: "Error",
           text: "Failed to delete selected history systems",
+          confirmButtonColor: "#009933", // ปรับสีปุ่ม OK เป็นสีเขียวเมื่อเกิดข้อผิดพลาด
         });
       }
     },
@@ -908,10 +917,7 @@ export default {
       }
     },
     async createSystem() {
-      console.log(
-        "Selected System Analysts:",
-        this.selectedCreateSystemAnalysts
-      );
+      console.log("Selected System Analysts:", this.selectedCreateSystemAnalysts);
       console.log("Selected Developers:", this.selectedCreateDevelopers);
       console.log("Selected Implementers:", this.selectedCreateImplementers);
 
@@ -922,14 +928,15 @@ export default {
       }
       const { system_nameTH, system_nameEN, system_shortname } = this.newSystem;
 
-      // Check if any required fields are empty
+      // ตรวจสอบว่ามีฟิลด์ที่จำเป็นว่างหรือไม่
       if (!system_nameTH || !system_nameEN || !system_shortname) {
         await Swal.fire({
           icon: "error",
           title: "Error",
           text: "Please fill in all required fields",
+          confirmButtonColor: "#009933", // ปรับสีปุ่ม OK เป็นสีเขียว
         });
-        return; // Stop execution if any required field is empty
+        return; // หยุดการทำงานถ้ามีฟิลด์ที่จำเป็นว่าง
       }
 
       try {
@@ -946,7 +953,7 @@ export default {
               system_nameEN,
               system_shortname,
               selectedUser: [
-                // Map selected users to their user_id
+                // แม็ปผู้ใช้ที่เลือกไว้ไปยัง user_id
                 ...this.selectedCreateSystemAnalysts,
                 ...this.selectedCreateDevelopers,
                 ...this.selectedCreateImplementers,
@@ -954,20 +961,22 @@ export default {
             }),
           }
         );
+
         if (!response.ok) {
           throw new Error("Failed to create system");
         }
 
-        // Show success message
+        // แสดงข้อความสำเร็จ
         await Swal.fire({
           icon: "success",
           title: "Success",
           text: "New system created successfully",
           showConfirmButton: true,
           allowOutsideClick: false,
-          confirmButtonColor: "#009933",
+          confirmButtonColor: "#009933", // ปรับสีปุ่ม OK เป็นสีเขียว
         });
-        // Clear the form
+
+        // ล้างฟอร์ม
         this.newSystem = {
           system_nameTH: "",
           system_nameEN: "",
@@ -976,7 +985,8 @@ export default {
         this.selectedCreateSystemAnalysts = [];
         this.selectedCreateDevelopers = [];
         this.selectedCreateImplementers = [];
-        // Fetch systems again to update the list
+
+        // ดึงรายการระบบใหม่เพื่ออัปเดตลิสต์
         this.fetchSystems();
 
         this.createSystemDialog = false;
@@ -986,6 +996,7 @@ export default {
           icon: "error",
           title: "Error",
           text: "Failed to create system",
+          confirmButtonColor: "#009933", // ปรับสีปุ่ม OK เป็นสีเขียวในกรณีเกิดข้อผิดพลาด
         });
       }
     },
@@ -1002,22 +1013,27 @@ export default {
             body: JSON.stringify(this.editedSystem),
           }
         );
+
         if (!response.ok) {
           throw new Error("Failed to update system");
         }
+
         await Swal.fire({
           icon: "success",
           title: "Success",
           text: "System updated successfully",
+          confirmButtonColor: "#009933", // ปรับสีปุ่ม OK เป็นสีเขียว
         });
+
         this.editSystemDialog = false;
-        this.fetchSystems();
+        this.fetchSystems(); // อัปเดตรายการระบบ
       } catch (error) {
         console.error("Error updating system:", error);
         await Swal.fire({
           icon: "error",
           title: "Error",
           text: "Failed to update system",
+          confirmButtonColor: "#009933", // ปรับสีปุ่ม OK เป็นสีเขียวในกรณีเกิดข้อผิดพลาด
         });
       }
     },
@@ -1028,10 +1044,11 @@ export default {
           text: "You won't be able to revert this!",
           icon: "warning",
           showCancelButton: true,
-          confirmButtonColor: "#009933",
+          confirmButtonColor: "#009933", // ปรับสีปุ่ม OK เป็นสีเขียว
           cancelButtonColor: "#d33",
           confirmButtonText: "Yes, delete it!",
         });
+
         if (confirmResult.isConfirmed) {
           const response = await fetch(
             `http://localhost:7777/systems/delete/${item.id}`,
@@ -1042,11 +1059,14 @@ export default {
           if (!response.ok) {
             throw new Error("Failed to delete system");
           }
+
           await Swal.fire({
             icon: "success",
             title: "Success",
             text: "System deleted successfully",
+            confirmButtonColor: "#009933", // ปรับสีปุ่ม OK เป็นสีเขียวเมื่อสำเร็จ
           });
+
           this.fetchSystems();
           this.fetchProjectNameENG();
         }
@@ -1056,6 +1076,7 @@ export default {
           icon: "error",
           title: "Error",
           text: "Failed to delete system",
+          confirmButtonColor: "#009933", // ปรับสีปุ่ม OK เป็นสีเขียวในกรณีเกิดข้อผิดพลาด
         });
       }
     },
