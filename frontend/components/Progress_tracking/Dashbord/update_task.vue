@@ -199,6 +199,7 @@
 import Swal from "sweetalert2";
 import history_task_table from "./history_task_table.vue";
 import "./css/update_task.css";
+import { EventBus } from "@/plugins/event-bus";
 
 export default {
   middleware: "auth",
@@ -304,7 +305,7 @@ export default {
 
   methods: {
     formatDateTime(dateTime) {
-      if (!dateTime) return "No dateTime"; 
+      if (!dateTime) return "No dateTime";
 
       const date = new Date(dateTime);
 
@@ -391,10 +392,12 @@ export default {
       try {
         const formatDateValue = (value) => (value === "" ? null : value);
 
+        // แปลงค่า task_progress
         const taskProgressValue =
           parseInt(this.taskData.task_progress, 10) || 0;
-        console.log("Task Progress Value:", this.taskData.task_progress);
+        
 
+        // เรียก API เพื่ออัปเดตข้อมูลพื้นฐานของ task
         await this.$axios.put(`/tasks/save_history_tasks/${this.task.id}`, {
           task_name: this.task.task_name,
           task_detail: this.taskData.task_detail,
@@ -408,19 +411,91 @@ export default {
           task_status: this.taskData.task_status,
         });
 
-        Swal.fire({
-          title: "Success",
-          text: "Task updated successfully",
-          icon: "success",
-          confirmButtonText: "OK",
-          confirmButtonColor: "#629859",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            this.$emit("task-updated");
-            this.$emit("close-dialog");
-            this.$refs.historyTaskTable.refreshTable();
-          }
-        });
+        // เช็คเงื่อนไข task_progress = 100 และ task_status = 'Completed'
+        if (
+          taskProgressValue === 100 &&
+          this.taskData.task_status === "Completed"
+        ) {
+          Swal.fire({
+            title: "Task Completed",
+            text: "Would you like to archive this task?",
+            icon: "success",
+            confirmButtonText: "OK",
+            confirmButtonColor: "#629859",
+            showCancelButton: true,
+            cancelButtonText: "Cancel",
+            html: `<input type="checkbox" id="archiveTask" checked /> 
+               <label for="archiveTask">Archive</label>`, // Checkbox
+          }).then(async (result) => {
+            if (result.isConfirmed) {
+              const archiveTaskChecked =
+                document.getElementById("archiveTask").checked;
+              let is_archived = archiveTaskChecked ? true : false;
+
+              // เรียก API เพื่ออัปเดตค่า is_archived
+              await this.$axios.put(
+                `/tasks/save_history_tasks/${this.task.id}`,
+                {
+                  task_name: this.task.task_name,
+                  task_detail: this.taskData.task_detail,
+                  task_progress: taskProgressValue,
+                  task_plan_start: formatDateValue(
+                    this.taskData.task_plan_start
+                  ),
+                  task_plan_end: formatDateValue(this.taskData.task_plan_end),
+                  task_actual_start: formatDateValue(
+                    this.taskData.task_actual_start
+                  ),
+                  task_actual_end: formatDateValue(
+                    this.taskData.task_actual_end
+                  ),
+                  user_update: this.user.id,
+                  task_manday: this.taskData.Actual_manday,
+                  task_status: this.taskData.task_status,
+                  is_archived: is_archived, // ส่งค่า is_archived
+                }
+              );
+
+              EventBus.$emit("refresh-data");
+              // ปิด dialog และรีเฟรชตาราง
+              this.$emit("task-updated");
+              this.$emit("close-dialog");
+              this.$refs.historyTaskTable.refreshTable();
+            }
+          });
+        } else {
+          // กรณี task_progress ไม่ครบ 100 หรือ status ไม่เป็น Completed
+          // เรียก API เพื่ออัปเดตข้อมูลพื้นฐานของ task พร้อมตั้งค่า is_archived เป็น false
+          await this.$axios.put(`/tasks/save_history_tasks/${this.task.id}`, {
+            task_name: this.task.task_name,
+            task_detail: this.taskData.task_detail,
+            task_progress: taskProgressValue,
+            task_plan_start: formatDateValue(this.taskData.task_plan_start),
+            task_plan_end: formatDateValue(this.taskData.task_plan_end),
+            task_actual_start: formatDateValue(this.taskData.task_actual_start),
+            task_actual_end: formatDateValue(this.taskData.task_actual_end),
+            user_update: this.user.id,
+            task_manday: this.taskData.Actual_manday,
+            task_status: this.taskData.task_status,
+            is_archived: false, // ตั้งค่า is_archived เป็น false
+          });
+
+          // ปิด dialog และรีเฟรชตาราง
+          Swal.fire({
+            title: "Success",
+            text: "Task updated successfully",
+            icon: "success",
+            confirmButtonText: "OK",
+            confirmButtonColor: "#629859",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              EventBus.$emit("refresh-data");
+              this.$emit("task-updated");
+              this.$emit("close-dialog");
+              this.$refs.historyTaskTable.refreshTable();
+            }
+          });
+        }
       } catch (error) {
         console.error("Error updating task:", error);
         Swal.fire({

@@ -158,7 +158,7 @@ router.get("/searchByProjectId/:project_id", async (req, res) => {
   try {
     const { project_id } = req.params;
 
-    // สร้าง query SQL โดยทำการ JOIN ระหว่างตาราง Tasks, Projects, Systems, และ Screens
+    // สร้าง query SQL โดยทำการ JOIN ระหว่างตาราง Tasks, Projects, Systems, และ Screens พร้อมเพิ่มการดึงคอลัมน์ is_archived
     let query = `
             SELECT 
                 Tasks.task_id, 
@@ -176,10 +176,11 @@ router.get("/searchByProjectId/:project_id", async (req, res) => {
                 Tasks.system_id,
                 Tasks.screen_id,
                 Tasks.id,
-                task_actual_start,
-                task_actual_end,
-                task_member_id,
-                Tasks.task_date_update 
+                Tasks.task_actual_start,
+                Tasks.task_actual_end,
+                Tasks.task_member_id,
+                Tasks.task_date_update,
+                Tasks.is_archived 
 
             FROM Tasks
             JOIN Projects ON Tasks.project_id = Projects.id
@@ -202,7 +203,7 @@ router.get("/searchByProjectId/:project_id", async (req, res) => {
           .json({ message: "No tasks found for this project ID" });
       }
 
-      // ส่งข้อมูล tasks กลับในรูปแบบ JSON
+      // ส่งข้อมูล tasks กลับในรูปแบบ JSON โดยรวมค่า is_archived ด้วย
       res.status(200).json(results);
     });
   } catch (error) {
@@ -411,6 +412,7 @@ router.put("/save_history_tasks/:id", async (req, res) => {
       task_actual_end,
       task_member_id,
       user_update,
+      is_archived,  // New field for archiving
     } = req.body;
 
     // Use existing values if not provided
@@ -430,12 +432,12 @@ router.put("/save_history_tasks/:id", async (req, res) => {
     // Get the current date and time for task_date_update
     const currentDateTime = new Date();
 
-    // Update the task in the database
+    // Update the task in the database, including is_archived field
     await connection.promise().query(
       `UPDATE tasks 
        SET task_name=?, task_detail=?, task_status=?, task_manday=?, screen_id=?, project_id=?, 
            task_type=?, system_id=?, task_progress=?, task_plan_start=?, task_plan_end=?, 
-           task_actual_start=?, task_actual_end=?, user_update=?, task_member_id=?, task_date_update=?
+           task_actual_start=?, task_actual_end=?, user_update=?, task_member_id=?, task_date_update=?, is_archived=?
        WHERE id=?`,
       [
         task_name || currentTask[0].task_name,
@@ -454,17 +456,18 @@ router.put("/save_history_tasks/:id", async (req, res) => {
         user_update || currentTask[0].user_update,
         updatedTaskMemberId,
         currentDateTime, // Set the current date and time for task_date_update
+        is_archived !== undefined ? is_archived : currentTask[0].is_archived, // Set is_archived
         taskId,
       ]
     );
 
-    // Insert into history_tasks table
+    // Insert into history_tasks table without is_archived field
     await connection.promise().query(
       `INSERT INTO history_tasks 
-   (task_id, task_name, task_detail, task_status, task_progress, task_Code, screen_id, project_id, 
-    system_id, task_plan_start, task_plan_end, task_actual_start, task_actual_end, task_manday, 
-    update_date, user_update, task_member_id, task_type, is_deleted) 
-   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+       (task_id, task_name, task_detail, task_status, task_progress, task_Code, screen_id, project_id, 
+        system_id, task_plan_start, task_plan_end, task_actual_start, task_actual_end, task_manday, 
+        update_date, user_update, task_member_id, task_type, is_deleted) 
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         currentTask[0].id,
         currentTask[0].task_name,
@@ -494,6 +497,7 @@ router.put("/save_history_tasks/:id", async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 });
+
 
 // Route for getting history tasks by task_id
 router.get("/history_tasks/:task_id", async (req, res) => {

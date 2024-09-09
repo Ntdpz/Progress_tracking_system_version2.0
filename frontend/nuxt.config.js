@@ -123,6 +123,7 @@ export default {
         __dirname,
         "components"
       );
+      
     },
   },
 };

@@ -29,6 +29,7 @@
                 >
                   <v-tab class="custom-tab">ToDay</v-tab>
                   <v-tab class="custom-tab">All</v-tab>
+                  <v-tab class="custom-tab">Archive</v-tab>
                 </v-tabs>
               </v-row>
               <v-tabs-items v-model="project.tab">
@@ -40,6 +41,11 @@
                 <v-tab-item>
                   <v-card class="full-card">
                     <all_task_user :projectId="project.id" />
+                  </v-card>
+                </v-tab-item>
+                <v-tab-item>
+                  <v-card class="full-card">
+                    <archive_task_table :projectId="project.id" />
                   </v-card>
                 </v-tab-item>
               </v-tabs-items>
@@ -56,6 +62,7 @@ import Loader from "../../components/Loader.vue";
 import result_projects from "../../components/Progress_tracking/Dashbord/result_projects.vue";
 import task_project_table from "../../components/Progress_tracking/Dashbord/task_project_table.vue";
 import all_task_user from "../../components/Progress_tracking/Dashbord/all_task_user.vue";
+import archive_task_table from "../../components/Progress_tracking/Dashbord/archive_task_table.vue";
 import "./Dashbord.css";
 
 export default {
@@ -64,7 +71,13 @@ export default {
       title: "Dashbord",
     };
   },
-  components: { Loader, result_projects, task_project_table, all_task_user },
+  components: {
+    Loader,
+    result_projects,
+    task_project_table,
+    all_task_user,
+    archive_task_table, // เพิ่ม archive_task_table สำหรับแถบจัดเก็บ
+  },
   middleware: "auth",
   layout: "admin",
   data() {
@@ -116,7 +129,6 @@ export default {
   },
 };
 </script>
-
 
 <style>
 .centered-heading {

@@ -421,6 +421,7 @@ export default {
             icon: "warning",
             title: "Warning",
             text: "Project ID is undefined",
+            confirmButtonColor: "#009933",
           });
           console.error("Error deleting user: project_id is undefined");
           return;
@@ -434,6 +435,7 @@ export default {
           showCancelButton: true,
           confirmButtonText: "Yes",
           cancelButtonText: "No",
+          confirmButtonColor: "#009933",
         });
 
         if (confirmResult.isConfirmed) {
@@ -448,6 +450,7 @@ export default {
               icon: "success",
               title: "Success",
               text: response.data.message,
+              confirmButtonColor: "#009933",
             });
             console.log(response.data.message);
             // อัปเดตตารางผู้ใช้หลังจากลบผู้ใช้เสร็จสิ้น
@@ -459,6 +462,7 @@ export default {
               icon: "error",
               title: "Error",
               text: "Failed to delete user",
+              confirmButtonColor: "#009933",
             });
             console.error("Failed to delete user:", response.status);
           }
@@ -468,6 +472,7 @@ export default {
           icon: "error",
           title: "Error",
           text: "Error deleting user",
+          confirmButtonColor: "#009933",
         });
         console.error("Error deleting user:", error);
       }
@@ -677,6 +682,7 @@ export default {
           icon: "error",
           title: "Error",
           text: "Please fill in all required fields.",
+          confirmButtonColor: "#009933",
         });
         return;
       }
@@ -733,6 +739,7 @@ export default {
           icon: "error",
           title: "Error",
           text: error.message || "Failed to create Project",
+          confirmButtonColor: "#009933",
         });
       }
     },
@@ -828,27 +835,30 @@ export default {
           );
 
           if (!response.ok) {
-            throw new Error("Failed to delete project");
+            const errorText = await response.text();
+            throw new Error(`Failed to delete project: ${errorText}`);
           }
 
           console.log("Project deleted successfully");
 
-          await Swal.fire(
-            "Success",
-            "Project deleted successfully.",
-            "success"
-          );
+          await Swal.fire({
+            title: "Success",
+            text: "Project deleted successfully.",
+            icon: "success",
+            confirmButtonColor: "#009933", // ปรับสีปุ่ม OK
+          });
 
-          this.fetchProjects();
+          this.fetchProjects(); // อัพเดทลิสต์โปรเจคใหม่หลังจากการลบสำเร็จ
         }
       } catch (error) {
         console.error("Error deleting project:", error);
 
-        await Swal.fire(
-          "Error",
-          "An error occurred during the project deletion process.",
-          "error"
-        );
+        await Swal.fire({
+          title: "Error",
+          text: `An error occurred during the project deletion process: ${error.message}`,
+          icon: "error",
+          confirmButtonColor: "#009933", // ปรับสีปุ่ม OK
+        });
       }
     },
     async goToCreateProject() {

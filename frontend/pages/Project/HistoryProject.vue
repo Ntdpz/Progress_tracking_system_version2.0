@@ -113,7 +113,7 @@ export default {
           text: "You are about to restore this project.",
           icon: "warning",
           showCancelButton: true,
-          confirmButtonColor: "#3085d6",
+          confirmButtonColor: "#009933", // ปรับสีปุ่ม Yes
           cancelButtonColor: "#d33",
           confirmButtonText: "Yes, restore it!",
         });
@@ -140,11 +140,12 @@ export default {
           console.log("Project restored successfully");
 
           // แสดงข้อความแจ้งเตือนเมื่อกู้คืนโปรเจกต์สำเร็จ
-          await Swal.fire(
-            "Success",
-            "Project restored successfully.",
-            "success"
-          );
+          await Swal.fire({
+            title: "Success",
+            text: "Project restored successfully.",
+            icon: "success",
+            confirmButtonColor: "#009933", // ปรับสีปุ่ม OK
+          });
 
           // โหลดรายการโปรเจกต์ประวัติใหม่
           this.initialize();
@@ -153,11 +154,12 @@ export default {
         console.error("Error restoring project:", error);
 
         // แสดงข้อความแจ้งเตือนเมื่อเกิดข้อผิดพลาดในการกู้คืนโปรเจกต์
-        await Swal.fire(
-          "Error",
-          "An error occurred during the project restoration process.",
-          "error"
-        );
+        await Swal.fire({
+          title: "Error",
+          text: "An error occurred during the project restoration process.",
+          icon: "error",
+          confirmButtonColor: "#009933", // ปรับสีปุ่ม OK ในกรณีเกิดข้อผิดพลาด
+        });
       }
     },
 
@@ -168,8 +170,8 @@ export default {
           text: "You are about to delete this project.",
           icon: "warning",
           showCancelButton: true,
-          confirmButtonColor: "#d33",
-          cancelButtonColor: "#3085d6",
+          confirmButtonColor: "#d33", // ปรับสีปุ่ม Yes เป็นสีแดง
+          cancelButtonColor: "#009933",
           confirmButtonText: "Yes, delete it!",
         });
 
@@ -187,22 +189,24 @@ export default {
 
           console.log("Project deleted successfully");
 
-          await Swal.fire(
-            "Success",
-            "Project deleted successfully.",
-            "success"
-          );
+          await Swal.fire({
+            title: "Success",
+            text: "Project deleted successfully.",
+            icon: "success",
+            confirmButtonColor: "#009933", // ปรับสีปุ่ม OK เป็นสีแดงเมื่อสำเร็จ
+          });
 
           this.initialize();
         }
       } catch (error) {
         console.error("Error deleting project:", error);
 
-        await Swal.fire(
-          "Error",
-          "An error occurred during the project deletion process.",
-          "error"
-        );
+        await Swal.fire({
+          title: "Error",
+          text: "An error occurred during the project deletion process.",
+          icon: "error",
+          confirmButtonColor: "#009933", // ปรับสีปุ่ม OK เป็นสีแดงเมื่อเกิดข้อผิดพลาด
+        });
       }
     },
 
@@ -213,8 +217,8 @@ export default {
           text: "You are about to delete selected projects.",
           icon: "warning",
           showCancelButton: true,
-          confirmButtonColor: "#d33",
-          cancelButtonColor: "#3085d6",
+          confirmButtonColor: "#d33", // ปรับสีปุ่ม Yes เป็นสีแดง
+          cancelButtonColor: "#009933",
           confirmButtonText: "Yes, delete them!",
         });
 
@@ -234,11 +238,13 @@ export default {
 
           console.log("Selected projects deleted successfully");
 
-          await Swal.fire(
-            "Success",
-            "Selected projects deleted successfully.",
-            "success"
-          );
+          // แสดงข้อความสำเร็จพร้อมปุ่ม OK สีเขียว
+          await Swal.fire({
+            title: "Success",
+            text: "Selected projects deleted successfully.",
+            icon: "success",
+            confirmButtonColor: "#009933", // ปรับสีปุ่ม OK เป็นสีเขียวเมื่อสำเร็จ
+          });
 
           this.initialize();
           this.selectedProjects = [];
@@ -246,11 +252,13 @@ export default {
       } catch (error) {
         console.error("Error deleting selected projects:", error);
 
-        await Swal.fire(
-          "Error",
-          "An error occurred during the selected projects deletion process.",
-          "error"
-        );
+        // แสดงข้อความแจ้งเตือนเมื่อเกิดข้อผิดพลาดพร้อมปุ่ม OK สีเขียว
+        await Swal.fire({
+          title: "Error",
+          text: "An error occurred during the selected projects deletion process.",
+          icon: "error",
+          confirmButtonColor: "#009933", // ปรับสีปุ่ม OK เป็นสีเขียวเมื่อเกิดข้อผิดพลาด
+        });
       }
     },
 
@@ -261,7 +269,7 @@ export default {
           text: "You are about to restore selected projects.",
           icon: "warning",
           showCancelButton: true,
-          confirmButtonColor: "#3085d6",
+          confirmButtonColor: "#009933", // ปรับสีปุ่ม Yes
           cancelButtonColor: "#d33",
           confirmButtonText: "Yes, restore them!",
         });
@@ -288,23 +296,25 @@ export default {
 
           console.log("Selected projects restored successfully");
 
-          await Swal.fire(
-            "Success",
-            "Selected projects restored successfully.",
-            "success"
-          );
+          await Swal.fire({
+            title: "Success",
+            text: "Selected projects restored successfully.",
+            icon: "success",
+            confirmButtonColor: "#009933", // ปรับสีปุ่ม OK
+          });
 
-          this.initialize();
-          this.selectedProjects = [];
+          this.initialize(); // รีเฟรชข้อมูลหลังการกู้คืนสำเร็จ
+          this.selectedProjects = []; // ล้างรายการที่เลือก
         }
       } catch (error) {
         console.error("Error restoring selected projects:", error);
 
-        await Swal.fire(
-          "Error",
-          "An error occurred during the selected projects restoration process.",
-          "error"
-        );
+        await Swal.fire({
+          title: "Error",
+          text: "An error occurred during the selected projects restoration process.",
+          icon: "error",
+          confirmButtonColor: "#009933", // ปรับสีปุ่ม OK ในกรณีเกิดข้อผิดพลาด
+        });
       }
     },
     async initialize() {
