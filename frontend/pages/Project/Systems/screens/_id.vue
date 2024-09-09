@@ -436,7 +436,7 @@
                   item-value="user_id"
                   item-text="user_name"
                   label="Assign To"
-                  :disabled="user.user_role === 'User'" 
+                  :disabled="user.user_role === 'User'"
                 >
                   <template v-slot:item="{ item }">
                     <v-list-item-avatar>
@@ -481,6 +481,7 @@
         </v-card-text>
       </v-card>
     </v-dialog>
+
     <v-data-table
       :headers="taskHeaders"
       :items="filteredTasks"
@@ -731,6 +732,7 @@ export default {
       userDialog: false,
       userList: [],
       userListCreate: [],
+
       screenId: "",
       system_id: "",
       project_id: "",
@@ -828,17 +830,6 @@ export default {
     },
     totalPagesUser() {
       return Math.ceil(this.filteredUsers.length / this.itemsPerPage);
-    },
-    filteredUserList() {
-      // Check if the user role is 'user'
-      if (this.user.user_role === "user") {
-        // Filter the list to show only the current user
-        return this.userListCreate.filter(
-          (user) => user.user_id === this.user.user_id
-        );
-      }
-      // If the role is not 'user', show the entire list
-      return this.userListCreate;
     },
 
     calculatedManday() {
@@ -947,12 +938,12 @@ export default {
     },
     getUserPic(userId) {
       // หา user object โดยใช้ userId และคืนค่าภาพผู้ใช้
-      const user = this.userListCreate.find((user) => user.user_id === userId);
+      const user = this.userList.find((user) => user.user_id === userId);
       return user ? user.user_pic : "";
     },
     getUserName(userId) {
       // หา user object โดยใช้ userId และคืนค่าชื่อผู้ใช้
-      const user = this.userListCreate.find((user) => user.user_id === userId);
+      const user = this.userList.find((user) => user.user_id === userId);
       return user ? user.user_name : "Unknown";
     },
 
@@ -1584,12 +1575,17 @@ export default {
         const userList = await response.json();
 
         // Set userList and filteredUsers
-        this.userList = userList;
+
+        this.userList = userList.map((user) => ({
+          user_id: user.id,
+          user_name: `${user.user_position} : ${user.user_firstname} ${user.user_lastname}`,
+          user_pic: user.user_pic,
+        }));
         this.filteredUsers = userList;
 
-        // Check user role and filter accordingly
+        // Check user role and update userListCreate accordingly
         if (this.user.user_role === "User") {
-          // Show only the current user if the role is "User"
+          // Only show the current user if the role is "User"
           this.userListCreate = userList
             .filter((user) => user.id === this.user.id)
             .map((user) => ({
@@ -1609,7 +1605,6 @@ export default {
         console.error("Error fetching user list:", error);
       }
     },
-
     openUserListDialog() {
       this.fetchUserList();
       this.userDialog = true;
