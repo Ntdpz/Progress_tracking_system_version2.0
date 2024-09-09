@@ -73,8 +73,8 @@
         <v-divider vertical></v-divider>
       </div>
       <v-row>
-      <!-- Search bar -->
-      
+        <!-- Search bar -->
+
         <v-col cols="12" md="10">
           <v-text-field
             v-model="searchQuery"
@@ -89,18 +89,17 @@
         <v-col cols="12" md="2" class="text-mid">
           <v-row>
             <v-col cols="12">
-          <v-btn
-            class="rounded-btn"
-            color="primary"
-            @click="dialogAddTaskForm = true"
-            style="width: 100%"
-          >
-            Add Task
-          </v-btn>
+              <v-btn
+                class="rounded-btn"
+                color="primary"
+                @click="dialogAddTaskForm = true"
+                style="width: 100%"
+              >
+                Add Task
+              </v-btn>
             </v-col>
           </v-row>
         </v-col>
-        
       </v-row>
 
       <v-divider></v-divider>
@@ -257,8 +256,9 @@
                 <v-text-field
                   v-model="editedTask.task_manday"
                   label="Plan Manday"
-                  required
-                  disabled
+                  outlined
+                  readonly
+                  :style="{ opacity: 0.5 }"
                 ></v-text-field>
               </v-col>
               <v-col cols="6">
@@ -340,7 +340,7 @@
                 <v-text-field
                   v-model="newTask.task_id"
                   label="Task ID"
-                  :rules="[v => !!v || 'Task ID is required']"
+                  :rules="[(v) => !!v || 'Task ID is required']"
                   required
                   append-icon="mdi-alert-circle"
                 ></v-text-field>
@@ -350,7 +350,7 @@
                 <v-text-field
                   v-model="newTask.task_name"
                   label="Task Name"
-                  :rules="[v => !!v || 'Task Name is required']"
+                  :rules="[(v) => !!v || 'Task Name is required']"
                   required
                   append-icon="mdi-alert-circle"
                 ></v-text-field>
@@ -418,7 +418,9 @@
                 <v-text-field
                   v-model="newTask.task_manday"
                   label="Plan Manday"
-                  :readonly="true"
+                  outlined
+                  readonly
+                  :style="{ opacity: 0.5 }"
                 ></v-text-field>
               </v-col>
             </v-row>
@@ -452,7 +454,7 @@
                   v-model="newTask.task_type"
                   :items="statusOptions"
                   label="Type of Task"
-                  :rules="[v => !!v || 'Task Type is required']"
+                  :rules="[(v) => !!v || 'Task Type is required']"
                   required
                 ></v-select>
               </v-col>
@@ -465,7 +467,8 @@
                   color="primary"
                   :disabled="!newTask.task_id || !newTask.task_name"
                   type="submit"
-                  >Create</v-btn
+                >
+                  Create</v-btn
                 >
                 <!-- Cancel button -->
                 <v-btn color="error" @click="cancel">Cancel</v-btn>
@@ -576,7 +579,7 @@ import update_task from "@/components/Progress_tracking/Dashbord/update_task.vue
 import screenDetail from "@/components/Progress_tracking/Screen/screenDetail.vue";
 
 export default {
-   head() {
+  head() {
     return {
       title: "ManageTask",
     };
@@ -755,7 +758,7 @@ export default {
       newTask: {
         task_id: "",
         task_name: "",
-        task_type: "",
+        task_type: "Design",
         person_in_charge: "",
         task_plan_start: null,
         task_plan_end: null,
@@ -1668,7 +1671,7 @@ export default {
         } = this.newTask;
 
         // ตรวจสอบว่ามี task_id และ task_name หรือไม่
-        if (!task_id && !task_name && !task_type) {
+        if (!task_id || !task_name) {
           throw new Error("Task ID, Task Name, Task Type are required.");
         }
 
@@ -1961,5 +1964,4 @@ export default {
   padding: 0;
   /* ลบ Padding เพื่อป้องกันการขยับของปุ่ม */
 }
-
 </style>
