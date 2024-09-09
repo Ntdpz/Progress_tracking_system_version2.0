@@ -70,7 +70,6 @@ export default {
   data() {
     return {
       headers: [
-        { text: "Project Code", value: "project_id" },
         { text: "Project Name (ENG)", value: "project_name_ENG" },
         { text: "Project Name (TH)", value: "project_name_TH" },
         // { text: "Actions", value: "actions", sortable: false },
