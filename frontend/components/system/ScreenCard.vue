@@ -32,16 +32,22 @@
           || 'not determined' }} <br>
           <strong>Actual:</strong> {{ screenActualStartDate || 'not determined' }} <strong>to</strong> {{
           screenActualEndDate || 'not determined' }}<br>
-          <strong>Design:</strong><span :class="getColorClassText(designProgress)">
+          <strong>Design:</strong>
+          <span :class="getColorClassText(designProgress)">
             {{ Math.round(designProgress || 0) }}%
-          </span> {{ getUserNamesByPosition('System Analyst') || 'No assignee' }}<span>&nbsp;</span>
+          </span>
+          {{ truncateName(getUserNamesByPosition('System Analyst')) || 'No assignee' }}
+          <span>&nbsp;</span>
           <br>
-          <strong>Dev:</strong> <span :class="getColorClassText(devProgress)">
+          <strong>Dev:</strong>
+          <span :class="getColorClassText(devProgress)">
             {{ Math.round(devProgress || 0) }}%
-          </span> {{ getUserNamesByPosition('Developer') || 'No assignee' }} <span>&nbsp;</span>
-
+          </span>
+          {{ truncateName(getUserNamesByPosition('Developer')) || 'No assignee' }}
+          <span>&nbsp;</span>
           <br>
-          <strong>Implementer:</strong> {{ getUserNamesByPosition('Implementer') || 'No assignee' }}
+          <strong>Implementer:</strong>
+          {{ truncateName(getUserNamesByPosition('Implementer')) || 'No assignee' }}
         </v-card-subtitle>
         <v-card-actions>
           <v-btn color="primary" icon @click.stop="openEditDialog"> <v-icon>mdi-pencil</v-icon> </v-btn>
@@ -224,6 +230,7 @@ export default {
         { text: 'User Name', value: 'user_name' },
         { text: 'Action', value: 'action', sortable: false },
       ],
+
     };
   },
   methods: {
@@ -265,6 +272,7 @@ export default {
           icon: "success",
           title: "Success",
           text: "Users assigned successfully",
+          confirmButtonColor: "#009933",
         });
 
         // Fetch the updated users
@@ -279,13 +287,14 @@ export default {
       }
     },
     // Delete a user from the screen
+    // Delete a user from the screen
     async deleteUser(user) {
       try {
-        const response = await axios.delete(`http://localhost:7777/user_screens/deleteUser_system/${user.id}`, {
-          data: {
-            screen_id: this.screenId,
-          },
-        });
+        // Ensure user_id is correctly accessed
+        console.log("Deleting user:", user); // Log the user object to verify it
+        const response = await axios.delete(
+          `http://localhost:7777/user_screens/deleteUserScreen/${this.screenSystemId}/${this.screenProjectId}/${this.screenId}/${user.id}` // Ensure the correct property name here
+        );
         console.log(response.data.message);
 
         // Fetch the updated users and show success message
@@ -294,6 +303,7 @@ export default {
           icon: "success",
           title: "Success",
           text: "User deleted successfully",
+
         });
       } catch (error) {
         console.error("Error deleting user:", error);
@@ -334,6 +344,10 @@ export default {
       if (progress >= 75) return 'blue';
       if (progress >= 50) return 'yellow';
       return 'orange';
+    },
+    truncateName(name, maxLength = 20) {
+      if (!name) return '';
+      return name.length > maxLength ? name.substring(0, maxLength) + '...' : name;
     },
     getColorClassText(progress) {
       if (progress === 100) return 'green--text';

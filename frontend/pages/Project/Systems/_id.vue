@@ -91,7 +91,8 @@
     <!-- Add Screen-->
     <v-dialog v-model="addScreenDialog" max-width="800px">
       <add-form :users="userSystems" :systemId="systemid" :projectId="systemData.project_id"
-        @closeDialog="handleCloseDialog">
+        @closeDialog="handleCloseDialog"
+        @reload="reloadPage">
       </add-form>
     </v-dialog>
   </div>
@@ -220,6 +221,9 @@ export default {
     },
     handleCloseDialog() {
       this.addScreenDialog = false;
+    },
+    reloadPage() {
+      this.$router.go();
     },
     getUserNamesByPosition(position) {
       return this.users
