@@ -72,7 +72,10 @@
         <!-- display screens in system filter by system_id -->
         <v-col cols="12" md="4" v-for="screen in paginatedScreens" :key="screen.id" class="ma-0">
           <!-- *TOCHANGE change desing to design-->
-          <ScreenCard :userSystems="userSystems" :screenId="screen.id" :screenCode="screen.screen_code"
+          <ScreenCard :userSystems="userSystems" 
+            :screenProjectId="systemData.project_id" 
+            :screenSystemId="systemData.id"
+           :screenId="screen.id" :screenCode="screen.screen_code"
             :screenName="screen.screen_name" :screenStatus="screen.screen_status"
             :screenProgress="screen.screen_progress" :screenPlanStartDate="screen.screen_plan_start"
             :screenPlanEndDate="screen.screen_plan_end" :screenActualStartDate="screen.screen_actual_start"
@@ -87,7 +90,8 @@
     <!-- dialog -->
     <!-- Add Screen-->
     <v-dialog v-model="addScreenDialog" max-width="800px">
-      <add-form :users="userSystems" :systemId="systemid" :projectId="systemData.project_id" @closeDialog="handleCloseDialog">
+      <add-form :users="userSystems" :systemId="systemid" :projectId="systemData.project_id"
+        @closeDialog="handleCloseDialog">
       </add-form>
     </v-dialog>
   </div>
