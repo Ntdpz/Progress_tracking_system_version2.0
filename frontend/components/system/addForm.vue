@@ -169,6 +169,8 @@ export default {
                     });
                     this.$emit('closeDialog'); // Emit event to close dialog
                     this.resetForm(); // Reset form
+                    //reload the page
+                    this.$emit('reload');
                 } else {
                     throw new Error('Failed to create screen');
                 }
