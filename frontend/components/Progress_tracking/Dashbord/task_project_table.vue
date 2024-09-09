@@ -94,11 +94,7 @@
     </div>
 
     <!-- Dialog -->
-    <v-dialog
-      v-model="EditTask_dialog"
-      max-width=70%
-      class="custom-dialog"
-    >
+    <v-dialog v-model="EditTask_dialog" max-width="70%" class="custom-dialog">
       <v-card>
         <v-card-title> </v-card-title>
         <v-card-subtitle>
@@ -117,6 +113,7 @@
 <script>
 import "./css/task_project_table.css";
 import update_task from "./update_task.vue";
+import { EventBus } from "@/plugins/event-bus";
 export default {
   middleware: "auth",
   layout: "admin",
@@ -161,6 +158,10 @@ export default {
 
   mounted() {
     this.fetchTasks(); // เรียกใช้ method เมื่อ component ถูก mounted
+    EventBus.$on("refresh-data", this.fetchTasks);
+  },
+  beforeDestroy() {
+    EventBus.$off("refresh-data", this.fetchTasks);
   },
 
   methods: {
@@ -251,7 +252,6 @@ export default {
     editTask(task) {
       this.selectedTask = task; // เก็บ task ที่ถูกเลือก
       this.EditTask_dialog = true; // เปิด dialog
-      console.log("Editing task:", task.task_name);
     },
 
     // ฟังก์ชันที่เรียกใช้เมื่อคลิกไอคอน Delete

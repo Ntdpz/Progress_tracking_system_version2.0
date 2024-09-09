@@ -10,12 +10,9 @@
             {{ tasks.length > 0 ? tasks[0].project_name_ENG : "No task" }}
           </span>
 
-          <!-- {{ projectId }} -->
-          <!-- <span> Today ({{ today }}) </span> -->
-
           <span class="task-count-wrapper">
             <v-card class="task-count-card">
-              {{ completedTaskCount }} / {{ filteredTaskCount }}
+              {{ filteredTaskCount }} Tasks
             </v-card>
           </span>
         </v-col>
@@ -114,7 +111,6 @@
 import "./css/task_project_table.css";
 import update_task from "./update_task.vue";
 import { EventBus } from "@/plugins/event-bus";
-
 export default {
   middleware: "auth",
   layout: "admin",
@@ -205,10 +201,25 @@ export default {
           `/tasks/searchByProjectId/${this.projectId}`
         );
 
-        // ลบเงื่อนไขการกรองตามวันที่ และตรวจสอบเฉพาะ task_member_id
-        const filteredTasks = response.data.filter(
-          (task) => task.task_member_id === this.user.id
+        // กรอง tasks ที่อยู่ระหว่างวันที่ task_plan_start และ task_plan_end เทียบกับวันนี้
+        const today = new Date();
+        const startOfToday = new Date(
+          today.getFullYear(),
+          today.getMonth(),
+          today.getDate()
         );
+        const endOfToday = new Date(
+          today.getFullYear(),
+          today.getMonth(),
+          today.getDate() + 1
+        ); // ใช้วันที่ถัดไปเพื่อรวมทั้งวัน
+
+        const filteredTasks = response.data.filter((task) => {
+          const startDate = new Date(task.task_plan_start);
+          const endDate = new Date(task.task_plan_end);
+
+          return task.is_archived === 1;
+        });
 
         // คำนวณจำนวน tasks ที่เสร็จสมบูรณ์
         const completedTasks = filteredTasks.filter(
@@ -224,6 +235,7 @@ export default {
         this.filteredTaskCount = filteredTasks.length; // อัปเดตจำนวน tasks ที่กรองแล้ว
         this.completedTaskCount = completedTasks.length; // อัปเดตจำนวน tasks ที่เสร็จสมบูรณ์
       } catch (error) {
+        // แสดงข้อความข้อผิดพลาดที่กำหนดเอง
         console.error("Error fetching tasks, No task data");
       }
     },
@@ -231,7 +243,6 @@ export default {
     editTask(task) {
       this.selectedTask = task; // เก็บ task ที่ถูกเลือก
       this.EditTask_dialog = true; // เปิด dialog
-     
     },
 
     // ฟังก์ชันที่เรียกใช้เมื่อคลิกไอคอน Delete
