@@ -7,7 +7,7 @@
           <!-- Left Side: ID Chip -->
           <v-col cols="auto">
             <v-chip class="ma-2" color="blue" text-color="white">
-              ID: {{ screenCode }}
+              {{ screenCode }}
             </v-chip>
           </v-col>
 
@@ -32,19 +32,21 @@
           || 'not determined' }} <br>
           <strong>Actual:</strong> {{ screenActualStartDate || 'not determined' }} <strong>to</strong> {{
           screenActualEndDate || 'not determined' }}<br>
-          <strong>Design:</strong> {{ getUserNamesByPosition('System Analyst') || 'No assignee' }}<span>&nbsp;</span>
-          <span :class="getColorClassText(designProgress)">
+          <strong>Design:</strong><span :class="getColorClassText(designProgress)">
             {{ Math.round(designProgress || 0) }}%
-          </span> <br>
-          <strong>Dev:</strong> {{ getUserNamesByPosition('Developer') || 'No assignee' }} <span>&nbsp;</span>
-          <span :class="getColorClassText(devProgress)">
+          </span> {{ getUserNamesByPosition('System Analyst') || 'No assignee' }}<span>&nbsp;</span>
+          <br>
+          <strong>Dev:</strong> <span :class="getColorClassText(devProgress)">
             {{ Math.round(devProgress || 0) }}%
-          </span>
+          </span> {{ getUserNamesByPosition('Developer') || 'No assignee' }} <span>&nbsp;</span>
+
           <br>
           <strong>Implementer:</strong> {{ getUserNamesByPosition('Implementer') || 'No assignee' }}
         </v-card-subtitle>
         <v-card-actions>
           <v-btn color="primary" icon @click.stop="openEditDialog"> <v-icon>mdi-pencil</v-icon> </v-btn>
+          <v-btn color="primary" icon @click.stop="editScreenUserDialog = true"> <v-icon>mdi-account-edit</v-icon>
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-card>
@@ -52,12 +54,57 @@
     <!-- Edit Dialog -->
     <v-dialog v-model="editDialog" max-width="800px">
       <!-- editForm -->
-      <editForm :userScreens="users" :userSytems="userSystems" @closeDialog="handleCloseDialog"
-        @deleteScreen="deleteScreen">
+      <editForm @closeDialog="handleCloseDialog" @deleteScreen="deleteScreen">
       </editForm>
     </v-dialog>
+    <!-- Edit user dialog -->
+    <v-dialog v-model="editScreenUserDialog" max-width="800px">
+      <v-card>
+        <!-- Current User Title -->
+        <v-card-title color="black">Current Users</v-card-title>
+        <v-card-text>
+          <!-- Current User Table -->
+          <v-data-table :headers="headers" :items="users" class="elevation-1 mt-4 mb-3">
+            <template v-slot:item.user_position="{ item }">
+              <v-chip :style="{ width: '120px', display: 'flex', justifyContent: 'center' }"
+                :color="getColor(item.user_position)" dark>
+                {{ item.user_position }}
+              </v-chip>
+            </template>
+            <template v-slot:item.user_name="{ item }">
+              {{ item.user_firstname }}
+            </template>
+            <template v-slot:item.action="{ item }">
+              <v-btn icon @click="deleteUser(item)">
+                <v-icon color="red">mdi-delete</v-icon>
+              </v-btn>
+            </template>
+          </v-data-table>
+        </v-card-text>
+        <!-- action -->
+        <v-card-actions>
+         <!-- space -->
+          <v-spacer></v-spacer>
+          <v-btn color="primary">Assign User</v-btn>
+          <v-btn color="secondary" @click="editScreenUserDialog = false">Close</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <!-- assign user dialog -->
+    <v-dialog v-model="assignUserDialog" max-width="800px">
+      <v-card>
+        <v-card-title color="black">Assign User</v-card-title>
+        <v-card-text>
+ 
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="primary">Assign</v-btn>
+          <v-btn color="secondary" @click="assignUserDialog = false">Close</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
-
 </template>
 
 <script>
@@ -69,10 +116,11 @@ export default {
     editForm
   },
   props: {
-    //user system prop
+    // system user
     userSystems: {
       type: Array,
-      required: false
+      required: false,
+      default: () => []
     },
     screenCode: {
       type: String,
@@ -127,12 +175,18 @@ export default {
     return {
       users: [],
       editDialog: false,
+      assignUserDialog: false,
       editScreenName: this.screenName,
-      editScreenAssignee: this.screenAssignee
+      editScreenUserDialog: false,
+      headers: [
+        { text: 'User Position', value: 'user_position' },
+        { text: 'User Name', value: 'user_name' },
+        { text: 'Action', value: 'action', sortable: false }
+      ],
     };
   },
   methods: {
-    async fetchUsers() {
+    async fetchScreenUsers() {
       try {
         const response = await axios.get(`http://localhost:7777/user_screens/getOneScreenID/${this.screenId}`);
         this.users = response.data;
@@ -144,6 +198,21 @@ export default {
     getBase64Image(base64String) {
       return `data:image/jpeg;base64,${base64String}`;
     },
+    // Edit user dialog
+    openEditUserDialog() {
+      this.editScreenUserDialog = true;
+    },
+    closeEditUserDialog() {
+      this.editScreenUserDialog = false;
+    },
+    // Assign user Dialog
+    openAssignUserDialog() {
+      this.assignUserDialog = true;
+    },
+    closeAssignUserDialog() {
+      this.assignUserDialog = false;
+    },
+    // Edit Dialog
     openEditDialog() {
       this.editDialog = true;
     },
@@ -154,8 +223,7 @@ export default {
       // Emit the updated data to the parent component
       this.$emit('update', {
         screenId: this.screenId,
-        screenName: this.editScreenName,
-        screenAssignee: this.editScreenAssignee
+        screenName: this.editScreenName
       });
       this.closeEditDialog();
     },
@@ -176,19 +244,35 @@ export default {
       if (progress >= 50) return 'yellow--text';
       return 'orange--text';
     },
+    getColor(position) {
+      switch (position) {
+        case 'System Analyst':
+          return '#864F80';
+        case 'Developer':
+          return '#374AAB';
+        case 'Tester':
+          return '#359C73';
+        default:
+          return 'grey';
+      }
+    },
     getUserNamesByPosition(position) {
       const usersByPosition = this.users
         .filter(user => user.user_position.toLowerCase() === position.toLowerCase())
-        .map(user => `${user.user_firstname} ${user.user_lastname}`)
+        .map(user => `${user.user_firstname} `)
         .join(', ');
       return usersByPosition;
+    },
+    deleteUser(user) {
+      // Implement delete user logic here
+      console.log("Deleting user:", user);
     },
     handleCloseDialog() {
       this.editDialog = false;
     }
   },
   mounted() {
-    this.fetchUsers();
+    this.fetchScreenUsers();
   }
 }
 </script>

@@ -5,13 +5,13 @@
                 Add Screen
             </v-card-title>
             <v-card-text>
-                <v-form ref="screenForm" v-model="isFormValid">
-                    <!-- Line 1: Screen ID & Screen Name -->
+                <v-form ref="form" @submit.prevent="submitForm">
+                    <!-- Line 1: Screen Code & Screen Name -->
                     <v-row>
                         <v-col cols="6">
-                            <v-text-field v-model="screenId" :rules="[v => !!v || 'Screen ID is required']" required>
+                            <v-text-field v-model="screenCode" :rules="[v => !!v || 'Screen ID is required']" required>
                                 <template v-slot:label>
-                                    <span class="label-text">Screen ID <span class="required-asterisk">*</span></span>
+                                    <span class="label-text">Screen Code <span class="required-asterisk">*</span></span>
                                 </template>
                             </v-text-field>
                         </v-col>
@@ -28,12 +28,12 @@
                     <!-- Line 2: Difficulty Level & Screen Status -->
                     <v-row>
                         <v-col cols="6">
-                            <v-select label="Difficulty Level" v-model="difficultyLevel" :items="[1, 2, 3, 4, 5]"
-                                required></v-select>
+                            <v-select label="Difficulty Level" v-model="difficultyLevel"
+                                :items="[1, 2, 3, 4, 5]"></v-select>
                         </v-col>
                         <v-col cols="6">
                             <v-select label="Screen Status" v-model="screenStatus"
-                                :items="['Not started', 'Design', 'Dev', 'Test']" required></v-select>
+                                :items="['Not started', 'Design', 'Dev', 'Test']"></v-select>
                         </v-col>
                     </v-row>
 
@@ -42,12 +42,12 @@
                         <v-col cols="6">
                             <v-select label="Screen SA" v-model="selectedSA"
                                 :items="filterUsersByPosition('System Analyst')" item-text="name" item-value="id"
-                                multiple chips required></v-select>
+                                multiple chips></v-select>
                         </v-col>
                         <v-col cols="6">
                             <v-select label="Screen Dev" v-model="selectedDev"
                                 :items="filterUsersByPosition('Developer')" item-text="name" item-value="id" multiple
-                                chips required></v-select>
+                                chips></v-select>
                         </v-col>
                     </v-row>
 
@@ -56,25 +56,24 @@
                         <v-col cols="6">
                             <v-select label="Screen Imp" v-model="selectedImp"
                                 :items="filterUsersByPosition('Implementer')" item-text="name" item-value="id" multiple
-                                chips required></v-select>
+                                chips></v-select>
                         </v-col>
                         <v-col cols="6">
                             <v-file-input label="Upload Image" v-model="imageFile" accept="image/*"
-                                @change="convertImageToBase64" required></v-file-input>
+                                @change="convertImageToBase64"></v-file-input>
                         </v-col>
                     </v-row>
+
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn type="submit" color="primary">Submit</v-btn>
+                        <v-btn color="secondary" @click="cancelForm">Cancel</v-btn>
+                    </v-card-actions>
                 </v-form>
             </v-card-text>
-
-            <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="primary" @click="submitForm" :disabled="!isFormValid">Submit</v-btn>
-                <v-btn color="secondary" @click="cancelForm">Cancel</v-btn>
-            </v-card-actions>
         </v-card>
     </div>
 </template>
-
 
 <script>
 import axios from 'axios';
@@ -97,7 +96,7 @@ export default {
     },
     data() {
         return {
-            screenId: '',
+            screenCode: '',
             screenName: '',
             difficultyLevel: null,
             screenStatus: 'Not started',
@@ -111,7 +110,7 @@ export default {
     computed: {
         isFormValid() {
             // Check if Screen ID and Screen Name are not empty
-            return this.screenId.trim() !== '' && this.screenName.trim() !== '';
+            return this.screenCode.trim() !== '' && this.screenName.trim() !== '';
         }
     },
     methods: {
@@ -137,11 +136,11 @@ export default {
         },
         async submitForm() {
             try {
-                const valid = await this.$refs.screenForm.validate();
+                const valid = await this.$refs.form.validate();
                 if (!valid) return;
 
                 const requestData = {
-                    screen_id: this.screenId,
+                    screen_code: this.screenCode,
                     screen_name: this.screenName,
                     screen_status: this.screenStatus,
                     screen_level: this.difficultyLevel,
@@ -188,7 +187,7 @@ export default {
             this.resetForm();
         },
         resetForm() {
-            this.screenId = '';
+            this.screenCode = '';
             this.screenName = '';
             this.difficultyLevel = null;
             this.screenStatus = 'Not started';
@@ -201,7 +200,6 @@ export default {
     },
 };
 </script>
-
 
 <style scoped>
 .card-container {
