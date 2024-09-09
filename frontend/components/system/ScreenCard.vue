@@ -1,7 +1,7 @@
 <template>
   <div class="card-wrapper">
     <!-- click -->
-    <v-card class="customer-card" @click="$emit('click')">
+    <v-card class="customer-card" @click="$emit('click')" height="">
       <v-img class="white--text" :src="getBase64Image(ImageSrc)" height="200px" width="400px">
         <v-row class="align-center justify-space-between">
           <!-- Left Side: ID Chip -->
@@ -303,7 +303,7 @@ export default {
           icon: "success",
           title: "Success",
           text: "User deleted successfully",
-
+          confirmButtonColor: "#009933",
         });
       } catch (error) {
         console.error("Error deleting user:", error);

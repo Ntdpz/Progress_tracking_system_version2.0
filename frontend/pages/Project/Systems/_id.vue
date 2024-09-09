@@ -58,7 +58,7 @@
               <v-btn color="primary" block @click="openAddScreenDialog">Add screen</v-btn>
             </v-col>
             <v-col cols="6">
-              <v-btn color="primary" block>
+              <v-btn color="primary" @click="openHistoryDialog" block>
                 <v-icon>mdi-history</v-icon>
               </v-btn>
             </v-col>
@@ -81,7 +81,8 @@
             :screenPlanEndDate="screen.screen_plan_end" :screenActualStartDate="screen.screen_actual_start"
             :screenActualEndDate="screen.screen_actual_end" :ImageSrc="screen.screen_pic"
             :design-progress="screen.screen_progress_status_design" :dev-progress="screen.screen_progress_status_dev"
-            @click="navigateToScreen(screen.id)" @update="handleUpdate" @delete="handleDeleteScreen" />
+            @click="navigateToScreen(screen.id)" @update="handleUpdate" @delete="handleDeleteScreen" 
+            />
         </v-col>
       </v-row>
     </div>
@@ -95,6 +96,9 @@
         @reload="reloadPage">
       </add-form>
     </v-dialog>
+    <v-dialog v-model="historyDialog" max-width="800px">
+      <srceenHistory :systemId=systemid @close-dialog="closeHistoryDialog"></srceenHistory>
+    </v-dialog>
   </div>
 </template>
 
@@ -104,6 +108,7 @@ import axios from "axios";
 import CircularProgress from "~/components/system/circularProgress.vue";
 import ScreenCard from "~/components/system/ScreenCard.vue";
 import AddForm from "~/components/system/addForm.vue";
+import srceenHistory from "~/components/system/srceenHistory.vue";
 import { decodeId } from "@/utils/crypto";
 import { encodeId } from "@/utils/crypto";
 
@@ -118,6 +123,7 @@ export default {
     CircularProgress,
     ScreenCard,
     AddForm,
+    srceenHistory,
   },
   layout: "admin", // Apply layout if needed
   middleware: "auth", // Apply middleware if needed
@@ -137,6 +143,7 @@ export default {
       itemsPerPage: 15, // max 15 screens per page
       totalPages: 0,
       addScreenDialog: false,
+      historyDialog: false,
       systemData: "",
     };
   },
@@ -212,6 +219,10 @@ export default {
     openAddScreenDialog() {
       this.addScreenDialog = true;
     },
+    openHistoryDialog() {
+      this.historyDialog = true;
+    },
+    
     navigateToScreen(screenId) {
       const encodedScreenId = encodeURIComponent(encodeId(screenId)); // เข้ารหัส screenId
       this.$router.push(`/Project/Systems/screens/${encodedScreenId}`);
@@ -221,6 +232,9 @@ export default {
     },
     handleCloseDialog() {
       this.addScreenDialog = false;
+    },
+    closeHistoryDialog() {
+      this.historyDialog = false;
     },
     reloadPage() {
       this.$router.go();
