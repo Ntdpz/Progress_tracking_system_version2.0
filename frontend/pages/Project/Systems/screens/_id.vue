@@ -436,6 +436,7 @@
                   item-value="user_id"
                   item-text="user_name"
                   label="Assign To"
+                  :disabled="user.user_role === 'User'" 
                 >
                   <template v-slot:item="{ item }">
                     <v-list-item-avatar>
