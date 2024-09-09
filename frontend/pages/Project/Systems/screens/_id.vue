@@ -340,6 +340,7 @@
                 <v-text-field
                   v-model="newTask.task_id"
                   label="Task ID"
+                  :rules="[v => !!v || 'Task ID is required']"
                   required
                   append-icon="mdi-alert-circle"
                 ></v-text-field>
@@ -349,6 +350,7 @@
                 <v-text-field
                   v-model="newTask.task_name"
                   label="Task Name"
+                  :rules="[v => !!v || 'Task Name is required']"
                   required
                   append-icon="mdi-alert-circle"
                 ></v-text-field>
@@ -450,6 +452,8 @@
                   v-model="newTask.task_type"
                   :items="statusOptions"
                   label="Type of Task"
+                  :rules="[v => !!v || 'Task Type is required']"
+                  required
                 ></v-select>
               </v-col>
             </v-row>
@@ -1664,8 +1668,8 @@ export default {
         } = this.newTask;
 
         // ตรวจสอบว่ามี task_id และ task_name หรือไม่
-        if (!task_id || !task_name) {
-          throw new Error("Task ID and Task Name are required.");
+        if (!task_id && !task_name && !task_type) {
+          throw new Error("Task ID, Task Name, Task Type are required.");
         }
 
         // ส่งข้อมูลไปยัง backend เพื่อสร้าง task ใหม่
@@ -1697,6 +1701,7 @@ export default {
           Swal.fire({
             icon: "success",
             title: "Task created successfully",
+            confirmButtonColor: "#009933",
           });
           this.dialogAddTaskForm = false; // ปิดฟอร์มการสร้าง task ใหม่
           this.fetchTasks(); // โหลดรายการ tasks ใหม่
@@ -1722,6 +1727,7 @@ export default {
           icon: "error",
           title: "Error creating new task",
           text: "Please try again",
+          confirmButtonColor: "#009933",
         });
       }
     },
@@ -1955,4 +1961,5 @@ export default {
   padding: 0;
   /* ลบ Padding เพื่อป้องกันการขยับของปุ่ม */
 }
+
 </style>
