@@ -83,23 +83,54 @@
         </v-card-text>
         <!-- action -->
         <v-card-actions>
-         <!-- space -->
           <v-spacer></v-spacer>
-          <v-btn color="primary">Assign User</v-btn>
+          <v-btn color="primary" @click="openAssignUserDialog">Assign User</v-btn>
           <v-btn color="secondary" @click="editScreenUserDialog = false">Close</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <!-- assign user dialog -->
+
+    <!-- Assign User Dialog -->
     <v-dialog v-model="assignUserDialog" max-width="800px">
       <v-card>
         <v-card-title color="black">Assign User</v-card-title>
         <v-card-text>
- 
+          <!-- Select System Analyst -->
+          <v-select v-model="selectedSystemAnalysts" :items="userSystems.filter(
+            (user) => user.user_position === 'System Analyst'
+          )" label="Select System Analyst" item-text="user_firstname" item-value="id" multiple>
+            <template v-slot:prepend-item>
+              <v-list-item @click="selectAllSystemAnalystAF">
+                <v-list-item-content>Select All</v-list-item-content>
+              </v-list-item>
+            </template>
+          </v-select>
+
+          <!-- Select Developer -->
+          <v-select v-model="selectedDevelopers" :items="userSystems.filter(
+            (user) => user.user_position === 'Developer'
+          )" label="Select Developer" item-text="user_firstname" item-value="id" multiple>
+            <template v-slot:prepend-item>
+              <v-list-item @click="selectAllDevelopersAF">
+                <v-list-item-content>Select All</v-list-item-content>
+              </v-list-item>
+            </template>
+          </v-select>
+
+          <!-- Select Implementer -->
+          <v-select v-model="selectedImplementers" :items="userSystems.filter(
+            (user) => user.user_position === 'Implementer'
+          )" label="Select Implementer" item-text="user_firstname" item-value="id" multiple>
+            <template v-slot:prepend-item>
+              <v-list-item @click="selectAllImplementersAF">
+                <v-list-item-content>Select All</v-list-item-content>
+              </v-list-item>
+            </template>
+          </v-select>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="primary">Assign</v-btn>
+          <v-btn color="primary" @click="assignUser">Assign</v-btn>
           <v-btn color="secondary" @click="assignUserDialog = false">Close</v-btn>
         </v-card-actions>
       </v-card>

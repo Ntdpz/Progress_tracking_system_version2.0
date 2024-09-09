@@ -46,7 +46,7 @@ router.get("/getOneUserID/:user_id", async (req, res) => {
 });
 
 //* GET one by system_id
-router.get("/getOneScreenID/:system_id", async (req, res) => {
+router.get("/getAllSystemId/:system_id", async (req, res) => {
     const system_id = req.params.system_id;
     try {
         connection.query(

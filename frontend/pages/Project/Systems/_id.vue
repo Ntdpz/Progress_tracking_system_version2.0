@@ -72,7 +72,7 @@
         <!-- display screens in system filter by system_id -->
         <v-col cols="12" md="4" v-for="screen in paginatedScreens" :key="screen.id" class="ma-0">
           <!-- *TOCHANGE change desing to design-->
-          <ScreenCard :userSystems="users" :screenId="screen.id" :screenCode="screen.screen_code"
+          <ScreenCard :userSystems="userSystems" :screenId="screen.id" :screenCode="screen.screen_code"
             :screenName="screen.screen_name" :screenStatus="screen.screen_status"
             :screenProgress="screen.screen_progress" :screenPlanStartDate="screen.screen_plan_start"
             :screenPlanEndDate="screen.screen_plan_end" :screenActualStartDate="screen.screen_actual_start"
@@ -87,7 +87,7 @@
     <!-- dialog -->
     <!-- Add Screen-->
     <v-dialog v-model="addScreenDialog" max-width="800px">
-      <add-form :users="users" :systemId="systemid" :projectId="systemData.project_id" @closeDialog="handleCloseDialog">
+      <add-form :users="userSystems" :systemId="systemid" :projectId="systemData.project_id" @closeDialog="handleCloseDialog">
       </add-form>
     </v-dialog>
   </div>
@@ -164,22 +164,12 @@ export default {
       const screens = screensResponse;
 
       // ดึง user_systems ที่เกี่ยวข้องกับ system
-      const userSystemsResponse = await $axios.$get(`/user_systems/getAll`, {
-        params: { system_id: decodedId },
-      });
-      const user_systems = userSystemsResponse;
+      const userSystemsResponse = await $axios.$get(`/user_systems/getAllSystemId/${decodedId}`);
+      const userSystems = userSystemsResponse;
 
-      // ดึงข้อมูลผู้ใช้ทั้งหมด
-      const usersResponse = await $axios.$get(`/users/getAll`);
-      const allUsers = usersResponse;
-
-      // กรองผู้ใช้ตาม user_systems
-      const filteredUsers = allUsers.filter((user) =>
-        user_systems.some((user_system) => user_system.user_id === user.id)
-      );
 
       // ส่งค่าไปให้ใช้งานใน template หรือ data()
-      return { systemData, screens, filteredUsers, systemid: decodedId, userSystems: user_systems };
+      return { systemData, screens, systemid: decodedId, userSystems };
     } catch (err) {
       return error({ statusCode: 404, message: "Data not found" });
     }
