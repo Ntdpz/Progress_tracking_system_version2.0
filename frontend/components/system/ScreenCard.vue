@@ -2,7 +2,12 @@
   <div class="card-wrapper">
     <!-- click -->
     <v-card class="customer-card" @click="$emit('click')" height="">
-      <v-img class="white--text" :src="getBase64Image(ImageSrc)" height="200px" width="400px">
+      <v-img
+        class="white--text"
+        :src="getBase64Image(ImageSrc)"
+        height="200px"
+        width="400px"
+      >
         <v-row class="align-center justify-space-between">
           <!-- Left Side: ID Chip -->
           <v-col cols="auto">
@@ -14,44 +19,56 @@
           <!-- Right Side: Status and Progress Chips -->
           <v-col cols="auto">
             <!-- Replaced chip with circular progress -->
-            <v-progress-circular class="circular-progress" :value="screenProgress || 0"
-              :color="getColorClass(screenProgress)" size="60" width="4">
-              <strong>
-                {{ Math.round(screenProgress || 0) }}%
-              </strong>
+            <v-progress-circular
+              class="circular-progress"
+              :value="screenProgress || 0"
+              :color="getColorClass(screenProgress)"
+              size="60"
+              width="4"
+            >
+              <strong> {{ Math.round(screenProgress || 0) }}% </strong>
             </v-progress-circular>
           </v-col>
         </v-row>
       </v-img>
       <v-card>
-        <v-card-title>
-          Name: {{ screenName }}
-        </v-card-title>
+        <v-card-title> Name: {{ screenName }} </v-card-title>
         <v-card-subtitle>
-          <strong>Plan:</strong> {{ screenPlanStartDate || 'not determined' }} <strong>to</strong> {{ screenPlanEndDate
-          || 'not determined' }} <br>
-          <strong>Actual:</strong> {{ screenActualStartDate || 'not determined' }} <strong>to</strong> {{
-          screenActualEndDate || 'not determined' }}<br>
+          <strong>Plan:</strong> {{ screenPlanStartDate || "not determined" }}
+          <strong>to</strong> {{ screenPlanEndDate || "not determined" }} <br />
+          <strong>Actual:</strong>
+          {{ screenActualStartDate || "not determined" }} <strong>to</strong>
+          {{ screenActualEndDate || "not determined" }}<br />
           <strong>Design:</strong>
           <span :class="getColorClassText(designProgress)">
             {{ Math.round(designProgress || 0) }}%
           </span>
-          {{ truncateName(getUserNamesByPosition('System Analyst')) || 'No assignee' }}
+          {{
+            truncateName(getUserNamesByPosition("System Analyst")) ||
+            "No assignee"
+          }}
           <span>&nbsp;</span>
-          <br>
+          <br />
           <strong>Dev:</strong>
           <span :class="getColorClassText(devProgress)">
             {{ Math.round(devProgress || 0) }}%
           </span>
-          {{ truncateName(getUserNamesByPosition('Developer')) || 'No assignee' }}
+          {{
+            truncateName(getUserNamesByPosition("Developer")) || "No assignee"
+          }}
           <span>&nbsp;</span>
-          <br>
+          <br />
           <strong>Implementer:</strong>
-          {{ truncateName(getUserNamesByPosition('Implementer')) || 'No assignee' }}
+          {{
+            truncateName(getUserNamesByPosition("Implementer")) || "No assignee"
+          }}
         </v-card-subtitle>
         <v-card-actions>
-          <v-btn color="primary" icon @click.stop="openEditDialog"> <v-icon>mdi-pencil</v-icon> </v-btn>
-          <v-btn color="primary" icon @click.stop="editScreenUserDialog = true"> <v-icon>mdi-account-edit</v-icon>
+          <v-btn color="primary" icon @click.stop="openEditDialog">
+            <v-icon>mdi-pencil</v-icon>
+          </v-btn>
+          <v-btn color="primary" icon @click.stop="editScreenUserDialog = true">
+            <v-icon>mdi-account-edit</v-icon>
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -60,7 +77,11 @@
     <!-- Edit Dialog -->
     <v-dialog v-model="editDialog" max-width="800px">
       <!-- editForm -->
-      <editForm @closeDialog="handleCloseDialog" @deleteScreen="deleteScreen">
+      <editForm
+        :screenId="screenId"
+        @closeDialog="handleCloseDialog"
+        @deleteScreen="deleteScreen"
+      >
       </editForm>
     </v-dialog>
     <!-- Edit user dialog -->
@@ -70,10 +91,21 @@
         <v-card-title color="black">Current Users</v-card-title>
         <v-card-text>
           <!-- Current User Table -->
-          <v-data-table :headers="headers" :items="users" class="elevation-1 mt-4 mb-3">
+          <v-data-table
+            :headers="headers"
+            :items="users"
+            class="elevation-1 mt-4 mb-3"
+          >
             <template v-slot:item.user_position="{ item }">
-              <v-chip :style="{ width: '120px', display: 'flex', justifyContent: 'center' }"
-                :color="getColor(item.user_position)" dark>
+              <v-chip
+                :style="{
+                  width: '120px',
+                  display: 'flex',
+                  justifyContent: 'center',
+                }"
+                :color="getColor(item.user_position)"
+                dark
+              >
                 {{ item.user_position }}
               </v-chip>
             </template>
@@ -90,8 +122,12 @@
         <!-- action -->
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="primary" @click="openAssignUserDialog">Assign User</v-btn>
-          <v-btn color="secondary" @click="editScreenUserDialog = false">Close</v-btn>
+          <v-btn color="primary" @click="openAssignUserDialog"
+            >Assign User</v-btn
+          >
+          <v-btn color="secondary" @click="editScreenUserDialog = false"
+            >Close</v-btn
+          >
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -101,9 +137,18 @@
         <v-card-title color="black">Assign User</v-card-title>
         <v-card-text>
           <!-- Select System Analyst -->
-          <v-select v-model="selectedSystemAnalysts" :items="userSystems.filter(
-            (user) => user.user_position === 'System Analyst'
-          )" label="Select System Analyst" item-text="user_firstname" item-value="id" multiple>
+          <v-select
+            v-model="selectedSystemAnalysts"
+            :items="
+              userSystems.filter(
+                (user) => user.user_position === 'System Analyst'
+              )
+            "
+            label="Select System Analyst"
+            item-text="user_firstname"
+            item-value="id"
+            multiple
+          >
             <template v-slot:prepend-item>
               <v-list-item @click="selectAllSystemAnalystAF">
                 <v-list-item-content>Select All</v-list-item-content>
@@ -112,9 +157,16 @@
           </v-select>
 
           <!-- Select Developer -->
-          <v-select v-model="selectedDevelopers" :items="userSystems.filter(
-            (user) => user.user_position === 'Developer'
-          )" label="Select Developer" item-text="user_firstname" item-value="id" multiple>
+          <v-select
+            v-model="selectedDevelopers"
+            :items="
+              userSystems.filter((user) => user.user_position === 'Developer')
+            "
+            label="Select Developer"
+            item-text="user_firstname"
+            item-value="id"
+            multiple
+          >
             <template v-slot:prepend-item>
               <v-list-item @click="selectAllDevelopersAF">
                 <v-list-item-content>Select All</v-list-item-content>
@@ -123,9 +175,16 @@
           </v-select>
 
           <!-- Select Implementer -->
-          <v-select v-model="selectedImplementers" :items="userSystems.filter(
-            (user) => user.user_position === 'Implementer'
-          )" label="Select Implementer" item-text="user_firstname" item-value="id" multiple>
+          <v-select
+            v-model="selectedImplementers"
+            :items="
+              userSystems.filter((user) => user.user_position === 'Implementer')
+            "
+            label="Select Implementer"
+            item-text="user_firstname"
+            item-value="id"
+            multiple
+          >
             <template v-slot:prepend-item>
               <v-list-item @click="selectAllImplementersAF">
                 <v-list-item-content>Select All</v-list-item-content>
@@ -136,7 +195,9 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="primary" @click="assignUser">Assign</v-btn>
-          <v-btn color="secondary" @click="assignUserDialog = false">Close</v-btn>
+          <v-btn color="secondary" @click="assignUserDialog = false"
+            >Close</v-btn
+          >
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -144,9 +205,9 @@
 </template>
 
 <script>
-import editForm from './editForm.vue';
-import axios from 'axios';
-import Swal from 'sweetalert2'; // Make sure to import SweetAlert for notifications
+import editForm from "./editForm.vue";
+import axios from "axios";
+import Swal from "sweetalert2"; // Make sure to import SweetAlert for notifications
 
 export default {
   components: {
@@ -158,7 +219,7 @@ export default {
       required: false,
       default: () => [],
     },
-    screenProjectId:{
+    screenProjectId: {
       type: Number,
       required: true,
     },
@@ -226,18 +287,19 @@ export default {
       selectedDevelopers: [], // Selected developers
       selectedImplementers: [], // Selected implementers
       headers: [
-        { text: 'User Position', value: 'user_position' },
-        { text: 'User Name', value: 'user_name' },
-        { text: 'Action', value: 'action', sortable: false },
+        { text: "User Position", value: "user_position" },
+        { text: "User Name", value: "user_name" },
+        { text: "Action", value: "action", sortable: false },
       ],
-
     };
   },
   methods: {
     // Fetch the currently assigned users for the screen
     async fetchScreenUsers() {
       try {
-        const response = await axios.get(`http://localhost:7777/user_screens/getOneScreenID/${this.screenId}`);
+        const response = await axios.get(
+          `http://localhost:7777/user_screens/getOneScreenID/${this.screenId}`
+        );
         this.users = response.data;
         console.log("Fetched users:", this.users); // Debugging log
       } catch (error) {
@@ -258,12 +320,15 @@ export default {
         ];
 
         // Send POST request to assign users
-        const response = await axios.post('http://localhost:7777/user_screens/createUser_screen', {
-          user_id: selectedUsers,
-          screen_id: this.screenId,
-          system_id: this.screenSystemId, // Ensure system ID is passed if needed
-          project_id: this.screenProjectId, // Ensure project ID is passed if needed
-        });
+        const response = await axios.post(
+          "http://localhost:7777/user_screens/createUser_screen",
+          {
+            user_id: selectedUsers,
+            screen_id: this.screenId,
+            system_id: this.screenSystemId, // Ensure system ID is passed if needed
+            project_id: this.screenProjectId, // Ensure project ID is passed if needed
+          }
+        );
         console.log(response.data.message);
 
         // Close the dialog and show success message
@@ -328,58 +393,62 @@ export default {
       this.editDialog = false;
     },
     saveEdit() {
-      this.$emit('update', {
+      this.$emit("update", {
         screenId: this.screenId,
         screenName: this.editScreenName,
       });
       this.closeEditDialog();
     },
     deleteScreen() {
-      this.$emit('delete', this.screenId);
+      this.$emit("delete", this.screenId);
       this.closeEditDialog();
     },
     // Utility methods for UI
     getColorClass(progress) {
-      if (progress === 100) return 'green';
-      if (progress >= 75) return 'blue';
-      if (progress >= 50) return 'yellow';
-      return 'orange';
+      if (progress === 100) return "green";
+      if (progress >= 75) return "blue";
+      if (progress >= 50) return "yellow";
+      return "orange";
     },
     truncateName(name, maxLength = 20) {
-      if (!name) return '';
-      return name.length > maxLength ? name.substring(0, maxLength) + '...' : name;
+      if (!name) return "";
+      return name.length > maxLength
+        ? name.substring(0, maxLength) + "..."
+        : name;
     },
     getColorClassText(progress) {
-      if (progress === 100) return 'green--text';
-      if (progress >= 75) return 'blue--text';
-      if (progress >= 50) return 'yellow--text';
-      return 'orange--text';
+      if (progress === 100) return "green--text";
+      if (progress >= 75) return "blue--text";
+      if (progress >= 50) return "yellow--text";
+      return "orange--text";
     },
     getColor(position) {
       switch (position) {
-        case 'System Analyst':
-          return '#864F80';
-        case 'Developer':
-          return '#374AAB';
-        case 'Tester':
-          return '#359C73';
+        case "System Analyst":
+          return "#864F80";
+        case "Developer":
+          return "#374AAB";
+        case "Tester":
+          return "#359C73";
         default:
-          return 'grey';
+          return "grey";
       }
     },
     // Get user names based on position (System Analyst, Developer, etc.)
     getUserNamesByPosition(position) {
       const usersByPosition = this.users
-        .filter(user => user.user_position.toLowerCase() === position.toLowerCase())
-        .map(user => `${user.user_firstname}`)
-        .join(', ');
+        .filter(
+          (user) => user.user_position.toLowerCase() === position.toLowerCase()
+        )
+        .map((user) => `${user.user_firstname}`)
+        .join(", ");
       return usersByPosition;
     },
   },
   mounted() {
     this.fetchScreenUsers(); // Load users when the component is mounted
-  }
-}
+  },
+};
 </script>
 
 
