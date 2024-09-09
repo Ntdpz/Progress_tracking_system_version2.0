@@ -218,7 +218,7 @@ export default {
           const startDate = new Date(task.task_plan_start);
           const endDate = new Date(task.task_plan_end);
 
-          return task.is_archived === 1;
+          return task.task_member_id === this.user.id && task.is_archived === 1;
         });
 
         // คำนวณจำนวน tasks ที่เสร็จสมบูรณ์

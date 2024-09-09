@@ -225,7 +225,8 @@ export default {
           return (
             task.task_member_id === this.user.id && // ตรวจสอบ task_member_id
             startDate <= endOfToday &&
-            endDate >= startOfToday
+            endDate >= startOfToday &&
+            task.is_archived === 0
           );
         });
 
