@@ -72,30 +72,35 @@
         <h3>Task Management</h3>
         <v-divider vertical></v-divider>
       </div>
-
+      <v-row>
       <!-- Search bar -->
-      <v-row no-gutters>
-        <v-col cols="7">
+      
+        <v-col cols="12" md="10">
           <v-text-field
             v-model="searchQuery"
             label="Search"
             clearable
             outlined
-            style="width: 100%; border-radius: 20px"
+            dense
           >
           </v-text-field>
         </v-col>
         <!-- open add task form -->
-        <v-col cols="4" class="text-right">
+        <v-col cols="12" md="2" class="text-mid">
+          <v-row>
+            <v-col cols="12">
           <v-btn
             class="rounded-btn"
             color="primary"
             @click="dialogAddTaskForm = true"
-            style="width: 30%"
+            style="width: 100%"
           >
             Add Task
           </v-btn>
+            </v-col>
+          </v-row>
         </v-col>
+        
       </v-row>
 
       <v-divider></v-divider>
