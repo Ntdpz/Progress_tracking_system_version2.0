@@ -97,7 +97,7 @@
       </v-card>
     </v-dialog>
     <!-- Edit user dialog -->
-    <v-dialog v-model="editScreenUserDialog" max-width="800px">
+    <v-dialog v-model="editScreenUserDialog" max-width="1200px">
       <v-card>
         <!-- Current User Title -->
         <v-card-title color="black">Current Users</v-card-title>
