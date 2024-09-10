@@ -67,12 +67,12 @@
     <!-- Edit Dialog -->
     <v-dialog v-model="editDialog" max-width="800px">
       <v-card>
-        <v-card-title color="black">Edit Users</v-card-title>
+        <v-card-title color="black">Edit</v-card-title>
         <v-card-text>
           <v-form ref="editForm" v-model="isValid" lazy-validation>
             <v-row>
               <v-col cols="6">
-                <v-text-field v-model="screenCode" label="Screen Code" :readonly="true" outlined />
+                <v-text-field v-model="screenCode" label="Screen Code" :disabled="true" outlined />
               </v-col>
               <v-col cols="6">
                 <v-text-field v-model="screenName" label="Screen Name" outlined />
@@ -104,24 +104,39 @@
         <v-card-text>
           <!-- Current User Table -->
           <v-data-table :headers="headers" :items="users" class="elevation-1 mt-4 mb-3">
+
+            <!-- User Avatar in the "Image" column -->
+            <template v-slot:item.user_pic="{ item }">
+              <v-avatar>
+                <img :src="getBase64Image(item.user_pic)" alt="User Avatar">
+              </v-avatar>
+            </template>
+
+            <!-- User Name in the "User Name" column -->
+            <template v-slot:item.user_name="{ item }">
+              {{ item.user_firstname }} {{ item.user_lastname }}
+            </template>
+
+            <!-- User Position in the "User Position" column -->
             <template v-slot:item.user_position="{ item }">
               <v-chip :style="{
-                  width: '120px',
-                  display: 'flex',
-                  justifyContent: 'center',
-                }" :color="getColor(item.user_position)" dark>
+                width: '120px',
+                display: 'flex',
+                justifyContent: 'center',
+              }" :color="getColor(item.user_position)" dark>
                 {{ item.user_position }}
               </v-chip>
             </template>
-            <template v-slot:item.user_name="{ item }">
-              {{ item.user_firstname }}
-            </template>
+
+            <!-- Action buttons in the "Action" column -->
             <template v-slot:item.action="{ item }">
               <v-btn icon @click="deleteUser(item)">
                 <v-icon color="red">mdi-delete</v-icon>
               </v-btn>
             </template>
+
           </v-data-table>
+
         </v-card-text>
         <!-- action -->
         <v-card-actions>
@@ -210,7 +225,7 @@
               </v-list-item>
             </template>
           </v-select>
-          <!-- Select Implementer -->
+
           <!-- Select Implementer -->
           <v-select v-model="selectedImplementers"
             :items="usersNotInScreen.filter((user) => user.user_position === 'Implementer')" label="Select Implementer"
@@ -236,8 +251,7 @@
             <!-- User List with Checkboxes -->
             <template v-slot:item="{ item }">
               <v-list-item>
-                <v-checkbox v-model="selectedImplementers" :value="item.id"
-                  :label="`${item.user_firstname} ${item.user_lastname}`" />
+                <v-checkbox v-model="selectedImplementers" :value="item.id" />
 
                 <v-list-item-avatar>
                   <img :src="getBase64Image(item.user_pic)" alt="User Avatar">
@@ -344,8 +358,9 @@ export default {
       selectedDevelopers: [], // Selected developers
       selectedImplementers: [], // Selected implementers
       headers: [
-        { text: "User Position", value: "user_position" },
+        { text: "Image", value: "user_pic", sortable: false },
         { text: "User Name", value: "user_name" },
+        { text: "User Position", value: "user_position" },
         { text: "Action", value: "action", sortable: false },
       ],
       isValid: false,
