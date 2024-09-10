@@ -1,47 +1,9 @@
 <template>
   <div>
     <div>
+      <Loader v-if="$store.getters.isLoading" />
       <v-card class="dead-section">
-        <v-row>
-          <!-- System Detail -->
-          <!-- 1/4 of the row -->
-          <v-col cols="12" md="6">
-            <v-card-title>
-              <!-- icon human which open system member -->
-              <strong>System Name:</strong>{{ systemData.system_nameEN || "Wait for name" }}
-            </v-card-title>
-            <v-card-subtitle>
-              Total Screen: {{ systemData.screen_count || 0 }}<br />
-              Progress:
-              {{
-              systemData.system_progress && !isNaN(systemData.system_progress)
-              ? Math.round(parseInt(systemData.system_progress))
-              : 0
-              }}<br />
-              Plan:
-              {{ formatDate(systemData.system_plan_start) || "Not determined" }}
-              To {{ formatDate(systemData.system_plan_end) || "Not determined"
-              }}<br />
-              Manday:
-              {{
-              systemData.system_manday !== null &&
-              !isNaN(systemData.system_manday)
-              ? Math.round(systemData.system_manday)
-              : 0
-              }}
-              <br />
-            </v-card-subtitle>
-          </v-col>
-          <!-- Progress detail -->
-          <!-- 3/4 of the row -->
-          <v-col cols="12" md="6" class="circular-progress-right">
-            <div class="progress">
-              <!-- Progress Total -->
-              <circular-progress style="margin-top: 20px" :value="parseInt(systemData.system_progress)"
-                label="System" />
-            </div>
-          </v-col>
-        </v-row>
+        <systemsDetail :systemData="systemData" />
       </v-card>
     </div>
     <!-- Search bar search by system name -->
@@ -50,14 +12,24 @@
         <!-- search bar -->
         <!-- 8/12 is search bar -->
         <v-col cols="12" md="8">
-          <v-text-field v-model="search" label="Search" append-icon="mdi-magnify" @input="searchScreen" outlined
-            placeholder="search by name" clearable dense></v-text-field>
+          <v-text-field
+            v-model="search"
+            label="Search"
+            append-icon="mdi-magnify"
+            @input="searchScreen"
+            outlined
+            placeholder="search by name"
+            clearable
+            dense
+          ></v-text-field>
         </v-col>
         <!-- 4/12 is add and history button -->
         <v-col cols="12" md="4">
           <v-row>
             <v-col cols="6">
-              <v-btn color="primary" block @click="openAddScreenDialog">Add screen</v-btn>
+              <v-btn color="primary" block @click="openAddScreenDialog"
+                >Add screen</v-btn
+              >
             </v-col>
             <v-col cols="6">
               <v-btn color="error" @click="openHistoryDialog" block>
@@ -72,37 +44,70 @@
     <div class="screen-cards">
       <v-row>
         <!-- display screens in system filter by system_id -->
-        <v-col cols="12" md="4" v-for="screen in paginatedScreens" :key="screen.id" class="ma-0">
+        <v-col
+          cols="12"
+          md="4"
+          v-for="screen in paginatedScreens"
+          :key="screen.id"
+          class="ma-0"
+        >
           <!-- *TOCHANGE change desing to design-->
-          <ScreenCard :userSystems="userSystems" :screenProjectId="systemData.project_id"
-            :screenSystemId="systemData.id" :screenId="screen.id" :screenCode="screen.screen_code"
-            :screenName="screen.screen_name" :screenStatus="screen.screen_status"
-            :screenProgress="screen.screen_progress" :screenPlanStartDate="screen.screen_plan_start"
-            :screenPlanEndDate="screen.screen_plan_end" :screenActualStartDate="screen.screen_actual_start"
-            :screenActualEndDate="screen.screen_actual_end" :ImageSrc="screen.screen_pic"
-            :design-progress="screen.screen_progress_status_design" :dev-progress="screen.screen_progress_status_dev"
-            @click="navigateToScreen(screen.id)" @update="handleUpdate" @delete="handleDeleteScreen" />
+          <ScreenCard
+            :userSystems="userSystems"
+            :screenProjectId="systemData.project_id"
+            :screenSystemId="systemData.id"
+            :screenId="screen.id"
+            :screenCode="screen.screen_code"
+            :screenName="screen.screen_name"
+            :screenStatus="screen.screen_status"
+            :screenProgress="screen.screen_progress"
+            :screenPlanStartDate="screen.screen_plan_start"
+            :screenPlanEndDate="screen.screen_plan_end"
+            :screenActualStartDate="screen.screen_actual_start"
+            :screenActualEndDate="screen.screen_actual_end"
+            :ImageSrc="screen.screen_pic"
+            :design-progress="screen.screen_progress_status_design"
+            :dev-progress="screen.screen_progress_status_dev"
+            @click="navigateToScreen(screen.id)"
+            @update="handleUpdate"
+            @delete="handleDeleteScreen"
+          />
         </v-col>
       </v-row>
     </div>
     <!-- Pagination -->
-    <v-pagination v-model="page" :length="totalPages" :total-visible="5" class="pagination"></v-pagination>
+    <v-pagination
+      v-model="page"
+      :length="totalPages"
+      :total-visible="5"
+      class="pagination"
+    ></v-pagination>
     <!-- dialog -->
     <!-- Add Screen-->
     <v-dialog v-model="addScreenDialog" max-width="800px">
-      <add-form :users="userSystems" :systemId="systemid" :projectId="systemData.project_id"
-        @closeDialog="handleCloseDialog" @reload="reloadPage">
+      <add-form
+        :users="userSystems"
+        :systemId="systemid"
+        :projectId="systemData.project_id"
+        @closeDialog="handleCloseDialog"
+        @reload="reloadPage"
+      >
       </add-form>
     </v-dialog>
     <v-dialog v-model="historyDialog" max-width="800px">
-      {{systemid }}
-      <srceenHistory :systemId="systemid" @close-dialog="closeHistoryDialog"></srceenHistory>
+      {{ systemid }}
+      <srceenHistory
+        :systemId="systemid"
+        @close-dialog="closeHistoryDialog"
+      ></srceenHistory>
     </v-dialog>
   </div>
 </template>
 
 
 <script>
+import systemsDetail from "@/components/Progress_tracking/systems/systemsDetail.vue";
+import Loader from "@/components/Loader.vue";
 import axios from "axios";
 import CircularProgress from "~/components/system/circularProgress.vue";
 import ScreenCard from "~/components/system/ScreenCard.vue";
@@ -122,6 +127,8 @@ export default {
     ScreenCard,
     AddForm,
     srceenHistory,
+    Loader,
+    systemsDetail,
   },
   layout: "admin", // Apply layout if needed
   middleware: "auth", // Apply middleware if needed
