@@ -854,8 +854,8 @@ export default {
           text: "You won't be able to revert this!",
           icon: "warning",
           showCancelButton: true,
-          confirmButtonColor: "#009933", // ปรับสีปุ่ม Yes เป็นสีเขียว
-          cancelButtonColor: "#d33",
+          confirmButtonColor: "#d33", // ปรับสีปุ่ม Yes เป็นสีเขียว
+          cancelButtonColor: "#009933",
           confirmButtonText: "Yes, delete them!",
         });
 
