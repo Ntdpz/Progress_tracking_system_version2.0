@@ -309,6 +309,7 @@ export default {
               icon: "error",
               title: "Error",
               text: "Failed to update the screen",
+              confirmButtonColor: "#009933",
             });
           }
         } catch (error) {
@@ -317,6 +318,7 @@ export default {
             icon: "error",
             title: "Error",
             text: "An unexpected error occurred",
+            confirmButtonColor: "#009933",
           });
         } finally{
           this.reloadPage();

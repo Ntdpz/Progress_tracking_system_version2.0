@@ -325,6 +325,7 @@ export default {
           icon: "error",
           title: "Error",
           text: "Failed to assign users",
+          confirmButtonColor: "#009933",
         });
       }
     },
@@ -341,6 +342,7 @@ export default {
           icon: "error",
           title: "Error",
           text: "Failed to fetch users not in screen",
+          confirmButtonColor: "#009933",
         });
       }
     },
@@ -368,6 +370,7 @@ export default {
           icon: "error",
           title: "Error",
           text: "Failed to delete user",
+          confirmButtonColor: "#009933",
         });
       }
     },
@@ -431,6 +434,7 @@ export default {
             icon: "error",
             title: "Error",
             text: "Failed to process the image file.",
+            confirmButtonColor: "#009933",
           });
           return;
         }
