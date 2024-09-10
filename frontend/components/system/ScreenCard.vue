@@ -137,10 +137,9 @@
         <v-card-title color="black">Assign User</v-card-title>
         <v-card-text>
           <!-- Select System Analyst -->
-          <v-select v-model="selectedSystemAnalysts" :items="
-              userSystems.filter(
-                (user) => user.user_position === 'System Analyst'
-              )
+          <v-select v-model="selectedSystemAnalysts" :items="usersNotInScreen.filter(
+            (user) => user.user_position === 'System Analyst'
+          )
             " label="Select System Analyst" item-text="user_firstname" item-value="id" multiple>
             <template v-slot:prepend-item>
               <v-list-item @click="selectAllSystemAnalystAF">
@@ -150,8 +149,7 @@
           </v-select>
 
           <!-- Select Developer -->
-          <v-select v-model="selectedDevelopers" :items="
-              userSystems.filter((user) => user.user_position === 'Developer')
+          <v-select v-model="selectedDevelopers" :items="usersNotInScreen.filter((user) => user.user_position === 'Developer')
             " label="Select Developer" item-text="user_firstname" item-value="id" multiple>
             <template v-slot:prepend-item>
               <v-list-item @click="selectAllDevelopersAF">
@@ -161,8 +159,7 @@
           </v-select>
 
           <!-- Select Implementer -->
-          <v-select v-model="selectedImplementers" :items="
-              userSystems.filter((user) => user.user_position === 'Implementer')
+          <v-select v-model="selectedImplementers" :items="usersNotInScreen.filter((user) => user.user_position === 'Implementer')
             " label="Select Implementer" item-text="user_firstname" item-value="id" multiple>
             <template v-slot:prepend-item>
               <v-list-item @click="selectAllImplementersAF">
@@ -257,6 +254,7 @@ export default {
   data() {
     return {
       users: [], // Holds the current users assigned to the screen
+      usersNotInScreen: [],
       editDialog: false,
       assignUserDialog: false,
       editScreenUserDialog: false,
@@ -330,7 +328,22 @@ export default {
         });
       }
     },
-    // Delete a user from the screen
+    //fetch user not in screen
+    async fetchUsersNotInScreen() {
+      try{
+        const response = await axios.get(
+          `http://localhost:7777/user_screens/checkUsersNOTINScreen/${this.screenProjectId}/${this.screenSystemId}/${this.screenId}`
+        );
+        this.usersNotInScreen = response.data;
+      } catch (error){
+        console.error("Error fetching users not in screen:", error);
+        await Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Failed to fetch users not in screen",
+        });
+      }
+    },
     // Delete a user from the screen
     async deleteUser(user) {
       try {
@@ -482,6 +495,7 @@ export default {
   },
   mounted() {
     this.fetchScreenUsers(); // Load users when the component is mounted
+    this.fetchUsersNotInScreen();
   },
 };
 </script>
