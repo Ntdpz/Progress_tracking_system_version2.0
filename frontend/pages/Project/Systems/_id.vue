@@ -20,16 +20,11 @@
                 <user-system :systemData="systemData" :userSystems="userSystems"></user-system>
               </v-dialog>
 
-              <strong>System Name:</strong>{{ systemData.system_nameEN || "Wait for name" }}
+              <strong>System:</strong>{{ systemData.system_nameEN || "Wait for name" }}
             </v-card-title>
             <v-card-subtitle>
-              Total Screen: {{ systemData.screen_count || 0 }}<br />
-              Progress:
-              {{
-              systemData.system_progress && !isNaN(systemData.system_progress)
-              ? Math.round(parseInt(systemData.system_progress))
-              : 0
-              }}<br />
+              ระบบ: {{ systemData.system_nameTH || "รอการตั้งชื่อ" }}<br />
+              Total Screen: {{ systemData.screen_count || 0 }} screens<br />
               Plan:
               {{ formatDate(systemData.system_plan_start) || "Not determined" }}
               To {{ formatDate(systemData.system_plan_end) || "Not determined"

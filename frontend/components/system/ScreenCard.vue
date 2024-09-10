@@ -72,7 +72,7 @@
           <v-form ref="editForm" v-model="isValid" lazy-validation>
             <v-row>
               <v-col cols="6">
-                <v-text-field v-model="screenCode" label="Screen Code"  :readonly="true" outlined />
+                <v-text-field v-model="screenCode" label="Screen Code" :readonly="true" outlined />
               </v-col>
               <v-col cols="6">
                 <v-text-field v-model="screenName" label="Screen Name" outlined />
@@ -136,38 +136,119 @@
       <v-card>
         <v-card-title color="black">Assign User</v-card-title>
         <v-card-text>
+
           <!-- Select System Analyst -->
-          <v-select v-model="selectedSystemAnalysts" :items="usersNotInScreen.filter(
-            (user) => user.user_position === 'System Analyst'
-          )
-            " label="Select System Analyst" item-text="user_firstname" item-value="id" multiple>
+          <v-select v-model="selectedSystemAnalysts"
+            :items="usersNotInScreen.filter((user) => user.user_position === 'System Analyst')"
+            label="Select System Analyst" item-text="user_firstname" item-value="id" multiple>
+
+            <!-- Select All Option -->
             <template v-slot:prepend-item>
               <v-list-item @click="selectAllSystemAnalystAF">
                 <v-list-item-content>Select All</v-list-item-content>
               </v-list-item>
             </template>
+
+            <!-- Selected User Chips -->
+            <template v-slot:selection="{ item, index }">
+              <v-chip v-if="item" :key="index" class="d-flex align-center" close
+                @click:close="removeSystemAnalyst(item)">
+                <v-avatar left>
+                  <img :src="getBase64Image(item.user_pic)" alt="User Avatar">
+                </v-avatar>
+                {{ item.user_firstname }}
+              </v-chip>
+            </template>
+
+            <!-- User List with Checkboxes -->
+            <template v-slot:item="{ item }">
+              <v-list-item>
+                <v-checkbox v-model="selectedSystemAnalysts" :value="item.id" />
+                <v-list-item-avatar>
+                  <img :src="getBase64Image(item.user_pic)" alt="User Avatar">
+                </v-list-item-avatar>
+                <v-list-item-content>
+                  <v-list-item-title>{{ item.user_firstname }} {{ item.user_lastname }}</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+            </template>
           </v-select>
 
           <!-- Select Developer -->
-          <v-select v-model="selectedDevelopers" :items="usersNotInScreen.filter((user) => user.user_position === 'Developer')
-            " label="Select Developer" item-text="user_firstname" item-value="id" multiple>
+          <v-select v-model="selectedDevelopers"
+            :items="usersNotInScreen.filter((user) => user.user_position === 'Developer')" label="Select Developer"
+            item-text="user_firstname" item-value="id" multiple>
+
+            <!-- Select All Option -->
             <template v-slot:prepend-item>
               <v-list-item @click="selectAllDevelopersAF">
                 <v-list-item-content>Select All</v-list-item-content>
               </v-list-item>
             </template>
-          </v-select>
 
+            <!-- Selected User Chips -->
+            <template v-slot:selection="{ item, index }">
+              <v-chip v-if="item" :key="index" class="d-flex align-center" close @click:close="removeDeveloper(item)">
+                <v-avatar left>
+                  <img :src="getBase64Image(item.user_pic)" alt="User Avatar">
+                </v-avatar>
+                {{ item.user_firstname }}
+              </v-chip>
+            </template>
+
+            <!-- User List with Checkboxes -->
+            <template v-slot:item="{ item }">
+              <v-list-item>
+                <v-checkbox v-model="selectedDevelopers" :value="item.id" />
+
+                <v-list-item-avatar>
+                  <img :src="getBase64Image(item.user_pic)" alt="User Avatar">
+                </v-list-item-avatar>
+                <v-list-item-content>
+                  <v-list-item-title>{{ item.user_firstname }} {{ item.user_lastname }}</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+            </template>
+          </v-select>
           <!-- Select Implementer -->
-          <v-select v-model="selectedImplementers" :items="usersNotInScreen.filter((user) => user.user_position === 'Implementer')
-            " label="Select Implementer"
-             item-text="user_firstname" item-value="id" multiple>
+          <!-- Select Implementer -->
+          <v-select v-model="selectedImplementers"
+            :items="usersNotInScreen.filter((user) => user.user_position === 'Implementer')" label="Select Implementer"
+            item-text="user_firstname" item-value="id" multiple>
+
+            <!-- Select All Option -->
             <template v-slot:prepend-item>
               <v-list-item @click="selectAllImplementersAF">
                 <v-list-item-content>Select All</v-list-item-content>
               </v-list-item>
             </template>
+
+            <!-- Selected User Chips -->
+            <template v-slot:selection="{ item, index }">
+              <v-chip v-if="item" :key="index" class="d-flex align-center" close @click:close="removeImplementer(item)">
+                <v-avatar left>
+                  <img :src="getBase64Image(item.user_pic)" alt="User Avatar">
+                </v-avatar>
+                {{ item.user_firstname }}
+              </v-chip>
+            </template>
+
+            <!-- User List with Checkboxes -->
+            <template v-slot:item="{ item }">
+              <v-list-item>
+                <v-checkbox v-model="selectedImplementers" :value="item.id"
+                  :label="`${item.user_firstname} ${item.user_lastname}`" />
+
+                <v-list-item-avatar>
+                  <img :src="getBase64Image(item.user_pic)" alt="User Avatar">
+                </v-list-item-avatar>
+                <v-list-item-content>
+                  <v-list-item-title>{{ item.user_firstname }} {{ item.user_lastname }}</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+            </template>
           </v-select>
+
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -513,6 +594,40 @@ export default {
         .map((user) => `${user.user_firstname}`)
         .join(", ");
       return usersByPosition;
+    },
+    // Get use image, based on position (System Analyst, Developer, etc.)
+    // Select all system analyst
+    selectAllSystemAnalystAF() {
+      this.selectedSystemAnalysts = this.usersNotInScreen
+        .filter((user) => user.user_position === "System Analyst")
+        .map((user) => user.id);
+    },
+    removeSystemAnalyst(item) {
+      this.selectedSystemAnalysts = this.selectedSystemAnalysts.filter(
+        (id) => id !== item.id
+      );
+    },
+    // Select all developers
+    selectAllDevelopersAF() {
+      this.selectedDevelopers = this.usersNotInScreen
+        .filter((user) => user.user_position === "Developer")
+        .map((user) => user.id);
+    },
+    removeDeveloper(item) {
+      this.selectedDevelopers = this.selectedDevelopers.filter(
+        (id) => id !== item.id
+      );
+    },
+    // Select all implementers
+    selectAllImplementersAF() {
+      this.selectedImplementers = this.usersNotInScreen
+        .filter((user) => user.user_position === "Implementer")
+        .map((user) => user.id);
+    },
+    removeImplementer(item) {
+      this.selectedImplementers = this.selectedImplementers.filter(
+        (id) => id !== item.id
+      );
     },
   },
   mounted() {
