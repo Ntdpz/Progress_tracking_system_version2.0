@@ -239,6 +239,7 @@ export default {
     },
     closeHistoryDialog() {
       this.historyDialog = false;
+      this.$router.go();
     },
     reloadPage() {
       this.$router.go();
