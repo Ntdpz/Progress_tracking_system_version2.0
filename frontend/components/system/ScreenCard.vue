@@ -307,9 +307,14 @@ export default {
           }
         );
         console.log(response.data.message);
+        
 
         // Close the dialog and show success message
         this.assignUserDialog = false;
+        // reset selected users
+        this.selectedSystemAnalysts = [];
+        this.selectedDevelopers = [];
+        this.selectedImplementers = [];
         await Swal.fire({
           icon: "success",
           title: "Success",

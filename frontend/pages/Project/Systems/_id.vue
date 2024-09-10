@@ -154,7 +154,7 @@ export default {
 
       // Pagination
       page: 1,
-      itemsPerPage: 15, // max 15 screens per page
+      itemsPerPage: 12, // max 15 screens per page
       totalPages: 0,
       addScreenDialog: false,
       historyDialog: false,
@@ -163,6 +163,12 @@ export default {
     };
   },
   computed: {
+    filteredScreens() {
+      // Filter screens by search query
+      if (!this.search) {
+        return this.allScreens;
+      }
+    },
     paginatedScreens() {
       const start = (this.page - 1) * this.itemsPerPage;
       const end = start + this.itemsPerPage;
