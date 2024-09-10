@@ -175,6 +175,7 @@ export default {
       const screensResponse = await $axios.$get(`/screens/getAll`, {
         params: { system_id: decodedId },
       });
+      const allScreens = screensResponse;
       const screens = screensResponse;
 
       // ดึง user_systems ที่เกี่ยวข้องกับ system
@@ -184,7 +185,7 @@ export default {
       const userSystems = userSystemsResponse;
 
       // ส่งค่าไปให้ใช้งานใน template หรือ data()
-      return { systemData, screens, systemid: decodedId, userSystems };
+      return { systemData, screens, systemid: decodedId, userSystems, allScreens };
     } catch (err) {
       return error({ statusCode: 404, message: "Data not found" });
     }
