@@ -72,7 +72,7 @@
           <v-form ref="editForm" v-model="isValid" lazy-validation>
             <v-row>
               <v-col cols="6">
-                <v-text-field v-model="screenCode" label="Screen Code" :readonly="true" outlined />
+                <v-text-field v-model="screenCode" label="Screen Code"  :readonly="true" outlined />
               </v-col>
               <v-col cols="6">
                 <v-text-field v-model="screenName" label="Screen Name" outlined />
@@ -160,7 +160,8 @@
 
           <!-- Select Implementer -->
           <v-select v-model="selectedImplementers" :items="usersNotInScreen.filter((user) => user.user_position === 'Implementer')
-            " label="Select Implementer" item-text="user_firstname" item-value="id" multiple>
+            " label="Select Implementer"
+             item-text="user_firstname" item-value="id" multiple>
             <template v-slot:prepend-item>
               <v-list-item @click="selectAllImplementersAF">
                 <v-list-item-content>Select All</v-list-item-content>
@@ -285,7 +286,17 @@ export default {
     },
     // Convert Base64 image string to a usable image URL
     getBase64Image(base64String) {
-      return `data:image/jpeg;base64,${base64String}`;
+      if (!base64String) {
+        // If base64String is null or undefined, return an empty string or a placeholder image
+        return '';
+      }
+      if (base64String.startsWith('data:image/jpeg;base64,')) {
+        // If the base64 string already includes the prefix, return it as is
+        return base64String;
+      } else {
+        // Otherwise, add the prefix and return the modified string
+        return `data:image/jpeg;base64,${base64String}`;
+      }
     },
     // Assign users to the screen
     async assignUser() {
@@ -364,6 +375,7 @@ export default {
 
         // Fetch the updated users and show success message
         await this.fetchScreenUsers();
+        await this.fetchUsersNotInScreen();
         await Swal.fire({
           icon: "success",
           title: "Success",
