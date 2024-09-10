@@ -79,7 +79,7 @@
     <div class="screen-cards">
       <v-row>
         <!-- display screens in system filter by system_id -->
-        <v-col cols="12" md="4" v-for="screen in paginatedScreens" :key="screen.id" class="ma-0">
+        <v-col cols="12" md="4" v-for="screen in paginatedScreens" :key="screen.id" >
           <!-- *TOCHANGE change desing to design-->
           <ScreenCard :userSystems="userSystems" :screenProjectId="systemData.project_id"
             :screenSystemId="systemData.id" :screenId="screen.id" :screenCode="screen.screen_code"
@@ -358,5 +358,10 @@ export default {
 }
 .large-icon {
   font-size: 40px;
+}
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
 }
 </style>
