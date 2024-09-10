@@ -50,6 +50,57 @@ function generateId() {
   return id;
 }
 
+// ฟังก์ชันสำหรับอัปเดตข้อมูล screen ในฐานข้อมูล
+async function updateScreen(screen) {
+  try {
+    // กำหนดค่า default ให้กับ screen_progress หากเป็น null หรือ undefined
+    if (
+      screen.screen_progress === null ||
+      screen.screen_progress === undefined
+    ) {
+      screen.screen_progress = 0; // ค่า default, สามารถเปลี่ยนแปลงได้ตามต้องการ
+    }
+
+    const updateQuery = `
+      UPDATE Screens
+      SET 
+        screen_progress = ?, 
+        screen_progress_status_design = ?, 
+        screen_progress_status_dev = ?, 
+        screen_plan_start = ?, 
+        screen_plan_end = ?, 
+        task_count = ?
+      WHERE id = ?
+    `;
+
+    // ค่า parameter ที่ต้องการส่งให้กับ query
+    const params = [
+      screen.screen_progress,
+      screen.screen_progress_status_design || 0, // กำหนดค่า default เป็น 0 หากเป็น undefined หรือ null
+      screen.screen_progress_status_dev || 0, // กำหนดค่า default เป็น 0 หากเป็น undefined หรือ null
+      screen.screen_plan_start,
+      screen.screen_plan_end,
+      screen.task_count || 0, // กำหนดค่า default เป็น 0 หากเป็น undefined หรือ null
+      screen.id,
+    ];
+
+    // ทำการอัปเดต screen ในฐานข้อมูล
+    await new Promise((resolve, reject) => {
+      connection.query(updateQuery, params, (err, results) => {
+        if (err) {
+          console.error(err);
+          return reject(err);
+        }
+        resolve(results);
+      });
+    });
+  } catch (error) {
+    console.error("Error updating screen:", error);
+    throw error;
+  }
+}
+
+
 router.get("/getAll", async (req, res) => {
   try {
     const systemIDFilter = req.query.system_id;
@@ -158,33 +209,6 @@ router.get("/getAll", async (req, res) => {
 });
 
 
-// Function to update screen in the database
-async function updateScreen(screen) {
-  return new Promise((resolve, reject) => {
-    const updateQuery = `
-      UPDATE Screens
-      SET screen_progress = ?,
-          screen_plan_start = ?,
-          screen_plan_end = ?
-      WHERE id = ?
-    `;
-
-    const updateParams = [
-      screen.screen_progress,
-      screen.screen_plan_start,
-      screen.screen_plan_end,
-      screen.id
-    ];
-
-    connection.query(updateQuery, updateParams, (err, results) => {
-      if (err) {
-        return reject(err);
-      }
-      resolve(results);
-    });
-  });
-}
-
 
 router.get("/getOne/:id", async (req, res) => {
   try {
@@ -193,12 +217,15 @@ router.get("/getOne/:id", async (req, res) => {
     let query = `
       SELECT
         Screens.*,
-        AVG(tasks.task_progress) AS screen_progress,
-        AVG(CASE WHEN tasks.task_type = 'Design' THEN tasks.task_progress ELSE NULL END) AS screen_progress_status_design,
-         AVG(CASE WHEN tasks.task_type = 'Develop' THEN tasks.task_progress ELSE NULL END) AS screen_progress_status_dev,
-        COUNT(tasks.id) AS task_count,
-        MIN(tasks.task_plan_start) AS min_task_plan_start,
-        MAX(tasks.task_plan_end) AS max_task_plan_end
+        CAST(
+              (COALESCE(AVG(CASE WHEN tasks.task_type = 'Design' THEN tasks.task_progress ELSE NULL END), 0) + COALESCE(AVG(CASE WHEN tasks.task_type = 'Develop' THEN tasks.task_progress ELSE NULL END), 0))
+              / 2 AS DECIMAL(10,0)
+          ) AS screen_progress,
+          CAST(COALESCE(AVG(CASE WHEN tasks.task_type = 'Design' THEN tasks.task_progress ELSE NULL END), 0) AS DECIMAL(10,0)) AS screen_progress_status_design,
+          CAST(COALESCE(AVG(CASE WHEN tasks.task_type = 'Develop' THEN tasks.task_progress ELSE NULL END), 0) AS DECIMAL(10,0)) AS screen_progress_status_dev,
+          COUNT(tasks.id) AS task_count,
+          MIN(tasks.task_plan_start) AS min_task_plan_start,
+          MAX(tasks.task_plan_end) AS max_task_plan_end
       FROM
         Screens
       LEFT JOIN tasks ON Screens.id = tasks.screen_id
@@ -244,46 +271,6 @@ router.get("/getOne/:id", async (req, res) => {
   }
 });
 
-// Function to update screen data
-async function updateScreen(screen) {
-  try {
-    // Ensure screen_progress is not null
-    if (
-      screen.screen_progress === null ||
-      screen.screen_progress === undefined
-    ) {
-      // Provide a default value or handle the case appropriately
-      screen.screen_progress = 0; // Default value, change it as needed
-    }
-
-    const updateQuery = `
-      UPDATE screens 
-      SET 
-        screen_progress = ?,
-        screen_plan_start = ?, 
-        screen_plan_end = ?,
-        task_count = ?
-      WHERE id = ?
-    `;
-
-    const queryParams = [
-      screen.screen_progress,
-      screen.screen_plan_start,
-      screen.screen_plan_end,
-      screen.task_count,
-      screen.id,
-    ];
-
-    await new Promise((resolve, reject) => {
-      connection.query(updateQuery, queryParams, (err, result) => {
-        if (err) reject(err);
-        resolve(result);
-      });
-    });
-  } catch (error) {
-    throw error;
-  }
-}
 
 // Route to get all historical screens
 router.get("/getAllHistoryScreens", async (req, res) => {
@@ -299,6 +286,16 @@ router.get("/getAllHistoryScreens", async (req, res) => {
         console.log(err);
         return res.status(400).send();
       }
+      await Promise.all(
+        results.map(async (screen) => {
+          try {
+            await updateScreen(screen);
+          } catch (updateErr) {
+            console.error(updateErr);
+          }
+        })
+      );
+
       res.status(200).json(results);
     });
   } catch (err) {
@@ -318,8 +315,8 @@ router.get("/searchByProjectId/:project_id", async (req, res) => {
         AVG(tasks.task_progress) AS screen_progress,
         AVG(CASE WHEN tasks.task_type = 'Design' THEN tasks.task_progress ELSE NULL END) AS screen_progress_status_design,
         AVG(CASE WHEN tasks.task_type = 'Develop' THEN tasks.task_progress ELSE NULL END) AS screen_progress_status_dev,
-        DATE(MIN(Screens.screen_plan_start)) AS screen_plan_start,
-        DATE(MAX(Screens.screen_plan_end)) AS screen_plan_end,
+        DATE(MIN(tasks.task_plan_start)) AS min_task_plan_start,
+        DATE(MAX(tasks.task_plan_end)) AS max_task_plan_end,
         DATEDIFF(MAX(tasks.task_plan_end), MIN(tasks.task_plan_start)) AS screen_manday
       FROM
         Screens
@@ -334,19 +331,25 @@ router.get("/searchByProjectId/:project_id", async (req, res) => {
         return res.status(400).send();
       }
 
+      // Update each screen after fetching results
       await Promise.all(
         results.map(async (screen) => {
-          await updateScreen(screen);
-          if (screen.screen_plan_start) {
-            screen.screen_plan_start = new Date(screen.screen_plan_start)
+          if (screen.min_task_plan_start && screen.max_task_plan_end) {
+            screen.screen_plan_start = new Date(screen.min_task_plan_start)
+              .toISOString()
+              .split("T")[0];
+            screen.screen_plan_end = new Date(screen.max_task_plan_end)
               .toISOString()
               .split("T")[0];
           }
-          if (screen.screen_plan_end) {
-            screen.screen_plan_end = new Date(screen.screen_plan_end)
-              .toISOString()
-              .split("T")[0];
+
+          // Call the updateScreen function
+          try {
+            await updateScreen(screen);
+          } catch (updateErr) {
+            console.error("Failed to update screen:", updateErr);
           }
+
           return screen;
         })
       );
@@ -358,6 +361,7 @@ router.get("/searchByProjectId/:project_id", async (req, res) => {
     return res.status(500).send();
   }
 });
+
 
 // Route to get deleted screens by project ID
 router.get("/searchByProjectId_delete/:project_id", async (req, res) => {
@@ -388,6 +392,7 @@ router.get("/searchByProjectId_delete/:project_id", async (req, res) => {
 
       await Promise.all(
         results.map(async (screen) => {
+          
           await updateScreen(screen);
         })
       );
