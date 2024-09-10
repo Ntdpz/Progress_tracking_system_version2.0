@@ -311,4 +311,25 @@ router.get("/getSystemsByUser_id/:project_id/:user_id", async (req, res) => {
 });
 
 
+// GET API: รับข้อมูล user_systems จาก system_id
+router.get('/getUserSystemsBySystemId/:system_id', (req, res) => {
+    const systemId = req.params.system_id;
+
+    const sqlQuery = `
+    SELECT u.id, u.user_firstname, u.user_lastname, u.user_position, u.user_department, u.user_email, u.user_status, u.user_role, u.user_pic
+    FROM user_systems us
+    JOIN users u ON us.user_id = u.id
+    WHERE us.system_id = ?
+  `;
+
+    connection.query(sqlQuery, [systemId], (err, results) => {
+        if (err) {
+            console.error('เกิดข้อผิดพลาดในการดึงข้อมูล:', err);
+            res.status(500).send('เกิดข้อผิดพลาดในการดึงข้อมูล');
+        } else {
+            res.json(results);
+        }
+    });
+});
+
 module.exports = router;
