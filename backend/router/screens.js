@@ -59,9 +59,12 @@ router.get("/getAll", async (req, res) => {
     let query = `
       SELECT
           Screens.*,
-          AVG(tasks.task_progress) AS screen_progress,
-          AVG(CASE WHEN tasks.task_type = 'Design' THEN tasks.task_progress ELSE NULL END) AS screen_progress_status_design,
-          AVG(CASE WHEN tasks.task_type = 'Develop' THEN tasks.task_progress ELSE NULL END) AS screen_progress_status_dev,
+          CAST(
+              (COALESCE(AVG(CASE WHEN tasks.task_type = 'Design' THEN tasks.task_progress ELSE NULL END), 0) + COALESCE(AVG(CASE WHEN tasks.task_type = 'Develop' THEN tasks.task_progress ELSE NULL END), 0))
+              / 2 AS DECIMAL(10,0)
+          ) AS screen_progress,
+          CAST(COALESCE(AVG(CASE WHEN tasks.task_type = 'Design' THEN tasks.task_progress ELSE NULL END), 0) AS DECIMAL(10,0)) AS screen_progress_status_design,
+          CAST(COALESCE(AVG(CASE WHEN tasks.task_type = 'Develop' THEN tasks.task_progress ELSE NULL END), 0) AS DECIMAL(10,0)) AS screen_progress_status_dev,
           COUNT(tasks.id) AS task_count,
           MIN(tasks.task_plan_start) AS min_task_plan_start,
           MAX(tasks.task_plan_end) AS max_task_plan_end
@@ -98,7 +101,7 @@ router.get("/getAll", async (req, res) => {
       }
 
       // Process results to format dates and update screens
-      results.forEach(async (screen) => {
+      for (const screen of results) {
         // Format date fields
         if (screen.min_task_plan_start && screen.max_task_plan_end) {
           screen.screen_plan_start = new Date(screen.min_task_plan_start)
@@ -110,12 +113,40 @@ router.get("/getAll", async (req, res) => {
         }
 
         // Update screen data in the database
+        const updateQuery = `
+          UPDATE Screens
+          SET screen_progress = ?, 
+              screen_progress_status_design = ?, 
+              screen_progress_status_dev = ?, 
+              screen_plan_start = ?, 
+              screen_plan_end = ?
+          WHERE id = ?
+        `;
+
+        const updateParams = [
+          screen.screen_progress,
+          screen.screen_progress_status_design,
+          screen.screen_progress_status_dev,
+          screen.screen_plan_start,
+          screen.screen_plan_end,
+          screen.id
+        ];
+
         try {
-          await updateScreen(screen);
+          await new Promise((resolve, reject) => {
+            connection.query(updateQuery, updateParams, (updateErr, updateResults) => {
+              if (updateErr) {
+                console.error(updateErr);
+                reject(updateErr);
+              } else {
+                resolve(updateResults);
+              }
+            });
+          });
         } catch (updateErr) {
           console.error(updateErr);
         }
-      });
+      }
 
       // Send the response with the results
       res.status(200).json(results);
@@ -125,6 +156,35 @@ router.get("/getAll", async (req, res) => {
     return res.status(500).send();
   }
 });
+
+
+// Function to update screen in the database
+async function updateScreen(screen) {
+  return new Promise((resolve, reject) => {
+    const updateQuery = `
+      UPDATE Screens
+      SET screen_progress = ?,
+          screen_plan_start = ?,
+          screen_plan_end = ?
+      WHERE id = ?
+    `;
+
+    const updateParams = [
+      screen.screen_progress,
+      screen.screen_plan_start,
+      screen.screen_plan_end,
+      screen.id
+    ];
+
+    connection.query(updateQuery, updateParams, (err, results) => {
+      if (err) {
+        return reject(err);
+      }
+      resolve(results);
+    });
+  });
+}
+
 
 router.get("/getOne/:id", async (req, res) => {
   try {
