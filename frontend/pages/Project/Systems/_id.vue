@@ -109,7 +109,7 @@
     </v-dialog>
     <v-dialog v-model="historyDialog" max-width="800px">
       {{systemid }}
-      <srceenHistory :systemId="systemid" @close-dialog="closeHistoryDialog"></srceenHistory>
+      <srceenHistory :systemId="systemid" @close-dialog="closeHistoryDialog" ></srceenHistory>
     </v-dialog>
   </div>
 </template>
