@@ -324,6 +324,7 @@ export default {
 
         // Fetch the updated users
         await this.fetchScreenUsers();
+        await this.fetchUsersNotInScreen();
       } catch (error) {
         console.error("Error assigning users:", error);
         await Swal.fire({
@@ -510,7 +511,11 @@ export default {
     screenLevelLabel() {
       return `Level ${this.screenLevel || 'Not Set'}`;
     }
-  }
+  },
+  created() {
+    this.fetchScreenUsers();
+    this.fetchUsersNotInScreen();
+  },
 };
 </script>
 
