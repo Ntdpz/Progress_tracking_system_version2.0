@@ -194,8 +194,8 @@ export default {
           text: "You won't be able to revert this!",
           icon: "warning",
           showCancelButton: true,
-          confirmButtonColor: "#009933",
-          cancelButtonColor: "#d33",
+          confirmButtonColor: "#d33",
+          cancelButtonColor: "#009933",
           confirmButtonText: "Yes, delete them!",
         });
 
