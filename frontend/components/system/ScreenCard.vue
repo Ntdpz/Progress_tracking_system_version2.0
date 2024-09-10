@@ -22,7 +22,7 @@
         </v-row>
       </v-img>
       <v-card>
-        <v-card-title> {{ screenName }}  </v-card-title>
+        <v-card-title> {{ screenName }} </v-card-title>
         <v-card-subtitle>
           <strong>Plan:</strong> {{ screenPlanStartDate || "-" }}
           <strong>to</strong> {{ screenPlanEndDate || "-" }} <br />
@@ -67,6 +67,7 @@
     <!-- Edit Dialog -->
     <v-dialog v-model="editDialog" max-width="800px">
       <v-card>
+        <v-card-title color="black">Edit Users</v-card-title>
         <v-card-text>
           <v-form ref="editForm" v-model="isValid" lazy-validation>
             <v-row>
@@ -82,8 +83,7 @@
                 <v-select v-model="screenLevel" :items="[1, 2, 3, 4, 5]" label="Difficulty Level" outlined />
               </v-col>
               <v-col cols="6">
-                <v-file-input v-model="imageFile" label="Upload Image" outlined accept=".png, .jpeg"
-                  />
+                <v-file-input v-model="imageFile" label="Upload Image" outlined accept=".png, .jpeg" />
               </v-col>
             </v-row>
           </v-form>
