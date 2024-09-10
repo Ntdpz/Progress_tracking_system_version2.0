@@ -8,6 +8,18 @@
           <v-col cols="12" md="6">
             <v-card-title>
               <!-- icon human which open system member -->
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-icon v-bind="attrs" v-on="on" @click="openUserSystem" color="primary" class="large-icon">
+                    mdi-account-multiple
+                  </v-icon>
+                </template>
+                <span>User system</span>
+              </v-tooltip>
+              <v-dialog v-model="userSystemDialog" max-width="800px">
+                <user-system :systemData="systemData" :userSystems="userSystems"></user-system>
+              </v-dialog>
+
               <strong>System Name:</strong>{{ systemData.system_nameEN || "Wait for name" }}
             </v-card-title>
             <v-card-subtitle>
@@ -76,9 +88,7 @@
           <!-- *TOCHANGE change desing to design-->
           <ScreenCard :userSystems="userSystems" :screenProjectId="systemData.project_id"
             :screenSystemId="systemData.id" :screenId="screen.id" :screenCode="screen.screen_code"
-            :screenName="screen.screen_name"
-            :screenLevel="screen.screen_level"
-            :screenStatus="screen.screen_status"
+            :screenName="screen.screen_name" :screenLevel="screen.screen_level" :screenStatus="screen.screen_status"
             :screenProgress="screen.screen_progress" :screenPlanStartDate="screen.screen_plan_start"
             :screenPlanEndDate="screen.screen_plan_end" :screenActualStartDate="screen.screen_actual_start"
             :screenActualEndDate="screen.screen_actual_end" :ImageSrc="screen.screen_pic"
@@ -109,6 +119,7 @@
 import Swal from "sweetalert2";
 import axios from "axios";
 import CircularProgress from "~/components/system/circularProgress.vue";
+import userSystem from "~/components/system/userSystem.vue";
 import ScreenCard from "~/components/system/ScreenCard.vue";
 import AddForm from "~/components/system/addForm.vue";
 import srceenHistory from "~/components/system/srceenHistory.vue";
@@ -126,6 +137,7 @@ export default {
     ScreenCard,
     AddForm,
     srceenHistory,
+    userSystem,
   },
   layout: "admin", // Apply layout if needed
   middleware: "auth", // Apply middleware if needed
@@ -146,6 +158,7 @@ export default {
       totalPages: 0,
       addScreenDialog: false,
       historyDialog: false,
+      userSystemDialog: false,
       systemData: "",
     };
   },
@@ -226,7 +239,12 @@ export default {
     openHistoryDialog() {
       this.historyDialog = true;
     },
-
+    openUserSystem() {
+      this.userSystemDialog = true;
+    },
+    closeUserSystem() {
+      this.userSystemDialog = false;
+    },
     navigateToScreen(screenId) {
       const encodedScreenId = encodeURIComponent(encodeId(screenId)); // เข้ารหัส screenId
       this.$router.push(`/Project/Systems/screens/${encodedScreenId}`);
@@ -333,5 +351,8 @@ export default {
 .circular-progress-right {
   display: flex;
   justify-content: flex-end;
+}
+.large-icon {
+  font-size: 40px;
 }
 </style>
