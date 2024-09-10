@@ -220,7 +220,8 @@ export default {
       this.screens = this.allScreens.filter(
         (screen) =>
           screen.screen_name &&
-          screen.screen_name.toLowerCase().includes(searchTerm)
+          (screen.screen_name && screen.screen_name.toLowerCase().includes(searchTerm)) ||
+          (screen.screen_code && screen.screen_code.toLowerCase().includes(searchTerm))
       );
       // Reset to page 1 when search is performed
       this.page = 1;
