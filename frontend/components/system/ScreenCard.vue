@@ -80,9 +80,9 @@
             </v-row>
             <v-row>
               <v-col cols="6">
-                <v-select v-model="screenLevel" :items="[1, 2, 3, 4, 5]" label="Difficulty Level" outlined />
+                <v-select v-model="screenLevel" :items="[1, 2, 3, 4, 5]" :label="`Level ${screenLevel}`" outlined />
               </v-col>
-              <v-col cols="6">
+              <v-col cols=" 6">
                 <v-file-input v-model="imageFile" label="Upload Image" outlined accept=".png, .jpeg" />
               </v-col>
             </v-row>
@@ -497,6 +497,11 @@ export default {
     this.fetchScreenUsers(); // Load users when the component is mounted
     this.fetchUsersNotInScreen();
   },
+  computed: {
+    screenLevelLabel() {
+      return `Level ${this.screenLevel || 'Not Set'}`;
+    }
+  }
 };
 </script>
 
