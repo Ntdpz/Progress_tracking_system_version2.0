@@ -22,7 +22,7 @@
         </v-row>
       </v-img>
       <v-card>
-        <v-card-title> Name: {{ screenName }} </v-card-title>
+        <v-card-title> {{ screenName }}  </v-card-title>
         <v-card-subtitle>
           <strong>Plan:</strong> {{ screenPlanStartDate || "-" }}
           <strong>to</strong> {{ screenPlanEndDate || "-" }} <br />
@@ -79,21 +79,21 @@
             </v-row>
             <v-row>
               <v-col cols="6">
-                <v-select v-model="difficultyLevel" :items="[1, 2, 3, 4, 5]" label="Difficulty Level" outlined />
+                <v-select v-model="screenLevel" :items="[1, 2, 3, 4, 5]" label="Difficulty Level" outlined />
               </v-col>
               <v-col cols="6">
                 <v-file-input v-model="imageFile" label="Upload Image" outlined accept=".png, .jpeg"
-                  @change="convertImageToBase64" />
+                  />
               </v-col>
             </v-row>
           </v-form>
         </v-card-text>
-        <v-card-action>
+        <v-card-actions>
           <v-btn @click="confirmDeleteScreen" color="red" outlined>Delete</v-btn>
           <v-spacer></v-spacer>
           <v-btn color="primary" @click="submitEdit">Submit</v-btn>
           <v-btn color="secondary" @click="closeEditDialog">Cancel</v-btn>
-        </v-card-action>
+        </v-card-actions>
       </v-card>
     </v-dialog>
     <!-- Edit user dialog -->
@@ -238,7 +238,7 @@ export default {
       required: false,
     },
     screenProgress: {
-      type: String,
+      type: Number,
       required: false,
     },
     ImageSrc: {
@@ -246,11 +246,11 @@ export default {
       required: false,
     },
     designProgress: {
-      type: Number,
+      type: String,
       required: false,
     },
     devProgress: {
-      type: Number,
+      type: String,
       required: false,
     },
   },
@@ -288,17 +288,6 @@ export default {
     // Convert Base64 image string to a usable image URL
     getBase64Image(base64String) {
       return `data:image/jpeg;base64,${base64String}`;
-    },
-    convertImageToBase64() {
-      const file = this.imageFile;
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64String = reader.result.split(',')[1];
-        this.imageBase64 = base64String;
-      };
-      if (file) {
-        reader.readAsDataURL(file);
-      }
     },
     // Assign users to the screen
     async assignUser() {
@@ -382,8 +371,6 @@ export default {
     closeEditDialog() {
       this.editDialog = false;
     },
-   
-
     //Edit dialog
     confirmDeleteScreen() {
       Swal.fire({
@@ -404,19 +391,51 @@ export default {
       this.$emit("delete", this.screenId);
       this.closeEditDialog();
     },
-    submitEdit(){
+    convertFileToBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file); // Read file as Base64
+        reader.onload = () => resolve(reader.result); // Base64 result
+        reader.onerror = error => reject(error);
+      });
+    },
+    async submitEdit() {
       if (!this.$refs.editForm.validate()) {
         return;
       }
+
+      let base64Image = null;
+
+      // If imageFile exists, convert it to Base64
+      if (this.imageFile) {
+        try {
+          base64Image = await this.convertFileToBase64(this.imageFile);
+          // Remove the `data:image/jpeg;base64,` prefix if present
+          base64Image = base64Image.replace(/^data:image\/(jpeg|png);base64,/, '');
+        } catch (error) {
+          console.error("Error converting image to Base64:", error);
+          await Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "Failed to process the image file.",
+          });
+          return;
+        }
+      }
+
+      // Create the updated screen object
       const updatedScreen = {
         screenId: this.screenId,
         screenCode: this.screenCode,
         screenName: this.screenName,
-        difficultyLevel: this.difficultyLevel,
-        imageFile: this.imageFile
+        screenLevel: this.screenLevel || 0,
+        imageFile: base64Image || null, // Base64 string without prefix or null
       };
 
+      // Emit the updatedScreen object to the parent
       this.$emit("submit-edit", updatedScreen);
+
+      // Close the dialog
       this.closeEditDialog();
     },
     // Utility methods for UI

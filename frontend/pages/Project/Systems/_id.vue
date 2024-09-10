@@ -106,6 +106,7 @@
 
 
 <script>
+import Swal from "sweetalert2";
 import axios from "axios";
 import CircularProgress from "~/components/system/circularProgress.vue";
 import ScreenCard from "~/components/system/ScreenCard.vue";
@@ -260,32 +261,46 @@ export default {
       }
     },
     // edit screen
-    async handleSubmitEdit(updatedScreen) {
-      const screenId = updatedScreen.screenId;
-      const screenData = {
-        screen_code: updatedScreen.screenCode,
-        screen_name: updatedScreen.screenName,
-        screen_level: updatedScreen.difficultyLevel,
-        screen_pic: updatedScreen.imageFile,
-        screen_status: updatedScreen.screenStatus,
-        project_id: updatedScreen.projectId,
-        is_deleted: updatedScreen.isDeleted,
-      };
+      async handleSubmitEdit(updatedScreen) {
+        const screenId = updatedScreen.screenId;
+        const screenData = {
+          screen_code: updatedScreen.screenCode,
+          screen_name: updatedScreen.screenName,
+          screen_level: updatedScreen.screenLevel,
+          screen_pic: updatedScreen.imageFile, // Base64 image string
+        };
 
-      try {
-        const response = await axios.put(`screens/updateScreen/${screenId}`, screenData);
+        try {
+          const response = await axios.put(
+            `http://localhost:7777/screens/updateScreen/${screenId}`,
+            screenData
+          );
 
-        if (response.status === 200) {
-          console.log(response.data.message);
-          this.$emit('update-success', response.data);
-        } else {
-          console.log(response.data.message);
-          this.$emit('update-failure', response.data);
+          if (response.status === 200) {
+            await Swal.fire({
+              icon: "success",
+              title: "Success",
+              text: "Screen updated successfully",
+              confirmButtonColor: "#009933",
+            });
+          } else {
+            await Swal.fire({
+              icon: "error",
+              title: "Error",
+              text: "Failed to update the screen",
+            });
+          }
+        } catch (error) {
+          console.error("An error occurred while updating the screen:", error);
+          await Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "An unexpected error occurred",
+          });
+        } finally{
+          this.reloadPage();
         }
-      } catch (err) {
-        console.error('An error occurred while updating the screen:', err);
       }
-    }
   },
 };
 </script>
