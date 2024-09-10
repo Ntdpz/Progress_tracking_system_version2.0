@@ -76,12 +76,15 @@
           <!-- *TOCHANGE change desing to design-->
           <ScreenCard :userSystems="userSystems" :screenProjectId="systemData.project_id"
             :screenSystemId="systemData.id" :screenId="screen.id" :screenCode="screen.screen_code"
-            :screenName="screen.screen_name" :screenStatus="screen.screen_status"
+            :screenName="screen.screen_name"
+            :screenLevel="screen.screen_level"
+            :screenStatus="screen.screen_status"
             :screenProgress="screen.screen_progress" :screenPlanStartDate="screen.screen_plan_start"
             :screenPlanEndDate="screen.screen_plan_end" :screenActualStartDate="screen.screen_actual_start"
             :screenActualEndDate="screen.screen_actual_end" :ImageSrc="screen.screen_pic"
             :design-progress="screen.screen_progress_status_design" :dev-progress="screen.screen_progress_status_dev"
-            @click="navigateToScreen(screen.id)" @update="handleUpdate" @delete="handleDeleteScreen" />
+            @click="navigateToScreen(screen.id)" @update="handleUpdate" @delete="handleDeleteScreen"
+            @submit-edit="handleSubmitEdit" />
         </v-col>
       </v-row>
     </div>
@@ -256,7 +259,33 @@ export default {
         console.error("Failed to delete screen:", error);
       }
     },
-    //
+    // edit screen
+    async handleSubmitEdit(updatedScreen) {
+      const screenId = updatedScreen.screenId;
+      const screenData = {
+        screen_code: updatedScreen.screenCode,
+        screen_name: updatedScreen.screenName,
+        screen_level: updatedScreen.difficultyLevel,
+        screen_pic: updatedScreen.imageFile,
+        screen_status: updatedScreen.screenStatus,
+        project_id: updatedScreen.projectId,
+        is_deleted: updatedScreen.isDeleted,
+      };
+
+      try {
+        const response = await axios.put(`screens/updateScreen/${screenId}`, screenData);
+
+        if (response.status === 200) {
+          console.log(response.data.message);
+          this.$emit('update-success', response.data);
+        } else {
+          console.log(response.data.message);
+          this.$emit('update-failure', response.data);
+        }
+      } catch (err) {
+        console.error('An error occurred while updating the screen:', err);
+      }
+    }
   },
 };
 </script>

@@ -2,12 +2,7 @@
   <div class="card-wrapper">
     <!-- click -->
     <v-card class="customer-card" @click="$emit('click')" height="">
-      <v-img
-        class="white--text"
-        :src="getBase64Image(ImageSrc)"
-        height="200px"
-        width="400px"
-      >
+      <v-img class="white--text" :src="getBase64Image(ImageSrc)" height="200px" width="400px">
         <v-row class="align-center justify-space-between">
           <!-- Left Side: ID Chip -->
           <v-col cols="auto">
@@ -19,13 +14,8 @@
           <!-- Right Side: Status and Progress Chips -->
           <v-col cols="auto">
             <!-- Replaced chip with circular progress -->
-            <v-progress-circular
-              class="circular-progress"
-              :value="screenProgress || 0"
-              :color="getColorClass(screenProgress)"
-              size="60"
-              width="4"
-            >
+            <v-progress-circular class="circular-progress" :value="screenProgress || 0"
+              :color="getColorClass(screenProgress)" size="60" width="4">
               <strong> {{ Math.round(screenProgress || 0) }}% </strong>
             </v-progress-circular>
           </v-col>
@@ -34,18 +24,18 @@
       <v-card>
         <v-card-title> Name: {{ screenName }} </v-card-title>
         <v-card-subtitle>
-          <strong>Plan:</strong> {{ screenPlanStartDate || "not determined" }}
-          <strong>to</strong> {{ screenPlanEndDate || "not determined" }} <br />
+          <strong>Plan:</strong> {{ screenPlanStartDate || "-" }}
+          <strong>to</strong> {{ screenPlanEndDate || "-" }} <br />
           <strong>Actual:</strong>
-          {{ screenActualStartDate || "not determined" }} <strong>to</strong>
-          {{ screenActualEndDate || "not determined" }}<br />
+          {{ screenActualStartDate || "-" }} <strong>to</strong>
+          {{ screenActualEndDate || "-" }}<br />
           <strong>Design:</strong>
           <span :class="getColorClassText(designProgress)">
             {{ Math.round(designProgress || 0) }}%
           </span>
           {{
-            truncateName(getUserNamesByPosition("System Analyst")) ||
-            "No assignee"
+          truncateName(getUserNamesByPosition("System Analyst")) ||
+          "No assignee"
           }}
           <span>&nbsp;</span>
           <br />
@@ -54,13 +44,13 @@
             {{ Math.round(devProgress || 0) }}%
           </span>
           {{
-            truncateName(getUserNamesByPosition("Developer")) || "No assignee"
+          truncateName(getUserNamesByPosition("Developer")) || "No assignee"
           }}
           <span>&nbsp;</span>
           <br />
           <strong>Implementer:</strong>
           {{
-            truncateName(getUserNamesByPosition("Implementer")) || "No assignee"
+          truncateName(getUserNamesByPosition("Implementer")) || "No assignee"
           }}
         </v-card-subtitle>
         <v-card-actions>
@@ -76,13 +66,35 @@
 
     <!-- Edit Dialog -->
     <v-dialog v-model="editDialog" max-width="800px">
-      <!-- editForm -->
-      <editForm
-        :screenId="screenId"
-        @closeDialog="handleCloseDialog"
-        @deleteScreen="deleteScreen"
-      >
-      </editForm>
+      <v-card>
+        <v-card-text>
+          <v-form ref="editForm" v-model="isValid" lazy-validation>
+            <v-row>
+              <v-col cols="6">
+                <v-text-field v-model="screenCode" label="Screen Code" :readonly="true" outlined />
+              </v-col>
+              <v-col cols="6">
+                <v-text-field v-model="screenName" label="Screen Name" outlined />
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="6">
+                <v-select v-model="difficultyLevel" :items="[1, 2, 3, 4, 5]" label="Difficulty Level" outlined />
+              </v-col>
+              <v-col cols="6">
+                <v-file-input v-model="imageFile" label="Upload Image" outlined accept=".png, .jpeg"
+                  @change="convertImageToBase64" />
+              </v-col>
+            </v-row>
+          </v-form>
+        </v-card-text>
+        <v-card-action>
+          <v-btn @click="confirmDeleteScreen" color="red" outlined>Delete</v-btn>
+          <v-spacer></v-spacer>
+          <v-btn color="primary" @click="submitEdit">Submit</v-btn>
+          <v-btn color="secondary" @click="closeEditDialog">Cancel</v-btn>
+        </v-card-action>
+      </v-card>
     </v-dialog>
     <!-- Edit user dialog -->
     <v-dialog v-model="editScreenUserDialog" max-width="800px">
@@ -91,21 +103,13 @@
         <v-card-title color="black">Current Users</v-card-title>
         <v-card-text>
           <!-- Current User Table -->
-          <v-data-table
-            :headers="headers"
-            :items="users"
-            class="elevation-1 mt-4 mb-3"
-          >
+          <v-data-table :headers="headers" :items="users" class="elevation-1 mt-4 mb-3">
             <template v-slot:item.user_position="{ item }">
-              <v-chip
-                :style="{
+              <v-chip :style="{
                   width: '120px',
                   display: 'flex',
                   justifyContent: 'center',
-                }"
-                :color="getColor(item.user_position)"
-                dark
-              >
+                }" :color="getColor(item.user_position)" dark>
                 {{ item.user_position }}
               </v-chip>
             </template>
@@ -122,12 +126,8 @@
         <!-- action -->
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="primary" @click="openAssignUserDialog"
-            >Assign User</v-btn
-          >
-          <v-btn color="secondary" @click="editScreenUserDialog = false"
-            >Close</v-btn
-          >
+          <v-btn color="primary" @click="openAssignUserDialog">Assign User</v-btn>
+          <v-btn color="secondary" @click="editScreenUserDialog = false">Close</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -137,18 +137,11 @@
         <v-card-title color="black">Assign User</v-card-title>
         <v-card-text>
           <!-- Select System Analyst -->
-          <v-select
-            v-model="selectedSystemAnalysts"
-            :items="
+          <v-select v-model="selectedSystemAnalysts" :items="
               userSystems.filter(
                 (user) => user.user_position === 'System Analyst'
               )
-            "
-            label="Select System Analyst"
-            item-text="user_firstname"
-            item-value="id"
-            multiple
-          >
+            " label="Select System Analyst" item-text="user_firstname" item-value="id" multiple>
             <template v-slot:prepend-item>
               <v-list-item @click="selectAllSystemAnalystAF">
                 <v-list-item-content>Select All</v-list-item-content>
@@ -157,16 +150,9 @@
           </v-select>
 
           <!-- Select Developer -->
-          <v-select
-            v-model="selectedDevelopers"
-            :items="
+          <v-select v-model="selectedDevelopers" :items="
               userSystems.filter((user) => user.user_position === 'Developer')
-            "
-            label="Select Developer"
-            item-text="user_firstname"
-            item-value="id"
-            multiple
-          >
+            " label="Select Developer" item-text="user_firstname" item-value="id" multiple>
             <template v-slot:prepend-item>
               <v-list-item @click="selectAllDevelopersAF">
                 <v-list-item-content>Select All</v-list-item-content>
@@ -175,16 +161,9 @@
           </v-select>
 
           <!-- Select Implementer -->
-          <v-select
-            v-model="selectedImplementers"
-            :items="
+          <v-select v-model="selectedImplementers" :items="
               userSystems.filter((user) => user.user_position === 'Implementer')
-            "
-            label="Select Implementer"
-            item-text="user_firstname"
-            item-value="id"
-            multiple
-          >
+            " label="Select Implementer" item-text="user_firstname" item-value="id" multiple>
             <template v-slot:prepend-item>
               <v-list-item @click="selectAllImplementersAF">
                 <v-list-item-content>Select All</v-list-item-content>
@@ -195,9 +174,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="primary" @click="assignUser">Assign</v-btn>
-          <v-btn color="secondary" @click="assignUserDialog = false"
-            >Close</v-btn
-          >
+          <v-btn color="secondary" @click="assignUserDialog = false">Close</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -205,14 +182,11 @@
 </template>
 
 <script>
-import editForm from "./editForm.vue";
+
 import axios from "axios";
 import Swal from "sweetalert2"; // Make sure to import SweetAlert for notifications
 
 export default {
-  components: {
-    editForm,
-  },
   props: {
     userSystems: {
       type: Array,
@@ -259,6 +233,10 @@ export default {
       type: String,
       required: true,
     },
+    screenLevel:{
+      type: String,
+      required: false,
+    },
     screenProgress: {
       type: String,
       required: false,
@@ -281,7 +259,6 @@ export default {
       users: [], // Holds the current users assigned to the screen
       editDialog: false,
       assignUserDialog: false,
-      editScreenName: this.screenName,
       editScreenUserDialog: false,
       selectedSystemAnalysts: [], // Selected system analysts
       selectedDevelopers: [], // Selected developers
@@ -291,6 +268,8 @@ export default {
         { text: "User Name", value: "user_name" },
         { text: "Action", value: "action", sortable: false },
       ],
+      isValid: false,
+      imageFile: null,
     };
   },
   methods: {
@@ -309,6 +288,17 @@ export default {
     // Convert Base64 image string to a usable image URL
     getBase64Image(base64String) {
       return `data:image/jpeg;base64,${base64String}`;
+    },
+    convertImageToBase64() {
+      const file = this.imageFile;
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result.split(',')[1];
+        this.imageBase64 = base64String;
+      };
+      if (file) {
+        reader.readAsDataURL(file);
+      }
     },
     // Assign users to the screen
     async assignUser() {
@@ -392,15 +382,41 @@ export default {
     closeEditDialog() {
       this.editDialog = false;
     },
-    saveEdit() {
-      this.$emit("update", {
-        screenId: this.screenId,
-        screenName: this.editScreenName,
+   
+
+    //Edit dialog
+    confirmDeleteScreen() {
+      Swal.fire({
+        title: 'Are sure you want to delete?',
+        text: "If deleted, you won't be able to recover this screen!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#009933',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.deleteScreen();
+        }
       });
-      this.closeEditDialog();
     },
     deleteScreen() {
       this.$emit("delete", this.screenId);
+      this.closeEditDialog();
+    },
+    submitEdit(){
+      if (!this.$refs.editForm.validate()) {
+        return;
+      }
+      const updatedScreen = {
+        screenId: this.screenId,
+        screenCode: this.screenCode,
+        screenName: this.screenName,
+        difficultyLevel: this.difficultyLevel,
+        imageFile: this.imageFile
+      };
+
+      this.$emit("submit-edit", updatedScreen);
       this.closeEditDialog();
     },
     // Utility methods for UI
