@@ -62,7 +62,7 @@ async function updateScreen(screen) {
     }
 
     const updateQuery = `
-      UPDATE Screens
+      UPDATE screens
       SET 
         screen_progress = ?, 
         screen_progress_status_design = ?, 
@@ -109,7 +109,7 @@ router.get("/getAll", async (req, res) => {
 
     let query = `
       SELECT
-          Screens.*,
+          screens.*,
           CAST(
               (COALESCE(AVG(CASE WHEN tasks.task_type = 'Design' THEN tasks.task_progress ELSE NULL END), 0) + COALESCE(AVG(CASE WHEN tasks.task_type = 'Develop' THEN tasks.task_progress ELSE NULL END), 0))
               / 2 AS DECIMAL(10,0)
@@ -120,29 +120,29 @@ router.get("/getAll", async (req, res) => {
           MIN(tasks.task_plan_start) AS min_task_plan_start,
           MAX(tasks.task_plan_end) AS max_task_plan_end
       FROM
-          Screens
-      LEFT JOIN tasks ON Screens.id = tasks.screen_id
+          screens
+      LEFT JOIN tasks ON screens.id = tasks.screen_id
       WHERE
-          Screens.is_deleted = 0
+          screens.is_deleted = 0
     `;
 
     const queryParams = [];
 
     // Add filters to the query based on request parameters
     if (systemIDFilter) {
-      query += " AND Screens.system_id = ?";
+      query += " AND screens.system_id = ?";
       queryParams.push(systemIDFilter);
     }
     if (screenIDFilter) {
-      query += " AND Screens.screen_code = ?";
+      query += " AND screens.screen_code = ?";
       queryParams.push(screenIDFilter);
     }
     if (projectIDFilter) {
-      query += " AND Screens.project_id = ?";
+      query += " AND screens.project_id = ?";
       queryParams.push(projectIDFilter);
     }
 
-    query += " GROUP BY Screens.id";
+    query += " GROUP BY screens.id";
 
     // Execute the query
     connection.query(query, queryParams, async (err, results, fields) => {
@@ -165,7 +165,7 @@ router.get("/getAll", async (req, res) => {
 
         // Update screen data in the database
         const updateQuery = `
-          UPDATE Screens
+          UPDATE screens
           SET screen_progress = ?, 
               screen_progress_status_design = ?, 
               screen_progress_status_dev = ?, 
@@ -216,7 +216,7 @@ router.get("/getOne/:id", async (req, res) => {
 
     let query = `
       SELECT
-        Screens.*,
+        screens.*,
         CAST(
               (COALESCE(AVG(CASE WHEN tasks.task_type = 'Design' THEN tasks.task_progress ELSE NULL END), 0) + COALESCE(AVG(CASE WHEN tasks.task_type = 'Develop' THEN tasks.task_progress ELSE NULL END), 0))
               / 2 AS DECIMAL(10,0)
@@ -227,13 +227,13 @@ router.get("/getOne/:id", async (req, res) => {
           MIN(tasks.task_plan_start) AS min_task_plan_start,
           MAX(tasks.task_plan_end) AS max_task_plan_end
       FROM
-        Screens
-      LEFT JOIN tasks ON Screens.id = tasks.screen_id
+        screens
+      LEFT JOIN tasks ON screens.id = tasks.screen_id
     `;
 
-    query += ` WHERE Screens.id = ? AND Screens.is_deleted = 0`;
+    query += ` WHERE screens.id = ? AND screens.is_deleted = 0`;
 
-    query += " GROUP BY Screens.id";
+    query += " GROUP BY screens.id";
 
     connection.query(query, [id], async (err, results, fields) => {
       if (err) {
@@ -277,7 +277,7 @@ router.get("/getAllHistoryScreens", async (req, res) => {
   try {
     const query = `
       SELECT *
-      FROM Screens
+      FROM screens
       WHERE is_deleted = 1
     `;
 
@@ -311,7 +311,7 @@ router.get("/searchByProjectId/:project_id", async (req, res) => {
 
     let query = `
       SELECT
-        Screens.*,
+        screens.*,
         AVG(tasks.task_progress) AS screen_progress,
         AVG(CASE WHEN tasks.task_type = 'Design' THEN tasks.task_progress ELSE NULL END) AS screen_progress_status_design,
         AVG(CASE WHEN tasks.task_type = 'Develop' THEN tasks.task_progress ELSE NULL END) AS screen_progress_status_dev,
@@ -319,10 +319,10 @@ router.get("/searchByProjectId/:project_id", async (req, res) => {
         DATE(MAX(tasks.task_plan_end)) AS max_task_plan_end,
         DATEDIFF(MAX(tasks.task_plan_end), MIN(tasks.task_plan_start)) AS screen_manday
       FROM
-        Screens
-      LEFT JOIN tasks ON Screens.id = tasks.screen_id
-      WHERE Screens.project_id = ? AND Screens.is_deleted = 0
-      GROUP BY Screens.id
+        screens
+      LEFT JOIN tasks ON screens.id = tasks.screen_id
+      WHERE screens.project_id = ? AND screens.is_deleted = 0
+      GROUP BY screens.id
     `;
 
     connection.query(query, [project_id], async (err, results, fields) => {
@@ -370,18 +370,18 @@ router.get("/searchByProjectId_delete/:project_id", async (req, res) => {
 
     let query = `
       SELECT
-        Screens.*,
+        screens.*,
         AVG(tasks.task_progress) AS screen_progress,
         AVG(CASE WHEN tasks.task_type = 'Design' THEN tasks.task_progress ELSE NULL END) AS screen_progress_status_design,
         AVG(CASE WHEN tasks.task_type = 'Develop' THEN tasks.task_progress ELSE NULL END) AS screen_progress_status_dev,
-        DATE(MIN(Screens.screen_plan_start)) AS screen_plan_start,
-        DATE(MAX(Screens.screen_plan_end)) AS screen_plan_end,
+        DATE(MIN(screens.screen_plan_start)) AS screen_plan_start,
+        DATE(MAX(screens.screen_plan_end)) AS screen_plan_end,
         DATEDIFF(MAX(tasks.task_plan_end), MIN(tasks.task_plan_start)) AS screen_manday
       FROM
-        Screens
-      LEFT JOIN tasks ON Screens.id = tasks.screen_id
-      WHERE Screens.project_id = ? AND Screens.is_deleted = 1
-      GROUP BY Screens.id
+        screens
+      LEFT JOIN tasks ON screens.id = tasks.screen_id
+      WHERE screens.project_id = ? AND screens.is_deleted = 1
+      GROUP BY screens.id
     `;
 
     connection.query(query, [project_id], async (err, results, fields) => {
@@ -412,18 +412,18 @@ router.get("/searchBySystemId/:system_id", async (req, res) => {
 
     let query = `
       SELECT
-        Screens.*,
+        screens.*,
         AVG(tasks.task_progress) AS screen_progress,
         AVG(CASE WHEN tasks.task_type = 'Design' THEN tasks.task_progress ELSE NULL END) AS screen_progress_status_design,
         AVG(CASE WHEN tasks.task_type = 'Develop' THEN tasks.task_progress ELSE NULL END) AS screen_progress_status_dev,
-        DATE(MIN(Screens.screen_plan_start)) AS screen_plan_start,
-        DATE(MAX(Screens.screen_plan_end)) AS screen_plan_end,
+        DATE(MIN(screens.screen_plan_start)) AS screen_plan_start,
+        DATE(MAX(screens.screen_plan_end)) AS screen_plan_end,
         DATEDIFF(MAX(tasks.task_plan_end), MIN(tasks.task_plan_start)) AS screen_manday
       FROM
-        Screens
-      LEFT JOIN tasks ON Screens.id = tasks.screen_id
-      WHERE Screens.system_id = ? AND Screens.is_deleted = 0
-      GROUP BY Screens.id
+        screens
+      LEFT JOIN tasks ON screens.id = tasks.screen_id
+      WHERE screens.system_id = ? AND screens.is_deleted = 0
+      GROUP BY screens.id
     `;
 
     connection.query(query, [system_id], async (err, results, fields) => {
@@ -464,18 +464,18 @@ router.get("/searchBySystemId_delete/:system_id", async (req, res) => {
 
     let query = `
       SELECT
-        Screens.*,
+        screens.*,
         AVG(tasks.task_progress) AS screen_progress,
           AVG(CASE WHEN tasks.task_type = 'Design' THEN tasks.task_progress ELSE NULL END) AS screen_progress_status_design,
           AVG(CASE WHEN tasks.task_type = 'Develop' THEN tasks.task_progress ELSE NULL END) AS screen_progress_status_dev,
-        DATE(MIN(Screens.screen_plan_start)) AS screen_plan_start,
-        DATE(MAX(Screens.screen_plan_end)) AS screen_plan_end,
+        DATE(MIN(screens.screen_plan_start)) AS screen_plan_start,
+        DATE(MAX(screens.screen_plan_end)) AS screen_plan_end,
         DATEDIFF(MAX(tasks.task_plan_end), MIN(tasks.task_plan_start)) AS screen_manday
       FROM
-        Screens
-      LEFT JOIN tasks ON Screens.id = tasks.screen_id
-      WHERE Screens.system_id = ? AND Screens.is_deleted = 1
-      GROUP BY Screens.id
+        screens
+      LEFT JOIN tasks ON screens.id = tasks.screen_id
+      WHERE screens.system_id = ? AND screens.is_deleted = 1
+      GROUP BY screens.id
     `;
 
     connection.query(query, [system_id], async (err, results, fields) => {

@@ -17,14 +17,14 @@ router.get("/getAll", async (req, res) => {
     let query = `
       SELECT 
         projects.*,
-        COUNT(DISTINCT CASE WHEN Systems.is_deleted = 0 THEN Systems.id ELSE NULL END) AS system_count,
-        AVG(CASE WHEN Systems.is_deleted = 0 THEN Systems.system_progress ELSE NULL END) AS project_progress,
-        DATE_FORMAT(MIN(CASE WHEN Systems.is_deleted = 0 THEN Systems.system_plan_start END), '%Y-%m-%d') AS project_plan_start,
-        DATE_FORMAT(MAX(CASE WHEN Systems.is_deleted = 0 THEN Systems.system_plan_end END), '%Y-%m-%d') AS project_plan_end,
-        DATEDIFF(MAX(CASE WHEN Systems.is_deleted = 0 THEN Systems.system_plan_end END), MIN(CASE WHEN Systems.is_deleted = 0 THEN Systems.system_plan_start END)) AS project_manday
+        COUNT(DISTINCT CASE WHEN systems.is_deleted = 0 THEN systems.id ELSE NULL END) AS system_count,
+        AVG(CASE WHEN systems.is_deleted = 0 THEN systems.system_progress ELSE NULL END) AS project_progress,
+        DATE_FORMAT(MIN(CASE WHEN systems.is_deleted = 0 THEN systems.system_plan_start END), '%Y-%m-%d') AS project_plan_start,
+        DATE_FORMAT(MAX(CASE WHEN systems.is_deleted = 0 THEN systems.system_plan_end END), '%Y-%m-%d') AS project_plan_end,
+        DATEDIFF(MAX(CASE WHEN systems.is_deleted = 0 THEN systems.system_plan_end END), MIN(CASE WHEN systems.is_deleted = 0 THEN systems.system_plan_start END)) AS project_manday
       FROM 
         projects 
-      LEFT JOIN Systems ON projects.id = Systems.project_id`;
+      LEFT JOIN systems ON projects.id = systems.project_id`;
 
     const queryParams = [];
 
@@ -63,14 +63,14 @@ router.get("/getOne/:id", async (req, res) => {
       `
       SELECT 
         projects.*,
-        COUNT(DISTINCT CASE WHEN Systems.is_deleted = 0 THEN Systems.id ELSE NULL END) AS system_count,
-        AVG(CASE WHEN Systems.is_deleted = 0 THEN Systems.system_progress ELSE NULL END) AS project_progress,
-        DATE_FORMAT(MIN(CASE WHEN Systems.is_deleted = 0 THEN Systems.system_plan_start END), '%Y-%m-%d') AS project_plan_start,
-        DATE_FORMAT(MAX(CASE WHEN Systems.is_deleted = 0 THEN Systems.system_plan_end END), '%Y-%m-%d') AS project_plan_end,
-        DATEDIFF(MAX(CASE WHEN Systems.is_deleted = 0 THEN Systems.system_plan_end END), MIN(CASE WHEN Systems.is_deleted = 0 THEN Systems.system_plan_start END)) AS project_manday
+        COUNT(DISTINCT CASE WHEN systems.is_deleted = 0 THEN systems.id ELSE NULL END) AS system_count,
+        AVG(CASE WHEN systems.is_deleted = 0 THEN systems.system_progress ELSE NULL END) AS project_progress,
+        DATE_FORMAT(MIN(CASE WHEN systems.is_deleted = 0 THEN systems.system_plan_start END), '%Y-%m-%d') AS project_plan_start,
+        DATE_FORMAT(MAX(CASE WHEN systems.is_deleted = 0 THEN systems.system_plan_end END), '%Y-%m-%d') AS project_plan_end,
+        DATEDIFF(MAX(CASE WHEN systems.is_deleted = 0 THEN systems.system_plan_end END), MIN(CASE WHEN systems.is_deleted = 0 THEN systems.system_plan_start END)) AS project_manday
       FROM 
         projects 
-      LEFT JOIN Systems ON projects.id = Systems.project_id
+      LEFT JOIN systems ON projects.id = systems.project_id
       WHERE projects.id = ?
       GROUP BY projects.id
       `,

@@ -78,7 +78,7 @@ router.post("/createTasks", async (req, res) => {
 // Route for getting all tasks
 router.get("/getAll", async (req, res) => {
   try {
-    const query = "SELECT * FROM Tasks "; // Adding condition in WHERE to filter only non-deleted data
+    const query = "SELECT * FROM tasks "; // Adding condition in WHERE to filter only non-deleted data
 
     const results = await new Promise((resolve, reject) => {
       connection.query(query, async (err, tasks) => {
@@ -118,7 +118,7 @@ router.get("/getOne/:id", async (req, res) => {
   try {
     const { id } = req.params;
 
-    const query = "SELECT * FROM Tasks  ";
+    const query = "SELECT * FROM tasks  ";
 
     const task = await new Promise((resolve, reject) => {
       connection.query(query, [id], async (err, results) => {
@@ -161,32 +161,32 @@ router.get("/searchByProjectId/:project_id", async (req, res) => {
     // สร้าง query SQL โดยทำการ JOIN ระหว่างตาราง Tasks, Projects, Systems, และ Screens พร้อมเพิ่มการดึงคอลัมน์ is_archived
     let query = `
             SELECT 
-                Tasks.task_id, 
-                Tasks.task_name, 
-                Tasks.task_detail, 
-                Tasks.task_status, 
-                Tasks.task_manday, 
-                Tasks.task_progress, 
-                Tasks.task_plan_start, 
-                Tasks.task_plan_end, 
-                Projects.project_name_ENG, 
-                Systems.system_nameEN, 
-                Screens.screen_name,
-                Tasks.project_id,
-                Tasks.system_id,
-                Tasks.screen_id,
-                Tasks.id,
-                Tasks.task_actual_start,
-                Tasks.task_actual_end,
-                Tasks.task_member_id,
-                Tasks.task_date_update,
-                Tasks.is_archived 
+                tasks.task_id,
+                tasks.task_name,
+                tasks.task_detail,
+                tasks.task_status,
+                tasks.task_manday,
+                tasks.task_progress,
+                tasks.task_plan_start,
+                tasks.task_plan_end,
+                projects.project_name_ENG, 
+                systems.system_nameEN, 
+                screens.screen_name,
+                tasks.project_id,
+                tasks.system_id,
+                tasks.screen_id,
+                tasks.id,
+                tasks.task_actual_start,
+                tasks.task_actual_end,
+                tasks.task_member_id,
+                tasks.task_date_update,
+                tasks.is_archived
 
-            FROM Tasks
-            JOIN Projects ON Tasks.project_id = Projects.id
-            JOIN Systems ON Tasks.system_id = Systems.id
-            JOIN Screens ON Tasks.screen_id = Screens.id
-            WHERE Tasks.project_id = ?
+            FROM tasks
+            JOIN projects ON tasks.project_id = projects.id
+            JOIN systems ON tasks.system_id = systems.id
+            JOIN screens ON tasks.screen_id = screens.id
+            WHERE tasks.project_id = ?
         `;
 
     // ดำเนินการคิวรีด้วย project_id ที่ให้ไว้
@@ -218,7 +218,7 @@ router.get("/searchBySystemId/:system_id", async (req, res) => {
     const { system_id } = req.params;
 
     // สร้าง query SQL เพื่อดึงข้อมูล Tasks ตาม ID ระบบที่ระบุ พร้อมกรองข้อมูล Tasks ที่ถูกลบ
-    const query = "SELECT * FROM Tasks WHERE system_id = ?";
+    const query = "SELECT * FROM tasks WHERE system_id = ?";
 
     const tasks = await new Promise((resolve, reject) => {
       connection.query(query, [system_id], async (err, results) => {
@@ -240,7 +240,7 @@ router.get("/searchByScreenId/:screen_id", async (req, res) => {
     const { screen_id } = req.params;
 
     const query = `
-            SELECT * FROM Tasks
+            SELECT * FROM tasks
             WHERE screen_id = ? 
         `;
 
@@ -366,7 +366,7 @@ router.delete("/deleteHistoryTasks/:id", async (req, res) => {
     const { id } = req.params;
 
     // Delete tasks related to the task
-    const deleteTasksQuery = "DELETE FROM Tasks WHERE id = ?";
+    const deleteTasksQuery = "DELETE FROM tasks WHERE id = ?";
     await new Promise((resolve, reject) => {
       connection.query(deleteTasksQuery, [id], (err, result) => {
         if (err) reject(err);
