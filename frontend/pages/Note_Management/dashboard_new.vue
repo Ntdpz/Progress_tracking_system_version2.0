@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import Greeting from "/components/project/Greeting.vue";
+import Greeting from "/components/Greeting.vue";
 import Issue_Table from "/components/Note_Management/Dashboard/Issue_Table.vue";
 import Issue_Table_non from "/components/Note_Management/Dashboard/Issue_Table_non.vue";
 import Dashbord_ResponsibleScreen from "/components/Note_Management/Dashboard/Dashbord_ResponsibleScreen.vue";

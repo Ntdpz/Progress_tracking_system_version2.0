@@ -134,11 +134,11 @@
 <script>
 import Swal from "sweetalert2";
 import axios from "axios";
-import CircularProgress from "~/components/system/circularProgress.vue";
-import userSystem from "~/components/system/userSystem.vue";
-import ScreenCard from "~/components/system/ScreenCard.vue";
-import AddForm from "~/components/system/addForm.vue";
-import srceenHistory from "~/components/system/srceenHistory.vue";
+import CircularProgress from "~/components/Progress_tracking/systems/circularProgress.vue";
+import userSystem from "~/components/Progress_tracking/systems/userSystem.vue";
+import ScreenCard from "~/components/Progress_tracking/systems/ScreenCard.vue";
+import AddForm from "~/components/Progress_tracking/systems/addForm.vue";
+import srceenHistory from "~/components/Progress_tracking/systems/srceenHistory.vue";
 import { decodeId } from "@/utils/crypto";
 import { encodeId } from "@/utils/crypto";
 

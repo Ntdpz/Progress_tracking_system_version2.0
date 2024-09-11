@@ -347,7 +347,7 @@
 </template>
 
 <script>
-import Greeting from "~/components/project/Greeting.vue";
+import Greeting from "~/components/Greeting.vue";
 import Swal from "sweetalert2";
 import axios from "axios";
 import { encodeId, decodeId } from "~/utils/crypto";

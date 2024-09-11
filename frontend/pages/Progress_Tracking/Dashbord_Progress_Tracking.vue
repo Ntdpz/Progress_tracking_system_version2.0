@@ -58,11 +58,11 @@
 </template>
 
 <script>
-import Loader from "../../components/Loader.vue";
-import result_projects from "../../components/Progress_tracking/Dashbord/result_projects.vue";
-import task_project_table from "../../components/Progress_tracking/Dashbord/task_project_table.vue";
-import all_task_user from "../../components/Progress_tracking/Dashbord/all_task_user.vue";
-import archive_task_table from "../../components/Progress_tracking/Dashbord/archive_task_table.vue";
+import Loader from "@/components/Loader.vue";
+import result_projects from "@/components/Progress_tracking/Dashbord/result_projects.vue";
+import task_project_table from "@/components/Progress_tracking/Dashbord/task_project_table.vue";
+import all_task_user from "@/components/Progress_tracking/Dashbord/all_task_user.vue";
+import archive_task_table from "@/components/Progress_tracking/Dashbord/archive_task_table.vue";
 import "./Dashbord.css";
 
 export default {

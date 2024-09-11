@@ -575,8 +575,7 @@
 <script>
 import axios from "axios";
 import Swal from "sweetalert2";
-import Breadcrumbs from "~/components/project/Breadcrumbs.vue";
-
+import Breadcrumbs from "~/components/Breadcrumbs.vue";
 import Loader from "@/components/Loader.vue";
 import { decodeId } from "~/utils/crypto";
 import update_task from "@/components/Progress_tracking/Dashbord/update_task.vue";

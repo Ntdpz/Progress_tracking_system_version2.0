@@ -1,8 +1,8 @@
 <template>
   <div>
-    <v-row no-gutters class="mt-4 ">
+    <v-row no-gutters class="mt-4">
       <v-col class="text-center" style="margin-right: 16px">
-        <h1 >{{ greeting }}</h1>
+        <h1>{{ greeting }}</h1>
         <h1>
           {{ this.$auth.user.user_position }} :
           {{ this.$auth.user.user_firstname }}

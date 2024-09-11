@@ -7,8 +7,8 @@
 </template>
 
 <script>
-import Loader from "../components/Loader.vue";
-import Greeting from "../components/project/Greeting.vue";
+import Loader from "@/components/Loader.vue";
+import Greeting from "~/components/Greeting.vue";
 export default {
   middleware: "auth",
   layout: "admin",
