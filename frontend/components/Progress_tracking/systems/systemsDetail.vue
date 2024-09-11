@@ -63,7 +63,7 @@
 </template>
 
 <script>
-import userSystems from "./userSystems.vue";
+import userSystems from "./userSystem.vue";
 export default {
   components: {
     userSystems,
