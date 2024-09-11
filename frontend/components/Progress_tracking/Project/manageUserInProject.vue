@@ -2,7 +2,9 @@
   <v-card>
     <v-card>
       <!-- Current User Title -->
-      <v-card-title color="black">Manage users in Project :</v-card-title>
+      <v-card-title color="black">
+        Manage users in Project : {{ projectDetails.project_name_ENG }}
+      </v-card-title>
       <v-card-text>
         <!-- Current User Table -->
         <v-data-table
@@ -67,6 +69,7 @@ export default {
   },
   data() {
     return {
+      projectDetails: {},
       users: [], // จัดเก็บข้อมูลผู้ใช้ที่ได้จาก API
       headers: [
         { text: "Image", value: "user_pic", align: "start", sortable: false },
@@ -79,6 +82,7 @@ export default {
         { text: "User Position", value: "user_position", align: "start" },
         { text: "Action", value: "action", sortable: false },
       ],
+      projectName: "",
     };
   },
   methods: {
@@ -91,6 +95,21 @@ export default {
         this.users = response.data;
       } catch (error) {
         console.error("Error fetching users:", error);
+      }
+    },
+    async fetchProjectDetails() {
+      try {
+        const response = await this.$axios.get(
+          `/projects/getOne/${this.project_id}`
+        );
+        this.projectDetails = response.data;
+      } catch (error) {
+        console.error("Error fetching project details:", error);
+        await Swal.fire({
+          title: "Error!",
+          text: "There was an issue fetching project details. Please try again.",
+          icon: "error",
+        });
       }
     },
     getBase64Image(base64String) {
@@ -122,7 +141,7 @@ export default {
         text: `Do you really want to remove ${item.user_firstname} ${item.user_lastname} from this project?`,
         icon: "warning",
         showCancelButton: true,
-        confirmButtonColor: "#d33",
+        confirmButtonColor: "#009933",
         cancelButtonColor: "#3085d6",
         confirmButtonText: "Yes, delete it!",
         cancelButtonText: "Cancel",
@@ -142,6 +161,7 @@ export default {
               title: "Deleted!",
               text: "The user has been removed from the project.",
               icon: "success",
+              confirmButtonColor: "#009933",
             });
 
             // อัปเดตข้อมูลผู้ใช้ใหม่
@@ -165,6 +185,7 @@ export default {
   },
   mounted() {
     this.fetchUsers(); // เรียก API เมื่อ component ถูก mount
+    this.fetchProjectDetails();
   },
 };
 </script>
