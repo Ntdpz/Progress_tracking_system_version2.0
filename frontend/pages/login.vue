@@ -38,7 +38,7 @@
                               font-weight: bold;
                               color: black;
                             "
-                            >รหัสพนักงาน</v-card-subtitle
+                            >UserID</v-card-subtitle
                           >
                         </v-col>
                       </v-row>
@@ -64,7 +64,7 @@
                                 font-weight: bold;
                                 color: black;
                               "
-                              >รหัสผ่าน</v-card-subtitle
+                              >Password</v-card-subtitle
                             >
                           </v-col>
                         </v-row>
@@ -209,7 +209,7 @@ export default {
       dialogWrong: false,
       countLogin: 0,
 
-      rules: [(value) => !!value || "กรุณากรอกข้อมูลให้ครบถ้วน."],
+      rules: [(value) => !!value || "Please fill in all information completely.."],
     };
   },
   methods: {
