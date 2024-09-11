@@ -1264,10 +1264,10 @@
 <script>
 import Vue from "vue";
 import Searchbar from "~/components/Searchbar.vue";
-import DialogIssue from "../../components/DialogIssue.vue";
+import DialogIssue from "@/components/DialogIssue.vue";
 import moment from "moment";
-import DialogIssueDetail from "../../components/DialogIssueDetail.vue";
-import DialogIssueImple from "../../components/DialogIssueImple.vue";
+import DialogIssueDetail from "@/components/DialogIssueDetail.vue";
+import DialogIssueImple from "@/components/DialogIssueImple.vue";
 export default {
   components: { Searchbar, DialogIssue, DialogIssueDetail, DialogIssueImple },
   layout: "admin",

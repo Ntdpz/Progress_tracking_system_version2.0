@@ -48,7 +48,9 @@
             </v-list-item-content>
           </template>
 
-          <v-list-item @click="navigateTo('/Progress_Tracking/Dashbord_Progress_Tracking')">
+          <v-list-item
+            @click="navigateTo('/Progress_Tracking/Dashbord_Progress_Tracking')"
+          >
             <v-list-item-content>
               <v-list-item-title>
                 <v-icon color="primary" class="mr-2">mdi-table-edit</v-icon>
@@ -57,7 +59,11 @@
             </v-list-item-content>
           </v-list-item>
 
-          <v-list-item @click="navigateTo('/Progress_Tracking/manageProject_Progress_Tracking')">
+          <v-list-item
+            @click="
+              navigateTo('/Progress_Tracking/manageProject_Progress_Tracking')
+            "
+          >
             <v-list-item-content>
               <v-list-item-title>
                 <v-icon color="primary" class="mr-2">mdi-puzzle</v-icon>
@@ -99,7 +105,9 @@
             </v-list-item-content>
           </v-list-item>
 
-          <v-list-item @click="navigateTo('/Note_Management/dashboard')">
+          <v-list-item
+            @click="navigateTo('/Note_Management/dashboard_Note_Management')"
+          >
             <v-list-item-content>
               <v-list-item-title>
                 <v-icon color="primary" class="mr-2">mdi-table</v-icon>
@@ -108,7 +116,9 @@
             </v-list-item-content>
           </v-list-item>
 
-          <v-list-item @click="navigateTo('/schedule')">
+          <v-list-item
+            @click="navigateTo('/Note_Management/schedule_Note_Management')"
+          >
             <v-list-item-content>
               <v-list-item-title>
                 <v-icon color="primary" class="mr-2">mdi-calendar-month</v-icon>
@@ -117,7 +127,9 @@
             </v-list-item-content>
           </v-list-item>
 
-          <v-list-item @click="navigateTo('/dashboard')">
+          <v-list-item
+            @click="navigateTo('/Note_Management/dashboard_Note_Management')"
+          >
             <v-list-item-content>
               <v-list-item-title>
                 <v-icon color="primary" class="mr-2">mdi-view-dashboard</v-icon>
@@ -144,7 +156,7 @@
           <v-list-item
             v-for="child in project.projectList"
             :key="child.id"
-            :to="`/issueList/${child?.id}`"
+            :to="`/Note_Management/issueList/${child?.id}`"
           >
             <v-list-item-content>
               <v-list-item-title>
@@ -173,7 +185,12 @@
       </v-list>
 
       <!-- UserDev menu items -->
-      <v-list class="pa-0" v-show="user_position == 'Developer' && user_role !== 'Admin'" dense rounded>
+      <v-list
+        class="pa-0"
+        v-show="user_position == 'Developer' && user_role !== 'Admin'"
+        dense
+        rounded
+      >
         <!-- ติดตามงาน Menu -->
         <v-list-group
           v-model="reportActiveworktracking"
@@ -187,7 +204,11 @@
             </v-list-item-content>
           </template>
 
-          <v-list-item @click="navigateTo('/Progress_Tracking/manageProject_Progress_Tracking')">
+          <v-list-item
+            @click="
+              navigateTo('/Progress_Tracking/manageProject_Progress_Tracking')
+            "
+          >
             <v-list-item-content>
               <v-list-item-title>
                 <v-icon color="primary" class="mr-2">mdi-puzzle</v-icon>
@@ -200,7 +221,7 @@
 
       <!-- UserImp menu items -->
       <v-list
-class="pa-0"
+        class="pa-0"
         v-show="user_position == 'Implementer' && user_role !== 'Admin'"
         dense
         rounded
@@ -238,9 +259,9 @@ class="pa-0"
             </v-list-item-content>
           </v-list-item>
 
-          
-
-          <v-list-item @click="navigateTo('/schedule')">
+          <v-list-item
+            @click="navigateTo('/Note_Management/schedule_Note_Management')"
+          >
             <v-list-item-content>
               <v-list-item-title>
                 <v-icon color="primary" class="mr-2">mdi-calendar-month</v-icon>
@@ -249,7 +270,9 @@ class="pa-0"
             </v-list-item-content>
           </v-list-item>
 
-          <v-list-item @click="navigateTo('/dashboard')">
+          <v-list-item
+            @click="navigateTo('/Note_Management/dashboard_Note_Management')"
+          >
             <v-list-item-content>
               <v-list-item-title>
                 <v-icon color="primary" class="mr-2">mdi-view-dashboard</v-icon>
@@ -276,7 +299,7 @@ class="pa-0"
           <v-list-item
             v-for="child in project.projectList"
             :key="child.id"
-            :to="`/issueList/${child?.id}`"
+            :to="`/Note_Management/issueList/${child?.id}`"
           >
             <v-list-item-content>
               <v-list-item-title>
