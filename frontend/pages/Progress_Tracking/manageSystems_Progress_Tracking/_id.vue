@@ -331,7 +331,7 @@
 import Loader from "@/components/Loader.vue";
 import Swal from "sweetalert2";
 import axios from "axios";
-import { encodeId, decodeId } from "../../utils/crypto";
+import { encodeId, decodeId } from "@/utils/crypto";
 import projectDetail from "@/components/Progress_tracking/Project/projectDetail.vue";
 export default {
    head() {
@@ -743,7 +743,7 @@ export default {
       const encodedId = encodeURIComponent(encodeId(systemId));
 
       // นำทางไปยังหน้า Systems/_id.vue ด้วย encodedId
-      await this.$router.push({ path: `/Project/systems/${encodedId}` });
+      await this.$router.push({ path: `/Progress_Tracking/manageScreens_Progress_Tracking/${encodedId}` });
     },
     async fetchProjectNameENG() {
       try {

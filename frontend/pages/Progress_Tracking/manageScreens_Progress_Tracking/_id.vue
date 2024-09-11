@@ -270,7 +270,7 @@ export default {
     },
     navigateToScreen(screenId) {
       const encodedScreenId = encodeURIComponent(encodeId(screenId)); // เข้ารหัส screenId
-      this.$router.push(`/Project/Systems/screens/${encodedScreenId}`);
+      this.$router.push(`/Progress_Tracking/manageTasks_Progress_Tracking/${encodedScreenId}`);
     },
     handleUpdate() {
       console.log("update"); // add later

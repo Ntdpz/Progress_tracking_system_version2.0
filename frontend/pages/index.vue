@@ -42,7 +42,7 @@ export default {
       this.$router.push("/");
     } else if (this.user.user_position === "Developer") {
       // รีไดเรกไปยัง /Progress_Tracking/Dev
-      this.$router.push("/Progress_Tracking/Dashbord");
+      this.$router.push("/Progress_Tracking/Dashbord_Progress_Tracking");
     } else if (this.user.user_position === "Implementer") {
       this.$router.push("/Note_Management/dashboard");
     }

@@ -48,7 +48,7 @@
             </v-list-item-content>
           </template>
 
-          <v-list-item @click="navigateTo('/Progress_Tracking/Dashbord')">
+          <v-list-item @click="navigateTo('/Progress_Tracking/Dashbord_Progress_Tracking')">
             <v-list-item-content>
               <v-list-item-title>
                 <v-icon color="primary" class="mr-2">mdi-table-edit</v-icon>
@@ -57,7 +57,7 @@
             </v-list-item-content>
           </v-list-item>
 
-          <v-list-item @click="navigateTo('/manageProject')">
+          <v-list-item @click="navigateTo('/Progress_Tracking/manageProject_Progress_Tracking')">
             <v-list-item-content>
               <v-list-item-title>
                 <v-icon color="primary" class="mr-2">mdi-puzzle</v-icon>
@@ -187,7 +187,7 @@
             </v-list-item-content>
           </template>
 
-          <v-list-item @click="navigateTo('/manageProject')">
+          <v-list-item @click="navigateTo('/Progress_Tracking/manageProject_Progress_Tracking')">
             <v-list-item-content>
               <v-list-item-title>
                 <v-icon color="primary" class="mr-2">mdi-puzzle</v-icon>
