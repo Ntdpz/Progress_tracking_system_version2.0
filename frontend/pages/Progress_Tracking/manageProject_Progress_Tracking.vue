@@ -218,130 +218,8 @@
     </v-dialog>
 
     <!-- Manage project users dialog -->
-    <v-dialog v-model="dialogUserProjects" max-width="600px">
-      <v-card>
-        <v-card-title>User Projects</v-card-title>
-        <v-card-text>
-          <v-text-field
-            v-model="search"
-            label="Search"
-            dense
-            hide-details
-            solo
-            flat
-            outlined
-            color="primary"
-            hint="Search here"
-          ></v-text-field>
-
-          <v-list>
-            <v-list-item v-for="item in displayedUserProjects" :key="item.id">
-              <v-list-item-avatar>
-                <v-img
-                  :src="getBase64Image(item.user_pic)"
-                  height="50"
-                  contain
-                ></v-img>
-              </v-list-item-avatar>
-              <v-list-item-content>
-                <v-list-item-title
-                  >{{ item.user_firstname }}
-                  {{ item.user_lastname }}</v-list-item-title
-                >
-                <v-list-item-subtitle>{{
-                  item.user_position
-                }}</v-list-item-subtitle>
-              </v-list-item-content>
-
-              <v-list-item-action>
-                <v-btn color="error" icon @click="deleteUser(project_id, item)">
-                  <v-icon>mdi-delete</v-icon>
-                </v-btn>
-              </v-list-item-action>
-            </v-list-item>
-          </v-list>
-          <v-pagination
-            v-model="currentPage"
-            :length="totalPages"
-            @input="updateDisplayedUserProjects"
-          ></v-pagination>
-        </v-card-text>
-        <v-card-actions>
-          <!-- Button to open nested dialog -->
-          <v-btn color="primary" @click="openNestedDialog()">Assign User</v-btn>
-          <v-btn color="error" @click="dialogUserProjects = false"
-            >Cancel</v-btn
-          >
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-
-    <!-- Nested Dialog for Assigning User -->
-    <v-dialog v-model="dialogAssignUser" max-width="500px">
-      <v-card>
-        <v-card-title>Assign User</v-card-title>
-        <v-card-text>
-          <!-- New field for selecting users -->
-          <v-select
-            v-model="selectedSystemAnalysts"
-            :items="systemAnalysts"
-            label="Select System Analyst"
-            item-text="displayText"
-            item-value="id"
-            multiple
-          >
-            <template v-slot:prepend-item>
-              <v-list-item
-                v-if="systemAnalysts.length"
-                @click="selectAllSystemAnalysts"
-              >
-                <v-list-item-content>Select All</v-list-item-content>
-              </v-list-item>
-            </template>
-          </v-select>
-
-          <v-select
-            v-model="selectedDevelopers"
-            :items="developers"
-            label="Select Developer"
-            item-text="displayText"
-            item-value="id"
-            multiple
-          >
-            <template v-slot:prepend-item>
-              <v-list-item
-                v-if="developers.length"
-                @click="selectAllDevelopers"
-              >
-                <v-list-item-content>Select All</v-list-item-content>
-              </v-list-item>
-            </template>
-          </v-select>
-
-          <v-select
-            v-model="selectedImplementers"
-            :items="implementers"
-            label="Select Implementer"
-            item-text="displayText"
-            item-value="id"
-            multiple
-          >
-            <template v-slot:prepend-item>
-              <v-list-item
-                v-if="implementers.length"
-                @click="selectAllImplementers"
-              >
-                <v-list-item-content>Select All</v-list-item-content>
-              </v-list-item>
-            </template>
-          </v-select>
-        </v-card-text>
-        <v-card-actions>
-          <!-- Button to assign selected users -->
-          <v-btn color="primary" @click="assignUserAF">Assign</v-btn>
-          <v-btn color="error" @click="closeNestedDialog">Cancel</v-btn>
-        </v-card-actions>
-      </v-card>
+    <v-dialog v-model="dialogUserProjects" max-width="1200px">
+      <manageUserInProject :project_id="project_id" />
     </v-dialog>
   </div>
 </template>
@@ -352,6 +230,7 @@ import Swal from "sweetalert2";
 import axios from "axios";
 import { encodeId, decodeId } from "~/utils/crypto";
 import Loader from "~/components/Loader.vue";
+import manageUserInProject from "@/components/Progress_tracking/Project/manageUserInProject.vue";
 
 export default {
   head() {
@@ -363,6 +242,7 @@ export default {
     // Breadcrumbs,
     Greeting,
     Loader,
+    manageUserInProject,
   },
   middleware: "auth",
   name: "ProjectManagement",
