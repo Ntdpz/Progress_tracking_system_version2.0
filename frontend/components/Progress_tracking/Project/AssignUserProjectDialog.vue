@@ -4,23 +4,28 @@
       Assign User to Project: {{ projectDetails.project_name_ENG }}
     </v-card-title>
     <v-card-text>
-      <!-- Select User to Assign -->
+      <!-- Select System Analyst -->
       <v-select
-        v-model="selectedUsers"
-        :items="filteredUsersNotInProject"
-        item-text="user_fullname"
+        v-model="selectedSystemAnalysts"
+        :items="
+          usersNotInProject.filter(
+            (user) => user.user_position === 'System Analyst'
+          )
+        "
+        label="Select System Analyst"
+        item-text="user_firstname"
         item-value="id"
-        label="Select User"
         multiple
-        outlined
+        @click:append="checkSelectAll('System Analyst')"
       >
         <!-- Select All Option -->
         <template v-slot:prepend-item>
-          <v-list-item @click="selectAllUsers">
-            <v-list-item-content>Select All</v-list-item-content>
+          <v-list-item @click="toggleSelectAll('System Analyst')">
+            <v-list-item-content>{{
+              isAllSelected("System Analyst") ? "Deselect All" : "Select All"
+            }}</v-list-item-content>
           </v-list-item>
         </template>
-
         <!-- Selected User Chips -->
         <template v-slot:selection="{ item, index }">
           <v-chip
@@ -28,7 +33,7 @@
             :key="index"
             class="d-flex align-center"
             close
-            @click:close="removeUser(item)"
+            @click:close="removeSystemAnalyst(item)"
           >
             <v-avatar left>
               <img :src="getBase64Image(item.user_pic)" alt="User Avatar" />
@@ -36,11 +41,116 @@
             {{ item.user_firstname }}
           </v-chip>
         </template>
-
         <!-- User List with Checkboxes -->
         <template v-slot:item="{ item }">
           <v-list-item>
-            <v-checkbox v-model="selectedUsers" :value="item.id" />
+            <v-checkbox v-model="selectedSystemAnalysts" :value="item.id" />
+            <v-list-item-avatar>
+              <img :src="getBase64Image(item.user_pic)" alt="User Avatar" />
+            </v-list-item-avatar>
+            <v-list-item-content>
+              <v-list-item-title
+                >{{ item.user_firstname }}
+                {{ item.user_lastname }}</v-list-item-title
+              >
+            </v-list-item-content>
+          </v-list-item>
+        </template>
+      </v-select>
+
+      <!-- Select Developer -->
+      <v-select
+        v-model="selectedDevelopers"
+        :items="
+          usersNotInProject.filter((user) => user.user_position === 'Developer')
+        "
+        label="Select Developer"
+        item-text="user_firstname"
+        item-value="id"
+        multiple
+        @click:append="checkSelectAll('Developer')"
+      >
+        <!-- Select All Option -->
+        <template v-slot:prepend-item>
+          <v-list-item @click="toggleSelectAll('Developer')">
+            <v-list-item-content>{{
+              isAllSelected("Developer") ? "Deselect All" : "Select All"
+            }}</v-list-item-content>
+          </v-list-item>
+        </template>
+        <!-- Selected User Chips -->
+        <template v-slot:selection="{ item, index }">
+          <v-chip
+            v-if="item"
+            :key="index"
+            class="d-flex align-center"
+            close
+            @click:close="removeDeveloper(item)"
+          >
+            <v-avatar left>
+              <img :src="getBase64Image(item.user_pic)" alt="User Avatar" />
+            </v-avatar>
+            {{ item.user_firstname }}
+          </v-chip>
+        </template>
+        <!-- User List with Checkboxes -->
+        <template v-slot:item="{ item }">
+          <v-list-item>
+            <v-checkbox v-model="selectedDevelopers" :value="item.id" />
+            <v-list-item-avatar>
+              <img :src="getBase64Image(item.user_pic)" alt="User Avatar" />
+            </v-list-item-avatar>
+            <v-list-item-content>
+              <v-list-item-title
+                >{{ item.user_firstname }}
+                {{ item.user_lastname }}</v-list-item-title
+              >
+            </v-list-item-content>
+          </v-list-item>
+        </template>
+      </v-select>
+
+      <!-- Select Implementer -->
+      <v-select
+        v-model="selectedImplementers"
+        :items="
+          usersNotInProject.filter(
+            (user) => user.user_position === 'Implementer'
+          )
+        "
+        label="Select Implementer"
+        item-text="user_firstname"
+        item-value="id"
+        multiple
+        @click:append="checkSelectAll('Implementer')"
+      >
+        <!-- Select All Option -->
+        <template v-slot:prepend-item>
+          <v-list-item @click="toggleSelectAll('Implementer')">
+            <v-list-item-content>{{
+              isAllSelected("Implementer") ? "Deselect All" : "Select All"
+            }}</v-list-item-content>
+          </v-list-item>
+        </template>
+        <!-- Selected User Chips -->
+        <template v-slot:selection="{ item, index }">
+          <v-chip
+            v-if="item"
+            :key="index"
+            class="d-flex align-center"
+            close
+            @click:close="removeImplementer(item)"
+          >
+            <v-avatar left>
+              <img :src="getBase64Image(item.user_pic)" alt="User Avatar" />
+            </v-avatar>
+            {{ item.user_firstname }}
+          </v-chip>
+        </template>
+        <!-- User List with Checkboxes -->
+        <template v-slot:item="{ item }">
+          <v-list-item>
+            <v-checkbox v-model="selectedImplementers" :value="item.id" />
             <v-list-item-avatar>
               <img :src="getBase64Image(item.user_pic)" alt="User Avatar" />
             </v-list-item-avatar>
@@ -76,7 +186,9 @@ export default {
     return {
       projectDetails: {},
       usersNotInProject: [],
-      selectedUsers: [],
+      selectedSystemAnalysts: [],
+      selectedDevelopers: [],
+      selectedImplementers: [],
       headers: [
         { text: "Avatar", value: "user_pic", sortable: false },
         { text: "Name", value: "user_name" },
@@ -91,6 +203,94 @@ export default {
     },
   },
   methods: {
+    toggleSelectAll(position) {
+      let selected = [];
+      switch (position) {
+        case "System Analyst":
+          selected =
+            this.selectedSystemAnalysts.length ===
+            this.usersNotInProject.filter(
+              (user) => user.user_position === "System Analyst"
+            ).length
+              ? []
+              : this.usersNotInProject
+                  .filter((user) => user.user_position === "System Analyst")
+                  .map((user) => user.id);
+          this.selectedSystemAnalysts = selected;
+          break;
+        case "Developer":
+          selected =
+            this.selectedDevelopers.length ===
+            this.usersNotInProject.filter(
+              (user) => user.user_position === "Developer"
+            ).length
+              ? []
+              : this.usersNotInProject
+                  .filter((user) => user.user_position === "Developer")
+                  .map((user) => user.id);
+          this.selectedDevelopers = selected;
+          break;
+        case "Implementer":
+          selected =
+            this.selectedImplementers.length ===
+            this.usersNotInProject.filter(
+              (user) => user.user_position === "Implementer"
+            ).length
+              ? []
+              : this.usersNotInProject
+                  .filter((user) => user.user_position === "Implementer")
+                  .map((user) => user.id);
+          this.selectedImplementers = selected;
+          break;
+      }
+    },
+    isAllSelected(position) {
+      switch (position) {
+        case "System Analyst":
+          return (
+            this.selectedSystemAnalysts.length ===
+            this.usersNotInProject.filter(
+              (user) => user.user_position === "System Analyst"
+            ).length
+          );
+        case "Developer":
+          return (
+            this.selectedDevelopers.length ===
+            this.usersNotInProject.filter(
+              (user) => user.user_position === "Developer"
+            ).length
+          );
+        case "Implementer":
+          return (
+            this.selectedImplementers.length ===
+            this.usersNotInProject.filter(
+              (user) => user.user_position === "Implementer"
+            ).length
+          );
+      }
+      return false;
+    },
+    checkSelectAll(position) {
+      if (this.isAllSelected(position)) {
+        // Do not apply Select All logic
+        return;
+      }
+    },
+    removeSystemAnalyst(user) {
+      this.selectedSystemAnalysts = this.selectedSystemAnalysts.filter(
+        (id) => id !== user.id
+      );
+    },
+    removeDeveloper(user) {
+      this.selectedDevelopers = this.selectedDevelopers.filter(
+        (id) => id !== user.id
+      );
+    },
+    removeImplementer(user) {
+      this.selectedImplementers = this.selectedImplementers.filter(
+        (id) => id !== user.id
+      );
+    },
     async fetchProjectDetails() {
       try {
         const response = await this.$axios.get(
@@ -125,7 +325,13 @@ export default {
       }
     },
     async assignUsersToProject() {
-      if (this.selectedUsers.length === 0) {
+      const allSelectedUsers = [
+        ...this.selectedSystemAnalysts,
+        ...this.selectedDevelopers,
+        ...this.selectedImplementers,
+      ];
+
+      if (allSelectedUsers.length === 0) {
         await Swal.fire({
           title: "Warning!",
           text: "Please select at least one user to assign.",
@@ -137,7 +343,7 @@ export default {
       try {
         // Call API to assign users to project
         await this.$axios.post("/user_projects/createUser_project", {
-          user_ids: this.selectedUsers,
+          user_ids: allSelectedUsers,
           project_id: this.project_id,
         });
         await Swal.fire({
@@ -146,6 +352,12 @@ export default {
           icon: "success",
           confirmButtonColor: "#009933",
         });
+
+        // Clear the selected users in all select boxes
+        this.selectedSystemAnalysts = [];
+        this.selectedDevelopers = [];
+        this.selectedImplementers = [];
+
         this.fetchUsersNotInProject();
         this.$emit("usersAssigned");
         this.closeDialog();
@@ -161,6 +373,9 @@ export default {
     },
     closeDialog() {
       this.$emit("close");
+      this.selectedSystemAnalysts = [];
+      this.selectedDevelopers = [];
+      this.selectedImplementers = [];
     },
     getBase64Image(base64String) {
       if (!base64String) {

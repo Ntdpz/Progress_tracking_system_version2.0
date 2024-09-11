@@ -89,8 +89,8 @@ export default {
 
     async fetchScreens() {
       try {
-        const response = await fetch(
-          `http://localhost:7777/screens/searchBySystemId/${this.systemId}` // Use this.systemId from props
+        const response = this.$axios.get(
+          `/screens/searchBySystemId/${this.systemId}` // Use this.systemId from props
         );
         if (!response.ok) {
           throw new Error("Failed to fetch screens");
@@ -110,8 +110,8 @@ export default {
 
     async fetchDeletedScreens() {
       try {
-        const response = await fetch(
-          `http://localhost:7777/screens/searchBySystemId_delete/${this.systemId}`
+        const response = this.$axios.get(
+          `/screens/searchBySystemId_delete/${this.systemId}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch deleted screens");
@@ -140,8 +140,8 @@ export default {
         if (confirmResult.isConfirmed) {
           const restorePromises = this.selectedDeletedScreens.map(
             async (screen) => {
-              const response = await fetch(
-                `http://localhost:7777/screens/updateScreen/${screen.id}`,
+              const response = await this.$axios.get(
+                `/screens/updateScreen/${screen.id}`,
                 {
                   method: "PUT",
                   headers: {
@@ -202,8 +202,8 @@ export default {
         if (confirmResult.isConfirmed) {
           const deletePromises = this.selectedDeletedScreens.map(
             async (screen) => {
-              const response = await fetch(
-                `http://localhost:7777/screens/deleteHistoryScreen/${screen.id}`,
+              const response = await this.$axios.get(
+                `/screens/deleteHistoryScreen/${screen.id}`,
                 {
                   method: "DELETE",
                 }
@@ -244,8 +244,8 @@ export default {
       try {
         const systemId = this.systemId;
 
-        const response = await fetch(
-          `http://localhost:7777/screens/searchBySystemId_delete/${systemId}`
+        const response = await this.$axios.get(
+          `/screens/searchBySystemId_delete/${systemId}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch deleted screens by system ID");
@@ -258,8 +258,8 @@ export default {
     },
     async confirmDeleteScreen(screen) {
       try {
-        const response = await fetch(
-          `http://localhost:7777/user_screens/checkUsersINScreen/${this.projectId}/${this.systemId}/${screen.id}`
+        const response = await this.$axios.get(
+          `/user_screens/checkUsersINScreen/${this.projectId}/${this.systemId}/${screen.id}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch user screen management data");

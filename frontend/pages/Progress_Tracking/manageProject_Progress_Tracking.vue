@@ -331,9 +331,7 @@ export default {
   methods: {
     async fetchAllScreens() {
       try {
-        const response = await axios.get(
-          "http://localhost:7777/screens/getAll"
-        );
+        const response = this.$axios.get("/screens/getAll");
         return response.data;
       } catch (error) {
         console.error("Error fetching screens:", error);
@@ -342,9 +340,7 @@ export default {
     },
     async fetchAllSystems() {
       try {
-        const response = await axios.get(
-          "http://localhost:7777/systems/getAll"
-        );
+        const response = this.$axios.get("/systems/getAll");
         return response.data;
       } catch (error) {
         console.error("Error fetching systems:", error);
@@ -353,9 +349,7 @@ export default {
     },
     async fetchAllProjects() {
       try {
-        const response = await axios.get(
-          "http://localhost:7777/projects/getAll"
-        );
+        const response = this.$axios.get("/projects/getAll");
         return response.data;
       } catch (error) {
         console.error("Error fetching projects:", error);
@@ -398,8 +392,8 @@ export default {
         }
         this.fetchAvailableUsers(project_id);
 
-        const response = await fetch(
-          `http://localhost:7777/user_projects/getUserProjectsByProjectId/${project_id}`
+        const response = this.$axios.get(
+          `/user_projects/getUserProjectsByProjectId/${project_id}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch user projects");
@@ -440,8 +434,8 @@ export default {
 
         if (confirmResult.isConfirmed) {
           // ทำการลบผู้ใช้เมื่อผู้ใช้ยืนยันการลบ
-          const response = await axios.delete(
-            `http://localhost:7777/user_projects/deleteUserProjectById/${project_id}/${item.user_id}`
+          const response = this.$axios.delete(
+            `user_projects/deleteUserProjectById/${project_id}/${item.user_id}`
           );
 
           if (response.status === 200) {
@@ -479,11 +473,8 @@ export default {
     },
 
     fetchAvailableUsers(project_id) {
-      axios
-        .get(
-          "http://localhost:7777/user_projects/getUsersNotInProject/" +
-            project_id
-        )
+      this.$axios
+        .get("/user_projects/getUsersNotInProject/" + project_id)
         .then((response) => {
           this.availableUsers = response.data.map((user) => ({
             id: user.id,
@@ -532,13 +523,10 @@ export default {
       const project_id = this.project_id; // ใส่ ID ของโปรเจคที่ต้องการสร้าง user_projects
 
       try {
-        const response = await axios.post(
-          "http://localhost:7777/user_projects/createUser_project",
-          {
-            user_ids,
-            project_id,
-          }
-        );
+        const response = this.$axios.post("/user_projects/createUser_project", {
+          user_ids,
+          project_id,
+        });
         // สำเร็จ: แสดง SweetAlert2 แจ้งเตือน
         await Swal.fire({
           icon: "success",
@@ -578,8 +566,8 @@ export default {
       // ส่งข้อมูลผู้ใช้ที่ถูกเลือกไปยัง API
       const project_id = this.selectedProject.id;
       const user_ids = this.selectedUsers.map((user) => user.id);
-      axios
-        .post("http://localhost:7777/user_projects/createUser_project", {
+      this.$axios
+        .post("/user_projects/createUser_project", {
           project_id: project_id,
           user_ids: user_ids,
         })
@@ -599,14 +587,14 @@ export default {
 
     async fetchTeamMembers() {
       try {
-        const responseSA = await fetch(
-          "http://localhost:7777/users/getUserByPosition?user_position=System Analyst"
+        const responseSA = this.$axios.get(
+          "users/getUserByPosition?user_position=System Analyst"
         );
-        const responseDEV = await fetch(
-          "http://localhost:7777/users/getUserByPosition?user_position=Developer"
+        const responseDEV = this.$axios.get(
+          "users/getUserByPosition?user_position=Developer"
         );
-        const responseIMP = await fetch(
-          "http://localhost:7777/users/getUserByPosition?user_position=Implementer"
+        const responseIMP = this.$axios.get(
+          "users/getUserByPosition?user_position=Implementer"
         );
 
         if (!responseSA.ok || !responseDEV.ok || !responseIMP.ok) {
@@ -711,16 +699,13 @@ export default {
           );
         }
 
-        const response = await fetch(
-          "http://localhost:7777/projects/createProject",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(requestBody),
-          }
-        );
+        const response = this.$axios.get("/projects/createProject", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(requestBody),
+        });
         const data = await response.json();
         if (!response.ok) {
           throw new Error(data.message || "Failed to create Project");
@@ -746,13 +731,13 @@ export default {
     async fetchProjects() {
       let url;
       if (this.$auth.user.user_role === "Admin") {
-        url = "http://localhost:7777/projects/getAll";
+        url = "projects/getAll";
       } else {
-        url = `http://localhost:7777/user_projects/getProjectByUser_id/${this.$auth.user.id}`;
+        url = `user_projects/getProjectByUser_id/${this.$auth.user.id}`;
       }
 
       try {
-        const response = await fetch(url);
+        const response = this.$axios.get(url);
         if (!response.ok) {
           throw new Error("Failed to fetch projects");
         }
@@ -769,8 +754,8 @@ export default {
     },
     async updateProject() {
       try {
-        const response = await fetch(
-          `http://localhost:7777/projects/updateProject/${this.editProject.id}`,
+        const response = this.$axios.get(
+          `/projects/updateProject/${this.editProject.id}`,
           {
             method: "PUT",
             headers: {
@@ -808,7 +793,7 @@ export default {
       });
     },
     goToHistoryProject() {
-      this.$router.push("/Project/HistoryProject");
+      this.$router.push("/Progress_Tracking/HistoryProject");
     },
     openEditDialog(project) {
       this.editProject = { ...project };
@@ -827,12 +812,9 @@ export default {
         });
 
         if (confirmResult.isConfirmed) {
-          const response = await fetch(
-            `http://localhost:7777/projects/delete/${project.id}`,
-            {
-              method: "DELETE",
-            }
-          );
+          const response = this.$axios.get(`/projects/delete/${project.id}`, {
+            method: "DELETE",
+          });
 
           if (!response.ok) {
             const errorText = await response.text();

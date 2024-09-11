@@ -1003,19 +1003,16 @@ export default {
         // ถ้าผู้ใช้กดปุ่มยืนยัน
         if (confirmResult.isConfirmed) {
           // อัปเดต task_member_id ด้วย ID ของผู้ใช้ที่เข้าสู่ระบบ
-          const response = await fetch(
-            `http://localhost:7777/tasks/updateTasks/${task.id}`,
-            {
-              method: "PUT",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                ...task,
-                task_member_id: this.$auth.user.id, // อัปเดต task_member_id ด้วย ID ของผู้ใช้ที่เข้าสู่ระบบ
-              }),
-            }
-          );
+          const response = this.$axios.get(`/tasks/updateTasks/${task.id}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              ...task,
+              task_member_id: this.$auth.user.id, // อัปเดต task_member_id ด้วย ID ของผู้ใช้ที่เข้าสู่ระบบ
+            }),
+          });
 
           if (response.ok) {
             Swal.fire({
@@ -1054,9 +1051,7 @@ export default {
     },
     async fetchAllScreens() {
       try {
-        const response = await axios.get(
-          "http://localhost:7777/screens/getAll"
-        );
+        const response = this.$axios.get("/screens/getAll");
         return response.data;
       } catch (error) {
         console.error("Error fetching screens:", error);
@@ -1065,9 +1060,7 @@ export default {
     },
     async fetchAllSystems() {
       try {
-        const response = await axios.get(
-          "http://localhost:7777/systems/getAll"
-        );
+        const response = this.$axios.get("/systems/getAll");
         return response.data;
       } catch (error) {
         console.error("Error fetching systems:", error);
@@ -1076,9 +1069,7 @@ export default {
     },
     async fetchAllProjects() {
       try {
-        const response = await axios.get(
-          "http://localhost:7777/projects/getAll"
-        );
+        const response = this.$axios.get("/projects/getAll");
         return response.data;
       } catch (error) {
         console.error("Error fetching projects:", error);
@@ -1122,9 +1113,7 @@ export default {
 
       // Fetch history tasks from the API
       try {
-        const response = await fetch(
-          `http://localhost:7777/tasks/history_tasks/${task_Id}`
-        );
+        const response = this.$axios.get(`/tasks/history_tasks/${task_Id}`);
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
@@ -1277,8 +1266,8 @@ export default {
         this.historyTaskData.user_update = this.user.id;
 
         // เรียกใช้ API เพื่อบันทึกข้อมูลประวัติโดยใช้ task ID ที่กำหนด
-        const response = await this.$axios.put(
-          `http://localhost:7777/tasks/save_history_tasks/${this.taskId}`,
+        const response = this.$axios.put(
+          `/tasks/save_history_tasks/${this.taskId}`,
           this.historyTaskData
         );
 
@@ -1319,9 +1308,7 @@ export default {
       const task_Id = taskId.id;
 
       try {
-        const response = await fetch(
-          `http://localhost:7777/tasks/history_tasks/${task_Id}`
-        );
+        const response = this.$axios.get(`/tasks/history_tasks/${task_Id}`);
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
@@ -1435,8 +1422,8 @@ export default {
         });
 
         if (result.isConfirmed) {
-          const response = await fetch(
-            `http://localhost:7777/tasks/deleteHistoryTasks/${task.id}`,
+          const response = this.$axios.get(
+            `/tasks/deleteHistoryTasks/${task.id}`,
             {
               method: "DELETE",
             }
@@ -1470,9 +1457,7 @@ export default {
     },
     async fetchMemberDetails(memberId) {
       try {
-        const response = await fetch(
-          `http://localhost:7777/users/getOne/${memberId}`
-        );
+        const response = this.$axios.get(`/users/getOne/${memberId}`);
         const data = await response.json();
         return data[0]; // สมมติว่า API จะส่งข้อมูลผู้ใช้กลับมาเป็นอาเรย์ โดยมีข้อมูลผู้ใช้เพียงรายการเดียว
       } catch (error) {
@@ -1507,9 +1492,7 @@ export default {
     async fetchScreenDetail() {
       try {
         const screenId = this.screenid;
-        const response = await fetch(
-          `http://localhost:7777/screens/getOne/${screenId}`
-        );
+        const response = this.$axios.get(`/screens/getOne/${screenId}`);
 
         if (!response.ok) {
           throw new Error("Failed to fetch screen");
@@ -1564,8 +1547,8 @@ export default {
         }
 
         // Fetch data from API
-        const response = await fetch(
-          `http://localhost:7777/user_screens/checkUsersINScreen/${screenDetails.project_id}/${screenDetails.system_id}/${screenDetails.screenId}`
+        const response = this.$axios.get(
+          `/user_screens/checkUsersINScreen/${screenDetails.project_id}/${screenDetails.system_id}/${screenDetails.screenId}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch user list");
@@ -1625,9 +1608,7 @@ export default {
     async fetchTasks() {
       try {
         const screenId = this.screenid;
-        const response = await fetch(
-          `http://localhost:7777/tasks/searchByScreenId/${screenId}`
-        );
+        const response = this.$axios.get(`/tasks/searchByScreenId/${screenId}`);
         if (!response.ok) {
           throw new Error("Failed to fetch tasks");
         }
@@ -1682,28 +1663,25 @@ export default {
         }
 
         // ส่งข้อมูลไปยัง backend เพื่อสร้าง task ใหม่
-        const response = await fetch(
-          `http://localhost:7777/tasks/createTasks`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              task_id,
-              task_name,
-              task_detail,
-              task_type,
-              screen_id: this.screenDetails.screenId, // ควรแน่ใจว่า this.screenId ถูกกำหนดค่าแล้ว
-              project_id: this.screenDetails.project_id, // ควรแน่ใจว่า this.project_id ถูกกำหนดค่าแล้ว
-              system_id: this.screenDetails.system_id, // ควรแน่ใจว่า this.system_id ถูกกำหนดค่าแล้ว
-              task_plan_start,
-              task_plan_end,
-              task_member_id,
-              task_manday,
-            }),
-          }
-        );
+        const response = this.$axios.get(`/tasks/createTasks`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            task_id,
+            task_name,
+            task_detail,
+            task_type,
+            screen_id: this.screenDetails.screenId, // ควรแน่ใจว่า this.screenId ถูกกำหนดค่าแล้ว
+            project_id: this.screenDetails.project_id, // ควรแน่ใจว่า this.project_id ถูกกำหนดค่าแล้ว
+            system_id: this.screenDetails.system_id, // ควรแน่ใจว่า this.system_id ถูกกำหนดค่าแล้ว
+            task_plan_start,
+            task_plan_end,
+            task_member_id,
+            task_manday,
+          }),
+        });
 
         // ตรวจสอบว่าคำสั่ง HTTP สำเร็จหรือไม่
         if (response.ok) {
@@ -1796,16 +1774,13 @@ export default {
 
         taskData.task_manday = manday;
 
-        const response = await fetch(
-          `http://localhost:7777/tasks/updateTasks/${taskData.id}`,
-          {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(taskData),
-          }
-        );
+        const response = this.$axios.get(`/tasks/updateTasks/${taskData.id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(taskData),
+        });
 
         if (response.ok) {
           Swal.fire({

@@ -42,7 +42,7 @@
           <v-spacer></v-spacer>
 
           <v-btn class="mr-2" color="green" @click="restoreSelectedProjects">
-            <v-icon color="white" > mdi-restore </v-icon>
+            <v-icon color="white"> mdi-restore </v-icon>
           </v-btn>
           <v-btn color="error" @click="deleteSelectedProjects">
             <v-icon> mdi-delete </v-icon>

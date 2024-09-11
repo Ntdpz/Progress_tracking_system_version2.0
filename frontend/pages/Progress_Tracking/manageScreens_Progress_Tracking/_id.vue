@@ -11,17 +11,27 @@
               <!-- icon human which open system member -->
               <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
-                  <v-icon v-bind="attrs" v-on="on" @click="openUserSystem" color="primary" class="large-icon">
+                  <v-icon
+                    v-bind="attrs"
+                    v-on="on"
+                    @click="openUserSystem"
+                    color="primary"
+                    class="large-icon"
+                  >
                     mdi-account-multiple
                   </v-icon>
                 </template>
                 <span>User system</span>
               </v-tooltip>
               <v-dialog v-model="userSystemDialog" max-width="800px">
-                <user-system :systemData="systemData" :userSystems="userSystems"></user-system>
+                <user-system
+                  :systemData="systemData"
+                  :userSystems="userSystems"
+                ></user-system>
               </v-dialog>
 
-              <strong>System:</strong>{{ systemData.system_nameEN || "Wait for name" }}
+              <strong>System:</strong
+              >{{ systemData.system_nameEN || "Wait for name" }}
             </v-card-title>
             <v-card-subtitle>
               ระบบ: {{ systemData.system_nameTH || "รอการตั้งชื่อ" }}<br />
@@ -32,10 +42,10 @@
               }}<br />
               Manday:
               {{
-              systemData.system_manday !== null &&
-              !isNaN(systemData.system_manday)
-              ? Math.round(systemData.system_manday)
-              : 0
+                systemData.system_manday !== null &&
+                !isNaN(systemData.system_manday)
+                  ? Math.round(systemData.system_manday)
+                  : 0
               }}
               <br />
             </v-card-subtitle>
@@ -45,8 +55,11 @@
           <v-col cols="12" md="6" class="circular-progress-right">
             <div class="progress">
               <!-- Progress Total -->
-              <circular-progress style="margin-top: 20px" :value="parseInt(systemData.system_progress)"
-                label="System" />
+              <circular-progress
+                style="margin-top: 20px"
+                :value="parseInt(systemData.system_progress)"
+                label="System"
+              />
             </div>
           </v-col>
         </v-row>
@@ -90,17 +103,35 @@
     <div class="screen-cards">
       <v-row>
         <!-- display screens in system filter by system_id -->
-        <v-col cols="12" md="4" v-for="screen in paginatedScreens" :key="screen.id" >
+        <v-col
+          cols="12"
+          md="4"
+          v-for="screen in paginatedScreens"
+          :key="screen.id"
+        >
           <!-- *TOCHANGE change desing to design-->
-          <ScreenCard :userSystems="userSystems" :screenProjectId="systemData.project_id"
-            :screenSystemId="systemData.id" :screenId="screen.id" :screenCode="screen.screen_code"
-            :screenName="screen.screen_name" :screenLevel="screen.screen_level" :screenStatus="screen.screen_status"
-            :screenProgress="screen.screen_progress" :screenPlanStartDate="screen.screen_plan_start"
-            :screenPlanEndDate="screen.screen_plan_end" :screenActualStartDate="screen.screen_actual_start"
-            :screenActualEndDate="screen.screen_actual_end" :ImageSrc="screen.screen_pic"
-            :design-progress="screen.screen_progress_status_design" :dev-progress="screen.screen_progress_status_dev"
-            @click="navigateToScreen(screen.id)" @update="handleUpdate" @delete="handleDeleteScreen"
-            @submit-edit="handleSubmitEdit" />
+          <ScreenCard
+            :userSystems="userSystems"
+            :screenProjectId="systemData.project_id"
+            :screenSystemId="systemData.id"
+            :screenId="screen.id"
+            :screenCode="screen.screen_code"
+            :screenName="screen.screen_name"
+            :screenLevel="screen.screen_level"
+            :screenStatus="screen.screen_status"
+            :screenProgress="screen.screen_progress"
+            :screenPlanStartDate="screen.screen_plan_start"
+            :screenPlanEndDate="screen.screen_plan_end"
+            :screenActualStartDate="screen.screen_actual_start"
+            :screenActualEndDate="screen.screen_actual_end"
+            :ImageSrc="screen.screen_pic"
+            :design-progress="screen.screen_progress_status_design"
+            :dev-progress="screen.screen_progress_status_dev"
+            @click="navigateToScreen(screen.id)"
+            @update="handleUpdate"
+            @delete="handleDeleteScreen"
+            @submit-edit="handleSubmitEdit"
+          />
         </v-col>
       </v-row>
     </div>
@@ -124,8 +155,11 @@
       </add-form>
     </v-dialog>
     <v-dialog v-model="historyDialog" max-width="800px">
-      {{systemid }}
-      <srceenHistory :systemId="systemid" @close-dialog="closeHistoryDialog" ></srceenHistory>
+      {{ systemid }}
+      <srceenHistory
+        :systemId="systemid"
+        @close-dialog="closeHistoryDialog"
+      ></srceenHistory>
     </v-dialog>
   </div>
 </template>
@@ -220,7 +254,13 @@ export default {
       const userSystems = userSystemsResponse;
 
       // ส่งค่าไปให้ใช้งานใน template หรือ data()
-      return { systemData, screens, systemid: decodedId, userSystems, allScreens };
+      return {
+        systemData,
+        screens,
+        systemid: decodedId,
+        userSystems,
+        allScreens,
+      };
     } catch (err) {
       return error({ statusCode: 404, message: "Data not found" });
     }
@@ -241,9 +281,11 @@ export default {
       // Filter screens based on the search term
       this.screens = this.allScreens.filter(
         (screen) =>
-          screen.screen_name &&
-          (screen.screen_name && screen.screen_name.toLowerCase().includes(searchTerm)) ||
-          (screen.screen_code && screen.screen_code.toLowerCase().includes(searchTerm))
+          (screen.screen_name &&
+            screen.screen_name &&
+            screen.screen_name.toLowerCase().includes(searchTerm)) ||
+          (screen.screen_code &&
+            screen.screen_code.toLowerCase().includes(searchTerm))
       );
       // Reset to page 1 when search is performed
       this.page = 1;
@@ -270,7 +312,9 @@ export default {
     },
     navigateToScreen(screenId) {
       const encodedScreenId = encodeURIComponent(encodeId(screenId)); // เข้ารหัส screenId
-      this.$router.push(`/Progress_Tracking/manageTasks_Progress_Tracking/${encodedScreenId}`);
+      this.$router.push(
+        `/Progress_Tracking/manageTasks_Progress_Tracking/${encodedScreenId}`
+      );
     },
     handleUpdate() {
       console.log("update"); // add later
@@ -294,7 +338,7 @@ export default {
     // Delete screen
     async handleDeleteScreen(screenId) {
       try {
-        await axios.delete(`http://localhost:7777/screens/delete/${screenId}`);
+        await this.$axios.delete(`/screens/delete/${screenId}`);
         this.screens = this.screens.filter((screen) => screen.id !== screenId);
         this.allScreens = this.allScreens.filter(
           (screen) => screen.id !== screenId
@@ -304,48 +348,48 @@ export default {
       }
     },
     // edit screen
-      async handleSubmitEdit(updatedScreen) {
-        const screenId = updatedScreen.screenId;
-        const screenData = {
-          screen_code: updatedScreen.screenCode,
-          screen_name: updatedScreen.screenName,
-          screen_level: updatedScreen.screenLevel,
-          screen_pic: updatedScreen.imageFile, // Base64 image string
-        };
+    async handleSubmitEdit(updatedScreen) {
+      const screenId = updatedScreen.screenId;
+      const screenData = {
+        screen_code: updatedScreen.screenCode,
+        screen_name: updatedScreen.screenName,
+        screen_level: updatedScreen.screenLevel,
+        screen_pic: updatedScreen.imageFile, // Base64 image string
+      };
 
-        try {
-          const response = await axios.put(
-            `http://localhost:7777/screens/updateScreen/${screenId}`,
-            screenData
-          );
+      try {
+        const response = await this.$axios.put(
+          `/screens/updateScreen/${screenId}`,
+          screenData
+        );
 
-          if (response.status === 200) {
-            await Swal.fire({
-              icon: "success",
-              title: "Success",
-              text: "Screen updated successfully",
-              confirmButtonColor: "#009933",
-            });
-          } else {
-            await Swal.fire({
-              icon: "error",
-              title: "Error",
-              text: "Failed to update the screen",
-              confirmButtonColor: "#009933",
-            });
-          }
-        } catch (error) {
-          console.error("An error occurred while updating the screen:", error);
+        if (response.status === 200) {
+          await Swal.fire({
+            icon: "success",
+            title: "Success",
+            text: "Screen updated successfully",
+            confirmButtonColor: "#009933",
+          });
+        } else {
           await Swal.fire({
             icon: "error",
             title: "Error",
-            text: "An unexpected error occurred",
+            text: "Failed to update the screen",
             confirmButtonColor: "#009933",
           });
-        } finally{
-          this.reloadPage();
         }
+      } catch (error) {
+        console.error("An error occurred while updating the screen:", error);
+        await Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "An unexpected error occurred",
+          confirmButtonColor: "#009933",
+        });
+      } finally {
+        this.reloadPage();
       }
+    },
   },
 };
 </script>
