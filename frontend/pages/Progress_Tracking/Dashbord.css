@@ -23,6 +23,14 @@
     /* ระยะห่างภายในทั้ง 4 ด้าน 20px */
 }
 
+.full-card-tap {
+    box-shadow: none !important;
+    /* เอาเงาออกจาก v-card */
+    border: none !important;
+    /* เอาเส้นขอบออกจาก v-card */
+}
+
+
 .tabs {
 
     width: 100% !important
