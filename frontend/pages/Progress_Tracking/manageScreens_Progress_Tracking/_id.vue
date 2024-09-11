@@ -338,7 +338,7 @@ export default {
     // Delete screen
     async handleDeleteScreen(screenId) {
       try {
-        await this.$axios.delete(`/screens/delete/${screenId}`);
+        await axios.delete(`http://localhost:7777/screens/delete/${screenId}`);
         this.screens = this.screens.filter((screen) => screen.id !== screenId);
         this.allScreens = this.allScreens.filter(
           (screen) => screen.id !== screenId
@@ -358,8 +358,8 @@ export default {
       };
 
       try {
-        const response = await this.$axios.put(
-          `/screens/updateScreen/${screenId}`,
+        const response = await axios.put(
+          `http://localhost:7777/screens/updateScreen/${screenId}`,
           screenData
         );
 

@@ -606,7 +606,9 @@ export default {
     },
     async fetchAllScreens() {
       try {
-        const response = await this.$axios.get("/screens/getAll");
+        const response = await axios.get(
+          "http://localhost:7777/screens/getAll"
+        );
         return response.data;
       } catch (error) {
         console.error("Error fetching screens:", error);
@@ -615,7 +617,9 @@ export default {
     },
     async fetchAllSystems() {
       try {
-        const response = await this.$axios.get("/systems/getAll");
+        const response = await axios.get(
+          "http://localhost:7777/systems/getAll"
+        );
         return response.data;
       } catch (error) {
         console.error("Error fetching systems:", error);
@@ -624,7 +628,9 @@ export default {
     },
     async fetchAllProjects() {
       try {
-        const response = await this.$axios.get("/projects/getAll");
+        const response = await axios.get(
+          "http://localhost:7777/projects/getAll"
+        );
         return response.data;
       } catch (error) {
         console.error("Error fetching projects:", error);
@@ -717,8 +723,8 @@ export default {
           ...selectedDevelopers,
           ...selectedImplementers,
         ];
-        const response = await this.$axios.post(
-          `/user_systems/createUser_system`,
+        const response = await axios.post(
+          `http://localhost:7777/user_systems/createUser_system`,
           {
             user_id: selectedUsers,
             system_id: selectedSystemId,
@@ -764,8 +770,8 @@ export default {
 
     async fetchUsersBySystemAndProject(systemId, projectId) {
       try {
-        const response = await this.$axios.get(
-          `/user_systems/getUserBySystemAndProject/${systemId}/${projectId}`
+        const response = await axios.get(
+          `http://localhost:7777/user_systems/getUserBySystemAndProject/${systemId}/${projectId}`
         );
         this.users = response.data;
       } catch (error) {
@@ -782,8 +788,8 @@ export default {
     async openNestedDialog(systemId, projectId) {
       try {
         // เรียก API เพื่อรับรายชื่อผู้ใช้ที่สามารถเลือกได้
-        const response = await this.$axios.get(
-          `/user_systems/checkUsersNotInSystem/${projectId}/${systemId}`
+        const response = await axios.get(
+          `http://localhost:7777/user_systems/checkUsersNotInSystem/${projectId}/${systemId}`
         );
 
         // เพิ่มข้อมูล user_position เข้าไปในชุดข้อมูล
@@ -815,8 +821,8 @@ export default {
         });
 
         if (confirmResult.isConfirmed) {
-          const response = await this.$axios.delete(
-            `/user_systems/deleteUserSystem/${systemId}/${projectId}/${userId}`
+          const response = await axios.delete(
+            `http://localhost:7777/user_systems/deleteUserSystem/${systemId}/${projectId}/${userId}`
           );
 
           if (response.status === 200) {
@@ -864,8 +870,8 @@ export default {
         return;
       }
       try {
-        const response = await this.$axios.get(
-          `/user_projects/getUserProjectsByProjectId/${projectId}`
+        const response = await axios.get(
+          `http://localhost:7777/user_projects/getUserProjectsByProjectId/${projectId}`
         );
         this.projectUsers = response.data.map((user) => ({
           ...user,
@@ -892,7 +898,7 @@ export default {
           return;
         }
         const response = await this.$axios.$get(
-          `/projects/getOne/${projectId}`
+          `http://localhost:7777/projects/getOne/${projectId}`
         );
         this.project = response;
         this.projectNameENG = response.project_name_ENG;
@@ -929,8 +935,8 @@ export default {
           // วนลูปผ่านระบบที่เลือกและกู้คืนแต่ละระบบ
           for (const system of this.selectedSystems) {
             const systemId = system.id;
-            const response = this.$axios.get(
-              `/systems/updateSystem/${systemId}`,
+            const response = await fetch(
+              `http://localhost:7777/systems/updateSystem/${systemId}`,
               {
                 method: "PUT",
                 headers: {
@@ -1002,8 +1008,8 @@ export default {
           // วนลูปผ่านระบบที่เลือกและลบแต่ละระบบ
           for (const system of this.selectedSystems) {
             const systemId = system.id; // รับ ID ของระบบที่ต้องการลบ
-            const response = await this.$axios.get(
-              `/systems/deleteHistorySystems/${systemId}`,
+            const response = await fetch(
+              `http://localhost:7777/systems/deleteHistorySystems/${systemId}`,
               {
                 method: "DELETE",
               }
@@ -1041,8 +1047,8 @@ export default {
     async fetchDeletedSystems() {
       try {
         const projectId = this.projectId;
-        const response = await this.$axios.get(
-          `/systems/searchByProjectId_delete/${projectId}`
+        const response = await fetch(
+          `http://localhost:7777/systems/searchByProjectId_delete/${projectId}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch deleted systems");
@@ -1082,8 +1088,8 @@ export default {
       }
 
       try {
-        const response = await this.$axios.get(
-          `/systems/createSystem`,
+        const response = await fetch(
+          `http://localhost:7777/systems/createSystem`,
           {
             method: "POST",
             headers: {
@@ -1145,8 +1151,8 @@ export default {
 
     async updateSystem() {
       try {
-        const response = await this.$axios.get(
-          `/systems/updateSystem/${this.editedSystem.id}`,
+        const response = await fetch(
+          `http://localhost:7777/systems/updateSystem/${this.editedSystem.id}`,
           {
             method: "PUT",
             headers: {
@@ -1192,8 +1198,8 @@ export default {
         });
 
         if (confirmResult.isConfirmed) {
-          const response = await this.$axios.get(
-            `/systems/delete/${item.id}`,
+          const response = await fetch(
+            `http://localhost:7777/systems/delete/${item.id}`,
             {
               method: "DELETE",
             }
@@ -1237,13 +1243,13 @@ export default {
 
         // Check if the user role is Admin
         if (this.$auth.user.user_role === "Admin") {
-          url = `/systems/searchByProjectId/${projectId}`;
+          url = `http://localhost:7777/systems/searchByProjectId/${projectId}`;
         } else {
           // If not Admin, use the URL for non-admin users
-          url = `/user_systems/getSystemsByUser_id/${projectId}/${this.$auth.user.id}`;
+          url = `http://localhost:7777/user_systems/getSystemsByUser_id/${projectId}/${this.$auth.user.id}`;
         }
 
-        const response = await this.$axios.get(url);
+        const response = await fetch(url);
         if (!response.ok) {
           throw new Error("Failed to fetch systems");
         }
