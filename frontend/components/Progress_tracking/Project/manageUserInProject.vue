@@ -9,8 +9,9 @@
         <!-- Current User Table -->
         <v-data-table
           :headers="headers"
-          :items="users"
+          :items="sortedUsers"
           class="elevation-1 mt-4 mb-3"
+          :items-per-page="5"
         >
           <!-- User Avatar in the "Image" column -->
           <template v-slot:item.user_pic="{ item }">
@@ -58,7 +59,6 @@
 
     <!-- Assign User Dialog -->
     <v-dialog v-model="assignUserDialog" max-width="600px">
-      {{ project_id }}
       <AssignUserProjectDialog
         ref="assignUserDialogRef"
         :project_id="project_id"
@@ -98,9 +98,17 @@ export default {
         { text: "User Position", value: "user_position", align: "start" },
         { text: "Action", value: "action", sortable: false },
       ],
+      positionOrder: ["System Analyst", "Developer", "Implementer"],
     };
   },
   methods: {
+    sortUsers(users) {
+      return users.slice().sort((a, b) => {
+        const posA = this.positionOrder.indexOf(a.user_position);
+        const posB = this.positionOrder.indexOf(b.user_position);
+        return posA - posB;
+      });
+    },
     closeDialog() {
       this.$emit("close");
     },
@@ -185,7 +193,6 @@ export default {
             // อัปเดตข้อมูลผู้ใช้ใหม่
             this.fetchUsers();
 
-           
             if (this.$refs.assignUserDialogRef) {
               this.$refs.assignUserDialogRef.fetchUsersNotInProject();
             }
@@ -218,6 +225,11 @@ export default {
       this.fetchProjectDetails();
       this.fetchUsers();
     }
+  },
+  computed: {
+    sortedUsers() {
+      return this.sortUsers(this.users);
+    },
   },
 };
 </script>
