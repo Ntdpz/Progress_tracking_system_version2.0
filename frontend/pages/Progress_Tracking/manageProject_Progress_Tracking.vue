@@ -219,7 +219,10 @@
 
     <!-- Manage project users dialog -->
     <v-dialog v-model="dialogUserProjects" max-width="1200px">
-      <manageUserInProject :project_id="project_id" />
+      <manageUserInProject
+        :project_id="project_id"
+        @close="dialogUserProjects = false"
+      />
     </v-dialog>
   </div>
 </template>

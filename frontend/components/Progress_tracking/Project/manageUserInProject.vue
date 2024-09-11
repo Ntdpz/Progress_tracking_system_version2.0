@@ -52,15 +52,29 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="primary" @click="openAssignUserDialog">Assign User</v-btn>
-        <v-btn color="secondary">Close</v-btn>
+       <v-btn color="secondary" @click="closeDialog">Close</v-btn>
       </v-card-actions>
     </v-card>
+
+    <!-- Assign User Dialog -->
+    <v-dialog v-model="assignUserDialog" max-width="600px">
+      {{ project_id }}
+      <AssignUserProjectDialog
+        :project_id="project_id"
+        @usersAssigned="fetchUsers"
+        @close="assignUserDialog = false"
+      />
+    </v-dialog>
   </v-card>
 </template>
 
 <script>
 import Swal from "sweetalert2";
+import AssignUserProjectDialog from "@/components/Progress_tracking/Project/AssignUserProjectDialog.vue";
 export default {
+  components: {
+    AssignUserProjectDialog,
+  },
   props: {
     project_id: {
       type: Number,
@@ -70,7 +84,8 @@ export default {
   data() {
     return {
       projectDetails: {},
-      users: [], // จัดเก็บข้อมูลผู้ใช้ที่ได้จาก API
+      users: [],
+      assignUserDialog: false,
       headers: [
         { text: "Image", value: "user_pic", align: "start", sortable: false },
         {
@@ -82,10 +97,12 @@ export default {
         { text: "User Position", value: "user_position", align: "start" },
         { text: "Action", value: "action", sortable: false },
       ],
-      projectName: "",
     };
   },
   methods: {
+    closeDialog() {
+      this.$emit("close");
+    },
     // เรียกใช้ API และเก็บข้อมูลผู้ใช้ใน users
     async fetchUsers() {
       try {
@@ -179,13 +196,22 @@ export default {
       }
     },
     openAssignUserDialog() {
-      // เปิด dialog สำหรับ assign ผู้ใช้ใหม่
-      console.log("Assigning new user");
+      this.assignUserDialog = true; // เปิด Dialog
+    },
+  },
+  watch: {
+    project_id(newVal) {
+      if (newVal) {
+        this.fetchProjectDetails(); // เรียก fetchProjectDetails เมื่อ project_id เปลี่ยนแปลง
+        this.fetchUsers(); // หรือถ้าต้องการเรียก fetchUsers ด้วย
+      }
     },
   },
   mounted() {
-    this.fetchUsers(); // เรียก API เมื่อ component ถูก mount
-    this.fetchProjectDetails();
+    if (this.project_id) {
+      this.fetchProjectDetails();
+      this.fetchUsers();
+    }
   },
 };
 </script>
