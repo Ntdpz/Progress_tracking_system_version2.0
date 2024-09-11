@@ -28,7 +28,7 @@
                     <!-- Line 2: Difficulty Level & Screen Status -->
                     <v-row>
                         <v-col cols="6">
-                            <v-select label="Difficulty Level" v-model="difficultyLevel"
+                            <v-select label="Difficulty Level" v-model="screenLevel"
                                 :items="[1, 2, 3, 4, 5]"></v-select>
                         </v-col>
                         <v-col cols="6">
@@ -64,10 +64,9 @@
                         </v-col>
                     </v-row>
 
-                    <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn type="submit" color="primary">Submit</v-btn>
-                        <v-btn color="secondary" @click="cancelForm">Cancel</v-btn>
+                    <v-card-actions class="button">
+                        <v-btn type="submit" color="primary">Create</v-btn>
+                        <v-btn color="#d33" class="white--text" @click="cancelForm">Cancel</v-btn>
                     </v-card-actions>
                 </v-form>
             </v-card-text>
@@ -98,7 +97,7 @@ export default {
         return {
             screenCode: '',
             screenName: '',
-            difficultyLevel: null,
+            screenLevel: '0',
             screenStatus: 'Not started',
             selectedSA: [],
             selectedDev: [],
@@ -143,7 +142,7 @@ export default {
                     screen_code: this.screenCode,
                     screen_name: this.screenName,
                     screen_status: this.screenStatus,
-                    screen_level: this.difficultyLevel,
+                    screen_level: this.screenLevel,
                     system_id: this.systemId,
                     screen_progress: 0,
                     screen_plan_start: this.screenPlanStart || null,
@@ -191,7 +190,7 @@ export default {
         resetForm() {
             this.screenCode = '';
             this.screenName = '';
-            this.difficultyLevel = null;
+            this.screenLevel = '0';
             this.screenStatus = 'Not started';
             this.selectedSA = [];
             this.selectedDev = [];
@@ -211,6 +210,9 @@ export default {
 
 .required-label {
     font-weight: bold;
+}
+.button {
+    justify-content: center;
 }
 
 .required-asterisk {

@@ -173,7 +173,7 @@ export default {
           });
 
           // Corrected the method name here:
-          this.$emit("restored-screens");
+          this.$emit("close-dialog");
           this.fetchDeletedScreensBySystemId();
           this.fetchScreens();
         }

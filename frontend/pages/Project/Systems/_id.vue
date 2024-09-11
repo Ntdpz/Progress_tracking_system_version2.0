@@ -3,7 +3,53 @@
     <div>
       <Loader v-if="$store.getters.isLoading" />
       <v-card class="dead-section">
-        <systemsDetail :systemData="systemData" />
+        <v-row>
+          <!-- System Detail -->
+          <!-- 1/4 of the row -->
+          <v-col cols="12" md="6">
+            <v-card-title>
+              <!-- icon human which open system member -->
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-icon v-bind="attrs" v-on="on" @click="openUserSystem" color="primary" class="large-icon">
+                    mdi-account-multiple
+                  </v-icon>
+                </template>
+                <span>User system</span>
+              </v-tooltip>
+              <v-dialog v-model="userSystemDialog" max-width="800px">
+                <user-system :systemData="systemData" :userSystems="userSystems"></user-system>
+              </v-dialog>
+
+              <strong>System:</strong>{{ systemData.system_nameEN || "Wait for name" }}
+            </v-card-title>
+            <v-card-subtitle>
+              ระบบ: {{ systemData.system_nameTH || "รอการตั้งชื่อ" }}<br />
+              Total Screen: {{ systemData.screen_count || 0 }} screens<br />
+              Plan:
+              {{ formatDate(systemData.system_plan_start) || "Not determined" }}
+              To {{ formatDate(systemData.system_plan_end) || "Not determined"
+              }}<br />
+              Manday:
+              {{
+              systemData.system_manday !== null &&
+              !isNaN(systemData.system_manday)
+              ? Math.round(systemData.system_manday)
+              : 0
+              }}
+              <br />
+            </v-card-subtitle>
+          </v-col>
+          <!-- Progress detail -->
+          <!-- 3/4 of the row -->
+          <v-col cols="12" md="6" class="circular-progress-right">
+            <div class="progress">
+              <!-- Progress Total -->
+              <circular-progress style="margin-top: 20px" :value="parseInt(systemData.system_progress)"
+                label="System" />
+            </div>
+          </v-col>
+        </v-row>
       </v-card>
     </div>
     <!-- Search bar search by system name -->
@@ -44,34 +90,17 @@
     <div class="screen-cards">
       <v-row>
         <!-- display screens in system filter by system_id -->
-        <v-col
-          cols="12"
-          md="4"
-          v-for="screen in paginatedScreens"
-          :key="screen.id"
-          class="ma-0"
-        >
+        <v-col cols="12" md="4" v-for="screen in paginatedScreens" :key="screen.id" >
           <!-- *TOCHANGE change desing to design-->
-          <ScreenCard
-            :userSystems="userSystems"
-            :screenProjectId="systemData.project_id"
-            :screenSystemId="systemData.id"
-            :screenId="screen.id"
-            :screenCode="screen.screen_code"
-            :screenName="screen.screen_name"
-            :screenStatus="screen.screen_status"
-            :screenProgress="screen.screen_progress"
-            :screenPlanStartDate="screen.screen_plan_start"
-            :screenPlanEndDate="screen.screen_plan_end"
-            :screenActualStartDate="screen.screen_actual_start"
-            :screenActualEndDate="screen.screen_actual_end"
-            :ImageSrc="screen.screen_pic"
-            :design-progress="screen.screen_progress_status_design"
-            :dev-progress="screen.screen_progress_status_dev"
-            @click="navigateToScreen(screen.id)"
-            @update="handleUpdate"
-            @delete="handleDeleteScreen"
-          />
+          <ScreenCard :userSystems="userSystems" :screenProjectId="systemData.project_id"
+            :screenSystemId="systemData.id" :screenId="screen.id" :screenCode="screen.screen_code"
+            :screenName="screen.screen_name" :screenLevel="screen.screen_level" :screenStatus="screen.screen_status"
+            :screenProgress="screen.screen_progress" :screenPlanStartDate="screen.screen_plan_start"
+            :screenPlanEndDate="screen.screen_plan_end" :screenActualStartDate="screen.screen_actual_start"
+            :screenActualEndDate="screen.screen_actual_end" :ImageSrc="screen.screen_pic"
+            :design-progress="screen.screen_progress_status_design" :dev-progress="screen.screen_progress_status_dev"
+            @click="navigateToScreen(screen.id)" @update="handleUpdate" @delete="handleDeleteScreen"
+            @submit-edit="handleSubmitEdit" />
         </v-col>
       </v-row>
     </div>
@@ -95,21 +124,18 @@
       </add-form>
     </v-dialog>
     <v-dialog v-model="historyDialog" max-width="800px">
-      {{ systemid }}
-      <srceenHistory
-        :systemId="systemid"
-        @close-dialog="closeHistoryDialog"
-      ></srceenHistory>
+      {{systemid }}
+      <srceenHistory :systemId="systemid" @close-dialog="closeHistoryDialog" ></srceenHistory>
     </v-dialog>
   </div>
 </template>
 
 
 <script>
-import systemsDetail from "@/components/Progress_tracking/systems/systemsDetail.vue";
-import Loader from "@/components/Loader.vue";
+import Swal from "sweetalert2";
 import axios from "axios";
 import CircularProgress from "~/components/system/circularProgress.vue";
+import userSystem from "~/components/system/userSystem.vue";
 import ScreenCard from "~/components/system/ScreenCard.vue";
 import AddForm from "~/components/system/addForm.vue";
 import srceenHistory from "~/components/system/srceenHistory.vue";
@@ -127,8 +153,7 @@ export default {
     ScreenCard,
     AddForm,
     srceenHistory,
-    Loader,
-    systemsDetail,
+    userSystem,
   },
   layout: "admin", // Apply layout if needed
   middleware: "auth", // Apply middleware if needed
@@ -145,14 +170,21 @@ export default {
 
       // Pagination
       page: 1,
-      itemsPerPage: 15, // max 15 screens per page
+      itemsPerPage: 12, // max 15 screens per page
       totalPages: 0,
       addScreenDialog: false,
       historyDialog: false,
+      userSystemDialog: false,
       systemData: "",
     };
   },
   computed: {
+    filteredScreens() {
+      // Filter screens by search query
+      if (!this.search) {
+        return this.allScreens;
+      }
+    },
     paginatedScreens() {
       const start = (this.page - 1) * this.itemsPerPage;
       const end = start + this.itemsPerPage;
@@ -178,6 +210,7 @@ export default {
       const screensResponse = await $axios.$get(`/screens/getAll`, {
         params: { system_id: decodedId },
       });
+      const allScreens = screensResponse;
       const screens = screensResponse;
 
       // ดึง user_systems ที่เกี่ยวข้องกับ system
@@ -187,7 +220,7 @@ export default {
       const userSystems = userSystemsResponse;
 
       // ส่งค่าไปให้ใช้งานใน template หรือ data()
-      return { systemData, screens, systemid: decodedId, userSystems };
+      return { systemData, screens, systemid: decodedId, userSystems, allScreens };
     } catch (err) {
       return error({ statusCode: 404, message: "Data not found" });
     }
@@ -209,7 +242,8 @@ export default {
       this.screens = this.allScreens.filter(
         (screen) =>
           screen.screen_name &&
-          screen.screen_name.toLowerCase().includes(searchTerm)
+          (screen.screen_name && screen.screen_name.toLowerCase().includes(searchTerm)) ||
+          (screen.screen_code && screen.screen_code.toLowerCase().includes(searchTerm))
       );
       // Reset to page 1 when search is performed
       this.page = 1;
@@ -228,7 +262,12 @@ export default {
     openHistoryDialog() {
       this.historyDialog = true;
     },
-
+    openUserSystem() {
+      this.userSystemDialog = true;
+    },
+    closeUserSystem() {
+      this.userSystemDialog = false;
+    },
     navigateToScreen(screenId) {
       const encodedScreenId = encodeURIComponent(encodeId(screenId)); // เข้ารหัส screenId
       this.$router.push(`/Project/Systems/screens/${encodedScreenId}`);
@@ -241,6 +280,7 @@ export default {
     },
     closeHistoryDialog() {
       this.historyDialog = false;
+      this.$router.go();
     },
     reloadPage() {
       this.$router.go();
@@ -263,7 +303,49 @@ export default {
         console.error("Failed to delete screen:", error);
       }
     },
-    //
+    // edit screen
+      async handleSubmitEdit(updatedScreen) {
+        const screenId = updatedScreen.screenId;
+        const screenData = {
+          screen_code: updatedScreen.screenCode,
+          screen_name: updatedScreen.screenName,
+          screen_level: updatedScreen.screenLevel,
+          screen_pic: updatedScreen.imageFile, // Base64 image string
+        };
+
+        try {
+          const response = await axios.put(
+            `http://localhost:7777/screens/updateScreen/${screenId}`,
+            screenData
+          );
+
+          if (response.status === 200) {
+            await Swal.fire({
+              icon: "success",
+              title: "Success",
+              text: "Screen updated successfully",
+              confirmButtonColor: "#009933",
+            });
+          } else {
+            await Swal.fire({
+              icon: "error",
+              title: "Error",
+              text: "Failed to update the screen",
+              confirmButtonColor: "#009933",
+            });
+          }
+        } catch (error) {
+          console.error("An error occurred while updating the screen:", error);
+          await Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "An unexpected error occurred",
+            confirmButtonColor: "#009933",
+          });
+        } finally{
+          this.reloadPage();
+        }
+      }
   },
 };
 </script>
@@ -294,5 +376,13 @@ export default {
 .circular-progress-right {
   display: flex;
   justify-content: flex-end;
+}
+.large-icon {
+  font-size: 40px;
+}
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
 }
 </style>
