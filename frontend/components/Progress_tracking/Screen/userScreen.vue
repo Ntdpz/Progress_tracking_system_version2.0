@@ -16,16 +16,19 @@
         </v-toolbar>
       </template>
 
+      <!-- image -->
       <template v-slot:item.user_pic="{ item }">
-        <v-img
-          :src="item.user_pic"
-          max-width="75"
-          max-height="75"
-          class="picture-img"
-        ></v-img>
+        <v-avatar size="36">
+          <v-img :src="getBase64Image(item.user_pic)" />
+        </v-avatar>
       </template>
 
-      <!-- เพิ่ม slot อื่นๆ ตามที่จำเป็น -->
+      <!-- position -->
+      <template v-slot:item.user_position="{ item }">
+        <v-chip :color="getColor(item.user_position)" dark>
+          {{ item.user_position }}
+        </v-chip>
+      </template>
     </v-data-table>
   </div>
 </template>
@@ -61,48 +64,29 @@ export default {
       console.error(error);
     }
   },
+  methods: {
+    getColor(position) {
+      switch (position) {
+        case "Manager":
+          return "#864F80";
+        case "Developer":
+          return "#374AAB";
+        case "Tester":
+          return "#359C73";
+        default:
+          return "grey";
+      }
+    },
+    getBase64Image(base64String) {
+      if (!base64String) {
+        return "";
+      }
+      if (base64String.startsWith("data:image/jpeg;base64,")) {
+        return base64String;
+      } else {
+        return `data:image/jpeg;base64,${base64String}`;
+      }
+    },
+  },
 };
 </script>
-
-<style>
-.styled-table thead th {
-  background-color: #ffffff;
-  color: #009933 !important;
-  font-weight: bold !important;
-  border-bottom: 2px solid black;
-  font-size: 18px !important;
-}
-
-.styled-table thead th,
-.styled-table tbody td {
-  height: 75px !important;
-}
-
-.picture-img {
-  border: 3px solid #009933;
-  /* กำหนดสีและความหนาของขอบ */
-  border-radius: 300px;
-  /* ปรับความโค้งมนของมุมขอบ */
-}
-
-.styled-table thead th:nth-child(2),
-.styled-table thead th:nth-child(3),
-.styled-table thead th:nth-child(4) {
-  text-align: center !important;
-  /* จัดชิดกลางสำหรับคอลัมน์ 'First Name', 'Last Name', 'Position' */
-}
-
-.styled-table tbody td {
-  padding: 8px;
-}
-
-.styled-table tbody td:nth-child(2),
-.styled-table tbody td:nth-child(3) {
-  text-align: left !important;
-  /* จัดชิดซ้ายสำหรับ 'First Name' และ 'Last Name' */
-}
-
-.toolbar-title {
-  color: #009933 !important;
-}
-</style>

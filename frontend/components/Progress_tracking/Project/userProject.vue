@@ -16,13 +16,18 @@
         </v-toolbar>
       </template>
 
+      <!-- image -->
       <template v-slot:item.user_pic="{ item }">
-        <v-img
-          :src="item.user_pic"
-          max-width="75"
-          max-height="75"
-          class="picture-img"
-        ></v-img>
+        <v-avatar size="36">
+          <v-img :src="getBase64Image(item.user_pic)" />
+        </v-avatar>
+      </template>
+
+      <!-- position -->
+      <template v-slot:item.user_position="{ item }">
+        <v-chip :color="getColor(item.user_position)" dark>
+          {{ item.user_position }}
+        </v-chip>
       </template>
     </v-data-table>
   </div>
@@ -39,11 +44,11 @@ export default {
   data() {
     return {
       headers: [
-        { text: "Picture", value: "user_pic", align: `center` },
+        { text: "Image", value: "user_pic" },
         { text: "First Name", value: "user_firstname" },
         { text: "Last Name", value: "user_lastname" },
-        { text: "Position", value: "user_position", align: `center` },
-        { text: "Department", value: "user_department", align: `center` },
+        { text: "Position", value: "user_position", align: "center" },
+        { text: "Department", value: "user_department", align: "center" },
       ],
       user_projects: [],
     };
@@ -59,59 +64,29 @@ export default {
       console.error(error);
     }
   },
+  methods: {
+    getColor(position) {
+      switch (position) {
+        case "Manager":
+          return "#864F80";
+        case "Developer":
+          return "#374AAB";
+        case "Tester":
+          return "#359C73";
+        default:
+          return "grey";
+      }
+    },
+    getBase64Image(base64String) {
+      if (!base64String) {
+        return "";
+      }
+      if (base64String.startsWith("data:image/jpeg;base64,")) {
+        return base64String;
+      } else {
+        return `data:image/jpeg;base64,${base64String}`;
+      }
+    },
+  },
 };
 </script>
-
-<style>
-.styled-table thead th {
-  background-color: #ffffff;
-  color: #009933 !important;
-  font-weight: bold !important;
-  border-bottom: 2px solid black;
-  font-size: 18px !important;
-}
-
-.styled-table thead th,
-.styled-table tbody td {
-  height: 75px !important;
-}
-
-.picture-img {
-  border: 3px solid #009933; /* กำหนดสีและความหนาของขอบ */
-  border-radius: 300px; /* ปรับความโค้งมนของมุมขอบ */
-}
-
-.styled-table thead th:nth-child(2) {
-  text-align: center !important; /* จัดชิดขวาสำหรับคอลัมน์ 'First Name' */
-}
-
-.styled-table thead th:nth-child(3) {
-  text-align: center !important; /* จัดชิดขวาสำหรับคอลัมน์ 'Last Name' */
-}
-
-.styled-table thead th:nth-child(4) {
-  text-align: center !important; /* จัดชิดขวาสำหรับคอลัมน์ 'Position' */
-}
-
-.styled-table tbody td {
-  padding: 8px;
-}
-
-/* CSS สำหรับคอลัมน์ 'First Name' */
-.styled-table tbody td:nth-child(2) {
-  text-align: left !important; /* จัดชิดขวาสำหรับ First Name */
-}
-
-/* CSS สำหรับคอลัมน์ 'Last Name' */
-.styled-table tbody td:nth-child(3) {
-  text-align: left !important; /* จัดชิดขวาสำหรับ Last Name */
-}
-
-.picture-img {
-  border: 3px solid #009933; /* กำหนดสีและความหนาของขอบ */
-  border-radius: 300px; /* ปรับความโค้งมนของมุมขอบ */
-}
-.toolbar-title {
-  color: #009933 !important;
-}
-</style>
