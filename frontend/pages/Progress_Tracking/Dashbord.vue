@@ -34,17 +34,17 @@
               </v-row>
               <v-tabs-items v-model="project.tab">
                 <v-tab-item>
-                  <v-card class="full-card">
+                  <v-card>
                     <task_project_table :projectId="project.id" />
                   </v-card>
                 </v-tab-item>
                 <v-tab-item>
-                  <v-card class="full-card">
+                  <v-card>
                     <all_task_user :projectId="project.id" />
                   </v-card>
                 </v-tab-item>
                 <v-tab-item>
-                  <v-card class="full-card">
+                  <v-card>
                     <archive_task_table :projectId="project.id" />
                   </v-card>
                 </v-tab-item>

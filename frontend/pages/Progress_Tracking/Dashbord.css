@@ -13,13 +13,14 @@
     width: 100%;
     max-width: 100%;
     margin: 0 auto;
-}
-
-.full-card {
     box-shadow: none !important;
     /* เอาเงาออกจาก v-card */
-    border: none !important;
-    /* เอาเส้นขอบออกจาก v-card */
+    border: 2px solid #00993354 !important;
+    /* เพิ่มเส้นขอบหนา 2px สีดำ */
+    border-radius: 8px;
+    /* ให้มุมของกรอบมน */
+    padding: 20px;
+    /* ระยะห่างภายในทั้ง 4 ด้าน 20px */
 }
 
 .tabs {
@@ -54,5 +55,3 @@
     color: #000000 !important;
     /* สีตัวหนังสือเมื่อ hover */
 }
-
-
