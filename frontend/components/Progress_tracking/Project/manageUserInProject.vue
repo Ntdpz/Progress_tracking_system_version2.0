@@ -52,7 +52,7 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="primary" @click="openAssignUserDialog">Assign User</v-btn>
-       <v-btn color="secondary" @click="closeDialog">Close</v-btn>
+        <v-btn color="secondary" @click="closeDialog">Close</v-btn>
       </v-card-actions>
     </v-card>
 
@@ -60,6 +60,7 @@
     <v-dialog v-model="assignUserDialog" max-width="600px">
       {{ project_id }}
       <AssignUserProjectDialog
+        ref="assignUserDialogRef"
         :project_id="project_id"
         @usersAssigned="fetchUsers"
         @close="assignUserDialog = false"
@@ -183,6 +184,11 @@ export default {
 
             // อัปเดตข้อมูลผู้ใช้ใหม่
             this.fetchUsers();
+
+           
+            if (this.$refs.assignUserDialogRef) {
+              this.$refs.assignUserDialogRef.fetchUsersNotInProject();
+            }
           }
         } catch (error) {
           // แสดงข้อความผิดพลาดถ้ามีปัญหาในการลบ
