@@ -808,7 +808,7 @@ export default {
       });
     },
     goToHistoryProject() {
-      this.$router.push("/Project/HistoryProject");
+      this.$router.push("/Progress_Tracking/HistoryProject");
     },
     openEditDialog(project) {
       this.editProject = { ...project };
