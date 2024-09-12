@@ -225,7 +225,8 @@ router.get("/getOne/:id", async (req, res) => {
           CAST(COALESCE(AVG(CASE WHEN tasks.task_type = 'Develop' THEN tasks.task_progress ELSE NULL END), 0) AS DECIMAL(10,0)) AS screen_progress_status_dev,
           COUNT(tasks.id) AS task_count,
           MIN(tasks.task_plan_start) AS min_task_plan_start,
-          MAX(tasks.task_plan_end) AS max_task_plan_end
+          MAX(tasks.task_plan_end) AS max_task_plan_end,
+          DATEDIFF(MAX(tasks.task_plan_end), MIN(tasks.task_plan_start)) AS screen_manday
       FROM
         screens
       LEFT JOIN tasks ON screens.id = tasks.screen_id
@@ -255,7 +256,20 @@ router.get("/getOne/:id", async (req, res) => {
             .split("T")[0];
         }
 
-        // Update screen data in the database
+        // Update screen_manday in the database
+        const updateQuery = `
+          UPDATE screens
+          SET screen_manday = ?
+          WHERE id = ?
+        `;
+
+        connection.query(updateQuery, [screen.screen_manday, screen.id], (updateErr, updateResults) => {
+          if (updateErr) {
+            console.error(updateErr);
+          }
+        });
+
+        // Update other screen data in the database (if needed)
         try {
           await updateScreen(screen);
         } catch (updateErr) {
@@ -272,6 +286,8 @@ router.get("/getOne/:id", async (req, res) => {
 });
 
 
+
+
 // Route to get all historical screens
 router.get("/getAllHistoryScreens", async (req, res) => {
   try {
@@ -279,6 +295,7 @@ router.get("/getAllHistoryScreens", async (req, res) => {
       SELECT *
       FROM screens
       WHERE is_deleted = 1
+       DATEDIFF(MAX(tasks.task_plan_end), MIN(tasks.task_plan_start)) AS screen_manday
     `;
 
     connection.query(query, async (err, results, fields) => {
@@ -330,7 +347,18 @@ router.get("/searchByProjectId/:project_id", async (req, res) => {
         console.log(err);
         return res.status(400).send();
       }
+      // Update screen_manday in the database
+      const updateQuery = `
+          UPDATE screens
+          SET screen_manday = ?
+          WHERE id = ?
+        `;
 
+      connection.query(updateQuery, [screen.screen_manday, screen.id], (updateErr, updateResults) => {
+        if (updateErr) {
+          console.error(updateErr);
+        }
+      });
       // Update each screen after fetching results
       await Promise.all(
         results.map(async (screen) => {
@@ -377,6 +405,7 @@ router.get("/searchByProjectId_delete/:project_id", async (req, res) => {
         DATE(MIN(screens.screen_plan_start)) AS screen_plan_start,
         DATE(MAX(screens.screen_plan_end)) AS screen_plan_end,
         DATEDIFF(MAX(tasks.task_plan_end), MIN(tasks.task_plan_start)) AS screen_manday
+
       FROM
         screens
       LEFT JOIN tasks ON screens.id = tasks.screen_id
@@ -390,9 +419,10 @@ router.get("/searchByProjectId_delete/:project_id", async (req, res) => {
         return res.status(400).send();
       }
 
+
       await Promise.all(
         results.map(async (screen) => {
-          
+
           await updateScreen(screen);
         })
       );
@@ -431,7 +461,18 @@ router.get("/searchBySystemId/:system_id", async (req, res) => {
         console.log(err);
         return res.status(400).send();
       }
+      // Update screen_manday in the database
+      const updateQuery = `
+          UPDATE screens
+          SET screen_manday = ?
+          WHERE id = ?
+        `;
 
+      connection.query(updateQuery, [screen.screen_manday, screen.id], (updateErr, updateResults) => {
+        if (updateErr) {
+          console.error(updateErr);
+        }
+      });
       await Promise.all(
         results.map(async (screen) => {
           await updateScreen(screen);
@@ -483,7 +524,18 @@ router.get("/searchBySystemId_delete/:system_id", async (req, res) => {
         console.log(err);
         return res.status(400).send();
       }
+      // Update screen_manday in the database
+      const updateQuery = `
+          UPDATE screens
+          SET screen_manday = ?
+          WHERE id = ?
+        `;
 
+      connection.query(updateQuery, [screen.screen_manday, screen.id], (updateErr, updateResults) => {
+        if (updateErr) {
+          console.error(updateErr);
+        }
+      });
       await Promise.all(
         results.map(async (screen) => {
           await updateScreen(screen);
