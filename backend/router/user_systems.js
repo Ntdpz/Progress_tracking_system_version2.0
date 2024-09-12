@@ -66,33 +66,42 @@ router.get("/getAllSystemId/:system_id", async (req, res) => {
     }
 });
 
-// * POST FROM user_systems
-router.post("/createUser_system", async (req, res) => {
-    const { user_id, system_id, project_id } = req.body;
+// * POST to create user_systems
+router.post('/createUser_system', async (req, res) => {
+    const { user_ids, project_id, system_id } = req.body;
+
+    // ตรวจสอบว่ามีข้อมูล user_ids หรือไม่
+    if (!user_ids || user_ids.length === 0) {
+        return res.status(400).json({ message: "No users selected" });
+    }
 
     try {
-        for (let i = 0; i < user_id.length; i++) {
-            const id = generateId();
-            // screen_id exists in the screens table, insert new record into user_screens table
-            connection.query(
-                "INSERT INTO user_systems(id, user_id, system_id,project_id) VALUES(?, ?, ?, ?)",
-                [id, user_id[i], system_id, project_id],
-                (err, results, fields) => {
-                    if (err) {
-                        console.log("Error while inserting a screen into the database", err);
-                        return;
+        // ลูปผ่าน user_ids แล้วบันทึกลงในตาราง user_systems
+        for (let user_id of user_ids) {
+            const query = `
+                INSERT INTO user_systems (id, user_id, project_id, system_id)
+                VALUES (?, ?, ?, ?)
+            `;
+
+            const id = generateId(); // สร้าง ID ใหม่
+
+            await new Promise((resolve, reject) => {
+                connection.query(query, [id, user_id, project_id, system_id], (error, results) => {
+                    if (error) {
+                        return reject(error);
                     }
-                }
-            );
+                    resolve(results);
+                });
+            });
         }
-        return res
-            .status(201)
-            .json({ message: "New user_systems successfully created!" });
-    } catch (err) {
-        console.log("Error while inserting user_systems(s) into the database", err);
-        return res.status(400).send();
+
+        res.status(200).json({ message: "Users assigned successfully" });
+    } catch (error) {
+        console.error('Error assigning users to system:', error);
+        res.status(500).json({ message: "Error assigning users to system" });
     }
 });
+
 
 // * Put FROM user_system by user_id
 router.put("/updateUserID/:user_id", async (req, res) => {
@@ -227,33 +236,28 @@ router.get("/getUserBySystemAndProject/:system_id/:project_id", async (req, res)
     }
 });
 
-
-// Get users not in system by system_id
-router.get("/checkUsersNotInSystem/:project_id/:system_id", async (req, res) => {
+// Get users not in system by system_id and project_id
+router.get("/checkUsersNotInSystem/:system_id/:project_id", async (req, res) => {
     const { project_id, system_id } = req.params;
 
     try {
-        // Query to find users who are not in the specified project and system
+        // Query to find users who are in the project but not in the system
         const query = `
-            SELECT u.id, u.user_firstname, u.user_lastname, u.user_position
+            SELECT u.id, u.user_firstname, u.user_lastname, u.user_position,u.user_pic,u.user_department
             FROM users u
-            WHERE u.id IN (
-                SELECT up.user_id
-                FROM user_projects up
-                WHERE up.project_id = ?
-            )
-            AND u.id NOT IN (
-                SELECT us.user_id
-                FROM user_systems us
-                WHERE us.project_id = ? AND us.system_id = ?
-            )
+            JOIN user_projects up ON u.id = up.user_id
+            LEFT JOIN user_systems us ON u.id = us.user_id AND us.system_id = ? AND us.project_id = ?
+            WHERE up.project_id = ?
+            AND us.user_id IS NULL
         `;
 
-        connection.query(query, [project_id, project_id, system_id], (err, results, fields) => {
+        // ใช้ project_id และ system_id ในการค้นหาข้อมูล
+        connection.query(query, [system_id, project_id, project_id], (err, results, fields) => {
             if (err) {
                 console.log(err);
                 return res.status(400).send();
             }
+            // ส่งรายชื่อผู้ใช้ที่ไม่ได้อยู่ในระบบกลับไป
             res.status(200).json(results);
         });
     } catch (err) {
@@ -261,6 +265,8 @@ router.get("/checkUsersNotInSystem/:project_id/:system_id", async (req, res) => 
         return res.status(500).send();
     }
 });
+
+
 
 
 //* DELETE user_system by system_id, project_id, and user_id

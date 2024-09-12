@@ -341,59 +341,11 @@
 
     <!-- Dialog สำหรับการจัดการผู้ใช้ระบบ -->
     <v-dialog v-model="manageUserDialog" max-width="800px">
-      <v-card>
-        <v-card-title>Manage User Systems</v-card-title>
-        <v-card-text>
-          <v-text-field
-            v-model="searchUser"
-            label="Search"
-            dense
-            hide-details
-            solo
-            flat
-            outlined
-            color="primary"
-          ></v-text-field>
-          <v-list>
-            <v-list-item v-for="user in filteredUsersList" :key="user.id">
-              <v-list-item-avatar>
-                <v-img :src="user.user_pic" height="50" contain></v-img>
-              </v-list-item-avatar>
-              <v-list-item-content>
-                <v-list-item-title>{{ user.user_firstname }}</v-list-item-title>
-                <v-list-item-subtitle>{{
-                  user.user_lastname
-                }}</v-list-item-subtitle>
-                <v-list-item-subtitle>{{
-                  user.user_position
-                }}</v-list-item-subtitle>
-              </v-list-item-content>
-              <v-list-item-action>
-                <v-icon
-                  color="error"
-                  @click="
-                    deleteUser(selectedSystemId, selectedProjectId, user.id)
-                  "
-                  >mdi-delete</v-icon
-                >
-              </v-list-item-action>
-            </v-list-item>
-          </v-list>
-          <v-pagination
-            v-model="currentPage"
-            :length="numberOfPages"
-            @input="changePage"
-          ></v-pagination>
-        </v-card-text>
-        <v-card-actions>
-          <v-btn
-            color="primary"
-            @click="openNestedDialog(selectedSystemId, selectedProjectId)"
-            >Assign User</v-btn
-          >
-          <v-btn color="error" @click="manageUserDialog = false">Close</v-btn>
-        </v-card-actions>
-      </v-card>
+      <manageUserInSystems
+        :project_id="projectId"
+        :systems_id="selectedSystemId"
+        @close="manageUserDialog = false"
+      />
     </v-dialog>
 
     <!-- assing Userdialog -->
@@ -476,6 +428,7 @@ import Swal from "sweetalert2";
 import axios from "axios";
 import { encodeId, decodeId } from "@/utils/crypto";
 import projectDetail from "@/components/Progress_tracking/Project/projectDetail.vue";
+import manageUserInSystems from "@/components/Progress_tracking/systems/manageUserInSystems.vue";
 export default {
   head() {
     return {
@@ -507,6 +460,7 @@ export default {
   components: {
     Loader,
     projectDetail,
+    manageUserInSystems,
   },
   data() {
     return {

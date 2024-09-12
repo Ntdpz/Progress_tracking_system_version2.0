@@ -46,7 +46,7 @@
                         <v-text-field
                           class="mb-2"
                           prepend-inner-icon="mdi-account-outline"
-                          placeholder="กรุณาใส่รหัสพนักงานของคุณ"
+                          placeholder="Please enter your User ID."
                           v-model="form.user_id"
                           type="text"
                           outlined
@@ -70,7 +70,7 @@
                         </v-row>
                         <v-text-field
                           class="mb-2"
-                          placeholder="กรุณาใส่รหัสผ่านให้ถูกต้อง"
+                          placeholder="Please enter the correct password."
                           prepend-inner-icon="mdi-lock-outline"
                           v-model="form.user_password"
                           type="password"
@@ -195,7 +195,7 @@
 </template>
 
 <script>
-import Swal from 'sweetalert2';
+import Swal from "sweetalert2";
 
 export default {
   data() {
@@ -209,7 +209,9 @@ export default {
       dialogWrong: false,
       countLogin: 0,
 
-      rules: [(value) => !!value || "Please fill in all information completely.."],
+      rules: [
+        (value) => !!value || "Please fill in all information completely..",
+      ],
     };
   },
   methods: {
@@ -221,11 +223,11 @@ export default {
         console.error(error);
 
         Swal.fire({
-          icon: 'error',
-          title: 'The information is incorrect.',
-          text: 'Please check your employee ID and password.',
-          confirmButtonText: 'OK',
-           confirmButtonColor: "#009933",
+          icon: "error",
+          title: "The information is incorrect.",
+          text: "Please check your employee ID and password.",
+          confirmButtonText: "OK",
+          confirmButtonColor: "#009933",
         });
       }
     },
