@@ -344,7 +344,7 @@ router.put("/updateTasks/:id", async (req, res) => {
       return res.status(400).json({ error: "No fields to update" });
     }
 
-    const query = "UPDATE Tasks SET ? WHERE id = ?";
+    const query = "UPDATE tasks SET ? WHERE id = ?";
 
     await new Promise((resolve, reject) => {
       connection.query(query, [updatedTaskFields, id], (err, result) => {
