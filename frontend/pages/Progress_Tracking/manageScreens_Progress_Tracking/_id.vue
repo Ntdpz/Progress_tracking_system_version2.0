@@ -53,7 +53,7 @@
         <v-col cols="12" md="4">
           <v-row>
             <v-col cols="6">
-              <v-btn color="primary" block @click="openAddScreenDialog">Add screen</v-btn>
+              <v-btn v-if="!isRestrictedPosition" color="primary" block @click="openAddScreenDialog">Add screen</v-btn>
             </v-col>
             <v-col cols="6">
               <v-btn color="error" block @click="openHistoryDialog">
@@ -125,6 +125,7 @@ export default {
   middleware: "auth",
   data() {
     return {
+      user: this.$auth.user,
       systemid: null,
       projectId: null,
       system: null,
@@ -161,6 +162,9 @@ export default {
       const start = (this.page - 1) * this.itemsPerPage;
       const end = start + this.itemsPerPage;
       return this.filteredScreens.slice(start, end); // Paginate based on filtered or all screens
+    },
+    isRestrictedPosition() {
+      return this.user && (this.user.user_position === "Developer" || this.user.user_position === "Implementer");
     },
   },
   watch: {
