@@ -64,10 +64,10 @@
           }}
         </v-card-subtitle>
         <v-card-actions>
-          <v-btn color="primary" icon @click.stop="openEditDialog">
+          <v-btn v-if="!isRestrictedPosition" color="primary" icon @click.stop="openEditDialog">
             <v-icon>mdi-pencil</v-icon>
           </v-btn>
-          <v-btn color="primary" icon @click.stop="editScreenUserDialog = true">
+          <v-btn v-if="!isRestrictedPosition" color="primary" icon @click.stop="editScreenUserDialog = true">
             <v-icon>mdi-account-edit</v-icon>
           </v-btn>
         </v-card-actions>
@@ -435,6 +435,10 @@ export default {
       type: String,
       required: false,
     },
+   isRestrictedPosition:{
+    type: Boolean,
+    default: false,
+   },
   },
   data() {
     return {

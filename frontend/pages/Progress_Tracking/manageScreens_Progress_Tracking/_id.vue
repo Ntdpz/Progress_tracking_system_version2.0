@@ -26,9 +26,9 @@
             Plan: {{ formatDate(systemData.system_plan_start) || "Not determined" }}
             To {{ formatDate(systemData.system_plan_end) || "Not determined" }}<br />
             Manday: {{
-              systemData.system_manday !== null && !isNaN(systemData.system_manday)
-                ? Math.round(systemData.system_manday)
-                : 0
+            systemData.system_manday !== null && !isNaN(systemData.system_manday)
+            ? Math.round(systemData.system_manday)
+            : 0
             }}<br />
           </v-card-subtitle>
         </v-col>
@@ -56,7 +56,7 @@
               <v-btn v-if="!isRestrictedPosition" color="primary" block @click="openAddScreenDialog">Add screen</v-btn>
             </v-col>
             <v-col cols="6">
-              <v-btn color="error" block @click="openHistoryDialog">
+              <v-btn v-if="!isRestrictedPosition" color="error" block @click="openHistoryDialog">
                 <v-icon class="white--text">mdi-history</v-icon>
               </v-btn>
             </v-col>
@@ -69,15 +69,15 @@
     <div class="screen-cards">
       <v-row>
         <v-col cols="12" md="4" v-for="screen in paginatedScreens" :key="screen.id">
-          <ScreenCard :userSystems="userSystems" :screenProjectId="systemData.project_id"
-            :screenSystemId="systemData.id" :screenId="screen.id" :screenCode="screen.screen_code"
-            :screenName="screen.screen_name" :screenLevel="screen.screen_level" :screenStatus="screen.screen_status"
-            :screenProgress="screen.screen_progress" :screenPlanStartDate="screen.screen_plan_start"
-            :screenPlanEndDate="screen.screen_plan_end" :screenActualStartDate="screen.screen_actual_start"
-            :screenActualEndDate="screen.screen_actual_end" :ImageSrc="screen.screen_pic"
-            :design-progress="screen.screen_progress_status_design" :dev-progress="screen.screen_progress_status_dev"
-            @click="navigateToScreen(screen.id)" @update="handleUpdate" @delete="handleDeleteScreen"
-            @submit-edit="handleSubmitEdit" />
+          <ScreenCard :isRestrictedPosition="isRestrictedPosition" :userSystems="userSystems"
+            :screenProjectId="systemData.project_id" :screenSystemId="systemData.id" :screenId="screen.id"
+            :screenCode="screen.screen_code" :screenName="screen.screen_name" :screenLevel="screen.screen_level"
+            :screenStatus="screen.screen_status" :screenProgress="screen.screen_progress"
+            :screenPlanStartDate="screen.screen_plan_start" :screenPlanEndDate="screen.screen_plan_end"
+            :screenActualStartDate="screen.screen_actual_start" :screenActualEndDate="screen.screen_actual_end"
+            :ImageSrc="screen.screen_pic" :design-progress="screen.screen_progress_status_design"
+            :dev-progress="screen.screen_progress_status_dev" @click="navigateToScreen(screen.id)"
+            @update="handleUpdate" @delete="handleDeleteScreen" @submit-edit="handleSubmitEdit" />
         </v-col>
       </v-row>
     </div>
@@ -187,9 +187,15 @@ export default {
 
     try {
       const systemResponse = await $axios.$get(`/systems/getOne/${decodedId}`);
-      const screensResponse = await $axios.$get(`/screens/getAll`, {
-        params: { system_id: decodedId },
-      });
+      let screensResponse;
+
+      if (this.$auth.user.user_position === "Developer" || this.$auth.user.user_position === "Implementer") {
+        const userId = this.$auth.user.user_id;
+        screensResponse = await $axios.$get(`/user_screens/getScreenByUser_id/${systemResponse.project_id}/${decodedId}/${userId}`);
+      } else {
+        screensResponse = await $axios.$get(`/screens/getAll`, { params: { system_id: decodedId } });
+      }
+
       const userSystemsResponse = await $axios.$get(`/user_systems/getAllSystemId/${decodedId}`);
 
       return {

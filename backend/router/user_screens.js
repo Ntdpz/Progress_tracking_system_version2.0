@@ -65,6 +65,32 @@ router.get("/getOneScreenID/:screen_id", async (req, res) => {
     return res.status(500).send();
   }
 });
+
+// Get screens by user_id, project_id, system_id
+router.get("/getScreenByUser_id/:project_id/:system_id/:user_id", async (req, res) => {
+  const { project_id, system_id, user_id } = req.params;
+
+  try {
+    connection.query(
+      `SELECT screens.* 
+            FROM user_screens 
+            INNER JOIN screens ON user_screens.screen_id = screens.screen_id 
+            WHERE user_screens.project_id = ? AND user_screens.system_id = ? AND user_screens.user_id = ?`,
+      [project_id, system_id, user_id],
+      (err, results, fields) => {
+        if (err) {
+          console.log(err);
+          return res.status(400).send();
+        }
+        res.status(200).json(results);
+      }
+    );
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send();
+  }
+});
+
 router.post("/takeScreen", async (req, res) => {
   const { user_id, screen_id, system_id, project_id } = req.body;
 
