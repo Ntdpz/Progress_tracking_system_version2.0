@@ -339,9 +339,10 @@ export default {
         .join(", ");
     },
     // Delete screen
+    // Delete screen
     async handleDeleteScreen(screenId) {
       try {
-        await axios.delete(`http://localhost:7777/screens/delete/${screenId}`);
+        await this.$axios.delete(`/screens/delete/${screenId}`);
         this.screens = this.screens.filter((screen) => screen.id !== screenId);
         this.allScreens = this.allScreens.filter(
           (screen) => screen.id !== screenId
@@ -350,6 +351,7 @@ export default {
         console.error("Failed to delete screen:", error);
       }
     },
+
     // edit screen
     async handleSubmitEdit(updatedScreen) {
       const screenId = updatedScreen.screenId;
