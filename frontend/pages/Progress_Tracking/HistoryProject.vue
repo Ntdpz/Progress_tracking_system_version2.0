@@ -119,20 +119,14 @@ export default {
 
         if (confirmResult.isConfirmed) {
           // กู้คืนโปรเจกต์โดยส่งคำขอไปยัง API
-          const response = await fetch(
-            `http://localhost:7777/projects/updateProject/${project.id}`,
+          const response = await this.$axios.put(
+            `/projects/updateProject/${project.id}`,
             {
-              method: "PUT",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                is_deleted: 0, // เปลี่ยนค่า is_deleted เป็น 0 เพื่อกู้คืนโปรเจกต์
-              }),
+              is_deleted: 0, // เปลี่ยนค่า is_deleted เป็น 0 เพื่อกู้คืนโปรเจกต์
             }
           );
 
-          if (!response.ok) {
+          if (response.status !== 200) {
             throw new Error("Failed to restore project");
           }
 
@@ -161,7 +155,6 @@ export default {
         });
       }
     },
-
     async deleteProject(project) {
       try {
         const confirmResult = await Swal.fire({
@@ -175,14 +168,12 @@ export default {
         });
 
         if (confirmResult.isConfirmed) {
-          const response = await fetch(
-            `http://localhost:7777/projects/deleteHistoryProject/${project.id}`,
-            {
-              method: "DELETE",
-            }
+          // ลบโปรเจกต์โดยส่งคำขอไปยัง API
+          const response = await this.$axios.delete(
+            `/projects/deleteHistoryProject/${project.id}`
           );
 
-          if (!response.ok) {
+          if (response.status !== 200) {
             throw new Error("Failed to delete project");
           }
 
@@ -192,7 +183,7 @@ export default {
             title: "Success",
             text: "Project deleted successfully.",
             icon: "success",
-            confirmButtonColor: "#009933", // ปรับสีปุ่ม OK เป็นสีแดงเมื่อสำเร็จ
+            confirmButtonColor: "#009933", // ปรับสีปุ่ม OK เป็นสีเขียวเมื่อสำเร็จ
           });
 
           this.initialize();
@@ -204,11 +195,10 @@ export default {
           title: "Error",
           text: "An error occurred during the project deletion process.",
           icon: "error",
-          confirmButtonColor: "#009933", // ปรับสีปุ่ม OK เป็นสีแดงเมื่อเกิดข้อผิดพลาด
+          confirmButtonColor: "#009933", // ปรับสีปุ่ม OK เป็นสีเขียวเมื่อเกิดข้อผิดพลาด
         });
       }
     },
-
     async deleteSelectedProjects() {
       try {
         const confirmResult = await Swal.fire({
@@ -223,14 +213,11 @@ export default {
 
         if (confirmResult.isConfirmed) {
           for (const project of this.selectedProjects) {
-            const response = await fetch(
-              `http://localhost:7777/projects/deleteHistoryProject/${project.id}`,
-              {
-                method: "DELETE",
-              }
+            const response = await this.$axios.delete(
+              `/projects/deleteHistoryProject/${project.id}`
             );
 
-            if (!response.ok) {
+            if (response.status !== 200) {
               throw new Error("Failed to delete project");
             }
           }
@@ -260,7 +247,6 @@ export default {
         });
       }
     },
-
     async restoreSelectedProjects() {
       try {
         const confirmResult = await Swal.fire({
@@ -275,20 +261,14 @@ export default {
 
         if (confirmResult.isConfirmed) {
           for (const project of this.selectedProjects) {
-            const response = await fetch(
-              `http://localhost:7777/projects/updateProject/${project.id}`,
+            const response = await this.$axios.put(
+              `/projects/updateProject/${project.id}`,
               {
-                method: "PUT",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                  is_deleted: 0,
-                }),
+                is_deleted: 0,
               }
             );
 
-            if (!response.ok) {
+            if (response.status !== 200) {
               throw new Error("Failed to restore project");
             }
           }
@@ -318,19 +298,19 @@ export default {
     },
     async initialize() {
       try {
-        const response = await fetch(
-          "http://localhost:7777/projects/getHistoryProject"
-        );
-        if (!response.ok) {
+        const response = await this.$axios.get("/projects/getHistoryProject");
+
+        // ตรวจสอบสถานะการตอบกลับจากเซิร์ฟเวอร์
+        if (response.status !== 200) {
           throw new Error("Failed to fetch history projects");
         }
-        const data = await response.json();
-        this.historyProjects = data;
+
+        // กำหนดข้อมูลที่ได้รับจากเซิร์ฟเวอร์
+        this.historyProjects = response.data;
       } catch (error) {
         console.error("Error fetching history projects:", error);
       }
     },
-
     updateDateTime() {
       const now = new Date();
       const options = {
