@@ -208,7 +208,7 @@ export default {
             async (screen) => {
               try {
                 const response = await this.$axios.delete(
-                  `/deleteHistoryScreen/${screen.id}`
+                  `/screens/deleteHistoryScreen/${screen.id}`
                 );
 
                 if (response.status !== 200) {
@@ -234,7 +234,7 @@ export default {
             icon: "success",
             confirmButtonColor: "#009933",
           });
-
+          this.$emit("close-dialog");
           this.fetchDeletedScreens();
           this.fetchScreens();
         }
