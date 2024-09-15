@@ -560,9 +560,7 @@ export default {
     },
     async fetchAllScreens() {
       try {
-        const response = await axios.get(
-          "http://localhost:7777/screens/getAll"
-        );
+        const response = await this.$axios.get("/screens/getAll");
         return response.data;
       } catch (error) {
         console.error("Error fetching screens:", error);
@@ -571,9 +569,7 @@ export default {
     },
     async fetchAllSystems() {
       try {
-        const response = await axios.get(
-          "http://localhost:7777/systems/getAll"
-        );
+        const response = await this.$axios.get("/systems/getAll");
         return response.data;
       } catch (error) {
         console.error("Error fetching systems:", error);
@@ -582,9 +578,7 @@ export default {
     },
     async fetchAllProjects() {
       try {
-        const response = await axios.get(
-          "http://localhost:7777/projects/getAll"
-        );
+        const response = await this.$axios.get("/projects/getAll");
         return response.data;
       } catch (error) {
         console.error("Error fetching projects:", error);
@@ -677,16 +671,14 @@ export default {
           ...selectedDevelopers,
           ...selectedImplementers,
         ];
-        const response = await axios.post(
-          `http://localhost:7777/user_systems/createUser_system`,
+        const response = await this.$axios.post(
+          `/user_systems/createUser_system`,
           {
             user_id: selectedUsers,
             system_id: selectedSystemId,
             project_id: selectedProjectId,
           }
         );
-
-        console.log(response.data.message);
 
         this.assignUserDialog = false;
 
@@ -721,11 +713,10 @@ export default {
         });
       }
     },
-
     async fetchUsersBySystemAndProject(systemId, projectId) {
       try {
-        const response = await axios.get(
-          `http://localhost:7777/user_systems/getUserBySystemAndProject/${systemId}/${projectId}`
+        const response = await this.$axios.get(
+          `/user_systems/getUserBySystemAndProject/${systemId}/${projectId}`
         );
         this.users = response.data;
       } catch (error) {
@@ -742,8 +733,8 @@ export default {
     async openNestedDialog(systemId, projectId) {
       try {
         // เรียก API เพื่อรับรายชื่อผู้ใช้ที่สามารถเลือกได้
-        const response = await axios.get(
-          `http://localhost:7777/user_systems/checkUsersNotInSystem/${projectId}/${systemId}`
+        const response = await this.$axios.get(
+          `/user_systems/checkUsersNotInSystem/${projectId}/${systemId}`
         );
 
         // เพิ่มข้อมูล user_position เข้าไปในชุดข้อมูล
@@ -761,7 +752,6 @@ export default {
         console.error(error);
       }
     },
-
     async deleteUser(systemId, projectId, userId) {
       try {
         const confirmResult = await Swal.fire({
@@ -775,8 +765,8 @@ export default {
         });
 
         if (confirmResult.isConfirmed) {
-          const response = await axios.delete(
-            `http://localhost:7777/user_systems/deleteUserSystem/${systemId}/${projectId}/${userId}`
+          const response = await this.$axios.delete(
+            `/user_systems/deleteUserSystem/${systemId}/${projectId}/${userId}`
           );
 
           if (response.status === 200) {
@@ -809,7 +799,6 @@ export default {
         });
       }
     },
-
     goToCreateSystem() {
       // Open the create system dialog first
       this.createSystemDialog = true;
@@ -824,8 +813,8 @@ export default {
         return;
       }
       try {
-        const response = await axios.get(
-          `http://localhost:7777/user_projects/getUserProjectsByProjectId/${projectId}`
+        const response = await this.$axios.get(
+          `/user_projects/getUserProjectsByProjectId/${projectId}`
         );
         this.projectUsers = response.data.map((user) => ({
           ...user,
@@ -851,17 +840,14 @@ export default {
           console.error("Project ID is null");
           return;
         }
-        const response = await this.$axios.$get(
-          `http://localhost:7777/projects/getOne/${projectId}`
-        );
-        this.project = response;
-        this.projectNameENG = response.project_name_ENG;
+        const response = await this.$axios.get(`/projects/getOne/${projectId}`);
+        this.project = response.data;
+        this.projectNameENG = response.data.project_name_ENG;
       } catch (error) {
         console.error("Error fetching project:", error);
         // Handle error fetching project
       }
     },
-
     async restoreSelectedSystems() {
       try {
         // ตรวจสอบว่ามีการเลือก systems หรือไม่
@@ -889,24 +875,18 @@ export default {
           // วนลูปผ่านระบบที่เลือกและกู้คืนแต่ละระบบ
           for (const system of this.selectedSystems) {
             const systemId = system.id;
-            const response = await fetch(
-              `http://localhost:7777/systems/updateSystem/${systemId}`,
+            const response = await this.$axios.put(
+              `/systems/updateSystem/${systemId}`,
               {
-                method: "PUT",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                  system_nameTH: system.system_nameTH,
-                  system_nameEN: system.system_nameEN,
-                  system_shortname: system.system_shortname,
-                  project_id: system.project_id,
-                  is_deleted: 0,
-                }),
+                system_nameTH: system.system_nameTH,
+                system_nameEN: system.system_nameEN,
+                system_shortname: system.system_shortname,
+                project_id: system.project_id,
+                is_deleted: 0,
               }
             );
 
-            if (!response.ok) {
+            if (response.status !== 200) {
               throw new Error("Failed to restore systems");
             }
           }
@@ -953,7 +933,7 @@ export default {
           text: "You won't be able to revert this!",
           icon: "warning",
           showCancelButton: true,
-          confirmButtonColor: "#d33", // ปรับสีปุ่ม Yes เป็นสีเขียว
+          confirmButtonColor: "#d33", // ปรับสีปุ่ม Yes เป็นสีแดง
           cancelButtonColor: "#009933",
           confirmButtonText: "Yes, delete them!",
         });
@@ -962,13 +942,11 @@ export default {
           // วนลูปผ่านระบบที่เลือกและลบแต่ละระบบ
           for (const system of this.selectedSystems) {
             const systemId = system.id; // รับ ID ของระบบที่ต้องการลบ
-            const response = await fetch(
-              `http://localhost:7777/systems/deleteHistorySystems/${systemId}`,
-              {
-                method: "DELETE",
-              }
+            const response = await this.$axios.delete(
+              `/systems/deleteHistorySystems/${systemId}`
             );
-            if (!response.ok) {
+
+            if (response.status !== 200) {
               throw new Error("Failed to delete systems");
             }
           }
@@ -993,7 +971,6 @@ export default {
         });
       }
     },
-
     async goToHistorySystems() {
       await this.fetchDeletedSystems();
       this.showHistoryDialog = true;
@@ -1001,15 +978,11 @@ export default {
     async fetchDeletedSystems() {
       try {
         const projectId = this.projectId;
-        const response = await fetch(
-          `http://localhost:7777/systems/searchByProjectId_delete/${projectId}`
+        const response = await this.$axios.get(
+          `/systems/searchByProjectId_delete/${projectId}`
         );
-        if (!response.ok) {
-          throw new Error("Failed to fetch deleted systems");
-        }
-        const deletedSystems = await response.json();
-        console.log(deletedSystems); // Check the received deleted systems
-        this.deletedSystems = deletedSystems;
+
+        this.deletedSystems = response.data;
       } catch (error) {
         console.error("Error fetching deleted systems:", error);
         // Handle error fetching deleted systems
@@ -1042,31 +1015,18 @@ export default {
       }
 
       try {
-        const response = await fetch(
-          `http://localhost:7777/systems/createSystem`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              project_id: projectId,
-              system_nameTH,
-              system_nameEN,
-              system_shortname,
-              selectedUser: [
-                // แม็ปผู้ใช้ที่เลือกไว้ไปยัง user_id
-                ...this.selectedCreateSystemAnalysts,
-                ...this.selectedCreateDevelopers,
-                ...this.selectedCreateImplementers,
-              ],
-            }),
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error("Failed to create system");
-        }
+        const response = await this.$axios.post(`/systems/createSystem`, {
+          project_id: projectId,
+          system_nameTH,
+          system_nameEN,
+          system_shortname,
+          selectedUser: [
+            // แม็ปผู้ใช้ที่เลือกไว้ไปยัง user_id
+            ...this.selectedCreateSystemAnalysts,
+            ...this.selectedCreateDevelopers,
+            ...this.selectedCreateImplementers,
+          ],
+        });
 
         // แสดงข้อความสำเร็จ
         await Swal.fire({
@@ -1102,33 +1062,31 @@ export default {
         });
       }
     },
-
     async updateSystem() {
       try {
-        const response = await fetch(
-          `http://localhost:7777/systems/updateSystem/${this.editedSystem.id}`,
+        const response = await this.$axios.put(
+          `/systems/updateSystem/${this.editedSystem.id}`,
+          this.editedSystem,
           {
-            method: "PUT",
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify(this.editedSystem),
           }
         );
 
-        if (!response.ok) {
+        if (response.status === 200) {
+          await Swal.fire({
+            icon: "success",
+            title: "Success",
+            text: "System updated successfully",
+            confirmButtonColor: "#009933", // ปรับสีปุ่ม OK เป็นสีเขียว
+          });
+
+          this.editSystemDialog = false;
+          this.fetchSystems(); // อัปเดตรายการระบบ
+        } else {
           throw new Error("Failed to update system");
         }
-
-        await Swal.fire({
-          icon: "success",
-          title: "Success",
-          text: "System updated successfully",
-          confirmButtonColor: "#009933", // ปรับสีปุ่ม OK เป็นสีเขียว
-        });
-
-        this.editSystemDialog = false;
-        this.fetchSystems(); // อัปเดตรายการระบบ
       } catch (error) {
         console.error("Error updating system:", error);
         await Swal.fire({
@@ -1146,19 +1104,17 @@ export default {
           text: "You won't be able to revert this!",
           icon: "warning",
           showCancelButton: true,
-          confirmButtonColor: "#009933", // ปรับสีปุ่ม OK เป็นสีเขียว
+          confirmButtonColor: "#009933", // ปรับสีปุ่ม Yes เป็นสีเขียว
           cancelButtonColor: "#d33",
           confirmButtonText: "Yes, delete it!",
         });
 
         if (confirmResult.isConfirmed) {
-          const response = await fetch(
-            `http://localhost:7777/systems/delete/${item.id}`,
-            {
-              method: "DELETE",
-            }
+          const response = await this.$axios.delete(
+            `/systems/delete/${item.id}`
           );
-          if (!response.ok) {
+
+          if (response.status !== 200) {
             throw new Error("Failed to delete system");
           }
 
@@ -1197,18 +1153,14 @@ export default {
 
         // Check if the user role is Admin
         if (this.$auth.user.user_role === "Admin") {
-          url = `http://localhost:7777/systems/searchByProjectId/${projectId}`;
+          url = `/systems/searchByProjectId/${projectId}`;
         } else {
           // If not Admin, use the URL for non-admin users
-          url = `http://localhost:7777/user_systems/getSystemsByUser_id/${projectId}/${this.$auth.user.id}`;
+          url = `/user_systems/getSystemsByUser_id/${projectId}/${this.$auth.user.id}`;
         }
 
-        const response = await fetch(url);
-        if (!response.ok) {
-          throw new Error("Failed to fetch systems");
-        }
-        const systems = await response.json();
-        this.systems = systems;
+        const response = await this.$axios.get(url);
+        this.systems = response.data;
       } catch (error) {
         console.error("Error fetching systems:", error);
         // Handle error fetching systems
