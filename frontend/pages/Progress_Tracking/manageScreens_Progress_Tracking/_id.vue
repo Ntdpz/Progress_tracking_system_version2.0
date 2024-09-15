@@ -235,21 +235,24 @@ export default {
       return error({ statusCode: 400, message: "Invalid Project ID" });
     }
 
+    // แปลง decodedId เป็น Number
+    const systemId = parseInt(decodedId, 10);
+
     try {
-      // ดึงข้อมูล system จาก API โดยใช้ decodedId
-      const systemResponse = await $axios.$get(`/systems/getOne/${decodedId}`);
+      // ดึงข้อมูล system จาก API โดยใช้ systemId
+      const systemResponse = await $axios.$get(`/systems/getOne/${systemId}`);
       const systemData = systemResponse;
 
       // ดึง screens ที่เกี่ยวข้องกับ system
       const screensResponse = await $axios.$get(`/screens/getAll`, {
-        params: { system_id: decodedId },
+        params: { system_id: systemId },
       });
       const allScreens = screensResponse;
       const screens = screensResponse;
 
       // ดึง user_systems ที่เกี่ยวข้องกับ system
       const userSystemsResponse = await $axios.$get(
-        `/user_systems/getAllSystemId/${decodedId}`
+        `/user_systems/getAllSystemId/${systemId}`
       );
       const userSystems = userSystemsResponse;
 
@@ -257,7 +260,7 @@ export default {
       return {
         systemData,
         screens,
-        systemid: decodedId,
+        systemid: systemId, // ใช้ systemId ที่เป็น Number
         userSystems,
         allScreens,
       };
@@ -353,13 +356,16 @@ export default {
       const screenData = {
         screen_code: updatedScreen.screenCode,
         screen_name: updatedScreen.screenName,
+        screen_status: updatedScreen.screenStatus,
         screen_level: updatedScreen.screenLevel,
         screen_pic: updatedScreen.imageFile, // Base64 image string
+        project_id: updatedScreen.projectId,
+        is_deleted: updatedScreen.isDeleted,
       };
 
       try {
-        const response = await axios.put(
-          `http://localhost:7777/screens/updateScreen/${screenId}`,
+        const response = await this.$axios.put(
+          `/screens/updateScreen/${screenId}`,
           screenData
         );
 

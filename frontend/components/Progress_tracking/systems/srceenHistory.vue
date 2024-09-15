@@ -140,26 +140,32 @@ export default {
         if (confirmResult.isConfirmed) {
           const restorePromises = this.selectedDeletedScreens.map(
             async (screen) => {
-              const response = await this.$axios.get(
-                `/screens/updateScreen/${screen.id}`,
-                {
-                  method: "PUT",
-                  headers: {
-                    "Content-Type": "application/json",
-                  },
-                  body: JSON.stringify({
+              try {
+                const response = await this.$axios.put(
+                  `/screens/updateScreen/${screen.id}`,
+                  {
                     screen_name: screen.screen_name,
-                    screen_id: screen.screen_id,
+                    screen_code: screen.screen_code,
+                    screen_status: screen.screen_status,
+                    screen_level: screen.screen_level,
+                    screen_pic: screen.screen_pic,
+                    project_id: screen.project_id,
                     is_deleted: 0,
-                  }),
+                  }
+                );
+
+                if (response.status !== 200) {
+                  throw new Error("Failed to restore screen");
                 }
-              );
 
-              if (!response.ok) {
-                throw new Error("Failed to restore screen");
+                return screen.id;
+              } catch (error) {
+                console.error(
+                  `Error restoring screen with id ${screen.id}:`,
+                  error
+                );
+                throw error;
               }
-
-              return screen.id;
             }
           );
 
@@ -172,7 +178,6 @@ export default {
             confirmButtonColor: "#009933",
           });
 
-          // Corrected the method name here:
           this.$emit("close-dialog");
           this.fetchDeletedScreensBySystemId();
           this.fetchScreens();
@@ -186,7 +191,6 @@ export default {
         );
       }
     },
-
     async deleteSelectedHistoryScreen() {
       try {
         const confirmResult = await Swal.fire({
@@ -202,18 +206,23 @@ export default {
         if (confirmResult.isConfirmed) {
           const deletePromises = this.selectedDeletedScreens.map(
             async (screen) => {
-              const response = await this.$axios.get(
-                `/screens/deleteHistoryScreen/${screen.id}`,
-                {
-                  method: "DELETE",
+              try {
+                const response = await this.$axios.delete(
+                  `/deleteHistoryScreen/${screen.id}`
+                );
+
+                if (response.status !== 200) {
+                  throw new Error("Failed to delete screen");
                 }
-              );
 
-              if (!response.ok) {
-                throw new Error("Failed to delete screen");
+                return screen.id;
+              } catch (error) {
+                console.error(
+                  `Error deleting screen with id ${screen.id}:`,
+                  error
+                );
+                throw error; // Ensure all errors are propagated
               }
-
-              return screen.id;
             }
           );
 
@@ -240,18 +249,18 @@ export default {
         });
       }
     },
+
     async fetchDeletedScreensBySystemId() {
       try {
         const systemId = this.systemId;
 
-        const response = await this.$axios.get(
+        // ใช้ axios กับการดึงข้อมูลที่ไม่ใช้ response.ok และ response.json()
+        const response = await this.$axios.$get(
           `/screens/searchBySystemId_delete/${systemId}`
         );
-        if (!response.ok) {
-          throw new Error("Failed to fetch deleted screens by system ID");
-        }
-        const deletedScreens = await response.json();
-        this.deletedScreens = deletedScreens;
+
+        // กำหนดค่า deletedScreens โดยตรงจากข้อมูลที่ดึงมา
+        this.deletedScreens = response;
       } catch (error) {
         console.error("Error fetching deleted screens by system ID:", error);
       }

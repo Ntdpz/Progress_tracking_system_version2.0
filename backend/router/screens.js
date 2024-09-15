@@ -461,36 +461,50 @@ router.get("/searchBySystemId/:system_id", async (req, res) => {
         console.log(err);
         return res.status(400).send();
       }
-      // Update screen_manday in the database
-      const updateQuery = `
-          UPDATE screens
-          SET screen_manday = ?
-          WHERE id = ?
-        `;
 
-      connection.query(updateQuery, [screen.screen_manday, screen.id], (updateErr, updateResults) => {
-        if (updateErr) {
-          console.error(updateErr);
-        }
-      });
-      await Promise.all(
-        results.map(async (screen) => {
-          await updateScreen(screen);
-          if (screen.screen_plan_start) {
-            screen.screen_plan_start = new Date(screen.screen_plan_start)
-              .toISOString()
-              .split("T")[0];
-          }
-          if (screen.screen_plan_end) {
-            screen.screen_plan_end = new Date(screen.screen_plan_end)
-              .toISOString()
-              .split("T")[0];
-          }
-          return screen;
-        })
-      );
+      try {
+        // อัปเดต screen_manday ในฐานข้อมูล
+        const updateQueries = results.map(screen => {
+          return new Promise((resolve, reject) => {
+            const updateQuery = `
+              UPDATE screens
+              SET screen_manday = ?
+              WHERE id = ?
+            `;
+            connection.query(updateQuery, [screen.screen_manday, screen.id], (updateErr, updateResults) => {
+              if (updateErr) {
+                return reject(updateErr);
+              }
+              resolve(updateResults);
+            });
+          });
+        });
 
-      res.status(200).json(results);
+        await Promise.all(updateQueries);
+
+        // อัปเดตข้อมูลอื่นๆ
+        const updatedResults = await Promise.all(
+          results.map(async (screen) => {
+            await updateScreen(screen);
+            if (screen.screen_plan_start) {
+              screen.screen_plan_start = new Date(screen.screen_plan_start)
+                .toISOString()
+                .split("T")[0];
+            }
+            if (screen.screen_plan_end) {
+              screen.screen_plan_end = new Date(screen.screen_plan_end)
+                .toISOString()
+                .split("T")[0];
+            }
+            return screen;
+          })
+        );
+
+        res.status(200).json(updatedResults);
+      } catch (updateErr) {
+        console.error(updateErr);
+        res.status(500).send();
+      }
     });
   } catch (err) {
     console.log(err);
@@ -507,8 +521,8 @@ router.get("/searchBySystemId_delete/:system_id", async (req, res) => {
       SELECT
         screens.*,
         AVG(tasks.task_progress) AS screen_progress,
-          AVG(CASE WHEN tasks.task_type = 'Design' THEN tasks.task_progress ELSE NULL END) AS screen_progress_status_design,
-          AVG(CASE WHEN tasks.task_type = 'Develop' THEN tasks.task_progress ELSE NULL END) AS screen_progress_status_dev,
+        AVG(CASE WHEN tasks.task_type = 'Design' THEN tasks.task_progress ELSE NULL END) AS screen_progress_status_design,
+        AVG(CASE WHEN tasks.task_type = 'Develop' THEN tasks.task_progress ELSE NULL END) AS screen_progress_status_dev,
         DATE(MIN(screens.screen_plan_start)) AS screen_plan_start,
         DATE(MAX(screens.screen_plan_end)) AS screen_plan_end,
         DATEDIFF(MAX(tasks.task_plan_end), MIN(tasks.task_plan_start)) AS screen_manday
@@ -524,31 +538,43 @@ router.get("/searchBySystemId_delete/:system_id", async (req, res) => {
         console.log(err);
         return res.status(400).send();
       }
-      // Update screen_manday in the database
-      const updateQuery = `
-          UPDATE screens
-          SET screen_manday = ?
-          WHERE id = ?
-        `;
 
-      connection.query(updateQuery, [screen.screen_manday, screen.id], (updateErr, updateResults) => {
-        if (updateErr) {
-          console.error(updateErr);
-        }
-      });
-      await Promise.all(
-        results.map(async (screen) => {
+      try {
+        // Perform updates in sequence
+        for (const screen of results) {
+          // Update screen_manday in the database
+          const updateQuery = `
+            UPDATE screens
+            SET screen_manday = ?
+            WHERE id = ?
+          `;
+
+          // Perform the update
+          await new Promise((resolve, reject) => {
+            connection.query(updateQuery, [screen.screen_manday, screen.id], (updateErr, updateResults) => {
+              if (updateErr) {
+                return reject(updateErr);
+              }
+              resolve(updateResults);
+            });
+          });
+
+          // Call updateScreen function
           await updateScreen(screen);
-        })
-      );
+        }
 
-      res.status(200).json(results);
+        res.status(200).json(results);
+      } catch (updateErr) {
+        console.error(updateErr);
+        res.status(500).send();
+      }
     });
   } catch (err) {
     console.log(err);
     return res.status(500).send();
   }
 });
+
 
 router.post("/createScreen", async (req, res) => {
   const {
@@ -586,7 +612,7 @@ router.post("/createScreen", async (req, res) => {
           screen_plan_start,
           screen_plan_end,
           project_id,
-          req.body.screen_pic, // Insert Base64 image directly
+          req.body.screen_pic,
         ],
         async (err, result) => {
           if (err) {
