@@ -460,8 +460,8 @@ export default {
     // Fetch the currently assigned users for the screen
     async fetchScreenUsers() {
       try {
-        const response = await axios.get(
-          `http://localhost:7777/user_screens/getOneScreenID/${this.screenId}`
+        const response = await this.$axios.get(
+          `/user_screens/getOneScreenID/${this.screenId}`
         );
         this.users = response.data;
         console.log("Fetched users:", this.users); // Debugging log
@@ -493,8 +493,8 @@ export default {
         ];
 
         // Send POST request to assign users
-        const response = await axios.post(
-          "http://localhost:7777/user_screens/createUser_screen",
+        const response = await this.$axios.post(
+          "/user_screens/createUser_screen",
           {
             user_id: selectedUsers,
             screen_id: this.screenId,
@@ -502,6 +502,7 @@ export default {
             project_id: this.screenProjectId, // Ensure project ID is passed if needed
           }
         );
+
         console.log(response.data.message);
 
         // Close the dialog and show success message
@@ -533,8 +534,8 @@ export default {
     //fetch user not in screen
     async fetchUsersNotInScreen() {
       try {
-        const response = await axios.get(
-          `http://localhost:7777/user_screens/checkUsersNOTINScreen/${this.screenProjectId}/${this.screenSystemId}/${this.screenId}`
+        const response = await this.$axios.get(
+          `/user_screens/checkUsersNOTINScreen/${this.screenProjectId}/${this.screenSystemId}/${this.screenId}`
         );
         this.usersNotInScreen = response.data;
       } catch (error) {
@@ -552,8 +553,8 @@ export default {
       try {
         // Ensure user_id is correctly accessed
         console.log("Deleting user:", user); // Log the user object to verify it
-        const response = await axios.delete(
-          `http://localhost:7777/user_screens/deleteUserScreen/${this.screenSystemId}/${this.screenProjectId}/${this.screenId}/${user.id}` // Ensure the correct property name here
+        const response = await this.$axios.delete(
+          `/user_screens/deleteUserScreen/${this.screenSystemId}/${this.screenProjectId}/${this.screenId}/${user.id}` // Ensure the correct property name here
         );
         console.log(response.data.message);
 
