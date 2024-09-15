@@ -1003,21 +1003,16 @@ export default {
         // ถ้าผู้ใช้กดปุ่มยืนยัน
         if (confirmResult.isConfirmed) {
           // อัปเดต task_member_id ด้วย ID ของผู้ใช้ที่เข้าสู่ระบบ
-          const response = await fetch(
-            `http://localhost:7777/tasks/updateTasks/${task.id}`,
+          const response = await this.$axios.$put(
+            `/tasks/updateTasks/${task.id}`,
             {
-              method: "PUT",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                ...task,
-                task_member_id: this.$auth.user.id, // อัปเดต task_member_id ด้วย ID ของผู้ใช้ที่เข้าสู่ระบบ
-              }),
+              ...task,
+              task_member_id: this.$auth.user.id, // อัปเดต task_member_id ด้วย ID ของผู้ใช้ที่เข้าสู่ระบบ
             }
           );
 
-          if (response.ok) {
+          // ตรวจสอบว่าการตอบกลับสำเร็จหรือไม่
+          if (response) {
             Swal.fire({
               icon: "success",
               title: "Task assigned successfully",
@@ -1038,7 +1033,6 @@ export default {
         });
       }
     },
-
     getProgressColor(progress) {
       if (progress >= 75 && progress <= 100) {
         return "#4CAF50";
@@ -1054,9 +1048,8 @@ export default {
     },
     async fetchAllScreens() {
       try {
-        const response = await axios.get(
-          "http://localhost:7777/screens/getAll"
-        );
+        // ใช้ this.$axios แทน axios และลบ base URL ออก
+        const response = await this.$axios.get("/screens/getAll");
         return response.data;
       } catch (error) {
         console.error("Error fetching screens:", error);
@@ -1065,9 +1058,8 @@ export default {
     },
     async fetchAllSystems() {
       try {
-        const response = await axios.get(
-          "http://localhost:7777/systems/getAll"
-        );
+        // ใช้ this.$axios แทน axios และลบ base URL ออก
+        const response = await this.$axios.get("/systems/getAll");
         return response.data;
       } catch (error) {
         console.error("Error fetching systems:", error);
@@ -1076,16 +1068,14 @@ export default {
     },
     async fetchAllProjects() {
       try {
-        const response = await axios.get(
-          "http://localhost:7777/projects/getAll"
-        );
+        // ใช้ this.$axios แทน axios และลบ base URL ออก
+        const response = await this.$axios.get("/projects/getAll");
         return response.data;
       } catch (error) {
         console.error("Error fetching projects:", error);
         throw error;
       }
     },
-
     formatDateHistory(historyTasks) {
       return historyTasks.map((task) => {
         // สร้างวัตถุใหม่ที่มีข้อมูลจาก task และแปลงรูปแบบวันที่
@@ -1122,14 +1112,10 @@ export default {
 
       // Fetch history tasks from the API
       try {
-        const response = await fetch(
-          `http://localhost:7777/tasks/history_tasks/${task_Id}`
+        const response = await this.$axios.get(
+          `/tasks/history_tasks/${task_Id}`
         );
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const data = await response.json();
-        this.historyTasks = data;
+        this.historyTasks = response.data;
 
         // เพิ่มส่วนนี้เพื่อดึงรายละเอียดของผู้ใช้และแทนที่ id ด้วยข้อมูลผู้ใช้
         for (let i = 0; i < this.historyTasks.length; i++) {
@@ -1149,7 +1135,6 @@ export default {
       this.dialogSaveTaskForm = true;
       this.selectedTask = task;
     },
-
     formatDateSAVE(date) {
       // แปลงข้อความวันที่เป็นอ็อบเจ็ค Date
       const d = new Date(date);
@@ -1278,7 +1263,7 @@ export default {
 
         // เรียกใช้ API เพื่อบันทึกข้อมูลประวัติโดยใช้ task ID ที่กำหนด
         const response = await this.$axios.put(
-          `http://localhost:7777/tasks/save_history_tasks/${this.taskId}`,
+          `/tasks/save_history_tasks/${this.taskId}`,
           this.historyTaskData
         );
 
@@ -1319,14 +1304,11 @@ export default {
       const task_Id = taskId.id;
 
       try {
-        const response = await fetch(
-          `http://localhost:7777/tasks/history_tasks/${task_Id}`
+        // ใช้ this.$axios แทน fetch และลบ base URL ออก
+        const response = await this.$axios.get(
+          `/tasks/history_tasks/${task_Id}`
         );
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const data = await response.json();
-        this.historyTasks = data;
+        this.historyTasks = response.data;
 
         // เพิ่มส่วนนี้เพื่อดึงรายละเอียดของผู้ใช้และแทนที่ id ด้วยข้อมูลผู้ใช้
         for (let i = 0; i < this.historyTasks.length; i++) {
@@ -1342,7 +1324,6 @@ export default {
         console.error("Error fetching history tasks:", error);
       }
     },
-
     sortTasks(criteria) {
       // Clone the tasks array to avoid mutating the original array
       let sortedTasks = [...this.tasks];
@@ -1435,13 +1416,13 @@ export default {
         });
 
         if (result.isConfirmed) {
-          const response = await fetch(
-            `http://localhost:7777/tasks/deleteHistoryTasks/${task.id}`,
-            {
-              method: "DELETE",
-            }
+          // ใช้ this.$axios แทน fetch และลบ base URL ออก
+          const response = await this.$axios.$delete(
+            `/tasks/deleteHistoryTasks/${task.id}`
           );
-          if (response.ok) {
+
+          // ตรวจสอบผลลัพธ์
+          if (response) {
             // ลบงานเรียบร้อย
             Swal.fire({
               icon: "success",
@@ -1449,15 +1430,14 @@ export default {
               confirmButtonColor: "#009933",
             });
             // รีเฟรชรายการงานหลังจากลบเสร็จ
-            this.fetchTasks();
+            await this.fetchTasks();
+            await this.fetchScreenDetail();
+            // ปิด dialog หลังจากลบเสร็จ
+            this.dialogEditTaskForm = false;
           } else {
             // แจ้งเตือนเมื่อเกิดข้อผิดพลาดในการลบงาน
             throw new Error("Failed to delete task");
           }
-          this.fetchTasks();
-          this.fetchScreenDetail();
-          // ปิด dialog หลังจากลบเสร็จ
-          this.dialogEditTaskForm = false;
         }
       } catch (error) {
         console.error("Error deleting task:", error);
@@ -1470,11 +1450,9 @@ export default {
     },
     async fetchMemberDetails(memberId) {
       try {
-        const response = await fetch(
-          `http://localhost:7777/users/getOne/${memberId}`
-        );
-        const data = await response.json();
-        return data[0]; // สมมติว่า API จะส่งข้อมูลผู้ใช้กลับมาเป็นอาเรย์ โดยมีข้อมูลผู้ใช้เพียงรายการเดียว
+        // ใช้ this.$axios แทน fetch และลบ base URL ออก
+        const response = await this.$axios.get(`/users/getOne/${memberId}`);
+        return response.data[0]; // สมมติว่า API จะส่งข้อมูลผู้ใช้กลับมาเป็นอาเรย์ โดยมีข้อมูลผู้ใช้เพียงรายการเดียว
       } catch (error) {
         console.error("Error fetching member details:", error);
         return null;
@@ -1507,21 +1485,14 @@ export default {
     async fetchScreenDetail() {
       try {
         const screenId = this.screenid;
-        const response = await fetch(
-          `http://localhost:7777/screens/getOne/${screenId}`
-        );
+        // ใช้ this.$axios แทน fetch และลบ base URL ออก
+        const response = await this.$axios.get(`/screens/getOne/${screenId}`);
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch screen");
-        }
-
-        const screenData = await response.json();
-
-        if (screenData.length === 0) {
+        if (!response.data || response.data.length === 0) {
           throw new Error("No screen data found");
         }
 
-        const screen = screenData[0];
+        const screen = response.data[0];
 
         // เก็บข้อมูลทั้งหมดใน object ชื่อ screenDetails
         this.screenDetails = {
@@ -1564,17 +1535,13 @@ export default {
         }
 
         // Fetch data from API
-        const response = await fetch(
-          `http://localhost:7777/user_screens/checkUsersINScreen/${screenDetails.project_id}/${screenDetails.system_id}/${screenDetails.screenId}`
+        const response = await this.$axios.get(
+          `/user_screens/checkUsersINScreen/${screenDetails.project_id}/${screenDetails.system_id}/${screenDetails.screenId}`
         );
-        if (!response.ok) {
-          throw new Error("Failed to fetch user list");
-        }
 
-        const userList = await response.json();
+        const userList = response.data;
 
         // Set userList and filteredUsers
-
         this.userList = userList.map((user) => ({
           user_id: user.id,
           user_name: `${user.user_position} : ${user.user_firstname} ${user.user_lastname}`,
@@ -1625,13 +1592,11 @@ export default {
     async fetchTasks() {
       try {
         const screenId = this.screenid;
-        const response = await fetch(
-          `http://localhost:7777/tasks/searchByScreenId/${screenId}`
+        // ใช้ this.$axios แทน fetch และลบ base URL ออก
+        const response = await this.$axios.get(
+          `/tasks/searchByScreenId/${screenId}`
         );
-        if (!response.ok) {
-          throw new Error("Failed to fetch tasks");
-        }
-        const tasks = await response.json();
+        const tasks = response.data;
 
         // แก้ไขโค้ดเพิ่มเติมในการกำหนดค่า showDetails เข้าไปในข้อมูลของแต่ละ task
         this.tasks = await Promise.all(
@@ -1648,13 +1613,12 @@ export default {
             };
           })
         );
-        this.fetchScreenDetail();
+        await this.fetchScreenDetail(); // ตรวจสอบให้แน่ใจว่า fetchScreenDetail() ทำงานกับ await
       } catch (error) {
         console.error("Error fetching tasks:", error);
         // Handle error fetching tasks
       }
     },
-
     // Open add task form
     openAddTaskForm() {
       this.$router.push({
@@ -1682,39 +1646,30 @@ export default {
         }
 
         // ส่งข้อมูลไปยัง backend เพื่อสร้าง task ใหม่
-        const response = await fetch(
-          `http://localhost:7777/tasks/createTasks`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              task_id,
-              task_name,
-              task_detail,
-              task_type,
-              screen_id: this.screenDetails.screenId, // ควรแน่ใจว่า this.screenId ถูกกำหนดค่าแล้ว
-              project_id: this.screenDetails.project_id, // ควรแน่ใจว่า this.project_id ถูกกำหนดค่าแล้ว
-              system_id: this.screenDetails.system_id, // ควรแน่ใจว่า this.system_id ถูกกำหนดค่าแล้ว
-              task_plan_start,
-              task_plan_end,
-              task_member_id,
-              task_manday,
-            }),
-          }
-        );
+        const response = await this.$axios.post("/tasks/createTasks", {
+          task_id,
+          task_name,
+          task_detail,
+          task_type,
+          screen_id: this.screenDetails.screenId, // ควรแน่ใจว่า this.screenId ถูกกำหนดค่าแล้ว
+          project_id: this.screenDetails.project_id, // ควรแน่ใจว่า this.project_id ถูกกำหนดค่าแล้ว
+          system_id: this.screenDetails.system_id, // ควรแน่ใจว่า this.system_id ถูกกำหนดค่าแล้ว
+          task_plan_start,
+          task_plan_end,
+          task_member_id,
+          task_manday,
+        });
 
         // ตรวจสอบว่าคำสั่ง HTTP สำเร็จหรือไม่
-        if (response.ok) {
+        if (response.status === 200) {
           Swal.fire({
             icon: "success",
             title: "Task created successfully",
             confirmButtonColor: "#009933",
           });
           this.dialogAddTaskForm = false; // ปิดฟอร์มการสร้าง task ใหม่
-          this.fetchTasks(); // โหลดรายการ tasks ใหม่
-          this.fetchScreenDetail(); // โหลดข้อมูล screen ใหม่
+          await this.fetchTasks(); // โหลดรายการ tasks ใหม่
+          await this.fetchScreenDetail(); // โหลดข้อมูล screen ใหม่
 
           // Reset form after creating the task
           this.newTask = {
@@ -1740,7 +1695,6 @@ export default {
         });
       }
     },
-
     async goToHistoryTasks() {
       await this.fetchDeletedTasks();
       this.showHistoryDialog = true;
@@ -1796,29 +1750,23 @@ export default {
 
         taskData.task_manday = manday;
 
-        const response = await fetch(
-          `http://localhost:7777/tasks/updateTasks/${taskData.id}`,
-          {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(taskData),
-          }
+        const response = await this.$axios.put(
+          `/tasks/updateTasks/${taskData.id}`,
+          taskData
         );
 
-        if (response.ok) {
+        if (response.status === 200) {
           Swal.fire({
             icon: "success",
             title: "Task updated successfully",
             confirmButtonColor: "#009933",
           });
           this.dialogEditTaskForm = false;
-          this.fetchTasks();
+          await this.fetchTasks();
         } else {
           throw new Error("Failed to update task");
         }
-        this.fetchScreenDetail();
+        await this.fetchScreenDetail();
       } catch (error) {
         console.error("Error updating task:", error);
         Swal.fire({
@@ -1828,7 +1776,6 @@ export default {
         });
       }
     },
-
     calculateMandayEdit() {
       const start = new Date(this.editedTask.task_plan_start);
       const end = new Date(this.editedTask.task_plan_end);
