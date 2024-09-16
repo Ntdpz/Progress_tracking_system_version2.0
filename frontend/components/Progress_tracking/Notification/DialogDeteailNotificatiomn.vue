@@ -1,5 +1,31 @@
 <template>
   <v-card>
+    <v-card-title>
+      Notifications
+
+      <v-menu
+        offset-y
+        :close-on-click="false"
+        transition="scale-transition"
+        class="dots_Button"
+      >
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn icon v-bind="attrs" v-on="on">
+            <v-icon>mdi-dots-vertical</v-icon>
+          </v-btn>
+        </template>
+
+        <v-list>
+          <v-list-item @click="markAllAsRead">
+            <v-list-item-icon>
+              <v-icon>mdi-check-all</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>Mark All as Read</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
+    </v-card-title>
+
     <v-list>
       <v-list-item v-for="notification in notifications" :key="notification.id">
         <v-list-item-avatar>
@@ -16,19 +42,12 @@
           </v-tooltip>
         </v-list-item-avatar>
         <v-list-item-content>
-          <!-- <v-list-item-title>
-                Topic: {{ notification.topic }}
-              </v-list-item-title> -->
           <v-list-item-title>
             Message : {{ notification.message }}
           </v-list-item-title>
-
           <v-list-item-subtitle>
             {{ formatDate(notification.created_at) }}
           </v-list-item-subtitle>
-          <!-- <v-list-item-subtitle>
-                From {{ getSenderName(notification.sender_id) }}
-              </v-list-item-subtitle> -->
         </v-list-item-content>
         <v-list-item-action>
           <v-tooltip bottom>
@@ -96,6 +115,18 @@ export default {
         console.error("Failed to mark notification as read:", error);
       }
     },
+    async markAllAsRead() {
+      try {
+        await Promise.all(
+          this.notifications.map((notification) =>
+            this.$axios.put(`/prog_notifications/markAsRead/${notification.id}`)
+          )
+        );
+        this.fetchNotifications(); // Reload notifications after marking all as read
+      } catch (error) {
+        console.error("Failed to mark all notifications as read:", error);
+      }
+    },
     formatDate(date) {
       const optionsDate = { day: "2-digit", month: "2-digit", year: "numeric" };
       const optionsTime = {
@@ -144,12 +175,18 @@ export default {
 };
 </script>
 
-
 <style scoped>
 .v-card {
   box-shadow: none !important;
   /* เอาเงาออกจาก v-card */
   border: none !important;
   /* เอาเส้นขอบออกจาก v-card */
+}
+.dots_Button {
+  margin-left: auto !important;
+}
+
+.v-card-title {
+  color: aqua !important;
 }
 </style>

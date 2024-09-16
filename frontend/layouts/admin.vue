@@ -396,9 +396,14 @@
         color="primary"
         @click="openNotifications"
       >
-        <v-badge color="red" :content="notificationCount" overlap>
+        <template v-if="notificationCount > 0">
+          <v-badge color="red" :content="notificationCount" overlap>
+            <v-icon>mdi-bell</v-icon>
+          </v-badge>
+        </template>
+        <template v-else>
           <v-icon>mdi-bell</v-icon>
-        </v-badge>
+        </template>
       </v-btn>
 
       <v-dialog
@@ -408,7 +413,6 @@
         scrollable
       >
         <v-card>
-          <v-card-title>Notifications</v-card-title>
           <notification_button />
           <v-card-actions>
             <v-spacer></v-spacer>
@@ -557,7 +561,7 @@ export default {
       // รีเฟรชข้อมูลทุก ๆ 15 วินาที
       this.pollingInterval = setInterval(() => {
         this.fetchNotifications();
-      }, 1000);
+      }, 50000);
     },
     goBack() {
       this.$router.back();
