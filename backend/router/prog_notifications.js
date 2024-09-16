@@ -4,19 +4,20 @@ const connection = require("../db"); // การเชื่อมต่อก�
 
 // POST: ส่งการแจ้งเตือน
 router.post("/send", (req, res) => {
-    const { message, senderId, recipientId } = req.body;
+    const { topic, message, senderId, recipientId } = req.body;
 
     // Log ข้อมูลที่ได้รับจาก client
+    console.log("topic:", topic);
     console.log("message:", message);
     console.log("senderId:", senderId);
     console.log("recipientId:", recipientId);
 
-    if (!message || !senderId || !recipientId) {
+    if (!topic || !message || !senderId || !recipientId) {
         return res.status(400).json({ message: "All fields are required." });
     }
 
-    const sql = `INSERT INTO notifications (message, sender_id, receiver_id) VALUES (?, ?, ?)`;
-    connection.query(sql, [message, senderId, recipientId], (err, result) => {
+    const sql = `INSERT INTO notifications (topic, message, sender_id, receiver_id) VALUES (?, ?, ?, ?)`;
+    connection.query(sql, [topic, message, senderId, recipientId], (err, result) => {
         if (err) {
             console.error(err);
             return res.status(500).json({ message: "Failed to send notification" });

@@ -390,7 +390,32 @@
       </v-toolbar-title>
       <v-spacer></v-spacer>
 
-      <!-- Logout button -->
+      <v-btn
+        icon
+        class="app-title mb-3"
+        color="primary"
+        @click="openNotifications"
+      >
+        <v-badge color="red" :content="notificationCount" overlap>
+          <v-icon>mdi-bell</v-icon>
+        </v-badge>
+      </v-btn>
+
+      <v-dialog
+        v-model="dialogNotifications"
+        max-width="750px"
+        max-hight="750px"
+        scrollable
+      >
+        <v-card>
+          <v-card-title>Notifications</v-card-title>
+          <notification_button />
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn @click="closeDialog" color="error">Close</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </v-app-bar>
 
     <!-- Main content -->
@@ -403,10 +428,16 @@
 </template>
 
 <script>
+import notification_button from "./../components/Progress_tracking/Notification/DialogDeteailNotificatiomn.vue";
 export default {
   middleware: "auth",
+  components: {
+    notification_button,
+  },
   data() {
     return {
+      dialogNotifications: false,
+      notificationCount: 0,
       reportActiveworktracking: false,
       reportIssueGroupActive: false,
 
@@ -464,6 +495,8 @@ export default {
     };
   },
   async mounted() {
+    await this.fetchNotifications();
+    this.startPolling();
     this.$store.dispatch("setDrawer", true);
 
     await this.$axios.get("/projects/getAll").then((res) => {
@@ -484,6 +517,48 @@ export default {
   },
   computed: {},
   methods: {
+    openNotifications() {
+      this.dialogNotifications = true; // Open the dialog
+    },
+    closeDialog() {
+      this.dialogNotifications = false; // Close the dialog
+    },
+    async fetchNotifications() {
+      try {
+        const { data } = await this.$axios.get(
+          `/prog_notifications/getNotifications/${this.user.id}`
+        );
+        this.notifications = data;
+
+        // คำนวณจำนวนการแจ้งเตือนที่ยังไม่อ่าน
+        const unreadNotifications = data.filter(
+          (notification) => notification.is_read === 0
+        );
+        this.notificationCount = unreadNotifications.length;
+
+        // เปรียบเทียบข้อมูลการแจ้งเตือนใหม่กับข้อมูลเดิม
+        const previousUnreadNotifications = this.previousNotifications.filter(
+          (notification) => notification.is_read === 0
+        );
+        if (previousUnreadNotifications.length < unreadNotifications.length) {
+          this.showNewNotificationSnackbar = true;
+          setTimeout(() => {
+            this.showNewNotificationSnackbar = false;
+          }, 5000);
+        }
+
+        // อัปเดตข้อมูลการแจ้งเตือนก่อนหน้า
+        this.previousNotifications = data;
+      } catch (error) {
+        console.error("Failed to fetch notifications:", error);
+      }
+    },
+    startPolling() {
+      // รีเฟรชข้อมูลทุก ๆ 15 วินาที
+      this.pollingInterval = setInterval(() => {
+        this.fetchNotifications();
+      }, 1000);
+    },
     goBack() {
       this.$router.back();
     },
