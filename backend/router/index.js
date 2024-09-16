@@ -17,6 +17,7 @@ const authRouter = require("./auth");
 const history_issuesRouter = require("./history_issues");
 
 const dashboard = require("./Note_Management/dashboard");
+const prog_notifications = require("./prog_notifications");
 
 
 router.use("/users", usersRouter);
@@ -36,5 +37,7 @@ router.use("/auth", authRouter);
 router.use("/history_issues", history_issuesRouter);
 
 router.use("/dashboard", dashboard);
+
+router.use("/prog_notifications", prog_notifications);
 
 module.exports = router;
