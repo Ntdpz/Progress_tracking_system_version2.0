@@ -48,10 +48,18 @@ export default {
           `/prog_notifications/getNotifications/${this.user.id}`
         );
         this.notifications = data;
-        this.notificationCount = data.length;
+
+        // คำนวณจำนวนการแจ้งเตือนที่ยังไม่อ่าน
+        const unreadNotifications = data.filter(
+          (notification) => notification.is_read === 0
+        );
+        this.notificationCount = unreadNotifications.length;
 
         // เปรียบเทียบข้อมูลการแจ้งเตือนใหม่กับข้อมูลเดิม
-        if (this.previousNotifications.length < data.length) {
+        const previousUnreadNotifications = this.previousNotifications.filter(
+          (notification) => notification.is_read === 0
+        );
+        if (previousUnreadNotifications.length < unreadNotifications.length) {
           this.showNewNotificationSnackbar = true;
           setTimeout(() => {
             this.showNewNotificationSnackbar = false;
@@ -66,10 +74,10 @@ export default {
     },
 
     startPolling() {
-      // รีเฟรชข้อมูลทุก ๆ 30 วินาที
+      // รีเฟรชข้อมูลทุก ๆ 15 วินาที
       this.pollingInterval = setInterval(() => {
         this.fetchNotifications();
-      }, 15000);
+      }, 1000);
     },
   },
 };
@@ -94,5 +102,3 @@ export default {
   right: 16px;
 }
 </style>
-
-

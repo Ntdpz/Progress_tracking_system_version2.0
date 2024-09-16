@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import notification_button from "@/components/Progress_tracking/์์์Notification/notification_button.vue";
+import notification_button from "@/components/Progress_tracking/Notification/notification_button.vue";
 export default {
   middleware: "auth",
   layout: "admin",
