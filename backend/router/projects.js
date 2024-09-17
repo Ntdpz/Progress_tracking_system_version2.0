@@ -58,10 +58,11 @@ router.get("/getAll", async (req, res) => {
 //* GET one by id
 router.get("/getOne/:id", async (req, res) => {
   const id = req.params.id;
+  console.log("Fetching project with ID:", id); // ตรวจสอบ ID ที่ได้รับ
+
   try {
     connection.query(
-      `
-      SELECT 
+      `SELECT 
         projects.*,
         COUNT(DISTINCT CASE WHEN systems.is_deleted = 0 THEN systems.id ELSE NULL END) AS system_count,
         AVG(CASE WHEN systems.is_deleted = 0 THEN systems.system_progress ELSE NULL END) AS project_progress,
@@ -77,13 +78,13 @@ router.get("/getOne/:id", async (req, res) => {
       [id],
       async (err, results, fields) => {
         if (err) {
-          console.error(err);
+          console.error("Database query error:", err);
           return res.status(400).send();
         }
+        console.log("Query results:", results); // ตรวจสอบผลลัพธ์จากการ query
         if (results.length === 0) {
           return res.status(404).json({ error: 'Project not found' });
         }
-        // Check if project is deleted
         if (results[0].is_deleted) {
           return res.status(404).json({ error: 'Project not found' });
         }
@@ -93,14 +94,15 @@ router.get("/getOne/:id", async (req, res) => {
       }
     );
   } catch (err) {
-    console.error(err);
+    console.error("Server error:", err);
     return res.status(500).send();
   }
 });
+
 // Function to update project data
 async function updateProject(project) {
   try {
-    const {project_progress, system_count, project_plan_start, project_plan_end, project_manday } = project;
+    const { project_progress, system_count, project_plan_start, project_plan_end, project_manday } = project;
 
     // Check and set default values for null columns
     const updatedProjectProgress = project_progress !== null ? project_progress : 0;

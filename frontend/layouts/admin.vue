@@ -510,14 +510,12 @@ export default {
       this.project_issues[0].projectList = res.data;
     });
     await this.getUser();
-    await this.getOwnProject();
   },
   async beforeDestroy() {
     this.$store.dispatch("setDrawer", false);
   },
   async created() {
     await this.getUser();
-    await this.getOwnProject();
   },
   computed: {},
   methods: {
@@ -582,22 +580,7 @@ export default {
     goForward() {
       this.$router.forward();
     },
-    async getOwnProject() {
-      await this.$axios
-        .get("/user_projects/getOneUserID/" + this.$auth.user.id)
-        .then((res) => {
-          this.ownProject = res.data;
-          this.projectIds = this.ownProject.map(
-            (project) => project.project_id
-          );
-          const requests = this.projectIds.map((projectId) => {
-            return this.$axios.get("/projects/getOne/" + projectId);
-          });
-          Promise.all(requests).then((responses) => {
-            this.projectDetails.projectList = responses.map((res) => res.data);
-          });
-        });
-    },
+
     async getUser() {
       await this.$axios
         .get("/users/getOne/" + this.$auth.user.id)

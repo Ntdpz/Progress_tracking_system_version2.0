@@ -252,6 +252,7 @@ export default {
   layout: "admin",
   data() {
     return {
+      recipientId: [],
       project: null,
       selectedSystemAnalysts: [],
       selectedDevelopers: [],
@@ -328,7 +329,14 @@ export default {
   created() {
     this.$store.dispatch("setLoading", true);
   },
+
   methods: {
+    updateRecipientNames(newIds) {
+      // อัปเดตชื่อของผู้ใช้ที่ถูกเลือก (firstname + lastname)
+      this.recipientNames = this.users
+        .filter((user) => newIds.includes(user.id))
+        .map((user) => `${user.user_firstname} ${user.user_lastname}`);
+    },
     async fetchAllScreens() {
       try {
         const response = await this.$axios.get("/screens/getAll");
@@ -707,6 +715,9 @@ export default {
 
         this.createProjectDialog = false;
         this.fetchProjects();
+
+        // เรียกใช้ฟังก์ชันส่งการแจ้งเตือนหลังจากสร้างโปรเจกต์สำเร็จ
+        await this.sendNotification(this.newProject.project_name_TH); // ส่ง project_name_TH ไปยัง sendNotification
       } catch (error) {
         console.error("Error creating Project:", error);
         await Swal.fire({
@@ -717,6 +728,79 @@ export default {
         });
       }
     },
+
+    async sendNotification(projectName) {
+      // เพิ่ม projectName เป็น parameter
+      try {
+        const senderName = `${this.user.user_firstname} ${this.user.user_lastname}`;
+
+        // รวบรวม ID ของผู้ใช้จากทุกทีม (System Analyst, Developer, Implementer)
+        const recipientIds = [
+          ...this.selectedSA.map((member) => member.user_id),
+          ...this.selectedDEV.map((member) => member.user_id),
+          ...this.selectedIMP.map((member) => member.user_id),
+        ];
+
+        // ฟังก์ชันช่วยดึงข้อมูลผู้ใช้จาก ID
+        const getUserDetails = async (id) => {
+          try {
+            const response = await this.$axios.get(`/users/getOne/${id}`);
+            return response.data[0]; // คืนค่าผลลัพธ์แรกจากฐานข้อมูล (อาจมีการปรับปรุงตามโครงสร้างฐานข้อมูล)
+          } catch (error) {
+            console.error(
+              `Error fetching user details for ID ${id}:`,
+              error.response ? error.response.data : error.message
+            );
+            return null;
+          }
+        };
+
+        // ดึงข้อมูลผู้รับทั้งหมด
+        const recipientDetailsPromises = recipientIds.map((id) =>
+          getUserDetails(id)
+        );
+        const recipientDetails = await Promise.all(recipientDetailsPromises);
+
+        // ลูปผ่านรายชื่อและข้อมูลของผู้รับแต่ละคน
+        for (let i = 0; i < recipientDetails.length; i++) {
+          const user = recipientDetails[i];
+          if (!user) continue; // หากไม่สามารถดึงข้อมูลผู้ใช้ได้ ให้ข้ามไป
+
+          const recipientId = user.id; // ID ผู้รับปัจจุบัน
+          const recipientName = `${user.user_firstname} ${user.user_lastname}`; // ชื่อผู้รับ
+
+          // สร้างข้อความแยกกันสำหรับแต่ละผู้รับ
+          // const message = `${senderName} ได้เพิ่ม ${recipientName} เข้าไปในโปรเจค ${projectName}`;
+          const message = `${senderName} ได้เพิ่มคุณ เข้าไปในโปรเจค ${projectName}`;
+
+          // ส่งการแจ้งเตือนสำหรับผู้รับแต่ละคน
+          const response = await this.$axios.post("/prog_notifications/send", {
+            topic: "Your Default Topic",
+            message: message,
+            senderId: this.user.id, // ID ของผู้ส่ง
+            recipientIds: [recipientId], // ส่ง ID ของผู้รับเป็นอาเรย์
+          });
+
+          // อัปเดตข้อความแจ้งเตือนเมื่อสำเร็จ
+          this.alertMessage = response.data.message;
+          this.alertType = "success";
+        }
+      } catch (error) {
+        console.error(
+          "Error sending notification:",
+          error.response ? error.response.data : error.message
+        );
+        this.alertMessage = "Failed to send notification";
+        this.alertType = "error";
+      }
+    },
+    updateRecipientNames(newIds) {
+      // อัปเดตชื่อของผู้ใช้ที่ถูกเลือก (firstname + lastname)
+      this.recipientNames = this.users
+        .filter((user) => newIds.includes(user.id))
+        .map((user) => `${user.user_firstname} ${user.user_lastname}`);
+    },
+
     async fetchProjects() {
       let url;
       if (this.$auth.user.user_role === "Admin") {
