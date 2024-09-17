@@ -540,6 +540,9 @@ export default {
         );
         this.notificationCount = unreadNotifications.length;
 
+        // ตรวจสอบค่าเริ่มต้นของ previousNotifications
+        this.previousNotifications = this.previousNotifications || [];
+
         // เปรียบเทียบข้อมูลการแจ้งเตือนใหม่กับข้อมูลเดิม
         const previousUnreadNotifications = this.previousNotifications.filter(
           (notification) => notification.is_read === 0
